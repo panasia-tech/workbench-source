@@ -3,4 +3,10 @@
 node_modules/
 dist/
 __pycache__/
+*.pyc
+*.sqlite
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm
+.vault_master.key
 .DS_Store
