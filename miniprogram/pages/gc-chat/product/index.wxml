@@ -1,0 +1,59 @@
+<view class="gcp">
+  <view wx:if="{{loading}}" class="gcp-loading">加载中…</view>
+
+  <block wx:elif="{{!matched}}">
+    <view class="gcp-card gcp-missing-card">
+      <image wx:if="{{fallback.image}}" class="gcp-hero-img" src="{{fallback.image}}" mode="aspectFill" bindtap="previewFallback" />
+      <view wx:else class="gcp-hero-img gcp-ph">商品图待补</view>
+      <view class="gcp-missing-title">商品信息待补全</view>
+      <view wx:if="{{fallback.title}}" class="gcp-muted">{{fallback.title}}</view>
+      <view wx:if="{{fallback.price}}" class="gcp-price"><text class="gcp-yen">¥</text>{{fallback.price}}</view>
+      <view class="gcp-hint">{{error}}</view>
+      <view class="gcp-btn" bindtap="goMatch">去匹配商品</view>
+      <view class="gcp-hint">点图片仍进入当前站内详情页，不会跳转闲鱼</view>
+    </view>
+  </block>
+
+  <block wx:else>
+    <view class="gcp-hero">
+      <image wx:if="{{images.length}}" class="gcp-hero-img" src="{{images[0].thumb}}" mode="aspectFill" data-index="0" bindtap="previewImage" />
+      <view wx:else class="gcp-hero-img gcp-ph">商品图待补</view>
+    </view>
+
+    <scroll-view wx:if="{{images.length > 1}}" scroll-x class="gcp-thumbs">
+      <view class="gcp-thumbs-inner">
+        <image wx:for="{{images}}" wx:key="url" class="gcp-thumb" src="{{item.thumb}}" mode="aspectFill" data-index="{{index}}" bindtap="previewImage" />
+      </view>
+    </scroll-view>
+
+    <view class="gcp-card">
+      <view class="gcp-price" wx:if="{{item.price}}"><text class="gcp-yen">¥</text>{{item.price}}</view>
+      <view class="gcp-price gcp-price--missing" wx:else>价格待补全</view>
+      <view class="gcp-name">{{item.name || '商品名称待补全'}}</view>
+      <view class="gcp-model" wx:if="{{item.modelLine}}">{{item.modelLine}}</view>
+      <view class="gcp-tags">
+        <text wx:if="{{item.grade}}" class="gcp-tag">{{item.grade}}</text>
+        <text wx:if="{{item.state}}" class="gcp-tag gcp-tag--state">{{item.state}}</text>
+        <text wx:if="{{item.location}}" class="gcp-tag">库位 {{item.location}}</text>
+        <text class="gcp-tag">{{codeText}}</text>
+      </view>
+    </view>
+
+    <view class="gcp-card">
+      <view class="gcp-section-title">商品描述</view>
+      <view class="gcp-text">{{item.description || '待补全'}}</view>
+      <view class="gcp-section-title">电脑配置</view>
+      <view class="gcp-text">{{item.config || '待补全'}}</view>
+      <view class="gcp-section-title">备注</view>
+      <view class="gcp-text">{{item.remark || '待补全'}}</view>
+    </view>
+
+    <view wx:if="{{missing.length}}" class="gcp-card gcp-missing-card">
+      <view class="gcp-missing-title">商品信息待补全</view>
+      <view class="gcp-muted">缺少：{{missingText}}</view>
+      <view class="gcp-btn" bindtap="goEdit">去补全资料</view>
+      <view class="gcp-hint">请联系相关员工补全后再上架或发给买家</view>
+    </view>
+    <view wx:else class="gcp-card gcp-ok">资料已完整</view>
+  </block>
+</view>

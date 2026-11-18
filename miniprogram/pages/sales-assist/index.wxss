@@ -1,0 +1,43 @@
+/* 实物接管台：照交付包（浅色）。红 = 已升级要人接，黄 = 在等 */
+.sa-page .sa-eyebrow { font-size: 24rpx; font-weight: 700; color: #2563EB; }
+.sa-page .sa-h1 { margin-top: 4rpx; font-size: 44rpx; font-weight: 800; color: #111827; }
+.sa-page .sa-q { display: inline-block; width: 36rpx; height: 36rpx; line-height: 36rpx; text-align: center; border-radius: 50%; border: 1rpx solid #D1D5DB; color: #6B7280; font-size: 22rpx; font-weight: 400; vertical-align: 6rpx; }
+.sa-page .sa-help { margin-top: 12rpx; padding: 14rpx 18rpx; border-radius: 12rpx; background: #FFFFFF; font-size: 24rpx; color: #4B5563; line-height: 1.6; }
+.sa-page .sa-red { color: #DC2626; }
+.sa-page .sa-bad { color: #DC2626; font-weight: 700; }
+
+.sa-page .sa-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 14rpx; margin-top: 20rpx; }
+.sa-page .sa-st { padding: 18rpx 20rpx; border-radius: 20rpx; background: #FFFFFF; box-shadow: 0 2rpx 12rpx rgba(15, 23, 42, 0.06); }
+.sa-page .sa-st__k { font-size: 22rpx; color: #6B7280; }
+.sa-page .sa-st__v { margin-top: 4rpx; font-size: 40rpx; font-weight: 800; color: #111827; }
+.sa-page .sa-st__s { margin-top: 4rpx; font-size: 20rpx; color: #9CA3AF; }
+.sa-page .sa-fold { margin-top: 14rpx; font-size: 24rpx; font-weight: 600; color: #2563EB; }
+.sa-page .sa-card { margin-top: 12rpx; padding: 8rpx 20rpx; border-radius: 20rpx; background: #FFFFFF; }
+.sa-page .sa-stat { display: grid; grid-template-columns: 2fr 1.4fr 1fr 1fr 0.8fr; gap: 8rpx; padding: 14rpx 0; border-bottom: 1rpx solid #F3F4F6; font-size: 24rpx; color: #1F2937; }
+.sa-page .sa-stat:last-child { border-bottom: none; }
+.sa-page .sa-stat--head { font-size: 22rpx; color: #6B7280; }
+.sa-page .sa-stat__name { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.sa-page .sa-grp { display: flex; align-items: center; gap: 10rpx; margin: 30rpx 4rpx 14rpx; font-size: 28rpx; font-weight: 800; color: #111827; }
+.sa-page .sa-grp__n { padding: 2rpx 14rpx; border-radius: 999rpx; background: #E5E7EB; color: #4B5563; font-size: 22rpx; font-weight: 700; }
+.sa-page .sa-grp__gap { margin-left: 16rpx; }
+.sa-page .sa-dot { width: 14rpx; height: 14rpx; border-radius: 50%; }
+.sa-page .sa-dot--red { background: #DC2626; }
+.sa-page .sa-dot--yellow { background: #F59E0B; }
+.sa-page .sa-empty { padding: 40rpx 0; text-align: center; color: #9CA3AF; font-size: 26rpx; }
+.sa-page .sa-empty--bad { color: #B91C1C; }
+
+.sa-page .sa-row { margin-bottom: 14rpx; padding: 18rpx 22rpx; border-radius: 22rpx; background: #FFFFFF; border-left: 10rpx solid #E5E7EB; box-shadow: 0 2rpx 12rpx rgba(15, 23, 42, 0.06); }
+.sa-page .sa-row--red { border-left-color: #DC2626; }
+.sa-page .sa-row--yellow { border-left-color: #F59E0B; }
+.sa-page .sa-row__top { display: flex; align-items: center; gap: 10rpx; }
+.sa-page .sa-pf { padding: 0 10rpx; border-radius: 8rpx; background: #FEF3C7; color: #92400E; font-size: 20rpx; font-weight: 700; }
+.sa-page .sa-row__buyer { flex: 1; min-width: 0; font-size: 28rpx; font-weight: 800; color: #111827; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sa-page .sa-tag { flex: none; padding: 2rpx 14rpx; border-radius: 8rpx; font-size: 21rpx; font-weight: 700; }
+.sa-page .sa-tag--red { background: #FEE2E2; color: #B91C1C; }
+.sa-page .sa-tag--yellow { background: #FEF3C7; color: #92400E; }
+.sa-page .sa-row__item { margin-top: 6rpx; font-size: 23rpx; color: #6B7280; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sa-page .sa-row__msg { margin-top: 6rpx; font-size: 25rpx; color: #1F2937; line-height: 1.5; }
+.sa-page .sa-row__foot { display: flex; justify-content: space-between; gap: 12rpx; margin-top: 8rpx; font-size: 21rpx; color: #9CA3AF; }
+.sa-page .sa-row--red .sa-row__foot text:first-child { color: #B91C1C; font-weight: 600; }
+.sa-row__ask { display: inline-block; margin-top: 14rpx; padding: 6rpx 20rpx; border-radius: 999rpx; border: 1rpx solid #BFDBFE; background: #EFF6FF; color: #1D4ED8; font-size: 22rpx; }

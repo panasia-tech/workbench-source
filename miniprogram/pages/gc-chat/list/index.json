@@ -1,0 +1,5 @@
+{
+  "navigationBarTitleText": "聚合会话",
+  "navigationStyle": "custom",
+  "enablePullDownRefresh": true
+}

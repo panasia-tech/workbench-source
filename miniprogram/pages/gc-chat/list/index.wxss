@@ -1,0 +1,205 @@
+@import "../icons.wxss";
+
+/* 聚合会话列表：和聊天详情同一套风格。整页跟着页面滚（下拉刷新、触底加载靠它），顶栏吸顶 */
+.gcl {
+  min-height: 100vh;
+  background: #FFFFFF;
+}
+
+/* ---------------------------------------------------------------- 顶栏 */
+.gcl-nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #FFFFFF;
+  border-bottom: 1rpx solid #F0F1F3;
+}
+
+.gcl-nav-inner {
+  display: flex;
+  align-items: center;
+  padding: 0 8rpx;
+}
+
+.gcl-nav-btn {
+  flex: none;
+  width: 80rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gcl-nav-ic {
+  width: 44rpx;
+  height: 44rpx;
+}
+
+.gcl-nav-title {
+  padding-left: 4rpx;
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* ---------------------------------------------------------------- 会话行 */
+.gcl-row {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 24rpx;
+  border-bottom: 1rpx solid #F3F4F6;
+}
+
+.gcl-row--hover {
+  background: #F7F8FA;
+}
+
+/* 头像：买家昵称首字，无昵称取商品首字；未读数挂右上角 */
+.gcl-avatar {
+  position: relative;
+  flex: none;
+  width: 92rpx;
+  height: 92rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #2563EB;
+  background: #EEF3FE;
+}
+
+.gcl-badge {
+  position: absolute;
+  top: -6rpx;
+  right: -6rpx;
+  min-width: 32rpx;
+  height: 32rpx;
+  padding: 0 8rpx;
+  box-sizing: border-box;
+  border-radius: 16rpx;
+  border: 2rpx solid #FFFFFF;
+  font-size: 20rpx;
+  font-weight: 600;
+  line-height: 28rpx;
+  text-align: center;
+  color: #FFFFFF;
+  background: #F23030;
+}
+
+.gcl-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.gcl-head {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.gcl-nick {
+  flex: 0 1 auto;
+  min-width: 0;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #111827;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 这条会话是哪个店铺的号。定宽不压缩：昵称再长也先省略昵称 */
+.gcl-shop {
+  flex: none;
+  max-width: 150rpx;
+  box-sizing: border-box;
+  padding: 0 12rpx;
+  border-radius: 8rpx;
+  font-size: 20rpx;
+  line-height: 1.6;
+  color: #6B7280;
+  background: #F3F4F6;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gcl-time {
+  flex: none;
+  margin-left: auto;
+  font-size: 22rpx;
+  color: #9CA3AF;
+}
+
+.gcl-last {
+  margin-top: 8rpx;
+  font-size: 26rpx;
+  color: #6B7280;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gcl-last--unread {
+  color: #1F2329;
+}
+
+.gcl-goods {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: #9CA3AF;
+}
+
+/* 订单状态：和聊天详情顶栏同一个橙色胶囊 */
+.gcl-status {
+  flex: none;
+  padding: 0 12rpx;
+  border-radius: 999rpx;
+  font-size: 20rpx;
+  line-height: 1.6;
+  color: #E07800;
+  background: #FFF3E0;
+}
+
+.gcl-price {
+  flex: none;
+  font-weight: 600;
+  color: #F23030;
+}
+
+.gcl-title {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gcl-thumb {
+  flex: none;
+  width: 104rpx;
+  height: 104rpx;
+  border-radius: 14rpx;
+  background: #F3F4F6;
+}
+
+/* ---------------------------------------------------------------- 空 / 页脚 */
+.gcl-empty {
+  padding: 200rpx 0;
+  text-align: center;
+  font-size: 26rpx;
+  color: #9CA3AF;
+}
+
+.gcl-foot {
+  padding: 28rpx 0 calc(28rpx + env(safe-area-inset-bottom));
+  text-align: center;
+  font-size: 22rpx;
+  color: #9CA3AF;
+}

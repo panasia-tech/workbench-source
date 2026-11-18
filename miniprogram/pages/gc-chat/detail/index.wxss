@@ -1,0 +1,1092 @@
+@import "../icons.wxss";
+
+/* 聚合会话详情：照设计图（闲鱼聊天页的样子）。整页定高，中间消息区滚动，底部输入栏 + 面板 */
+.gcd {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #F7F8FA;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* ---------------------------------------------------------------- 顶栏 */
+.gcd-nav {
+  flex: none;
+  background: #FFFFFF;
+}
+
+.gcd-nav-inner {
+  display: flex;
+  align-items: center;
+  padding: 0 8rpx;
+}
+
+.gcd-nav-btn {
+  flex: none;
+  width: 80rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gcd-nav-ic {
+  width: 44rpx;
+  height: 44rpx;
+}
+
+.gcd-nav-main {
+  flex: 1;
+  min-width: 0;
+  padding-left: 4rpx;
+}
+
+.gcd-nav-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.gcd-nav-nick {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #111827;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 订单状态：橙色小胶囊（设计图里买家徽章的位置） */
+.gcd-nav-tag {
+  flex: none;
+  padding: 2rpx 14rpx;
+  border-radius: 999rpx;
+  font-size: 20rpx;
+  line-height: 1.5;
+  color: #E07800;
+  background: #FFF3E0;
+}
+
+.gcd-nav-sub {
+  margin-top: 2rpx;
+  font-size: 22rpx;
+  color: #9CA3AF;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------------------------------------------------------------- 商品卡 */
+.gcd-item {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  margin: 16rpx 20rpx 4rpx;
+  padding: 20rpx;
+  border-radius: 24rpx;
+  background: #FFFFFF;
+  box-shadow: 0 4rpx 16rpx rgba(17, 24, 39, 0.06);
+}
+
+.gcd-item-img {
+  flex: none;
+  width: 150rpx;
+  height: 120rpx;
+  border-radius: 14rpx;
+  background: #F3F4F6;
+}
+
+.gcd-item-img--ph {
+  border: 1rpx solid #EDEFF2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20rpx;
+  color: #9CA3AF;
+  box-sizing: border-box;
+}
+
+.gcd-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.gcd-item-price {
+  font-size: 34rpx;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #F23030;
+}
+
+.gcd-item-yen {
+  font-size: 24rpx;
+  margin-right: 2rpx;
+}
+
+.gcd-item-title {
+  margin-top: 6rpx;
+  font-size: 24rpx;
+  line-height: 1.4;
+  color: #1F2329;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.gcd-item-grade {
+  color: #6B7280;
+}
+
+.gcd-item-model {
+  margin-top: 2rpx;
+  font-size: 21rpx;
+  color: #9CA3AF;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gcd-item-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx;
+  margin-top: 8rpx;
+}
+
+.gcd-item-meta-tag {
+  padding: 2rpx 10rpx;
+  border-radius: 6rpx;
+  font-size: 19rpx;
+  line-height: 1.5;
+  color: #4B5563;
+  background: #F3F4F6;
+}
+
+.gcd-item-meta-tag--state {
+  color: #1D4ED8;
+  background: #EAF1FF;
+}
+
+.gcd-item-missing {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  margin-top: 8rpx;
+  font-size: 20rpx;
+  color: #B45309;
+}
+
+.gcd-item-match {
+  color: #1D4ED8;
+  text-decoration: underline;
+}
+
+/* 标签只排一行，放不下的截掉：换行会把商品卡撑高、挤掉消息区 */
+.gcd-item-tags {
+  display: flex;
+  gap: 8rpx;
+  margin-top: 8rpx;
+  overflow: hidden;
+}
+
+.gcd-item-tag {
+  flex: none;
+  padding: 2rpx 12rpx;
+  border-radius: 8rpx;
+  font-size: 20rpx;
+  line-height: 1.5;
+  color: #6B7280;
+  background: #F3F4F6;
+}
+
+.gcd-item-go {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  height: 56rpx;
+  padding: 0 20rpx;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #FFFFFF;
+  background: linear-gradient(90deg, #FF7A2E 0%, #FF3D2E 100%);
+}
+
+.gcd-item-go-ic {
+  width: 24rpx;
+  height: 24rpx;
+}
+
+/* ---------------------------------------------------------------- 消息区 */
+.gcd-stream {
+  flex: 1;
+  min-height: 0;
+  padding: 8rpx 24rpx 0;
+  box-sizing: border-box;
+}
+
+.gcd-empty {
+  padding: 80rpx 0;
+  text-align: center;
+  font-size: 24rpx;
+  color: #9CA3AF;
+}
+
+.gcd-sep {
+  padding: 28rpx 0 20rpx;
+  text-align: center;
+  font-size: 22rpx;
+  color: #A0A5AE;
+}
+
+.gcd-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
+  margin-bottom: 20rpx;
+}
+
+.gcd-row--out {
+  flex-direction: row-reverse;
+}
+
+.gcd-avatar {
+  flex: none;
+  width: 76rpx;
+  height: 76rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #2F7A4E;
+  background: linear-gradient(135deg, #E3F4E8 0%, #CDEBD7 100%);
+}
+
+.gcd-avatar--me {
+  color: #2563EB;
+  background: linear-gradient(135deg, #E5EFFF 0%, #CFE0FF 100%);
+}
+
+.gcd-msg {
+  max-width: 70%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.gcd-row--out .gcd-msg {
+  align-items: flex-end;
+}
+
+.gcd-bubble {
+  padding: 18rpx 24rpx;
+  border-radius: 24rpx;
+  font-size: 28rpx;
+  line-height: 1.55;
+  color: #1F2329;
+  background: #EEEFF2;
+  word-break: break-all;
+  white-space: pre-wrap;
+}
+
+.gcd-row--out .gcd-bubble {
+  background: linear-gradient(135deg, #DCEBFF 0%, #C7DFFF 100%);
+}
+
+.gcd-time {
+  margin-top: 8rpx;
+  padding: 0 6rpx;
+  font-size: 20rpx;
+  color: #A0A5AE;
+}
+
+/* 本地回显没发成 / 没核对上 / 还在排队：状态字标红 */
+.gcd-time--warn {
+  color: #DC2626;
+}
+
+/* 发商品的小卡片：只在我们这边显示，买家收到的是图片和文字 */
+.gcd-card {
+  display: flex;
+  gap: 16rpx;
+  width: 440rpx;
+  padding: 16rpx;
+  border-radius: 16rpx;
+  background: #FFFFFF;
+}
+
+.gcd-card-img {
+  flex: none;
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 12rpx;
+  background: #3A3F47;
+}
+
+.gcd-card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.gcd-card-title {
+  font-size: 26rpx;
+  color: #1F2329;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.gcd-card-grade {
+  margin-top: 4rpx;
+  font-size: 22rpx;
+  color: #6B7280;
+}
+
+.gcd-card-price {
+  margin-top: 4rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #DC2626;
+}
+
+/* 发出去的图片 / 视频：小方块拼在一起 */
+.gcd-media {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx;
+}
+
+.gcd-row--out .gcd-media {
+  justify-content: flex-end;
+}
+
+.gcd-media-cell {
+  position: relative;
+  width: 180rpx;
+  height: 180rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+  background: #3A3F47;
+}
+
+.gcd-media-img {
+  width: 100%;
+  height: 100%;
+}
+
+.gcd-media-play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 64rpx;
+  height: 64rpx;
+  margin: -32rpx 0 0 -32rpx;
+}
+
+.gcd-stream-end {
+  height: 16rpx;
+}
+
+/* ---------------------------------------------------------------- 底部云朵（装饰） */
+.gcd-sky {
+  flex: none;
+  position: relative;
+  height: 120rpx;
+  overflow: hidden;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(198, 225, 255, 0) 0%, #CFE5FF 45%, #A8CFFB 100%);
+}
+
+/* 月牙：透明圆 + 偏移的影子 */
+.gcd-sky-moon {
+  position: absolute;
+  left: 44%;
+  top: 6rpx;
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  box-shadow: 14rpx 10rpx 0 0 #FFE47A;
+}
+
+.gcd-sky-star {
+  position: absolute;
+  width: 8rpx;
+  height: 8rpx;
+  border-radius: 50%;
+  background: #FFF6C7;
+  box-shadow: 0 0 8rpx 2rpx rgba(255, 246, 199, 0.9);
+}
+
+.gcd-sky-star--a { left: 22%; top: 30rpx; }
+.gcd-sky-star--b { left: 62%; top: 18rpx; }
+.gcd-sky-star--c { left: 84%; top: 44rpx; }
+
+.gcd-sky-clouds {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 70rpx;
+  background:
+    radial-gradient(70rpx 46rpx at 6% 92%, #FFFFFF 98%, rgba(255, 255, 255, 0) 100%),
+    radial-gradient(90rpx 56rpx at 20% 100%, #FFFFFF 98%, rgba(255, 255, 255, 0) 100%),
+    radial-gradient(60rpx 40rpx at 33% 96%, rgba(255, 255, 255, 0.92) 98%, rgba(255, 255, 255, 0) 100%),
+    radial-gradient(100rpx 60rpx at 52% 104%, #FFFFFF 98%, rgba(255, 255, 255, 0) 100%),
+    radial-gradient(70rpx 44rpx at 68% 96%, rgba(255, 255, 255, 0.92) 98%, rgba(255, 255, 255, 0) 100%),
+    radial-gradient(96rpx 58rpx at 84% 102%, #FFFFFF 98%, rgba(255, 255, 255, 0) 100%),
+    radial-gradient(64rpx 42rpx at 97% 94%, #FFFFFF 98%, rgba(255, 255, 255, 0) 100%);
+}
+
+/* ---------------------------------------------------------------- 输入栏 */
+.gcd-bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 14rpx 20rpx 14rpx 24rpx;
+  background: #FFFFFF;
+}
+
+/* 面板没开时，输入栏贴着屏幕底，要让出 iPhone 底部横条 */
+.gcd-bar--bottom {
+  padding-bottom: calc(14rpx + env(safe-area-inset-bottom));
+}
+
+.gcd-input {
+  flex: 1;
+  min-width: 0;
+  height: 76rpx;
+  padding: 0 28rpx;
+  border-radius: 38rpx;
+  background: #F1F2F6;
+  font-size: 28rpx;
+  color: #1F2329;
+}
+
+.gcd-input-ph {
+  color: #A8ADB7;
+}
+
+.gcd-bar-btn {
+  flex: none;
+  width: 64rpx;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gcd-bar-ic {
+  width: 56rpx;
+  height: 56rpx;
+}
+
+/* 多一层 .gcd：style v2 的默认按钮样式 button:not([size="mini"]) 权重更高，单写 .gcd-send 盖不住宽度 */
+.gcd .gcd-send {
+  flex: none;
+  width: auto;
+  min-width: 0;
+  height: 64rpx;
+  line-height: 64rpx;
+  margin: 0;
+  padding: 0 28rpx;
+  border-radius: 32rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #FFFFFF;
+  background: #2563EB;
+}
+
+.gcd .gcd-send::after {
+  border: none;
+}
+
+.gcd .gcd-send[disabled] {
+  color: #FFFFFF;
+  background: #93B4F5;
+}
+
+/* ---------------------------------------------------------------- 面板（表情 / 「+」） */
+.gcd-panel {
+  flex: none;
+  max-height: 58vh;
+  overflow-y: auto;
+  padding: 8rpx 24rpx calc(24rpx + env(safe-area-inset-bottom));
+  background: #FFFFFF;
+  border-top: 1rpx solid #F0F1F4;
+}
+
+.gcd-emoji {
+  display: flex;
+  flex-wrap: wrap;
+  padding-top: 16rpx;
+}
+
+.gcd-emoji-cell {
+  width: 12.5%;
+  height: 84rpx;
+  line-height: 84rpx;
+  text-align: center;
+  font-size: 44rpx;
+}
+
+.gcd-acts {
+  display: flex;
+  justify-content: space-around;
+  padding: 24rpx 0 28rpx;
+}
+
+.gcd-act {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 33%;
+}
+
+.gcd-act-tile {
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 28rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #EAF2FF;
+}
+
+.gcd-act-ic {
+  width: 56rpx;
+  height: 56rpx;
+}
+
+.gcd-act-label {
+  margin-top: 14rpx;
+  font-size: 24rpx;
+  color: #374151;
+}
+
+.gcd-sku-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+  padding: 8rpx 0 16rpx;
+}
+
+.gcd-sku-title {
+  flex: none;
+  display: flex;
+  align-items: center;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #111827;
+}
+
+.gcd-sku-title-sub {
+  font-size: 22rpx;
+  font-weight: 400;
+  color: #6B7280;
+}
+
+.gcd-sku-info {
+  width: 30rpx;
+  height: 30rpx;
+  margin-left: 6rpx;
+}
+
+.gcd-sku-hint {
+  min-width: 0;
+  font-size: 20rpx;
+  color: #9CA3AF;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gcd-sku-state {
+  padding: 28rpx 0;
+  text-align: center;
+  font-size: 24rpx;
+  color: #9CA3AF;
+}
+
+.gcd-slots {
+  width: 100%;
+  white-space: nowrap;
+}
+
+.gcd-slots-inner {
+  display: inline-flex;
+  gap: 16rpx;
+  padding: 4rpx 2rpx 8rpx;
+}
+
+.gcd-slot {
+  position: relative;
+  flex: none;
+  width: 124rpx;
+  padding: 10rpx 8rpx 12rpx;
+  border-radius: 18rpx;
+  border: 2rpx solid #EDEFF2;
+  background: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.gcd-slot--on {
+  border-color: #3B82F6;
+  background: #EFF6FF;
+}
+
+.gcd-slot--empty {
+  opacity: 0.45;
+}
+
+.gcd-slot-img {
+  width: 104rpx;
+  height: 84rpx;
+  border-radius: 12rpx;
+  background: #F3F4F6;
+}
+
+.gcd-slot-img--ph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20rpx;
+  color: #9CA3AF;
+}
+
+.gcd-slot-label {
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: #374151;
+}
+
+.gcd-slot-count {
+  position: absolute;
+  top: 6rpx;
+  right: 6rpx;
+  padding: 0 8rpx;
+  border-radius: 999rpx;
+  font-size: 18rpx;
+  line-height: 1.6;
+  color: #FFFFFF;
+  background: rgba(17, 24, 39, 0.55);
+}
+
+.gcd-link {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  height: 76rpx;
+  margin-top: 20rpx;
+  padding: 0 20rpx;
+  border-radius: 38rpx;
+  background: #F3F4F6;
+}
+
+.gcd-link-ic {
+  flex: none;
+  width: 32rpx;
+  height: 32rpx;
+}
+
+.gcd-link-label {
+  flex: none;
+  font-size: 24rpx;
+  color: #6B7280;
+}
+
+.gcd-link-input {
+  flex: 1;
+  min-width: 0;
+  height: 76rpx;
+  font-size: 24rpx;
+  color: #1F2329;
+}
+
+.gcd-link-clear {
+  flex: none;
+  width: 36rpx;
+  height: 36rpx;
+}
+
+.gcd-link-tip {
+  margin-top: 12rpx;
+  padding-left: 8rpx;
+  font-size: 20rpx;
+  color: #9CA3AF;
+}
+
+/* ---------------------------------------------------------------- 商品详情（WMS）弹层 */
+.gcd-mask {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background: rgba(17, 24, 39, 0.45);
+}
+
+.gcd-sheet {
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  border-radius: 32rpx 32rpx 0 0;
+  background: #FFFFFF;
+  overflow: hidden;
+}
+
+.gcd-sheet-head {
+  flex: none;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx 28rpx 16rpx;
+}
+
+.gcd-sheet-head--back {
+  justify-content: flex-start;
+  gap: 12rpx;
+}
+
+.gcd-sheet-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #111827;
+}
+
+.gcd-sheet-close,
+.gcd-sheet-back {
+  width: 44rpx;
+  height: 44rpx;
+}
+
+.gcd-sheet-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 28rpx 16rpx;
+}
+
+.gcd-sheet-state {
+  padding: 80rpx 0;
+  text-align: center;
+  font-size: 24rpx;
+  color: #9CA3AF;
+}
+
+.gcd-sku-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-bottom: 16rpx;
+}
+
+.gcd-chip {
+  padding: 6rpx 18rpx;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  color: #4B5563;
+  background: #F3F4F6;
+}
+
+.gcd-chip--on {
+  color: #2563EB;
+  background: #E5EFFF;
+}
+
+.gcd-sku-meta {
+  margin-bottom: 16rpx;
+  font-size: 22rpx;
+  color: #6B7280;
+}
+
+.gcd-hero {
+  position: relative;
+  width: 100%;
+  height: 460rpx;
+  border-radius: 20rpx;
+  overflow: hidden;
+  background: #F3F4F6;
+}
+
+.gcd-hero-img {
+  width: 100%;
+  height: 100%;
+}
+
+.gcd-hero-play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 96rpx;
+  height: 96rpx;
+  margin: -48rpx 0 0 -48rpx;
+}
+
+.gcd-hero-count {
+  position: absolute;
+  right: 16rpx;
+  bottom: 16rpx;
+  padding: 4rpx 16rpx;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  color: #FFFFFF;
+  background: rgba(17, 24, 39, 0.5);
+}
+
+.gcd-strip {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-top: 16rpx;
+}
+
+.gcd-strip-arrow {
+  flex: none;
+  width: 36rpx;
+  height: 36rpx;
+}
+
+.gcd-strip-scroll {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.gcd-strip-inner {
+  display: inline-flex;
+  gap: 12rpx;
+  padding: 4rpx 2rpx;
+}
+
+.gcd-strip-cell {
+  flex: none;
+  width: 108rpx;
+  height: 80rpx;
+  border-radius: 12rpx;
+  border: 3rpx solid transparent;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.gcd-strip-cell--on {
+  border-color: #3B82F6;
+}
+
+.gcd-strip-img {
+  width: 100%;
+  height: 100%;
+}
+
+.gcd-tabs {
+  display: flex;
+  gap: 16rpx;
+  margin: 24rpx 0 20rpx;
+}
+
+.gcd-tab {
+  flex: 1;
+  height: 60rpx;
+  line-height: 60rpx;
+  text-align: center;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  color: #4B5563;
+  background: #F3F4F6;
+}
+
+.gcd-tab--on {
+  font-weight: 600;
+  color: #2563EB;
+  background: #E5EFFF;
+}
+
+.gcd-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.gcd-grid--videos {
+  margin-top: 20rpx;
+}
+
+.gcd-cell {
+  position: relative;
+  width: calc((100% - 24rpx) / 3);
+  height: 172rpx;
+  border-radius: 14rpx;
+  border: 3rpx solid transparent;
+  overflow: hidden;
+  box-sizing: border-box;
+  background: #F3F4F6;
+}
+
+.gcd-cell--on {
+  border-color: #3B82F6;
+}
+
+/* 视频没截到封面时：深色底 + 播放钮 */
+.gcd-cell--video {
+  background: #3A3F47;
+}
+
+.gcd-cell-img {
+  width: 100%;
+  height: 100%;
+}
+
+.gcd-cell-play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 64rpx;
+  height: 64rpx;
+  margin: -32rpx 0 0 -32rpx;
+}
+
+.gcd-cell-dur {
+  position: absolute;
+  left: 8rpx;
+  bottom: 8rpx;
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  padding: 2rpx 10rpx;
+  border-radius: 999rpx;
+  font-size: 20rpx;
+  color: #FFFFFF;
+  background: rgba(17, 24, 39, 0.45);
+}
+
+.gcd-cell-dur-ic {
+  width: 20rpx;
+  height: 20rpx;
+}
+
+.gcd-check {
+  position: absolute;
+  top: 8rpx;
+  right: 8rpx;
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 8rpx;
+  border: 2rpx solid #FFFFFF;
+  background: rgba(17, 24, 39, 0.25);
+  box-sizing: border-box;
+}
+
+.gcd-check--on {
+  border-color: #2563EB;
+  background: #2563EB;
+}
+
+.gcd-check-ic {
+  width: 100%;
+  height: 100%;
+}
+
+.gcd-remove {
+  position: absolute;
+  top: 8rpx;
+  right: 8rpx;
+  width: 40rpx;
+  height: 40rpx;
+}
+
+.gcd-sheet-foot {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 16rpx 28rpx calc(20rpx + env(safe-area-inset-bottom));
+  border-top: 1rpx solid #F0F1F4;
+}
+
+.gcd-picked {
+  flex: none;
+  font-size: 26rpx;
+  color: #374151;
+}
+
+.gcd-picked-n {
+  font-weight: 700;
+  color: #111827;
+}
+
+.gcd-primary {
+  flex: 1;
+  height: 88rpx;
+  line-height: 88rpx;
+  margin: 0;
+  border-radius: 24rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #FFFFFF;
+  background: #1D6BFF;
+}
+
+.gcd-primary::after {
+  border: none;
+}
+
+.gcd-primary[disabled] {
+  color: #FFFFFF;
+  background: #A9C4F7;
+}
+
+.gcd-primary--full {
+  width: 100%;
+}
+
+.gcd-seg {
+  display: flex;
+  padding: 6rpx;
+  border-radius: 999rpx;
+  background: #F1F2F6;
+}
+
+.gcd-seg-item {
+  flex: 1;
+  height: 60rpx;
+  line-height: 60rpx;
+  text-align: center;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  color: #4B5563;
+}
+
+.gcd-seg-item--on {
+  font-weight: 600;
+  color: #111827;
+  background: #FFFFFF;
+  box-shadow: 0 2rpx 8rpx rgba(17, 24, 39, 0.08);
+}
+
+.gcd-confirm-scroll {
+  max-height: 56vh;
+  margin-top: 20rpx;
+}
+
+.gcd-confirm-tip {
+  padding: 24rpx 0 8rpx;
+  font-size: 22rpx;
+  color: #9CA3AF;
+}

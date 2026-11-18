@@ -1,0 +1,126 @@
+<!-- 实物接管台（电脑版）：照交付包——页顶四个数，下面三栏：在等的会话 / 这段对话 / 这件货的信息页 -->
+<view class="dk-page sa-page sa-dk">
+  <view class="sa-dk-head">
+    <view>
+      <view class="sa-eyebrow">实物 · 买家在等我们回复，我们随时接管</view>
+      <view class="sa-dk-h1">实物接管台</view>
+      <view class="sa-dk-sub">超过 {{d ? d.reply_min : 15}} 分钟还没回就算升级、标红（夜间不考核）。看得到这段对话和这件货的信息页，点「我来接管」进聊天页回复、发实拍、发仓库位置。{{d && d.scope === 'mine' ? '只列分给你的号。' : ''}}</view>
+    </view>
+    <view class="dk-btn" bindtap="load">{{loading ? '读取中…' : '刷新'}}</view>
+  </view>
+
+  <view class="sa-dk-stats">
+    <view class="sa-st"><view class="sa-st__k">回复率</view><view class="sa-st__v">{{sum && sum.rate !== null ? sum.rate + '%' : '—'}}</view><view class="sa-st__s">{{sum ? '今天回了 ' + sum.replied + ' / 收到 ' + sum.cycles : '群控没连上'}}</view></view>
+    <view class="sa-st"><view class="sa-st__k">回复超时</view><view class="sa-st__v {{sum && sum.late ? 'sa-red' : ''}}">{{sum ? sum.late + ' 次' : '—'}}</view><view class="sa-st__s">超过 {{d ? d.reply_min : 15}} 分钟才回</view></view>
+    <view class="sa-st"><view class="sa-st__k">还没回</view><view class="sa-st__v {{red ? 'sa-red' : ''}}">{{d && d.rows !== null ? red + yellow + ' 个' : '—'}}</view><view class="sa-st__s">现在还在等的会话</view></view>
+    <view class="sa-st"><view class="sa-st__k">平均回复</view><view class="sa-st__v">{{sum && sum.avg !== null ? sum.avg + ' 分钟' : '—'}}</view><view class="sa-st__s">今天回了的平均用时</view></view>
+  </view>
+  <view wx:if="{{d && d.stats && d.stats.length}}" class="sa-fold" bindtap="toggleStats">{{showStats ? '▾' : '▸'}} 按负责人看回复率</view>
+  <view wx:if="{{showStats}}" class="dk-card sa-dk-statcard">
+    <view class="dk-table-wrap">
+      <table class="dk-table">
+        <thead><tr><th>负责人</th><th class="dk-num">回了 / 收到</th><th class="dk-num">回复率</th><th class="dk-num">平均</th><th class="dk-num">超时</th></tr></thead>
+        <tbody>
+          <tr wx:for="{{d.stats}}" wx:key="name">
+            <td class="dk-cell-main">{{item.name}}</td>
+            <td class="dk-num">{{item.replied}}/{{item.cycles}}</td>
+            <td class="dk-num"><text class="{{item.rate !== null && item.rate < 80 ? 'sa-bad' : ''}}">{{item.rate === null ? '—' : item.rate + '%'}}</text></td>
+            <td class="dk-num">{{item.avg_reply_min === null ? '—' : item.avg_reply_min + ' 分'}}</td>
+            <td class="dk-num"><text class="{{item.late_reply ? 'sa-bad' : ''}}">{{item.late_reply}}</text></td>
+          </tr>
+        </tbody>
+      </table>
+    </view>
+  </view>
+
+  <view class="sa-dk-cols">
+    <!-- 左：在等的会话 -->
+    <view class="sa-dk-col sa-dk-list">
+      <view class="sa-dk-tabs">
+        <text class="sa-dk-tab {{dkTab === 'red' ? 'is-on' : ''}}" data-key="red" bindtap="dkPickTab">要接管 {{red}}</text>
+        <text class="sa-dk-tab {{dkTab === 'all' ? 'is-on' : ''}}" data-key="all" bindtap="dkPickTab">全部 {{red + yellow}}</text>
+      </view>
+      <view wx:if="{{loading && !loaded}}" class="dk-empty">加载中…</view>
+      <view wx:if="{{loaded && d.rows === null}}" class="sa-empty sa-empty--bad">群控没连上，拿不到在等的买家</view>
+      <view wx:elif="{{loaded && !dkRows.length}}" class="sa-empty">没有买家在等回复</view>
+      <view wx:for="{{dkRows}}" wx:key="key" class="sa-row sa-row--{{item.level}} sa-dk-row {{dkSel && dkSel.key === item.key ? 'is-sel' : ''}}" data-key="{{item.key}}" bindtap="dkPick">
+        <view class="sa-row__top">
+          <text class="sa-pf">闲鱼</text>
+          <text class="sa-row__buyer">{{item.buyer}}</text>
+          <text class="sa-tag sa-tag--{{item.level}}">{{item.level === 'red' ? '要人' : '在等'}}</text>
+        </view>
+        <view wx:if="{{item.item_title}}" class="sa-row__item">{{item.item_title}}</view>
+        <view wx:if="{{item.last_message}}" class="sa-row__msg">{{item.last_message}}</view>
+        <view class="sa-row__foot"><text>{{item.status}}</text><text>{{item.account}}</text></view>
+      </view>
+    </view>
+
+    <!-- 中：这段对话 -->
+    <view class="sa-dk-col sa-dk-chat">
+      <view wx:if="{{!dkSel}}" class="sa-empty">左边点一个会话</view>
+      <block wx:else>
+        <view class="sa-dk-chat__h">
+          <text class="sa-pf">闲鱼</text>
+          <text class="sa-dk-chat__buyer">{{dkSel.buyer}}</text>
+          <text class="sa-muted">{{dkSel.account}}</text>
+          <text class="sa-tag sa-tag--{{dkSel.level}} sa-dk-push">{{dkSel.level === 'red' ? '要人' : '在等'}}</text>
+        </view>
+        <view wx:if="{{dkSel.item_title}}" class="sa-dk-chat__item">商品：{{dkSel.item_title}}</view>
+        <view class="sa-dk-why sa-dk-why--{{dkSel.level}}">
+          <view class="sa-dk-why__t">为什么轮到你：</view>
+          <view>{{dkWhy}}</view>
+        </view>
+        <view class="sa-dk-msgs">
+          <view wx:if="{{dkLoadingConv}}" class="sa-empty">读取对话…</view>
+          <view wx:elif="{{dkMsgErr}}" class="sa-empty sa-empty--bad">{{dkMsgErr}}</view>
+          <view wx:elif="{{!dkMsgs.length}}" class="sa-empty">还没有消息</view>
+          <view wx:for="{{dkMsgs}}" wx:key="id" class="sa-msg {{item.out ? 'sa-msg--out' : ''}}">
+            <view class="sa-msg__at">{{item.out ? '我们' : '买家'}} · {{item.at}}</view>
+            <view wx:if="{{item.text}}" class="sa-msg__b">{{item.text}}</view>
+            <view wx:if="{{item.imgs.length}}" class="sa-msg__imgs"><image wx:for="{{item.imgs}}" wx:for-item="u" wx:key="*this" class="sa-msg__img" src="{{u}}" mode="aspectFill" /></view>
+            <view wx:if="{{item.video}}" class="sa-msg__b sa-muted">[视频]</view>
+            <view wx:if="{{item.card && !item.text}}" class="sa-msg__b sa-muted">[商品卡]</view>
+          </view>
+        </view>
+        <view class="sa-dk-take">
+          <text class="sa-dk-take__t">回复、发实拍、发仓库位置都在聊天页里做。</text>
+          <view class="dk-btn" bindtap="dkAskOpen">请同事帮忙</view>
+          <view class="dk-btn dk-btn--primary" bindtap="dkTakeOver">我来接管</view>
+        </view>
+        <view wx:if="{{dkAsk !== null}}" class="sa-dk-ask">
+          <input class="dk-input sa-dk-ask__in" placeholder="要同事帮什么，例：买家要验机视频，谁在仓库拍一段" value="{{dkAsk}}" bindinput="dkAskInput" bindconfirm="dkAskSend" />
+          <view class="dk-btn dk-btn--primary" bindtap="dkAskSend">发出去</view>
+          <view class="dk-btn" bindtap="dkAskClose">算了</view>
+        </view>
+      </block>
+    </view>
+
+    <!-- 右：这件货的信息页 -->
+    <view class="sa-dk-col sa-dk-info">
+      <view class="sa-dk-info__t">这件货的信息页</view>
+      <view wx:if="{{!dkSel}}" class="sa-empty">—</view>
+      <view wx:elif="{{dkConv && !dkConv.listing_sku}}" class="sa-empty">这个会话的商品还没对上 ERP 货号，进聊天页里可以匹配。</view>
+      <view wx:elif="{{!dkItem}}" class="sa-empty">{{dkLoadingConv ? '读取中…' : '没拿到这件货的资料'}}</view>
+      <block wx:else>
+        <view class="sa-kv">
+          <view class="sa-kv__c sa-kv__c--wide"><view class="sa-kv__k">货</view><view class="sa-kv__v">{{dkItem.product_name}}</view></view>
+          <view class="sa-kv__c"><view class="sa-kv__k">货号</view><view class="sa-kv__v sa-link" data-code="{{dkItem.sku_code}}" bindtap="dkGoItem">{{dkItem.sku_code}}</view></view>
+          <view class="sa-kv__c"><view class="sa-kv__k">成色</view><view class="sa-kv__v">{{dkItem.grade || '—'}}</view></view>
+          <view class="sa-kv__c"><view class="sa-kv__k">库位</view><view class="sa-kv__v">{{dkItem.location_code || '—'}}</view></view>
+          <view class="sa-kv__c"><view class="sa-kv__k">售价</view><view class="sa-kv__v">{{dkItem.price ? '¥' + dkItem.price : '没填'}}</view></view>
+          <view class="sa-kv__c"><view class="sa-kv__k">状态</view><view class="sa-kv__v">{{dkItem.state_label || '—'}}</view></view>
+        </view>
+        <view class="sa-dk-info__h">能发给买家的实拍<text class="sa-muted">　图 {{dkItem.photos.length}}{{dkItem.videos ? ' · 视频 ' + dkItem.videos : ''}}</text></view>
+        <view wx:if="{{dkItem.photos.length}}" class="sa-photos"><image wx:for="{{dkItem.photos}}" wx:key="*this" class="sa-photo" src="{{item}}" mode="aspectFill" /></view>
+        <view wx:else class="sa-muted">没有实拍。库位照、订单截图不会出现在这里。</view>
+        <view class="sa-dk-info__h">同款在库，按成色</view>
+        <view wx:if="{{!dkSlots.length}}" class="sa-muted">没有别的同款在库</view>
+        <view wx:for="{{dkSlots}}" wx:key="sku_code" class="sa-same {{item.sku_code === dkItem.sku_code ? 'is-this' : ''}}" data-code="{{item.sku_code}}" bindtap="dkGoItem">
+          <text class="sa-same__c">{{item.sku_code}}</text><text>{{item.label}}</text><text>{{item.location_code || '—'}}</text><text class="sa-link">{{item.sku_code === dkItem.sku_code ? '这件' : '看看'}}</text>
+        </view>
+        <view class="sa-dk-info__h">仓库位置（自提）</view>
+        <view class="sa-dk-info__p">{{dkPickup || '还没设置自提地址（管理员在聊天页「发送仓库位置」里设）'}}</view>
+      </block>
+    </view>
+  </view>
+</view>
