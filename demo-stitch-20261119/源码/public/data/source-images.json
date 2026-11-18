@@ -1,0 +1,583 @@
+{
+ "zol": {
+  "file": "zol.png",
+  "kind": "logo",
+  "w": 32,
+  "h": 32,
+  "from": "https://detail.zol.com.cn/favicon.ico"
+ },
+ "pconline": {
+  "file": "pconline.png",
+  "kind": "logo",
+  "w": 16,
+  "h": 16,
+  "from": "https://www.pconline.com.cn/favicon.ico"
+ },
+ "jd": {
+  "file": "jd.png",
+  "kind": "logo",
+  "w": 96,
+  "h": 96,
+  "from": "https://storage.360buyimg.com/retail-mall/mall-common-component/favicon.ico"
+ },
+ "taobao": {
+  "file": "taobao.png",
+  "kind": "logo",
+  "w": 64,
+  "h": 64,
+  "from": "https://www.taobao.com/favicon.ico"
+ },
+ "alibaba1688": {
+  "file": "alibaba1688.png",
+  "kind": "logo",
+  "w": 16,
+  "h": 16,
+  "from": "https://s.1688.com/favicon.ico"
+ },
+ "pinduoduo": {
+  "file": "pinduoduo.png",
+  "kind": "logo",
+  "w": 200,
+  "h": 200,
+  "from": "https://funimg.pddpic.com/base/logo.jpg"
+ },
+ "suning": {
+  "file": "suning.png",
+  "kind": "logo",
+  "w": 40,
+  "h": 40,
+  "from": "https://www.suning.com/favicon.ico?v=17936178982249"
+ },
+ "amazon": {
+  "file": "amazon.png",
+  "kind": "logo",
+  "w": 48,
+  "h": 48,
+  "from": "https://www.amazon.com/favicon.ico"
+ },
+ "newegg": {
+  "file": "newegg.png",
+  "kind": "logo",
+  "w": 32,
+  "h": 32,
+  "from": "https://www.newegg.com/favicon.ico"
+ },
+ "bestbuy": {
+  "file": "bestbuy.png",
+  "kind": "logo",
+  "w": 32,
+  "h": 32,
+  "from": "https://www.bestbuy.com/favicon.ico"
+ },
+ "fnac": {
+  "file": "fnac.png",
+  "kind": "logo",
+  "w": 32,
+  "h": 32,
+  "from": "https://www.fnac.com/favicon.ico"
+ },
+ "ldlc": {
+  "file": "ldlc.png",
+  "kind": "logo",
+  "w": 180,
+  "h": 180,
+  "from": "https://www.ldlc.com/ldlc/build/img/common/favicon/apple-touch-icon.png"
+ },
+ "galaxus": {
+  "file": "galaxus.png",
+  "kind": "logo",
+  "w": 48,
+  "h": 48,
+  "from": "https://www.galaxus.ch/favicon.ico"
+ },
+ "rakuten": {
+  "file": "rakuten.png",
+  "kind": "logo",
+  "w": 64,
+  "h": 64,
+  "from": "https://search.rakuten.co.jp/favicon.ico"
+ },
+ "kakaku": {
+  "file": "kakaku.png",
+  "kind": "promo",
+  "w": 640,
+  "h": 336,
+  "from": "https://img1.kakaku.k-img.com/images/logo/ogimage.png"
+ },
+ "gsmarena": {
+  "file": "gsmarena.png",
+  "kind": "logo",
+  "w": 16,
+  "h": 16,
+  "from": "https://fdn.gsmarena.com/imgroot/static/favicon.ico"
+ },
+ "lg": {
+  "file": "lg.jpg",
+  "kind": "promo",
+  "w": 640,
+  "h": 281,
+  "from": "https://www.lg.com/content/dam/lge/common/logo/logo-lg-100-44.jpg"
+ },
+ "xianyu": {
+  "file": "xianyu.png",
+  "kind": "logo",
+  "w": 144,
+  "h": 144,
+  "from": "https://img.alicdn.com/tfs/TB19WObTNv1gK0jSZFFXXb0sXXa-144-144.png"
+ },
+ "zhuanzhuan": {
+  "file": "zhuanzhuan.png",
+  "kind": "logo",
+  "w": 32,
+  "h": 32,
+  "from": "https://www.zhuanzhuan.com/favicon.ico"
+ },
+ "aihuishou": {
+  "file": "aihuishou.png",
+  "kind": "logo",
+  "w": 192,
+  "h": 192,
+  "from": "https://sr.aihuishou.com/crane-build/neom/pro/icons/icon-192x192.png"
+ },
+ "paipai": {
+  "file": "paipai.png",
+  "kind": "logo",
+  "w": 64,
+  "h": 64,
+  "from": "https://ydcx.360buyimg.com/favicon.ico"
+ },
+ "huishoubao": {
+  "file": "huishoubao.png",
+  "kind": "logo",
+  "w": 16,
+  "h": 16,
+  "from": "https://www.huishoubao.com/favicon.ico"
+ },
+ "ebay": {
+  "file": "ebay.png",
+  "kind": "logo",
+  "w": 16,
+  "h": 16,
+  "from": "https://www.ebay.com/favicon.ico"
+ },
+ "backmarket": {
+  "file": "backmarket.jpg",
+  "kind": "promo",
+  "w": 640,
+  "h": 336,
+  "from": "https://images.ctfassets.net/mmeshd7gafk1/5BDjAiB7WVkFJcE5MXLNy4/5e0ded78b71c4ed47727f0c56dda4d13/social-link-preview.jpg"
+ },
+ "gazelle": {
+  "file": "gazelle.png",
+  "kind": "promo",
+  "w": 640,
+  "h": 284,
+  "from": "http://buy.gazelle.com/cdn/shop/files/Gazelle_straight_TM_color_RGB.png?v=1728566756"
+ },
+ "musicmagpie": {
+  "file": "musicmagpie.png",
+  "kind": "logo",
+  "w": 48,
+  "h": 48,
+  "from": "https://www.musicmagpie.co.uk/favicon.ico"
+ },
+ "cashconverters": {
+  "file": "cashconverters.png",
+  "kind": "logo",
+  "w": 180,
+  "h": 180,
+  "from": "https://www.cashconverters.co.uk/dist/images/favicons/apple-touch-icon.png?v=3eKvodMPdJ"
+ },
+ "recommerce": {
+  "file": "recommerce.png",
+  "kind": "logo",
+  "w": 48,
+  "h": 48,
+  "from": "https://d397r3f0pbcred.cloudfront.net/static/version0.0.0.343/frontend/Recommerce/default/fr_FR/Magento_Theme/favicon.ico"
+ },
+ "refurbed": {
+  "file": "refurbed.png",
+  "kind": "logo",
+  "w": 57,
+  "h": 57,
+  "from": "https://www.refurbed.com/assets/favicons/apple-touch-icon-57x57.png"
+ },
+ "bookoff": {
+  "file": "bookoff.png",
+  "kind": "logo",
+  "w": 114,
+  "h": 114,
+  "from": "https://www.bookoff.co.jp/apple-touch-icon.png"
+ },
+ "hardoff": {
+  "file": "hardoff.png",
+  "kind": "promo",
+  "w": 640,
+  "h": 336,
+  "from": "https://www.hardoff.co.jp/assets/img/common/og-21b2e6f68c.png"
+ },
+ "janpara": {
+  "file": "janpara.png",
+  "kind": "logo",
+  "w": 180,
+  "h": 180,
+  "from": "https://www.janpara.co.jp/apple-touch-icon.png"
+ },
+ "mercari": {
+  "file": "mercari.png",
+  "kind": "promo",
+  "w": 640,
+  "h": 336,
+  "from": "https://web-jp-assets-v2.mercdn.net/_next/static/media/ogp.1ea52df1.png"
+ },
+ "yahooauctions": {
+  "file": "yahooauctions.png",
+  "kind": "promo",
+  "w": 640,
+  "h": 336,
+  "from": "https://s.yimg.jp/images/auc/all/common/image/1.0.0/image_ogp.png"
+ },
+ "rakuma": {
+  "file": "rakuma.png",
+  "kind": "promo",
+  "w": 640,
+  "h": 336,
+  "from": "https://static.fril.jp/img/rakuma_ogp.png"
+ },
+ "carousell": {
+  "file": "carousell.png",
+  "kind": "logo",
+  "w": 32,
+  "h": 32,
+  "from": "https://www.carousell.sg/favicon.ico"
+ },
+ "olx": {
+  "file": "olx.png",
+  "kind": "logo",
+  "w": 192,
+  "h": 192,
+  "from": "https://www.olx.pl/app/static/manifest/r/apple-touch-icon.png"
+ },
+ "avito": {
+  "file": "avito.png",
+  "kind": "logo",
+  "w": 48,
+  "h": 48,
+  "from": "https://www.avito.ru/favicon.ico"
+ },
+ "craigslist": {
+  "file": "craigslist.png",
+  "kind": "logo",
+  "w": 32,
+  "h": 32,
+  "from": "https://www.craigslist.org/favicon.ico"
+ },
+ "fashionphile": {
+  "file": "fashionphile.jpg",
+  "kind": "promo",
+  "w": 640,
+  "h": 336,
+  "from": "http://www.fashionphile.com/cdn/shop/files/FP_RyleeHero_OG.jpg?v=1793071832"
+ },
+ "rebag": {
+  "file": "rebag.png",
+  "kind": "logo",
+  "w": 400,
+  "h": 400,
+  "from": "https://shop.rebag.com/cdn/shop/t/423/assets/og-favicon.jpg?v=184149136099761415951585120803"
+ },
+ "realreal": {
+  "file": "realreal.png",
+  "kind": "logo",
+  "w": 48,
+  "h": 48,
+  "from": "https://www.therealreal.com/favicon.ico"
+ },
+ "yoogi": {
+  "file": "yoogi.png",
+  "kind": "logo",
+  "w": 582,
+  "h": 138,
+  "from": "https://www.yoogiscloset.com/logo.png"
+ },
+ "luxedh": {
+  "file": "luxedh.png",
+  "kind": "logo",
+  "w": 48,
+  "h": 48,
+  "from": "https://www.luxedh.com/cdn/shop/files/Untitled-1.png?v=1705942834&width=180"
+ },
+ "cosette": {
+  "file": "cosette.png",
+  "kind": "promo",
+  "w": 640,
+  "h": 335,
+  "from": "https://cdn.shopify.com/s/files/1/0168/4727/4084/files/Cosette-logo-tight.png?height=628&pad_color=fff&v=1646803226&width=1200"
+ },
+ "madison": {
+  "file": "madison.png",
+  "kind": "logo",
+  "w": 392,
+  "h": 600,
+  "from": "http://madisonavenuecouture.com/cdn/shop/files/MadisonAvenueCouture_grande.jpg?v=1739004274"
+ },
+ "purseaffair": {
+  "file": "purseaffair.png",
+  "kind": "logo",
+  "w": 502,
+  "h": 25,
+  "from": "http://www.thepurseaffair.com/cdn/shop/files/logof.png?v=1700642530"
+ },
+ "stockx": {
+  "file": "stockx.png",
+  "kind": "logo",
+  "w": 48,
+  "h": 48,
+  "from": "https://stockx.com/favicon.ico"
+ },
+ "farfetch": {
+  "file": "farfetch.png",
+  "kind": "logo",
+  "w": 32,
+  "h": 32,
+  "from": "https://www.farfetch.com/favicon.ico"
+ },
+ "netaporter": {
+  "file": "netaporter.png",
+  "kind": "logo",
+  "w": 48,
+  "h": 48,
+  "from": "https://www.net-a-porter.com/favicon.ico"
+ },
+ "watchfinder": {
+  "file": "watchfinder.png",
+  "kind": "logo",
+  "w": 180,
+  "h": 180,
+  "from": "https://www.watchfinder.com/apple-touch-icon-180x180.png"
+ },
+ "bobs": {
+  "file": "bobs.jpg",
+  "kind": "promo",
+  "w": 640,
+  "h": 287,
+  "from": "https://www.bobswatches.com/images/BobsOGImage.jpg"
+ },
+ "komehyo": {
+  "file": "komehyo.png",
+  "kind": "logo",
+  "w": 398,
+  "h": 148,
+  "from": "https://img.komehyo.jp/static/images/logo-ogp.png?20261111144703"
+ },
+ "allu": {
+  "file": "allu.png",
+  "kind": "promo",
+  "w": 640,
+  "h": 320,
+  "from": "https://allu-official.com/images/ALLU_webicon_OGP_1200x1200.png"
+ },
+ "brandoff": {
+  "file": "brandoff.png",
+  "kind": "promo",
+  "w": 640,
+  "h": 336,
+  "from": "https://www.brandoff-store.com/Contents/ThemeImage/common/ogp.jpg"
+ },
+ "hongbulin": {
+  "file": "hongbulin.png",
+  "kind": "logo",
+  "w": 144,
+  "h": 144,
+  "from": "https://imgcdn.aplum.com/o_1gb9fllpr1sq81pen1h6f13t813f5f-logo-upgrade.png"
+ },
+ "dewu": {
+  "file": "dewu.png",
+  "kind": "logo",
+  "w": 64,
+  "h": 64,
+  "from": "https://www.dewu.com/static/favicon.ico"
+ },
+ "zhier": {
+  "file": "zhier.png",
+  "kind": "logo",
+  "w": 512,
+  "h": 512,
+  "from": "https://www.zzer.com/portal/favicon.ico"
+ },
+ "panghu": {
+  "file": "panghu.png",
+  "kind": "logo",
+  "w": 32,
+  "h": 32,
+  "from": "https://www.ponhu.cn/img/favicon.ico"
+ },
+ "meituan": {
+  "file": "meituan.png",
+  "kind": "logo",
+  "w": 100,
+  "h": 100,
+  "from": "https://p0.meituan.net/smartvenus/519f64f1d51d8470ecad1f9b5fce83591696.png"
+ },
+ "douyin": {
+  "file": "douyin.png",
+  "kind": "logo",
+  "w": 32,
+  "h": 32,
+  "from": "https://www.douyin.com/favicon.ico"
+ },
+ "eleme": {
+  "file": "eleme.png",
+  "kind": "promo",
+  "w": 640,
+  "h": 336,
+  "from": "https://img.alicdn.com/imgextra/i3/O1CN01gF3afKwWY5I4s7RM_!!6000000006010-2-tps-2400-1260.png"
+ },
+ "tongcheng": {
+  "file": "tongcheng.png",
+  "kind": "logo",
+  "w": 512,
+  "h": 512,
+  "from": "同程旅行官网首页 apple-touch-icon"
+ },
+ "qunar": {
+  "file": "qunar.png",
+  "kind": "logo",
+  "w": 16,
+  "h": 16,
+  "from": "https://piao.qunar.com/favicon.ico"
+ },
+ "tuniu": {
+  "file": "tuniu.png",
+  "kind": "logo",
+  "w": 64,
+  "h": 64,
+  "from": "https://menpiao.tuniu.com/favicon.ico"
+ },
+ "mafengwo": {
+  "file": "mafengwo.png",
+  "kind": "logo",
+  "w": 16,
+  "h": 16,
+  "from": "https://www.mafengwo.cn/favicon.ico"
+ },
+ "damai": {
+  "file": "damai.png",
+  "kind": "logo",
+  "w": 16,
+  "h": 16,
+  "from": "https://img.alicdn.com/tfs/TB1RxAHSmrqK1RjSZK9XXXyypXa-16-16.ico"
+ },
+ "maoyan": {
+  "file": "maoyan.png",
+  "kind": "logo",
+  "w": 48,
+  "h": 48,
+  "from": "https://show.maoyan.com/favicon.ico"
+ },
+ "taopiaopiao": {
+  "file": "taopiaopiao.png",
+  "kind": "logo",
+  "w": 32,
+  "h": 32,
+  "from": "https://img.alicdn.com/tps/i1/TB1.aEgGFXXXXamXpXXnCBGGXXX-32-32.ico"
+ },
+ "klook": {
+  "file": "klook.png",
+  "kind": "logo",
+  "w": 48,
+  "h": 48,
+  "from": "https://www.klook.com/favicon.ico"
+ },
+ "groupon": {
+  "file": "groupon.png",
+  "kind": "logo",
+  "w": 64,
+  "h": 64,
+  "from": "https://www.groupon.com/favicon.ico"
+ },
+ "travelzoo": {
+  "file": "travelzoo.png",
+  "kind": "logo",
+  "w": 57,
+  "h": 57,
+  "from": "https://ssl.tzoo-img.com/res/favicon/apple-touch-icon-57x57.png?v=76jtpugc5"
+ },
+ "bus365": {
+  "file": "bus365.png",
+  "kind": "logo",
+  "w": 32,
+  "h": 32,
+  "from": "https://www.bus365.com/public/images/bus365.png"
+ },
+ "viator": {
+  "file": "viator.png",
+  "kind": "logo",
+  "w": 200,
+  "h": 200,
+  "from": "https://cache.vtrcdn.com/orion/images/logos/logo-viator-facebook.webp"
+ },
+ "tiqets": {
+  "file": "tiqets.png",
+  "kind": "logo",
+  "w": 57,
+  "h": 57,
+  "from": "https://cdn.tiqets.com/static/assets/favicons/apple-touch-icon.png"
+ },
+ "headout": {
+  "file": "headout.jpg",
+  "kind": "promo",
+  "w": 600,
+  "h": 316,
+  "from": "https://cdn-imgix-open.headout.com/opengraph/og_headout_small.gif"
+ },
+ "shanghaidisney": {
+  "file": "shanghaidisney.jpg",
+  "kind": "promo",
+  "w": 640,
+  "h": 335,
+  "from": "https://static.shanghaidisneyresort.com/pep/media/pep/live/media/images/webbackfillimg.jpg"
+ },
+ "g_delta": {
+  "file": "g_delta.png",
+  "kind": "logo",
+  "w": 128,
+  "h": 128,
+  "from": "https://game.gtimg.cn/images/dfm/favicon.ico"
+ },
+ "g_gp": {
+  "file": "g_gp.png",
+  "kind": "logo",
+  "w": 48,
+  "h": 48,
+  "from": "https://gp.qq.com/favicon.ico"
+ },
+ "g_pvp": {
+  "file": "g_pvp.png",
+  "kind": "logo",
+  "w": 32,
+  "h": 32,
+  "from": "https://pvp.qq.com/favicon.ico"
+ },
+ "g_ys": {
+  "file": "g_ys.png",
+  "kind": "logo",
+  "w": 200,
+  "h": 200,
+  "from": "https://ys.mihoyo.com/main/icon.png"
+ },
+ "g_lol": {
+  "file": "g_lol.png",
+  "kind": "logo",
+  "w": 16,
+  "h": 16,
+  "from": "https://lol.qq.com/favicon.ico"
+ },
+ "g_wzry_cn": {
+  "file": "g_wzry_cn.png",
+  "kind": "logo",
+  "w": 16,
+  "h": 16,
+  "from": "https://www.mihoyo.com/favicon.ico"
+ }
+}

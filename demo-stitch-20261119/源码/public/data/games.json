@@ -1,0 +1,7 @@
+[
+  {"id": "g-delta", "name": "三角洲行动", "img": "g_delta.png", "pid": "v-game", "note": "已有服务：游戏报错处理"},
+  {"id": "g-gp", "name": "和平精英", "img": "g_gp.png", "note": "线索：游戏服务还没调研"},
+  {"id": "g-pvp", "name": "王者荣耀", "img": "g_pvp.png", "note": "线索：游戏服务还没调研"},
+  {"id": "g-ys", "name": "原神", "img": "g_ys.png", "note": "线索：游戏服务还没调研"},
+  {"id": "g-lol", "name": "英雄联盟", "img": "g_lol.png", "note": "线索：游戏服务还没调研"}
+]

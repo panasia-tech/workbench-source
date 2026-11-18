@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>销售工作台</title>
+    <script>
+      window.__REAL__ = !__DEMO__
+      window.SNAP_ON = __SNAP__
+      // ===== 演示副本专用：免登录 =====
+      // 打开就是已登录，默认「陈小满」；地址后加 ?as=zhoubb / linxiao / admin 切换账号。
+      if (!__DEMO__) (function () {
+        // 真实版免登录：开发服务器里有会话就直接进；浏览器里已有登录状态就交给它保管（用户已同意）
+        function xhr(method, body) {
+          try { var x = new XMLHttpRequest(); x.open(method, '/__session', false); x.setRequestHeader('Content-Type', 'application/json'); x.send(body ? JSON.stringify(body) : null); return { status: x.status, data: x.responseText ? JSON.parse(x.responseText) : {} } } catch (e) { return { status: 0, data: {} } }
+        }
+        var tok = localStorage.getItem('erp_token') || ''
+        var s = xhr('GET')
+        if (!(s.data && s.data.ok) && tok && tok !== 'server-session') {
+          var st = {}; try { st = JSON.parse(localStorage.getItem('erp_staff') || '{}') } catch (e) {}
+          var p = xhr('POST', { token: tok, staff: st, user: localStorage.getItem('erp_user') || '' })
+          if (p.status === 200) s = xhr('GET'); else localStorage.removeItem('erp_token')
+        }
+        if (s.data && s.data.ok) {
+          localStorage.setItem('erp_token', 'server-session')
+          if (s.data.user) localStorage.setItem('erp_user', s.data.user)
+          if (s.data.staff) localStorage.setItem('erp_staff', JSON.stringify(s.data.staff))
+        } else if (tok === 'server-session') { localStorage.removeItem('erp_token') }
+      })()
+      if (__DEMO__) (function () {
+        var as = new URLSearchParams(location.search).get('as')
+        var cur = localStorage.getItem('erp_user') || ''
+        var want = as || cur || 'chenxm'
+        if (!localStorage.getItem('erp_token') || want !== cur) {
+          try {
+            var x = new XMLHttpRequest()
+            x.open('POST', '/api/auth/h5-login', false)
+            x.setRequestHeader('Content-Type', 'application/json')
+            x.send(JSON.stringify({ username: want, password: 'DEMO_ONLY_REDACTED' }))
+            if (x.status === 200) {
+              var d = JSON.parse(x.responseText)
+              localStorage.setItem('erp_token', d.token)
+              localStorage.setItem('erp_user', want)
+              localStorage.setItem('erp_staff', JSON.stringify(d.staff))
+            }
+          } catch (e) {}
+        }
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
