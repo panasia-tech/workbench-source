@@ -1,0 +1,288 @@
+<view class="page-wrap page-wrap--no-tab purchase-page">
+  <view class="purchase-source-note">
+    <text class="purchase-source-note__title">采购依据分开留存</text>
+    <text>订单截图和实拍记录本次闲鱼采购事实；同款行情用于参考，官方配置资料与专业二手平台报价各自保留来源、原文和采集时间，不合并成一个价格。</text>
+    <navigator url="/pages/gc-chat/list/index" hover-class="none" class="purchase-source-note__link">打开采购会话 ›</navigator>
+    <navigator url="/pages/purchase/bargain/index" hover-class="none" class="purchase-source-note__link">采购议价（识别/报价/还价/谈妥） ›</navigator>
+    <navigator url="/pages/purchase/platform/index" hover-class="none" class="purchase-source-note__link">闲鱼上抓回来的订单（待建单 / 要人看） ›</navigator>
+    <view wx:if="{{platformOrderId}}" class="purchase-source-note__link">已带入平台订单，提交后自动挂上</view>
+    <view wx:if="{{bargainSessionId}}" class="purchase-source-note__link">已带入议价会话，提交后自动绑定</view>
+    <text class="purchase-source-note__link">行情参考以采购工作台/管理后台为准，报价按来源分别留档。</text>
+  </view>
+  <view class="purchase-topbar">
+    <picker
+      wx:if="{{purchaseAccounts.length}}"
+      class="purchase-account"
+      mode="selector"
+      range="{{purchaseAccounts}}"
+      range-key="label"
+      value="{{purchaseAccountIndex}}"
+      bindchange="onPurchaseAccountChange"
+    >
+      <view class="purchase-account-line">
+        <text class="purchase-account-line__label">采购账号：</text>
+        <text class="purchase-account-line__value {{purchaseAccountLabel ? '' : 'purchase-account-line__value--empty'}}">{{purchaseAccountLabel || '请选择'}}</text>
+      </view>
+    </picker>
+    <view wx:else class="purchase-account purchase-account-line">
+      <text class="purchase-account-line__label">采购账号：</text>
+      <text class="purchase-account-line__value purchase-account-line__value--empty">暂无可用账号</text>
+    </view>
+    <text class="link-btn" bindtap="goRecords">历史采购单 ›</text>
+  </view>
+
+  <view class="purchase-steps">
+    <view
+      wx:for="{{stepList}}"
+      wx:key="*this"
+      class="purchase-step {{currentStep >= item ? 'purchase-step--active' : ''}} {{currentStep > item ? 'purchase-step--done' : ''}}"
+    >
+      <view class="purchase-step__dot">{{item}}</view>
+    </view>
+  </view>
+
+  <view class="card purchase-card">
+    <!-- 第一步：订单截图 + 商品图 -->
+    <block wx:if="{{currentStep === 1}}">
+      <view wx:if="{{exampleScreenshotUrl || exampleProductUrl}}" class="tip purchase-example-tip">
+        <view class="purchase-example-tip__row">
+          <text class="purchase-example-tip__title">参考示例：</text>
+          <media-thumb wx:if="{{exampleScreenshotUrl}}" url="{{exampleScreenshotUrl}}" size="small" preview="{{true}}" group-urls="{{[exampleScreenshotUrl, exampleProductUrl]}}" />
+          <media-thumb wx:if="{{exampleProductUrl}}" url="{{exampleProductUrl}}" size="small" preview="{{true}}" group-urls="{{[exampleScreenshotUrl, exampleProductUrl]}}" />
+        </view>
+      </view>
+
+      <view class="upload-block">
+        <text class="form-label">订单截图<text class="label-hint"> 闲鱼订单，最多 2 张，上传后自动 OCR</text></text>
+        <view wx:if="{{screenshotUrls.length}}" class="upload-preview-grid">
+          <view wx:for="{{screenshotUrls}}" wx:key="*this" class="upload-preview-item">
+            <media-thumb
+              url="{{screenshotDisplayUrls[index] || item}}"
+              size="fill"
+              preview="{{true}}"
+            />
+            <view class="upload-remove" data-index="{{index}}" catchtap="removeScreenshot">×</view>
+          </view>
+        </view>
+        <view
+          wx:if="{{screenshotUrls.length < 2}}"
+          class="upload-zone {{screenshotUrls.length ? 'upload-zone--compact' : ''}}"
+          bindtap="chooseImage"
+        >
+          <block wx:if="{{!screenshotUrls.length}}">
+            <view class="uz-camera"></view>
+            <view class="uz-text">点击上传闲鱼订单截图</view>
+            <view class="uz-hint">上传后自动 OCR，也可跳过直接手填</view>
+          </block>
+          <block wx:else>
+            <view class="uz-plus">+</view>
+            <view class="uz-text">添加第二张截图</view>
+          </block>
+        </view>
+        <view class="ocr-tip tip" wx:if="{{screenshotUrls.length && !screenshotArchived && sourceStatus === 'OCR 识别'}}">已识别，请在下一步核对字段</view>
+        <view class="ocr-tip tip tip-archived" wx:if="{{screenshotUrls.length && !screenshotArchived && sourceStatus === '识别失败'}}">识别失败，请重新上传或手动填写</view>
+        <view class="ocr-tip tip tip-archived" wx:if="{{screenshotUrls.length && !screenshotArchived && sourceStatus === '未识别到字段'}}">未识别到字段，请手动填写</view>
+        <view class="ocr-tip tip tip-archived" wx:if="{{screenshotUrls.length && screenshotArchived}}">截图已归档，请重新上传</view>
+      </view>
+
+      <view class="upload-block">
+        <text class="form-label">商品图<text class="req">*</text><text class="label-hint"> 实拍，可多张</text></text>
+        <view wx:if="{{productImageUrls.length}}" class="upload-preview-grid upload-preview-grid--wrap">
+          <view wx:for="{{productImageUrls}}" wx:key="*this" class="upload-preview-item upload-preview-item--sm">
+            <media-thumb
+              url="{{productImageDisplayUrls[index] || item}}"
+              size="fill"
+              preview="{{true}}"
+            />
+            <view class="upload-remove" data-index="{{index}}" catchtap="removeProductImage">×</view>
+          </view>
+        </view>
+        <view
+          wx:if="{{productImageUrls.length < maxProductImages}}"
+          class="upload-zone {{productImageUrls.length ? 'upload-zone--compact' : ''}}"
+          bindtap="chooseProductImage"
+        >
+          <block wx:if="{{!productImageUrls.length}}">
+            <view class="uz-camera"></view>
+            <view class="uz-text">点击上传商品实拍图</view>
+            <view class="uz-hint">至少 1 张，最多 {{maxProductImages}} 张</view>
+          </block>
+          <block wx:else>
+            <view class="uz-plus">+</view>
+            <view class="uz-text">继续添加商品图</view>
+          </block>
+        </view>
+      </view>
+
+      <button class="btn-primary btn-block step-btn" bindtap="nextStep">下一步</button>
+    </block>
+
+    <!-- 第二步：订单 + 商品信息（单商品一屏） -->
+    <block wx:if="{{currentStep === 2}}">
+      <view class="step2-panel">
+        <view class="form-group form-group--compact form-group--code">
+          <text class="form-label">订单号<text class="req">*</text></text>
+          <input class="input input--code input--compact" placeholder="闲鱼订单号" data-key="external_order_no" value="{{form.external_order_no}}" bindinput="onInput" />
+        </view>
+
+        <view class="form-row form-row--short">
+          <view class="form-group form-group--compact">
+            <text class="form-label">交易流水号<text class="req">*</text></text>
+            <input class="input input--compact" placeholder="流水号" data-key="transaction_no" value="{{form.transaction_no}}" bindinput="onInput" />
+          </view>
+          <view class="form-group form-group--compact">
+            <text class="form-label">物流单号<text class="req">*</text></text>
+            <input class="input input--compact" placeholder="快递单号" data-key="tracking_no" value="{{form.tracking_no}}" bindinput="onInput" />
+          </view>
+        </view>
+
+        <view class="form-group form-group--compact">
+          <text class="form-label">手机后四位</text>
+          <input
+            class="input input--compact"
+            placeholder="顺丰查询选填，收/寄件人手机号后 4 位"
+            type="number"
+            maxlength="4"
+            value="{{form.tracking_phone_suffix}}"
+            bindinput="onPhoneSuffixInput"
+          />
+        </view>
+
+        <view class="form-group form-group--compact">
+          <text class="form-label">卖家昵称<text class="req">*</text></text>
+          <input class="input input--compact" placeholder="识别或手填" data-key="seller_name" value="{{form.seller_name}}" bindinput="onInput" />
+        </view>
+
+        <view class="form-row form-row--short">
+          <view class="form-group form-group--compact">
+            <text class="form-label">闲鱼商品 ID</text>
+            <input class="input input--compact" placeholder="选填，议价对照用" data-key="platform_item_id" value="{{form.platform_item_id}}" bindinput="onInput" />
+          </view>
+          <view class="form-group form-group--compact">
+            <text class="form-label">商品原链接</text>
+            <input class="input input--compact" placeholder="选填" data-key="source_url" value="{{form.source_url}}" bindinput="onInput" />
+          </view>
+        </view>
+
+        <view class="form-row form-row--short">
+          <view class="form-group form-group--compact">
+            <text class="form-label">下单时间<text class="req">*</text></text>
+            <view class="datetime-row datetime-row--compact">
+              <picker mode="date" class="datetime-picker" value="{{orderDate}}" start="2020-01-01" end="2030-12-31" bindchange="onOrderDateChange">
+                <view class="input picker-field input--compact {{orderDate ? '' : 'picker-field--empty'}}">{{orderDate || '日期'}}</view>
+              </picker>
+              <picker mode="time" class="datetime-picker" value="{{orderTime}}" bindchange="onOrderTimeChange">
+                <view class="input picker-field input--compact {{orderTime ? '' : 'picker-field--empty'}}">{{orderTime || '时间'}}</view>
+              </picker>
+            </view>
+          </view>
+          <view class="form-group form-group--compact">
+            <text class="form-label">付款时间<text class="req">*</text></text>
+            <view class="datetime-row datetime-row--compact">
+              <picker mode="date" class="datetime-picker" value="{{paidDate}}" start="2020-01-01" end="2030-12-31" bindchange="onPaidDateChange">
+                <view class="input picker-field input--compact {{paidDate ? '' : 'picker-field--empty'}}">{{paidDate || '日期'}}</view>
+              </picker>
+              <picker mode="time" class="datetime-picker" value="{{paidTime}}" bindchange="onPaidTimeChange">
+                <view class="input picker-field input--compact {{paidTime ? '' : 'picker-field--empty'}}">{{paidTime || '时间'}}</view>
+              </picker>
+            </view>
+          </view>
+        </view>
+
+        <block wx:if="{{!multiEnabled}}">
+          <view class="form-row form-row--short">
+            <view class="form-group form-group--compact">
+              <text class="form-label">品牌<text class="req">*</text></text>
+              <input class="input input--compact" placeholder="如 戴尔" data-key="brand" value="{{form.brand}}" bindinput="onInput" />
+            </view>
+            <view class="form-group form-group--compact">
+              <text class="form-label">型号<text class="req">*</text></text>
+              <input class="input input--compact" placeholder="识别或手填" data-key="model" value="{{form.model}}" bindinput="onInput" />
+            </view>
+          </view>
+
+          <view class="form-row form-row--short">
+            <view class="form-group form-group--compact">
+              <text class="form-label">规格<text class="req">*</text></text>
+              <input class="input input--compact" placeholder="如 2K240" data-key="spec" value="{{form.spec}}" bindinput="onInput" />
+            </view>
+            <view class="form-group form-group--compact">
+              <text class="form-label">成交金额<text class="req">*</text></text>
+              <input class="input input--price input--compact" placeholder="0.00" type="digit" data-key="unit_price" value="{{form.unit_price}}" bindinput="onInput" />
+            </view>
+          </view>
+          <view wx:if="{{quote}}" class="quote-box quote-box--{{quote.status}}">
+            <view class="quote-acc">
+              <text class="quote-acc__label">配件</text>
+              <text wx:for="{{accessoryOptions}}" wx:key="key" class="quote-chip {{quoteAccessory === item.key ? 'quote-chip--on' : ''}}" data-key="{{item.key}}" bindtap="pickAccessory">{{item.label}}</text>
+            </view>
+            <view wx:if="{{quote.rule}}">
+              公司价 v{{quote.rule.version}}：首报 {{quote.rule.first_offer || '待定'}} · 目标 {{quote.rule.target || '待定'}} · 最高 {{quote.rule.ceiling || '待定'}}
+            </view>
+            <view wx:if="{{quote.reason}}" class="quote-reason">{{quote.reason}}</view>
+            <view wx:if="{{overCeiling}}" class="quote-reason quote-reason--danger">成交金额超过了公司最高价</view>
+          </view>
+        </block>
+
+        <view wx:if="{{multiEnabled}}" class="form-group form-group--compact">
+          <text class="form-label">成交金额<text class="req">*</text></text>
+          <input class="input input--price input--compact" placeholder="0.00" type="digit" data-key="unit_price" value="{{form.unit_price}}" bindinput="onInput" />
+        </view>
+
+        <view class="multi-panel multi-panel--inline">
+          <view class="multi-toggle">
+            <view class="multi-toggle-text">
+              <view class="multi-title">同一链接多商品</view>
+              <view class="multi-hint">开启后进入第三步拆分商品</view>
+            </view>
+            <switch checked="{{multiEnabled}}" bindchange="onMultiToggle" color="#2563EB" />
+          </view>
+        </view>
+
+        <view class="form-group form-group--compact form-group--tight">
+          <text class="form-label">备注</text>
+          <input class="input input--compact" placeholder="可选" data-key="remark" value="{{form.remark}}" bindinput="onInput" />
+        </view>
+      </view>
+
+      <view class="step-actions">
+        <button class="btn btn-outline btn-block step-btn step-btn--half" bindtap="prevStep">上一步</button>
+        <button wx:if="{{multiEnabled}}" class="btn-primary btn-block step-btn step-btn--half" bindtap="nextStep">下一步</button>
+        <button wx:else class="btn-primary btn-block step-btn step-btn--half" bindtap="submit">提交采购单</button>
+      </view>
+    </block>
+
+    <!-- 第三步：多商品拆分（仅 multiEnabled） -->
+    <block wx:if="{{currentStep === 3 && multiEnabled}}">
+      <view class="form-note">共用订单号/流水号/物流号；各商品填写品牌、型号、金额，金额之和须等于成交金额 ¥{{form.unit_price}}</view>
+
+      <view wx:for="{{multiItems}}" wx:key="index" class="multi-item-card">
+        <view class="multi-item-head">
+          <text class="multi-item-badge">商品 {{index + 1}}</text>
+          <text wx:if="{{multiItems.length > 1}}" class="multi-remove" data-index="{{index}}" bindtap="removeMultiItem">删除</text>
+        </view>
+        <view class="form-row form-row--short">
+          <view class="form-group form-group--compact">
+            <text class="form-label">品牌<text class="req">*</text></text>
+            <input class="input input--compact" placeholder="如 戴尔" data-index="{{index}}" data-field="brand" value="{{item.brand}}" bindinput="onMultiInput" />
+          </view>
+          <view class="form-group form-group--compact">
+            <text class="form-label">型号<text class="req">*</text></text>
+            <input class="input input--compact" placeholder="型号" data-index="{{index}}" data-field="model" value="{{item.model}}" bindinput="onMultiInput" />
+          </view>
+        </view>
+        <view class="form-group form-group--compact">
+          <text class="form-label">金额<text class="req">*</text></text>
+          <input class="input input--price input--compact" placeholder="0.00" type="digit" data-index="{{index}}" data-field="amount" value="{{item.amount}}" bindinput="onMultiInput" />
+        </view>
+      </view>
+
+      <button class="btn btn-outline btn-block multi-add" bindtap="addMultiItem">+ 添加商品</button>
+
+      <view class="step-actions">
+        <button class="btn btn-outline btn-block step-btn step-btn--half" bindtap="prevStep">上一步</button>
+        <button class="btn-primary btn-block step-btn step-btn--half" bindtap="submit">提交采购单</button>
+      </view>
+    </block>
+  </view>
+</view>

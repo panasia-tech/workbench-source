@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "media-thumb": "/components/media-thumb/index"
+  },
+  "navigationBarTitleText": "编辑采购单"
+}

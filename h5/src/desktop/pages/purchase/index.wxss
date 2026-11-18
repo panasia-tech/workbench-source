@@ -1,0 +1,239 @@
+/* 采购录入（电脑版模板 index.wxml 用；通用样式在 src/styles/desktop.css）。
+ * 这里的类名都是 pu-dk- 开头，手机模板里没有，不影响手机。
+ * 注意：编辑页（edit）的样式 @import 了本文件的原版，但 src/desktop/ 下的补充样式不会跟着 @import 过去，编辑页自己有一份。 */
+.pu-dk-layout {
+  display: grid;
+  grid-template-columns: 400px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.pu-dk-side,
+.pu-dk-main {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.pu-dk-req {
+  margin-right: 3px;
+  color: #dc2626;
+}
+
+.pu-dk-gap {
+  margin-top: 8px;
+}
+
+/* 截图两张并排、竖长；商品图三列方格 */
+.pu-dk-shots {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.pu-dk-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.pu-dk-tile {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 6px;
+  background: #f3f4f6;
+  overflow: hidden;
+}
+
+.pu-dk-tile--shot {
+  aspect-ratio: 3 / 4;
+}
+
+.pu-dk-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: zoom-in;
+}
+
+.pu-dk-archived {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+.pu-dk-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(17, 24, 39, 0.65);
+  color: #fff;
+  font-size: 15px;
+  line-height: 22px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.pu-dk-remove:hover {
+  background: #dc2626;
+}
+
+.pu-dk-add {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px;
+  box-sizing: border-box;
+  border: 1px dashed #d1d5db;
+  background: #fafafa;
+  color: #6b7280;
+  font-size: 13px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.pu-dk-add:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+.pu-dk-add__plus {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.pu-dk-zoom {
+  cursor: zoom-in;
+}
+
+/* 采购账号：一排可点的块 */
+.pu-dk-chip {
+  height: 32px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.pu-dk-chip:hover {
+  border-color: #2563eb;
+}
+
+.pu-dk-chip--on {
+  border-color: #2563eb;
+  background: #eff4ff;
+  color: #1d4ed8;
+  font-weight: 600;
+}
+
+.pu-dk-wide-select {
+  max-width: 360px;
+}
+
+.pu-dk-code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: 0.2px;
+}
+
+.pu-dk-price {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 日期 + 时间并排 */
+.pu-dk-dt {
+  display: flex;
+  gap: 8px;
+}
+
+.pu-dk-dt__date {
+  flex: 1;
+  min-width: 0;
+}
+
+.pu-dk-dt__time {
+  flex: 1;
+  min-width: 0;
+}
+
+.pu-dk-dt .dk-select {
+  min-width: 0;
+  width: 100%;
+}
+
+.pu-dk-form-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.pu-dk-multi {
+  font-weight: 400;
+}
+
+.pu-dk-multi-top {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  padding-bottom: 12px;
+}
+
+.pu-dk-total {
+  width: 220px;
+  flex: none;
+}
+
+.pu-dk-items td {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+.pu-dk-cell {
+  width: 100%;
+}
+
+.pu-dk-col-no {
+  width: 36px;
+}
+
+.pu-dk-col-amt {
+  width: 160px;
+}
+
+.pu-dk-bar-hint {
+  margin-right: auto;
+}
+
+/* 订单信息：六格栅格，普通字段占两格（一行三个），下单 / 付款时间各占三格（日期 + 时间放得下） */
+.pu-dk-form-6 {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.pu-dk-f2 {
+  grid-column: span 2;
+}
+
+.pu-dk-f3 {
+  grid-column: span 3;
+}
+
+.pu-dk-dt .dk-select {
+  white-space: nowrap;
+}
+
+/* 内容不满一屏时操作条也贴在底部（dk-page 是撑满整页的纵向 flex） */
+.pu-dk-bar {
+  margin-top: auto;
+}

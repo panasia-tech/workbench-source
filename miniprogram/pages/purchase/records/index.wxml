@@ -1,0 +1,50 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<view class="page-wrap page-wrap--no-tab record-page">
+  <view class="card filter-card">
+    <view class="search-bar">
+      <input class="search-input" placeholder="搜索单号/流水/物流/商品/卖家" value="{{q}}" bindinput="onSearchInput" confirm-type="search" bindconfirm="onSearch" />
+    </view>
+    <view class="date-row">
+      <picker mode="date" value="{{dateFrom}}" bindchange="onDateFromChange">
+        <view class="date-pill {{dateFrom ? 'date-pill--filled' : ''}}">{{dateFrom || '开始日期'}}</view>
+      </picker>
+      <text class="date-sep">至</text>
+      <picker mode="date" value="{{dateTo}}" bindchange="onDateToChange">
+        <view class="date-pill {{dateTo ? 'date-pill--filled' : ''}}">{{dateTo || '结束日期'}}</view>
+      </picker>
+    </view>
+    <button class="btn search-btn" bindtap="onSearch">搜索</button>
+    <view class="filter-meta">共 {{total}} 条记录</view>
+  </view>
+
+  <view class="card list-card">
+    <view wx:if="{{!list.length && !loading}}" class="empty">
+      <view class="e-icon">—</view>
+      <view class="e-text">暂无采购记录</view>
+    </view>
+    <view wx:for="{{list}}" wx:key="id" class="list-item" data-id="{{item.id}}" bindtap="openDetail">
+      <view class="li-thumb-wrap">
+        <media-thumb
+          wx:if="{{item.product_image_thumb}}"
+          url="{{item.product_image_thumb}}"
+          preview-url="{{item.product_image}}"
+          size="small"
+        />
+        <view wx:else class="li-icon">{{item.product_name[0] || '?'}}</view>
+      </view>
+      <view class="li-info">
+        <view class="li-title">{{item.product_name}}</view>
+        <view class="li-sub">{{item.external_order_no || item.order_no}} · {{item.seller_name || '—'}}{{item.operator_name ? ' · ' + item.operator_name : ''}}</view>
+        <view class="li-sub li-sub--time">录入时间 {{fmt.datetime(item.created_at)}}{{item.order_time ? '  ·  下单 ' + fmt.datetime(item.order_time) : ''}}</view>
+      </view>
+      <view class="li-meta">
+        <view class="li-price">¥{{fmt.money(item.unit_price)}}</view>
+        <view wx:if="{{item.is_overdue}}" class="tag li-tag tag-danger">逾期采购</view>
+        <view class="tag li-tag {{fmt.statusTag(item.status)}}">{{fmt.statusLabel(item.status)}}</view>
+      </view>
+    </view>
+    <view wx:if="{{loading}}" class="list-footer">加载中...</view>
+    <view wx:elif="{{noMore && list.length}}" class="list-footer">没有更多了</view>
+  </view>
+</view>

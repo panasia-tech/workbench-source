@@ -1,0 +1,106 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<!-- 采购单详情（电脑版）：左边订单字段 + 物流轨迹，右边状态、操作、图片。方法全是手机版的 -->
+<view class="dk-page" wx:if="{{order}}">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title dk-row">
+        <text>{{order.order_no}}</text>
+        <text wx:if="{{order.is_overdue}}" class="dk-tag tag-danger">逾期采购</text>
+        <text class="dk-tag {{fmt.statusTag(order.status)}}">{{fmt.statusLabel(order.status)}}</text>
+      </view>
+      <view class="dk-sub">{{order.product_name || ((order.brand || '') + ' ' + (order.model || ''))}}</view>
+    </view>
+    <view class="dk-row">
+      <view class="dk-btn" data-url="/pages/purchase/evidence/index?no={{order.order_no}}" bindtap="dkOpen">验货凭证</view>
+      <view wx:if="{{order.quantity > 1}}" class="dk-btn" data-url="/pages/purchase/pieces/index?id={{order.id}}" bindtap="dkOpen">分件到货（{{order.quantity}} 件）</view>
+      <view wx:elif="{{order.status === 'PENDING_INSPECT'}}" class="dk-btn" data-url="/pages/purchase/pieces/index?id={{order.id}}" bindtap="dkOpen">设件数</view>
+      <view wx:if="{{canDelete}}" class="dk-btn dk-btn--danger" bindtap="onDelete">删除采购单</view>
+      <view wx:if="{{canEdit}}" class="dk-btn dk-btn--primary" bindtap="goEdit">编辑</view>
+    </view>
+  </view>
+
+  <view class="dk-split pd-dk-split">
+    <view class="pd-dk-col">
+      <view class="dk-card">
+        <view class="dk-card__head"><text>订单信息</text></view>
+        <view class="dk-card__body">
+          <view class="dk-desc">
+            <view class="dk-desc__item"><text class="dk-desc__k">品牌</text><text class="dk-desc__v">{{order.brand || '—'}}</text></view>
+            <view class="dk-desc__item"><text class="dk-desc__k">型号</text><text class="dk-desc__v">{{order.model || '—'}}</text></view>
+            <view class="dk-desc__item"><text class="dk-desc__k">规格</text><text class="dk-desc__v">{{order.spec || '—'}}</text></view>
+            <view class="dk-desc__item"><text class="dk-desc__k">成交金额</text><text class="dk-desc__v pd-dk-money">¥{{fmt.money(order.unit_price)}}</text></view>
+            <view class="dk-desc__item"><text class="dk-desc__k">闲鱼订单号</text><text class="dk-desc__v pd-dk-mono">{{order.external_order_no || '—'}}</text></view>
+            <view class="dk-desc__item"><text class="dk-desc__k">交易流水号</text><text class="dk-desc__v pd-dk-mono">{{order.transaction_no || '—'}}</text></view>
+            <view class="dk-desc__item"><text class="dk-desc__k">卖家昵称</text><text class="dk-desc__v">{{order.seller_name || '—'}}</text></view>
+            <view class="dk-desc__item"><text class="dk-desc__k">采购账号</text><text class="dk-desc__v">{{purchaseAccountLabel || '—'}}</text></view>
+            <view class="dk-desc__item"><text class="dk-desc__k">操作人</text><text class="dk-desc__v">{{order.operator_name || '—'}}</text></view>
+            <view class="dk-desc__item"><text class="dk-desc__k">下单时间</text><text class="dk-desc__v">{{orderTimeText || '—'}}</text></view>
+            <view class="dk-desc__item"><text class="dk-desc__k">付款时间</text><text class="dk-desc__v">{{paidAtText || '—'}}</text></view>
+            <view class="dk-desc__item"><text class="dk-desc__k">件数</text><text class="dk-desc__v">{{order.quantity || 1}}</text></view>
+            <view class="dk-desc__item dk-desc__item--full"><text class="dk-desc__k">备注</text><text class="dk-desc__v">{{order.remark || '—'}}</text></view>
+          </view>
+        </view>
+      </view>
+
+      <view class="dk-card">
+        <view class="dk-card__head">
+          <view class="dk-row">
+            <text>物流</text>
+            <text wx:if="{{order.tracking_no}}" class="pd-dk-mono pd-dk-track">{{order.tracking_no}}{{order.tracking_phone_suffix ? ' · 手机尾号 ' + order.tracking_phone_suffix : ''}}</text>
+          </view>
+          <view
+            wx:if="{{order.tracking_no}}"
+            class="dk-btn dk-btn--sm {{expressLoading ? 'dk-btn--disabled' : ''}}"
+            data-refresh="{{expressResult ? '1' : '0'}}"
+            bindtap="onTrackExpress"
+          >{{expressLoading ? '查询中…' : (expressResult ? '刷新物流' : '查询物流')}}</view>
+        </view>
+        <view class="dk-card__body">
+          <view wx:if="{{!order.tracking_no}}" class="dk-muted">没有物流单号</view>
+          <view wx:elif="{{!expressResult}}" class="dk-muted">点右上角「查询物流」看轨迹</view>
+          <block wx:else>
+            <view wx:if="{{expressResult.msg && !expressResult.traces.length}}" class="dk-muted">{{expressResult.msg}}</view>
+            <view wx:if="{{!expressResult.traces.length && !expressResult.msg}}" class="dk-muted">暂无物流信息</view>
+            <view wx:if="{{expressResult.traces.length}}" class="pd-dk-tl">
+              <view wx:for="{{expressResult.traces}}" wx:key="index" class="pd-dk-tl__item {{index === 0 ? 'pd-dk-tl__item--first' : ''}}">
+                <view class="pd-dk-tl__dot"></view>
+                <view class="pd-dk-tl__time">{{item.time}}</view>
+                <view class="pd-dk-tl__text">{{item.context || '—'}}</view>
+              </view>
+            </view>
+          </block>
+        </view>
+      </view>
+    </view>
+
+    <view class="pd-dk-col">
+      <view class="dk-card">
+        <view class="dk-card__head"><text>商品图</text><text class="dk-sub">{{productImageUrls.length}} 张</text></view>
+        <view class="dk-card__body">
+          <media-gallery wx:if="{{productImageUrls.length}}" urls="{{productImageUrls}}" display-urls="{{productImageDisplayUrls}}" thumb-size="medium" />
+          <view wx:else class="dk-muted">没有商品图</view>
+        </view>
+      </view>
+
+      <view class="dk-card">
+        <view class="dk-card__head"><text>闲鱼订单截图</text></view>
+        <view class="dk-card__body">
+          <media-gallery wx:if="{{screenshotUrls.length}}" urls="{{screenshotUrls}}" thumb-size="medium" />
+          <view wx:else class="dk-muted">没有截图</view>
+        </view>
+      </view>
+
+      <view wx:if="{{attachmentUrls.length}}" class="dk-card">
+        <view class="dk-card__head"><text>附件</text></view>
+        <view class="dk-card__body">
+          <media-gallery wx:if="{{attachmentImageUrls.length}}" urls="{{attachmentImageUrls}}" display-urls="{{attachmentImageDisplayUrls}}" thumb-size="medium" />
+          <view wx:for="{{attachmentFileNames}}" wx:key="*this" class="pd-dk-file">{{item}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+<view class="dk-page" wx:else>
+  <view class="dk-card"><view class="dk-empty">加载中…</view></view>
+</view>

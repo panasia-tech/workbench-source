@@ -1,0 +1,17 @@
+.card { margin-bottom: 20rpx; }
+.title { font-size: 32rpx; font-weight: 700; color: #111827; }
+.sub { margin-top: 8rpx; font-size: 24rpx; color: #6B7280; line-height: 1.6; }
+.link { color: #2563EB; }
+.h { font-size: 28rpx; font-weight: 700; margin-bottom: 12rpx; }
+.warn { color: #B45309; font-weight: 600; font-size: 24rpx; }
+.req { color: #DC2626; margin-right: 4rpx; }
+.ck { padding: 16rpx 0; border-bottom: 1rpx solid #F3F4F6; }
+.ck-title { font-size: 26rpx; color: #111827; display: flex; align-items: center; gap: 8rpx; flex-wrap: wrap; }
+.ck-st { font-size: 22rpx; color: #6B7280; margin-left: auto; }
+.ck-st--pending { color: #B45309; font-weight: 600; }
+.ck-btns { display: flex; flex-wrap: wrap; gap: 8rpx; margin-top: 10rpx; }
+.btn-mini { margin: 0; padding: 0 16rpx; font-size: 22rpx; line-height: 52rpx; height: 52rpx; }
+.btns { display: flex; flex-wrap: wrap; gap: 12rpx; margin-top: 16rpx; }
+.btns button { flex: 1; margin: 0; }
+.ev { padding: 12rpx 0; border-bottom: 1rpx solid #F3F4F6; font-size: 24rpx; color: #374151; }
+.muted { color: #9CA3AF; font-size: 22rpx; margin-top: 6rpx; }

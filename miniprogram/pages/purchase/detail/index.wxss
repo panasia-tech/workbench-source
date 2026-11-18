@@ -1,0 +1,199 @@
+/* 订单详情 — 防止内容撑破卡片 */
+
+
+
+.pd-detail-page .card {
+
+  overflow: hidden;
+
+}
+
+.pd-head-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.card-head--flush {
+  margin-bottom: 0;
+  flex: 1;
+  min-width: 0;
+}
+
+.pd-edit-btn {
+  flex-shrink: 0;
+  font-size: 28rpx;
+}
+
+.pd-extra-entry {
+  display: block;
+  margin-top: 16rpx;
+  padding: 16rpx 22rpx;
+  border-radius: 12rpx;
+  background: #EFF6FF;
+  border: 2rpx solid #BFDBFE;
+  color: #1D4ED8;
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+
+
+.pd-detail-page .card-head {
+
+  word-break: break-all;
+
+}
+
+
+
+.pd-detail-page .pd-info-item--wide .pdi-value {
+
+  font-size: 24rpx;
+
+  letter-spacing: 0;
+
+}
+
+
+
+.pd-detail-page .pd-track-module {
+
+  background: #F5F7FA;
+
+  border-radius: 32rpx;
+
+  padding: 20rpx 24rpx;
+
+  min-width: 0;
+
+}
+
+
+
+.pd-detail-page .pd-track-module .pdi-label {
+
+  font-size: 20rpx;
+
+  color: #9CA3AF;
+
+  font-weight: 700;
+
+  margin-bottom: 8rpx;
+
+}
+
+
+
+.pd-detail-page .pdi-track-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  width: 100%;
+}
+
+.pd-detail-page .pdi-track-no {
+  display: block;
+  width: 100%;
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #2563EB;
+  word-break: break-all;
+  line-height: 1.45;
+}
+
+.pd-detail-page .pdi-track-btn {
+  width: 100% !important;
+  height: 72rpx;
+  font-size: 26rpx;
+}
+
+
+
+.pd-detail-page .pd-express-inline {
+
+  margin-top: 20rpx;
+
+  padding-top: 20rpx;
+
+  border-top: 1rpx solid #E5E7EB;
+
+}
+
+
+
+.pd-detail-page .pd-express-msg,
+
+.pd-detail-page .pd-express-empty {
+
+  font-size: 24rpx;
+
+  color: var(--text-secondary);
+
+  line-height: 1.5;
+
+  word-break: break-all;
+
+}
+
+
+
+.pd-detail-page .pd-express-inline .pd-timeline {
+
+  margin-top: 4rpx;
+
+}
+
+
+
+.pd-detail-page .pd-express-inline .tl-title {
+
+  color: #1F2937;
+
+  line-height: 1.5;
+
+  word-break: break-all;
+
+}
+
+
+
+.pd-detail-page .pd-media-block {
+
+  margin-top: 8rpx;
+
+}
+
+.pd-detail-page .pd-tag-row {
+  display: flex;
+  gap: 12rpx;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.pd-detail-page .pd-delete-block {
+  margin-top: 40rpx;
+  padding-top: 24rpx;
+  border-top: 1rpx solid var(--border);
+}
+
+.pd-detail-page .pd-attachment-files {
+  margin-top: 16rpx;
+}
+
+.pd-detail-page .pd-attachment-file {
+  padding: 16rpx 20rpx;
+  margin-bottom: 12rpx;
+  background: #F9FAFB;
+  border: 1rpx solid #E5E7EB;
+  border-radius: 12rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #6B7280;
+  word-break: break-all;
+}
+
+
+
+.pd-snap-line { margin-top: 6rpx; font-size: 22rpx; color: #6b7280; }

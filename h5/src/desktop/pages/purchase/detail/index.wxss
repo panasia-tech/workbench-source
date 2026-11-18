@@ -1,0 +1,91 @@
+/* 采购单详情（电脑版模板 index.wxml 用；手机模板里没有 pd-dk- 类名） */
+.pd-dk-split {
+  grid-template-columns: minmax(0, 1fr) 400px;
+}
+
+.pd-dk-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.pd-dk-money {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.pd-dk-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.pd-dk-track {
+  font-size: 13px;
+  font-weight: 400;
+  color: #2563eb;
+}
+
+/* 物流轨迹：竖线时间轴，最新一条高亮 */
+.pd-dk-tl {
+  position: relative;
+  padding-left: 18px;
+}
+
+.pd-dk-tl::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 6px;
+  bottom: 6px;
+  width: 1px;
+  background: #e5e7eb;
+}
+
+.pd-dk-tl__item {
+  position: relative;
+  padding: 0 0 14px;
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 12px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.pd-dk-tl__dot {
+  position: absolute;
+  left: -18px;
+  top: 5px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid #9ca3af;
+  box-sizing: border-box;
+}
+
+.pd-dk-tl__item--first {
+  color: #1f2937;
+}
+
+.pd-dk-tl__item--first .pd-dk-tl__dot {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+.pd-dk-tl__time {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.pd-dk-file {
+  margin-top: 8px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: #f8fafc;
+  font-size: 13px;
+  color: #374151;
+}
+
+.pd-dk-file {
+  word-break: break-all;
+}

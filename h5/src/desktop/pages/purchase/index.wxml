@@ -1,0 +1,265 @@
+<wxs module="fmt" src="../../utils/format.wxs" />
+
+<!-- 采购录入（电脑版）：手机上分两三步，电脑上一屏摆开——左边截图和商品图（对着截图核字段），右边订单 + 商品表单，底部提交。
+     数据、校验、提交和手机版是同一套：submit() 按「是否多商品」校验第 2 / 3 步，再查商品图 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">采购录入</view>
+      <view class="dk-sub">上传闲鱼订单截图会自动识别订单字段，核对后提交；同一链接买了几样商品就打开「多商品」拆开填</view>
+    </view>
+    <view class="dk-row">
+      <view class="dk-btn" bindtap="goRecords">历史采购单</view>
+    </view>
+  </view>
+
+  <view class="pu-dk-layout">
+    <!-- 左：图片 -->
+    <view class="pu-dk-side">
+      <view class="dk-card">
+        <view class="dk-card__head">
+          <text>订单截图</text>
+          <text wx:if="{{sourceStatus === '识别中'}}" class="dk-tag dk-tag--blue">识别中…</text>
+          <text wx:elif="{{screenshotUrls.length && screenshotArchived}}" class="dk-tag dk-tag--orange">截图已归档，请重新上传</text>
+          <text wx:elif="{{screenshotUrls.length && sourceStatus === 'OCR 识别'}}" class="dk-tag dk-tag--green">已识别，请核对右边字段</text>
+          <text wx:elif="{{screenshotUrls.length && sourceStatus === '识别失败'}}" class="dk-tag dk-tag--orange">识别失败，请重新上传或手填</text>
+          <text wx:elif="{{screenshotUrls.length && sourceStatus === '未识别到字段'}}" class="dk-tag dk-tag--orange">未识别到字段，请手填</text>
+          <text wx:else class="dk-sub">闲鱼订单，最多 2 张</text>
+        </view>
+        <view class="dk-card__body">
+          <view class="pu-dk-shots">
+            <view wx:for="{{screenshotUrls}}" wx:key="*this" class="pu-dk-tile pu-dk-tile--shot">
+              <view wx:if="{{fmt.isArchived(item)}}" class="pu-dk-archived">已归档</view>
+              <image
+                wx:else
+                class="pu-dk-img"
+                src="{{screenshotDisplayUrls[index] || item}}"
+                mode="aspectFill"
+                data-url="{{screenshotDisplayUrls[index] || item}}"
+                data-urls="{{screenshotDisplayUrls}}"
+                bindtap="dkPreview"
+              />
+              <view class="pu-dk-remove" data-index="{{index}}" catchtap="removeScreenshot">×</view>
+            </view>
+            <view wx:if="{{screenshotUrls.length < 2}}" class="pu-dk-tile pu-dk-tile--shot pu-dk-add" bindtap="chooseImage">
+              <view class="pu-dk-add__plus">+</view>
+              <view>{{screenshotUrls.length ? '添加第二张截图' : '上传订单截图'}}</view>
+              <view class="dk-help">上传后自动识别，也可跳过直接手填</view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="dk-card">
+        <view class="dk-card__head">
+          <text><text class="pu-dk-req">*</text>商品图</text>
+          <text class="dk-sub">实拍 {{productImageUrls.length}} / {{maxProductImages}}</text>
+        </view>
+        <view class="dk-card__body">
+          <view class="pu-dk-grid">
+            <view wx:for="{{productImageUrls}}" wx:key="*this" class="pu-dk-tile">
+              <view wx:if="{{fmt.isArchived(item)}}" class="pu-dk-archived">已归档</view>
+              <image
+                wx:else
+                class="pu-dk-img"
+                src="{{productImageDisplayUrls[index] || item}}"
+                mode="aspectFill"
+                data-url="{{productImageDisplayUrls[index] || item}}"
+                data-urls="{{productImageDisplayUrls}}"
+                bindtap="dkPreview"
+              />
+              <view class="pu-dk-remove" data-index="{{index}}" catchtap="removeProductImage">×</view>
+            </view>
+            <view wx:if="{{productImageUrls.length < maxProductImages}}" class="pu-dk-tile pu-dk-add" bindtap="chooseProductImage">
+              <view class="pu-dk-add__plus">+</view>
+              <view>{{productImageUrls.length ? '继续添加' : '上传实拍图'}}</view>
+            </view>
+          </view>
+          <view wx:if="{{!productImageUrls.length}}" class="dk-help pu-dk-gap">至少 1 张，最多 {{maxProductImages}} 张</view>
+        </view>
+      </view>
+
+      <view wx:if="{{exampleScreenshotUrl || exampleProductUrl}}" class="dk-card">
+        <view class="dk-card__head"><text>参考示例</text></view>
+        <view class="dk-card__body dk-row">
+          <image
+            wx:if="{{exampleScreenshotUrl}}"
+            class="dk-thumb dk-thumb--lg pu-dk-zoom"
+            src="{{exampleScreenshotUrl}}"
+            mode="aspectFill"
+            data-url="{{exampleScreenshotUrl}}"
+            data-urls="{{[exampleScreenshotUrl, exampleProductUrl]}}"
+            bindtap="dkPreview"
+          />
+          <image
+            wx:if="{{exampleProductUrl}}"
+            class="dk-thumb dk-thumb--lg pu-dk-zoom"
+            src="{{exampleProductUrl}}"
+            mode="aspectFill"
+            data-url="{{exampleProductUrl}}"
+            data-urls="{{[exampleScreenshotUrl, exampleProductUrl]}}"
+            bindtap="dkPreview"
+          />
+          <text class="dk-help">截图要拍全订单号、流水号和物流；商品图拍实物</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 右：表单 -->
+    <view class="pu-dk-main">
+      <view class="dk-card">
+        <view class="dk-card__head"><text>订单信息</text></view>
+        <view class="dk-card__body">
+          <view class="dk-form pu-dk-form-6">
+            <view class="dk-field dk-field--full">
+              <text class="dk-label dk-label--req">采购账号</text>
+              <view wx:if="{{!purchaseAccounts.length}}" class="dk-muted">暂无可用账号，请联系管理员配置</view>
+              <view wx:elif="{{purchaseAccounts.length <= 8}}" class="dk-row">
+                <view
+                  wx:for="{{purchaseAccounts}}"
+                  wx:key="code"
+                  class="pu-dk-chip {{form.purchase_account === item.code ? 'pu-dk-chip--on' : ''}}"
+                  data-index="{{index}}"
+                  bindtap="dkPickAccount"
+                >{{item.label}}</view>
+              </view>
+              <picker
+                wx:else
+                mode="selector"
+                range="{{purchaseAccounts}}"
+                range-key="label"
+                value="{{purchaseAccountIndex}}"
+                bindchange="onPurchaseAccountChange"
+              >
+                <view class="dk-select pu-dk-wide-select {{purchaseAccountLabel ? '' : 'dk-muted'}}">{{purchaseAccountLabel || '请选择采购账号'}}</view>
+              </picker>
+            </view>
+
+            <view class="dk-field pu-dk-f2">
+              <text class="dk-label dk-label--req">订单号</text>
+              <input class="dk-input pu-dk-code" placeholder="闲鱼订单号" data-key="external_order_no" value="{{form.external_order_no}}" bindinput="onInput" />
+            </view>
+            <view class="dk-field pu-dk-f2">
+              <text class="dk-label dk-label--req">交易流水号</text>
+              <input class="dk-input pu-dk-code" placeholder="流水号" data-key="transaction_no" value="{{form.transaction_no}}" bindinput="onInput" />
+            </view>
+            <view class="dk-field pu-dk-f2">
+              <text class="dk-label dk-label--req">卖家昵称</text>
+              <input class="dk-input" placeholder="识别或手填" data-key="seller_name" value="{{form.seller_name}}" bindinput="onInput" />
+            </view>
+
+            <view class="dk-field pu-dk-f2">
+              <text class="dk-label dk-label--req">物流单号</text>
+              <input class="dk-input pu-dk-code" placeholder="快递单号" data-key="tracking_no" value="{{form.tracking_no}}" bindinput="onInput" />
+            </view>
+            <view class="dk-field pu-dk-f2">
+              <text class="dk-label">手机后四位</text>
+              <input class="dk-input" placeholder="顺丰查询选填，收/寄件人手机号后 4 位" type="number" maxlength="4" value="{{form.tracking_phone_suffix}}" bindinput="onPhoneSuffixInput" />
+            </view>
+            <view class="dk-field pu-dk-f2">
+              <text class="dk-label">备注</text>
+              <input class="dk-input" placeholder="可选" data-key="remark" value="{{form.remark}}" bindinput="onInput" />
+            </view>
+
+            <view class="dk-field pu-dk-f3">
+              <text class="dk-label dk-label--req">下单时间</text>
+              <view class="pu-dk-dt">
+                <picker mode="date" class="pu-dk-dt__date" value="{{orderDate}}" start="2020-01-01" end="2030-12-31" bindchange="onOrderDateChange">
+                  <view class="dk-select {{orderDate ? '' : 'dk-muted'}}">{{orderDate || '日期'}}</view>
+                </picker>
+                <picker mode="time" class="pu-dk-dt__time" value="{{orderTime}}" bindchange="onOrderTimeChange">
+                  <view class="dk-select {{orderTime ? '' : 'dk-muted'}}">{{orderTime || '时间'}}</view>
+                </picker>
+              </view>
+            </view>
+            <view class="dk-field pu-dk-f3">
+              <text class="dk-label dk-label--req">付款时间</text>
+              <view class="pu-dk-dt">
+                <picker mode="date" class="pu-dk-dt__date" value="{{paidDate}}" start="2020-01-01" end="2030-12-31" bindchange="onPaidDateChange">
+                  <view class="dk-select {{paidDate ? '' : 'dk-muted'}}">{{paidDate || '日期'}}</view>
+                </picker>
+                <picker mode="time" class="pu-dk-dt__time" value="{{paidTime}}" bindchange="onPaidTimeChange">
+                  <view class="dk-select {{paidTime ? '' : 'dk-muted'}}">{{paidTime || '时间'}}</view>
+                </picker>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="dk-card">
+        <view class="dk-card__head">
+          <text>商品</text>
+          <view class="dk-row pu-dk-multi">
+            <text class="dk-sub">同一链接多商品</text>
+            <switch checked="{{multiEnabled}}" bindchange="onMultiToggle" color="#2563EB" />
+          </view>
+        </view>
+
+        <view wx:if="{{!multiEnabled}}" class="dk-card__body">
+          <view class="dk-form pu-dk-form-4">
+            <view class="dk-field">
+              <text class="dk-label dk-label--req">品牌</text>
+              <input class="dk-input" placeholder="如 戴尔" data-key="brand" value="{{form.brand}}" bindinput="onInput" />
+            </view>
+            <view class="dk-field">
+              <text class="dk-label dk-label--req">型号</text>
+              <input class="dk-input" placeholder="识别或手填" data-key="model" value="{{form.model}}" bindinput="onInput" />
+            </view>
+            <view class="dk-field">
+              <text class="dk-label dk-label--req">规格</text>
+              <input class="dk-input" placeholder="如 2K240" data-key="spec" value="{{form.spec}}" bindinput="onInput" />
+            </view>
+            <view class="dk-field">
+              <text class="dk-label dk-label--req">成交金额</text>
+              <input class="dk-input pu-dk-price" placeholder="0.00" type="digit" data-key="unit_price" value="{{form.unit_price}}" bindinput="onInput" />
+            </view>
+          </view>
+        </view>
+
+        <block wx:else>
+          <view class="dk-card__body pu-dk-multi-top">
+            <view class="dk-field pu-dk-total">
+              <text class="dk-label dk-label--req">成交金额（整单）</text>
+              <input class="dk-input pu-dk-price" placeholder="0.00" type="digit" data-key="unit_price" value="{{form.unit_price}}" bindinput="onInput" />
+            </view>
+            <view class="dk-help">共用订单号 / 流水号 / 物流单号；每样商品填品牌、型号、金额，金额加起来要等于成交金额{{form.unit_price ? ' ¥' + form.unit_price : ''}}</view>
+          </view>
+          <view class="dk-table-wrap">
+            <table class="dk-table pu-dk-items">
+              <thead>
+                <tr>
+                  <th class="pu-dk-col-no">#</th>
+                  <th>品牌 *</th>
+                  <th>型号 *</th>
+                  <th class="pu-dk-col-amt">金额 *</th>
+                  <th class="dk-ops">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr wx:for="{{multiItems}}" wx:key="index">
+                  <td class="pu-dk-col-no dk-muted">{{index + 1}}</td>
+                  <td><input class="dk-input pu-dk-cell" placeholder="如 戴尔" data-index="{{index}}" data-field="brand" value="{{item.brand}}" bindinput="onMultiInput" /></td>
+                  <td><input class="dk-input pu-dk-cell" placeholder="型号" data-index="{{index}}" data-field="model" value="{{item.model}}" bindinput="onMultiInput" /></td>
+                  <td class="pu-dk-col-amt"><input class="dk-input pu-dk-cell pu-dk-price" placeholder="0.00" type="digit" data-index="{{index}}" data-field="amount" value="{{item.amount}}" bindinput="onMultiInput" /></td>
+                  <td class="dk-ops">
+                    <text wx:if="{{multiItems.length > 1}}" class="dk-link dk-link--danger" data-index="{{index}}" bindtap="removeMultiItem">删除</text>
+                    <text wx:else class="dk-muted">—</text>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </view>
+          <view class="dk-toolbar">
+            <view class="dk-btn dk-btn--sm" bindtap="addMultiItem">+ 添加商品</view>
+          </view>
+        </block>
+      </view>
+    </view>
+  </view>
+
+  <view class="dk-actionbar pu-dk-bar">
+    <text class="dk-help pu-dk-bar-hint">{{multiEnabled ? '多商品：会按每样商品各建一张采购单' : '提交后进入待验货'}}</text>
+    <view class="dk-btn dk-btn--primary" bindtap="submit">{{multiEnabled ? '提交 ' + multiItems.length + ' 张采购单' : '提交采购单'}}</view>
+  </view>
+</view>

@@ -1,0 +1,129 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<view class="page-wrap page-wrap--no-tab pd-detail-page" wx:if="{{order}}">
+  <view class="card">
+    <view class="pd-head-row">
+      <view class="card-head card-head--flush">{{order.order_no}}</view>
+      <text wx:if="{{canEdit}}" class="link-btn pd-edit-btn" bindtap="goEdit">编辑</text>
+    </view>
+    <view class="pd-tag-row">
+      <view wx:if="{{order.is_overdue}}" class="tag tag-danger">逾期采购</view>
+      <view class="tag {{fmt.statusTag(order.status)}}">{{fmt.statusLabel(order.status)}}</view>
+    </view>
+    <view wx:if="{{snapshots.length}}" class="pd-extra-entry">
+      商品快照 v{{snapshots[0].version}}：{{snapshots[0].platform_item_id || '无商品ID'}}{{snapshots[0].frozen_at ? ' · 已冻结' : ''}}
+      <text wx:if="{{snapshots[0].source_url}}" class="pd-snap-url"> · {{snapshots[0].source_url}}</text>
+      <view wx:for="{{snapshots}}" wx:key="id" wx:for-item="sn" class="pd-snap-line">
+        v{{sn.version}} {{sn.capture_kind_label}}{{sn.captured_at ? '（' + fmt.datetime(sn.captured_at) + '）' : ''}}
+        <text wx:if="{{sn.declared_model}}"> · 卖家写的型号：{{sn.declared_model}}</text>
+        <text wx:if="{{sn.specs}}"> · 规格：{{sn.specs}}</text>
+        <text wx:if="{{sn.media_total}}"> · 原件已存 {{sn.media_saved}}/{{sn.media_total}}</text>
+      </view>
+    </view>
+    <view wx:if="{{bargain}}" class="pd-extra-entry" bindtap="goBargain">
+      议价会话：{{bargain.stateLabel}} · 谈妥价 {{bargain.deal_price || '—'}} ›
+    </view>
+
+    <view class="pd-info-grid" style="margin-top: 24rpx;">
+      <view class="pd-info-item">
+        <view class="pdi-label">品牌</view>
+        <view class="pdi-value">{{order.brand || '—'}}</view>
+      </view>
+      <view class="pd-info-item">
+        <view class="pdi-label">型号</view>
+        <view class="pdi-value">{{order.model || '—'}}</view>
+      </view>
+      <view class="pd-info-item">
+        <view class="pdi-label">规格</view>
+        <view class="pdi-value">{{order.spec || '—'}}</view>
+      </view>
+      <view class="pd-info-item">
+        <view class="pdi-label">成交金额</view>
+        <view class="pdi-value">¥{{fmt.money(order.unit_price)}}</view>
+      </view>
+      <view class="pd-info-item pd-info-item--wide">
+        <view class="pdi-label">闲鱼订单号</view>
+        <view class="pdi-value">{{order.external_order_no || '—'}}</view>
+      </view>
+      <view class="pd-info-item pd-info-item--wide">
+        <view class="pdi-label">交易流水号</view>
+        <view class="pdi-value">{{order.transaction_no || '—'}}</view>
+      </view>
+
+      <view class="pd-track-module pd-info-item--wide">
+        <view class="pdi-label">物流单号</view>
+        <view wx:if="{{order.tracking_no}}" class="pdi-track-stack">
+          <text class="pdi-track-no">{{order.tracking_no}}{{order.tracking_phone_suffix ? ' · 手机尾号 ' + order.tracking_phone_suffix : ''}}</text>
+          <button
+            class="btn btn-outline btn-sm btn-block pdi-track-btn"
+            bindtap="onTrackExpress"
+            data-refresh="{{expressResult ? '1' : '0'}}"
+            loading="{{expressLoading}}"
+            disabled="{{expressLoading}}"
+          >{{expressLoading ? '查询中…' : (expressResult ? '刷新物流' : '查询物流')}}</button>
+        </view>
+        <view class="pdi-value" wx:else>—</view>
+
+        <view wx:if="{{expressResult}}" class="pd-express-inline">
+          <view class="pd-express-scroll">
+            <view wx:if="{{expressResult.msg && !expressResult.traces.length}}" class="pd-express-msg">{{expressResult.msg}}</view>
+            <view wx:if="{{!expressResult.traces.length && !expressResult.msg}}" class="pd-express-empty">暂无物流信息</view>
+            <view class="pd-timeline" wx:if="{{expressResult.traces.length}}">
+              <view wx:for="{{expressResult.traces}}" wx:key="index" class="pd-tl-item">
+                <view class="tl-title">{{item.context || '—'}}</view>
+                <view class="tl-time">{{item.time}}</view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="pd-info-item pd-info-item--wide">
+        <view class="pdi-label">卖家昵称</view>
+        <view class="pdi-value">{{order.seller_name || '—'}}</view>
+      </view>
+      <view class="pd-info-item pd-info-item--wide">
+        <view class="pdi-label">采购账号</view>
+        <view class="pdi-value">{{purchaseAccountLabel || '—'}}</view>
+      </view>
+      <view class="pd-info-item">
+        <view class="pdi-label">下单时间</view>
+        <view class="pdi-value">{{orderTimeText || '—'}}</view>
+      </view>
+      <view class="pd-info-item">
+        <view class="pdi-label">付款时间</view>
+        <view class="pdi-value">{{paidAtText || '—'}}</view>
+      </view>
+      <view class="pd-info-item">
+        <view class="pdi-label">操作人</view>
+        <view class="pdi-value">{{order.operator_name || '—'}}</view>
+      </view>
+      <view class="pd-info-item pd-info-item--wide">
+        <view class="pdi-label">备注</view>
+        <view class="pdi-value">{{order.remark || '—'}}</view>
+      </view>
+    </view>
+
+    <view wx:if="{{attachmentUrls.length}}" class="pd-media-block">
+      <view class="section-label">附件</view>
+      <media-gallery urls="{{attachmentImageUrls}}" display-urls="{{attachmentImageDisplayUrls}}" thumb-size="large" />
+      <view wx:if="{{attachmentFileNames.length}}" class="pd-attachment-files">
+        <view wx:for="{{attachmentFileNames}}" wx:key="*this" class="pd-attachment-file">{{item}}</view>
+      </view>
+    </view>
+
+    <view wx:if="{{productImageUrls.length}}" class="pd-media-block">
+      <view class="section-label">商品图</view>
+      <media-gallery urls="{{productImageUrls}}" display-urls="{{productImageDisplayUrls}}" thumb-size="large" />
+    </view>
+
+    <view wx:if="{{screenshotUrls.length}}" class="pd-media-block">
+      <view class="section-label">闲鱼订单截图</view>
+      <media-gallery urls="{{screenshotUrls}}" thumb-size="large" />
+    </view>
+
+    <view wx:if="{{canDelete}}" class="pd-delete-block">
+      <button class="btn btn-danger btn-block" bindtap="onDelete">删除采购单</button>
+    </view>
+  </view>
+</view>
