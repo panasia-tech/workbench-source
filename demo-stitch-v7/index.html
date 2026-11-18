@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>泛亚仓管工作台 · 终极版全闭环交付总入口（v5 Ultimate）</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f5f7fa; color: #17233b; font: 15px/1.6 Inter, "PingFang SC", "Microsoft YaHei", sans-serif; }
+    main { max-width: 1420px; margin: auto; padding: 28px 24px 64px; }
+    h1 { font-size: 29px; margin: 0 0 6px; letter-spacing: -0.02em; }
+    h2 { font-size: 20px; margin: 28px 0 12px; }
+    p { margin: 4px 0 10px; color: #52647a; }
+    a { color: #2456d6; text-decoration: none; font-weight: 600; }
+    a:hover { text-decoration: underline; }
+    nav { display: flex; gap: 10px; flex-wrap: wrap; margin: 16px 0 20px; }
+    nav a { background: #fff; border: 1px solid #dfe6ef; padding: 8px 14px; border-radius: 8px; font-size: 13.5px; }
+    nav a.pri { background: #2456d6; border-color: #2456d6; color: #fff; }
+    nav a.grn { background: #0f8a5f; border-color: #0f8a5f; color: #fff; }
+    nav a.dark { background: #0f172a; border-color: #0f172a; color: #fff; }
+    .banner { background: #fff; border: 1px solid #cad8ff; border-left: 4px solid #2456d6; border-radius: 12px; padding: 14px 18px; margin-bottom: 18px; line-height: 1.7; font-size: 14px; }
+    .banner b { color: #17233b; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(390px, 1fr)); gap: 14px; }
+    article { background: #fff; border: 1px solid #dfe6ef; border-radius: 12px; overflow: hidden; }
+    article.hl { border-color: #93b4ff; box-shadow: 0 2px 10px rgba(36, 86, 214, 0.08); }
+    article img { display: block; width: 100%; aspect-ratio: 1440 / 940; object-fit: cover; background: #edf1f7; border-bottom: 1px solid #dfe6ef; }
+    article div { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px; font-size: 13.5px; }
+    .table { overflow: auto; background: #fff; border: 1px solid #dfe6ef; border-radius: 12px; }
+    table { border-collapse: collapse; width: 100%; min-width: 860px; font-size: 13.5px; }
+    td, th { border-bottom: 1px solid #dfe6ef; text-align: left; padding: 10px 12px; }
+    th { background: #f5f7fa; color: #52647a; font-size: 12.5px; }
+    code { background: #f5f7fa; border: 1px solid #dfe6ef; padding: 1px 6px; border-radius: 5px; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>泛亚仓管工作台 · 终极版全闭环交付总入口（电脑宽屏 H5 + iData 手持 PDA 共码）</h1>
+    <p>2026-11-16 v5 Ultimate · 与销售工作台 Stitch Demo 1:1 同源设计 · 爱回收转仓管分级验货 + 历史库存阻塞当日清零 Gallery + 专业 WMS 全机制真交互闭环 + 程序员全链路开发蓝图</p>
+
+    <div class="banner">
+      <b>v5 终极交付版四大重中之重升级：</b><br />
+      ① <b>爱回收回收流程 → 仓管逐项分级验货全闭环（<code>#/inspect</code> + <code>#/standards</code>）</b>：剥离全部回收估价/成交价字段，完整保留分步折叠卡片、高清判别图例弹窗、<b>「全新原封未拆封」与「二手已使用」独立分支</b>、末步多选暗病显式确认、坏货全检铁律，以及 1,042 路径最长超集归并主管审核发版；<br />
+      ② <b>历史库存阻塞清洗 Gallery（<code>#/legacy-wash</code>）</b>：对标销售工作台红黄绿，将导致客服/销售卖不了的 4 道阻塞关卡（缺结构化全检 / 缺完整实测视频 / 缺本机实拍与库位图 / 缺标准SPU与子母码）全部摊开，不设上限当日清零；<br />
+      ③ <b>库存破千与三岗拆分 5 大专业 WMS 机制真闭环</b>：权责分离<b>货架循环盲盘+串位一键纠偏+WIP暂借对冲（<code>#/stocktake</code>）</b>、<b>主机+#BAG附件袋+#BOX原盒+原厂SN 四码逐一扫绿与拣货后红屏紧急拦截双扫码归架（<code>#/outbound</code>）</b>、<b>LPN 分格容器箱与 WIP 工位借还（<code>#/locations</code>）</b>、<b>激光枪免聚焦声光反馈 + iData 50 走动扫码手持 H5 端</b>；<br />
+      ④ <b>程序员全链路流程图与 MySQL 8 开发蓝图</b>：已随夹交付 <a href="全链路流程图与开发蓝图.html">《全链路流程图与开发蓝图.html》</a> 与 <a href="业务依据/仓管工作台_终极版全链路流程图与开发蓝图.md">Markdown 源码</a>。
+    </div>
+
+    <nav>
+      <a class="pri" href="仓管工作台-V1研发发单双视角总览.html">🚀 V1 研发发单双视角总览 H5（业务/程序员视角）</a>
+      <a class="grn" href="仓管工作台-V1研发发单双视角总览.html#video">🎬 V1 实机演练讲解视频（serious 音色）</a>
+      <a class="grn" href="http://127.0.0.1:5351/?as=linqg#/today">本机 SQLite 联机版（5351端口）</a>
+      <a href="仓管工作台-电脑版H5-单文件直开版.html#/legacy-wash">双击直开单文件版（历史库存清洗）</a>
+      <a class="dark" href="全链路流程图与开发蓝图.html">📐 打开《全链路流程图与程序员蓝图》</a>
+      <a href="http://127.0.0.1:5351/?as=linqg#/battery">🔋 锂电30天通电关机统筹</a>
+      <a href="http://127.0.0.1:5351/?as=admin#/supervisor">🧭 仓管主管总控端</a>
+      <a href="http://127.0.0.1:5351/?as=boss#/boss">👑 老板资金风控端</a>
+      <a href="http://127.0.0.1:5351/?as=linqg#/courier">🚨 快递100m拒签与10m企微召回</a>
+      <a href="http://127.0.0.1:5351/?as=linqg#/inspect/INSP-2601">爱回收分级验货台</a>
+      <a href="http://127.0.0.1:5351/?as=linqg#/legacy-wash">历史库存阻塞清洗</a>
+      <a href="http://127.0.0.1:5351/?as=linqg#/stocktake">货架循环盲盘与纠偏</a>
+      <a href="http://127.0.0.1:5351/?as=linqg#/outbound/OUT-260901">四码复核与红屏拦截归架</a>
+      <a href="http://127.0.0.1:5351/?as=linqg#/locations">库位·LPN箱·WIP暂借</a>
+      <a href="交付说明.md">交付说明</a>
+    </nav>
+
+    <h2>一、v7 终极版重中之重与三端闭环实机截图（1440px）</h2>
+    <div class="grid">
+      <article class="hl"><a href="预览/22-锂电池商品30天通电与彻底关机统筹-1440.png"><img src="预览/22-锂电池商品30天通电与彻底关机统筹-1440.png" alt="锂电池商品30天通电与彻底关机统筹" /></a><div><strong>新增核心 · 锂电池商品 30 天必通电（55%半电）+ 强制彻底关机统筹</strong><a href="http://127.0.0.1:5351/?as=linqg#/battery">去实测 ›</a></div></article>
+      <article class="hl"><a href="预览/23-主管端-五合一集中审批与五大死线督战-1440.png"><img src="预览/23-主管端-五合一集中审批与五大死线督战-1440.png" alt="仓管主管五合一集中审批台" /></a><div><strong>三端闭环 · 🧭 仓管主管端（五合一集中审批 + 五大死线实时督战）</strong><a href="http://127.0.0.1:5351/?as=admin#/supervisor">去实测 ›</a></div></article>
+      <article class="hl"><a href="预览/24-老板端-库存资金占用与资损风控舱-1440.png"><img src="预览/24-老板端-库存资金占用与资损风控舱-1440.png" alt="老板库存资金占用与资损风控舱" /></a><div><strong>三端闭环 · 👑 老板端（在库资金拆解 + 四大漏钱红线 + 四端卡点归因）</strong><a href="http://127.0.0.1:5351/?as=boss#/boss">去实测 ›</a></div></article>
+      <article class="hl"><a href="预览/21-快递协调100分钟拒签与10分钟企微召回-1440.png"><img src="预览/21-快递协调100分钟拒签与10分钟企微召回-1440.png" alt="快递驻点协调与企微10分钟紧急召回" /></a><div><strong>重中之重 ⓪ · 快递10×N分钟显示拒签 + 17:00清场 + 10分钟企微召回防钱货两空</strong><a href="http://127.0.0.1:5351/?as=linqg#/courier">去实测 ›</a></div></article>
+      <article class="hl"><a href="预览/05-收货验货-爱回收分步分级问卷-1440.png"><img src="预览/05-收货验货-爱回收分步分级问卷-1440.png" alt="爱回收转仓管分步分级验货" /></a><div><strong>重中之重 ① · 爱回收转仓管分级验货（去报价+原封分支+图例）</strong><a href="http://127.0.0.1:5351/?as=linqg#/inspect/INSP-2601">去实测 ›</a></div></article>
+      <article class="hl"><a href="预览/18-历史库存阻塞清洗Gallery-1440.png"><img src="预览/18-历史库存阻塞清洗Gallery-1440.png" alt="历史库存阻塞清洗Gallery" /></a><div><strong>重中之重 ② · 历史库存阻塞清洗 Gallery（红黄绿售前四关清零）</strong><a href="http://127.0.0.1:5351/?as=linqg#/legacy-wash">去实测 ›</a></div></article>
+      <article class="hl"><a href="预览/20-全链路流程图与程序员蓝图-1440.png"><img src="预览/20-全链路流程图与程序员蓝图-1440.png" alt="全链路流程图与程序员蓝图" /></a><div><strong>重中之重 ③ · 全链路泳道流程图与 FastAPI+MySQL 开发蓝图</strong><a href="全链路流程图与开发蓝图.html">打开蓝图 ›</a></div></article>
+      <article class="hl"><a href="预览/09-货架循环盲盘与串位纠偏-1440.png"><img src="预览/09-货架循环盲盘与串位纠偏-1440.png" alt="货架循环盲盘与串位纠偏" /></a><div><strong>专业 WMS ① · 权责分离货架盲盘、串位一键纠偏与WIP豁免</strong><a href="http://127.0.0.1:5351/?as=linqg#/stocktake">去实测 ›</a></div></article>
+      <article class="hl"><a href="预览/07-出库四码复核与退回三代复验-1440.png"><img src="预览/07-出库四码复核与退回三代复验-1440.png" alt="四码复核与紧急拦截归架" /></a><div><strong>专业 WMS ② · 子母四码逐一扫绿 + 拣后红屏拦截双扫码归架</strong><a href="http://127.0.0.1:5351/?as=linqg#/outbound/OUT-260901">去实测 ›</a></div></article>
+      <article class="hl"><a href="预览/19-iData手持PDA走动扫码端-1440.png"><img src="预览/19-iData手持PDA走动扫码端-1440.png" alt="iData手持PDA走动扫码端" /></a><div><strong>专业 WMS ③ · 激光枪声光反馈 + iData 50 巷道走动手持 H5</strong><a href="http://127.0.0.1:5351/?as=linqg#/locations">去实测 ›</a></div></article>
+      <article class="hl"><a href="预览/15-四级WMS库位与LPN工位暂借-1440.png"><img src="预览/15-四级WMS库位与LPN工位暂借-1440.png" alt="四级WMS库位与LPN工位暂借" /></a><div><strong>专业 WMS ④ · 四级储位矩阵 + LPN分格箱 + WIP工位借还</strong><a href="http://127.0.0.1:5351/?as=linqg#/locations">去实测 ›</a></div></article>
+      <article class="hl"><a href="预览/13-订单抓取与同客合单聚合-1440.png"><img src="预览/13-订单抓取与同客合单聚合-1440.png" alt="订单抓取与同客合单聚合" /></a><div><strong>专业 WMS ⑤ · 5店订单抓取巡检、同客一键合单与波次下发</strong><a href="http://127.0.0.1:5351/?as=linqg#/orders">去实测 ›</a></div></article>
+      <article class="hl"><a href="预览/14-到货签收与SPU匹配上架台-1440.png"><img src="预览/14-到货签收与SPU匹配上架台-1440.png" alt="到货签收与SPU匹配上架台" /></a><div><strong>专业 WMS ⑥ · 采购ASN签收、无主件暂存与SPU防混上架</strong><a href="http://127.0.0.1:5351/?as=linqg#/asn">去实测 ›</a></div></article>
+    </div>
+
+    <h2>二、其余全站业务与协同模块实机截图（1440px）</h2>
+    <div class="grid">
+      <article><a href="预览/01-今天-业务员视图-1440.png"><img loading="lazy" src="预览/01-今天-业务员视图-1440.png" alt="今天-业务员视图" /></a><div><strong>01 · 今天（含历史阻塞清零脉搏 + 7态待办 + 60s协同）</strong><a href="http://127.0.0.1:5351/?as=linqg#/today">去实测 ›</a></div></article>
+      <article><a href="预览/02-今天-主管派工视图-1440.png"><img loading="lazy" src="预览/02-今天-主管派工视图-1440.png" alt="今天-主管派工视图" /></a><div><strong>02 · 今天（仓管主管全队红灯与三要素改派）</strong><a href="http://127.0.0.1:5351/?as=admin#/today">去实测 ›</a></div></article>
+      <article><a href="预览/03-库存实物画廊-1440.png"><img loading="lazy" src="预览/03-库存实物画廊-1440.png" alt="库存实物画廊" /></a><div><strong>03 · 库存实物画廊（红黄绿巡检与缺图不冒充）</strong><a href="http://127.0.0.1:5351/?as=linqg#/gallery/all">去实测 ›</a></div></article>
+      <article><a href="预览/04-单件实物详情与防呆下一步-1440.png"><img loading="lazy" src="预览/04-单件实物详情与防呆下一步-1440.png" alt="单件实物详情" /></a><div><strong>04 · 单件实物详情（只读真源 + 折叠档案 + 下一步）</strong><a href="http://127.0.0.1:5351/?as=linqg#/item/513211540233-B">去实测 ›</a></div></article>
+      <article><a href="预览/06-10分钟异常与货钱双轨-1440.png"><img loading="lazy" src="预览/06-10分钟异常与货钱双轨-1440.png" alt="10分钟异常与货钱双轨" /></a><div><strong>06 · 异常双轨（10分钟首报 + 货钱双清 + 留货锁）</strong><a href="http://127.0.0.1:5351/?as=linqg#/anomaly/ANO-2601">去实测 ›</a></div></article>
+      <article><a href="预览/16-库存总账SPU平衡与流水-1440.png"><img loading="lazy" src="预览/16-库存总账SPU平衡与流水-1440.png" alt="库存总账SPU平衡与流水" /></a><div><strong>16 · SPU四态平衡汇总账、SKU改码与出入库流水</strong><a href="http://127.0.0.1:5351/?as=linqg#/ledger">去实测 ›</a></div></article>
+      <article><a href="预览/17-波次路径拣货与顺丰热敏面单-1440.png"><img loading="lazy" src="预览/17-波次路径拣货与顺丰热敏面单-1440.png" alt="波次路径拣货与顺丰热敏面单" /></a><div><strong>17 · 100×150mm 顺丰三段码热敏电子面单预览</strong><a href="http://127.0.0.1:5351/?as=linqg#/outbound/OUT-260901">去实测 ›</a></div></article>
+      <article><a href="预览/08-补图与显示器10秒切片-1440.png"><img loading="lazy" src="预览/08-补图与显示器10秒切片-1440.png" alt="补图与显示器10秒切片" /></a><div><strong>08 · 补图与切片（自动派图 + 显示器10秒轮播切图）</strong><a href="http://127.0.0.1:5351/?as=linqg#/media">去实测 ›</a></div></article>
+      <article><a href="预览/10-缺口闭环看板183节点-1440.png"><img loading="lazy" src="预览/10-缺口闭环看板183节点-1440.png" alt="缺口闭环看板183节点" /></a><div><strong>10 · 缺口闭环看板（8大闭环模块 + 禅道183节点核验）</strong><a href="http://127.0.0.1:5351/?as=linqg#/readiness">去实测 ›</a></div></article>
+      <article><a href="预览/11-学与沙盒演练弹窗-1440.png"><img loading="lazy" src="预览/11-学与沙盒演练弹窗-1440.png" alt="学与沙盒演练弹窗" /></a><div><strong>11 · 学（首日3项隔离假数据沙盒演练）</strong><a href="http://127.0.0.1:5351/?as=newbie#/learn">去实测 ›</a></div></article>
+      <article><a href="预览/12-帮助抽屉防呆矩阵-1440.png"><img loading="lazy" src="预览/12-帮助抽屉防呆矩阵-1440.png" alt="帮助抽屉防呆矩阵" /></a><div><strong>12 · 内联 ? 帮助抽屉（SOP + KPI + 术语 + 防呆矩阵）</strong><a href="http://127.0.0.1:5351/?as=linqg#/orders">去实测 ›</a></div></article>
+    </div>
+
+    <h2>三、全站 19 个电脑版 Web H5 路由 + PDA 端 + 开发蓝图总表</h2>
+    <div class="table">
+      <table>
+        <thead>
+          <tr><th>分组</th><th>页面 / 产物名称</th><th>入口路由 / 路径</th><th>核心闭环能力说明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>日常作业</td><td>今天</td><td><code>#/today</code></td><td>历史库存阻塞脉搏、标准化WMS实时状态、7态工单流转、60s跨台协同、主管三要素改派</td></tr>
+          <tr><td>日常作业</td><td>订单抓取与聚合</td><td><code>#/orders</code></td><td>5店抓单巡检、RPA漏抓补入、外部单号幂等防重、通卖绑SKU锁库、同客同址一键合单/拆单、波次下发</td></tr>
+          <tr><td>日常作业</td><td>到货签收与上架</td><td><code>#/asn</code></td><td>采购ASN扫运单+手机尾号签收、无主快件入C-03认领、SPU近似尾缀防混警示、双扫码防混上架</td></tr>
+          <tr><td>日常作业</td><td><b>收货验货（爱回收转化版）</b></td><td><code>#/inspect</code></td><td><b>去报价纯客观分级、分步折叠问卷、高清判别图例弹窗、全新原封独立分支、末步多选暗病确认、坏货全检、子母副码生成</b></td></tr>
+          <tr><td>日常作业</td><td><b>波次拣货与出库</b></td><td><code>#/outbound</code></td><td><b>最优路径波次拣货、主机+#BAG+#BOX+原厂SN四码逐一扫绿、拣货后紧急拦截红屏锁死+双扫码退回原储位、热敏面单、三代复验</b></td></tr>
+          <tr><td>库位与总账</td><td><b>WMS 库位·LPN·WIP管理</b></td><td><code>#/locations</code></td><td><b>WH01六大库区24储位矩阵、LPN分格容器箱防丢、摄影/测试/客服WIP工位扫码暂借挂名与原位归架销账、带货禁停防呆</b></td></tr>
+          <tr><td>库位与总账</td><td>库存总账与流水</td><td><code>#/ledger</code></td><td>SPU四态平衡汇总账、SKU一物一码改码级联留痕、不可篡改出入库与纠偏流水CSV、包材安全预警</td></tr>
+          <tr><td>库位与总账</td><td><b>历史库存阻塞清洗 Gallery</b></td><td><code>#/legacy-wash</code></td><td><b>红黄绿售前四道阻塞关卡（缺结构化全检/缺完整视频/缺本机实拍库位图/缺SPU子母码），不设上限当日清零</b></td></tr>
+          <tr><td>库位与总账</td><td>库存实物画廊</td><td><code>#/gallery/all</code></td><td>在库单件红黄绿巡检、缺实拍图显式标「待补图」禁冒充、满28天滞销标红</td></tr>
+          <tr><td>库位与总账</td><td>单件实物详情</td><td><code>#/item/:code</code></td><td>主图缩放、原采购进价只读真源、三种图与库龄折叠档案、单件状态驱动下一步</td></tr>
+          <tr><td>库位与总账</td><td>附属与原盒</td><td><code>#/aux</code></td><td>独立原盒售出分账联动、0元赠品领用登记、老系统历史实物转入强制重拍复检</td></tr>
+          <tr><td>库位与总账</td><td><b>盲盘与批次盘点</b></td><td><code>#/stocktake</code></td><td><b>权责分离10分钟单排货架盲盘（隐藏账面数）、串位一键扫码纠偏库位、WIP工位暂借自动对冲豁免、UHF批次差异主管调账</b></td></tr>
+          <tr><td>非标品控</td><td>异常双轨</td><td><code>#/anomaly</code></td><td>首次发现10分钟三路首报（催办不重置）、纯设备掉线禁退款、货钱双清结案、留货4项锁</td></tr>
+          <tr><td>非标品控</td><td>补图与切片</td><td><code>#/media</code></td><td>缺实拍/库位自动派仓管、显示器壁纸轮播10秒实拍抽帧剔废分3个闲鱼号</td></tr>
+          <tr><td>非标品控</td><td><b>验货标准库（1,042超集）</b></td><td><code>#/standards</code></td><td><b>同品类同拆封状态取最长超集+独有项并集、全新原封vs二手分支对照、主管审核升版且在途单锁旧版不串版</b></td></tr>
+          <tr><td>非标品控</td><td>缺口闭环看板</td><td><code>#/readiness</code></td><td>终极版8大闭环总览 + 禅道 14 卡 183 节点逐条核验跳页实测 + CSV 导出</td></tr>
+          <tr><td>双端与蓝图</td><td><b>iData 50 走动扫码手持端</b></td><td>顶部栏 <code>PDA 走动端</code></td><td><b>一套 Vue3 H5 共码适配 4.7 寸安卓手持终端（收货/上架/拣货/盲盘/WIP借还 5 大拇指模式）+ 全局激光枪声光总线</b></td></tr>
+          <tr><td>双端与蓝图</td><td><b>程序员全链路流程图蓝图</b></td><td><code>全链路流程图与开发蓝图.html</code></td><td><b>端到端泳道流程图、爱回收转化决策树、状态机硬防呆契约、MySQL 8 原表扩充与新增 7 张 WMS 表 DDL 蓝图</b></td></tr>
+          <tr><td>帮助与账号</td><td>学 / 说明书 / 我的</td><td><code>#/learn</code> · <code>#/manual</code> · <code>#/me</code></td><td>新人首日3项沙盒演练门禁、全站SOP与防呆矩阵速查、SQLite不可篡改审计日志</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</body>
+</html>
