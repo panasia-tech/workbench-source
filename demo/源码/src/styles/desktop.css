@@ -1,0 +1,273 @@
+/* 泛亚外部客服工作台 · 桌面版 H5 V3（极简 C 端表层 + 全功能渐进折叠） */
+
+:root {
+  --bg: #f3f5f9;
+  --white: #ffffff;
+  --panel: #ffffff;
+  --panel-alt: #f7f9fc;
+  --ink: #1f2329;
+  --ink2: #4e5969;
+  --mute: #86909c;
+  --line: #e5e8ef;
+  --soft: #eef1f6;
+
+  --pri: #1677ff;
+  --pri-hover: #0958d9;
+  --pri-soft: #e8f3ff;
+  --acc: #1677ff;
+  --acc-soft: #e8f3ff;
+
+  --grn: #00b42a;
+  --grn-soft: #e8ffea;
+  --grn-ink: #00801e;
+
+  --amb: #ff7d00;
+  --amb-soft: #fff7e8;
+  --amb-ink: #b25200;
+
+  --red: #f53f3f;
+  --red-soft: #ffece8;
+  --red-ink: #cf1322;
+
+  --out-bubble: #e8f3ff;
+  --out-border: #c6e2ff;
+  --sh-pop: 0 16px 42px rgba(15, 23, 42, 0.18);
+  --font: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+
+html[data-theme="dark"] {
+  --bg: #0d111a;
+  --white: #161c28;
+  --panel: #161c28;
+  --panel-alt: #1d2535;
+  --ink: #e5e9f0;
+  --ink2: #b4bece;
+  --mute: #7e8ba1;
+  --line: #2a3448;
+  --soft: #242e42;
+
+  --pri: #3b82f6;
+  --pri-hover: #2563eb;
+  --pri-soft: rgba(59, 130, 246, 0.18);
+  --acc: #3b82f6;
+  --acc-soft: rgba(59, 130, 246, 0.18);
+
+  --grn: #22c55e;
+  --grn-soft: rgba(34, 197, 94, 0.16);
+  --grn-ink: #4ade80;
+
+  --amb: #f59e0b;
+  --amb-soft: rgba(245, 158, 11, 0.16);
+  --amb-ink: #fbbf24;
+
+  --red: #ef4444;
+  --red-soft: rgba(239, 68, 68, 0.16);
+  --red-ink: #f87171;
+
+  --out-bubble: rgba(59, 130, 246, 0.2);
+  --out-border: rgba(59, 130, 246, 0.36);
+  --sh-pop: 0 18px 48px rgba(0, 0, 0, 0.55);
+}
+
+html[data-font="large"] {
+  font-size: 15.5px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  font-family: var(--font);
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  min-width: 1024px;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: 0;
+  background: none;
+  padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+}
+
+/* ==== 通用标签 ==== */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--soft);
+  color: var(--ink2);
+  font-size: 11.5px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.tag.acc {
+  background: var(--pri-soft);
+  color: var(--pri);
+}
+.tag.grn {
+  background: var(--grn-soft);
+  color: var(--grn-ink);
+}
+.tag.amb {
+  background: var(--amb-soft);
+  color: var(--amb-ink);
+}
+.tag.red {
+  background: var(--red-soft);
+  color: var(--red-ink);
+}
+.tag.sm {
+  font-size: 10.5px;
+  padding: 1px 6px;
+}
+
+/* ==== 通用轻量按钮 ==== */
+.btn {
+  height: 33px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--ink);
+  font-size: 12.5px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.14s;
+}
+.btn:hover:not(:disabled) {
+  background: var(--soft);
+}
+.btn:disabled {
+  opacity: 0.56;
+  cursor: not-allowed;
+}
+.btn.pri {
+  background: var(--pri);
+  border-color: var(--pri);
+  color: #fff;
+  font-weight: 700;
+}
+.btn.pri:hover:not(:disabled) {
+  background: var(--pri-hover);
+}
+.btn.grn {
+  background: var(--grn);
+  border-color: var(--grn);
+  color: #fff;
+  font-weight: 700;
+}
+.btn.amb {
+  background: var(--amb-soft);
+  border-color: rgba(255, 125, 0, 0.35);
+  color: var(--amb-ink);
+  font-weight: 700;
+}
+.btn.red {
+  background: var(--red);
+  border-color: var(--red);
+  color: #fff;
+  font-weight: 700;
+}
+.btn.soft,
+.btn.soft-acc {
+  background: var(--pri-soft);
+  border-color: rgba(22, 119, 255, 0.25);
+  color: var(--pri);
+  font-weight: 700;
+}
+.btn.sm {
+  height: 28px;
+  padding: 0 9px;
+  font-size: 12px;
+  border-radius: 7px;
+}
+.btn.block,
+.btn.full {
+  width: 100%;
+  height: 36px;
+  white-space: normal;
+}
+
+/* 平台小标 */
+.plat {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.plat-xianyu {
+  background: #ffe600;
+  color: #1f2329;
+}
+.plat-pdd {
+  background: #e02e24;
+  color: #fff;
+}
+.plat-taobao {
+  background: #ff5000;
+  color: #fff;
+}
+.plat-douyin {
+  background: #161823;
+  color: #25f4ee;
+}
+.plat-jd {
+  background: #e1251b;
+  color: #fff;
+}
+
+/* Toast 提示 */
+.toast {
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 220;
+  background: rgba(15, 23, 42, 0.92);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+  white-space: nowrap;
+}
