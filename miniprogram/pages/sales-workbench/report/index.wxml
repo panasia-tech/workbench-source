@@ -1,0 +1,41 @@
+<view class="page-wrap page-wrap--no-tab rp-page">
+  <view class="card">
+    <view class="card-head">报给主管</view>
+    <view class="rp-tip">不确定怎么办，别猜：写一句话说发生了什么。主管处理完，会记成大家都能看的规则。</view>
+    <textarea class="input input--textarea rp-gap" auto-height="{{true}}" placeholder="例：买家说收到的显示器有亮点，但验货照片里没有" value="{{text}}" data-key="text" bindinput="onInput" />
+    <input class="input rp-gap" placeholder="跟哪件货有关（货号，可不填）" value="{{sku}}" data-key="sku" bindinput="onInput" />
+    <button class="btn btn-primary rp-gap" disabled="{{busy}}" bindtap="send">报给主管</button>
+  </view>
+
+  <view wx:if="{{d && d.waiting.length}}" class="card">
+    <view class="card-head">等你回的</view>
+    <view wx:for="{{d.waiting}}" wx:key="id" class="rp-item">
+      <view class="rp-item__t">{{item.text}}</view>
+      <view class="rp-item__m">{{item.by}} · {{item.at}}<text wx:if="{{item.sku_code}}"> · 货号 {{item.sku_code}}</text></view>
+      <textarea class="input input--textarea rp-gap" auto-height="{{true}}" placeholder="该怎么办" value="{{answers[item.id]}}" data-id="{{item.id}}" bindinput="onAnswer" />
+      <view class="rp-row rp-gap">
+        <text class="rp-check {{ruleOf[item.id] ? 'is-on' : ''}}" data-id="{{item.id}}" bindtap="toggleRule">{{ruleOf[item.id] ? '☑' : '☐'}} 记成规则，大家都看得到</text>
+        <button class="btn btn-primary btn-sm rp-btn" data-id="{{item.id}}" bindtap="answer">回复</button>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{d && d.mine.length}}" class="card">
+    <view class="card-head">我报的</view>
+    <view wx:for="{{d.mine}}" wx:key="id" class="rp-item">
+      <view class="rp-item__t">{{item.text}}</view>
+      <view class="rp-item__m">{{item.at}}<text wx:if="{{item.state === 'open'}}" class="rp-wait"> · 等主管回</text></view>
+      <view wx:if="{{item.answer}}" class="rp-ans">{{item.answered_by}}：{{item.answer}}</view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-head">记成规则的</view>
+    <view wx:if="{{d && !d.rules.length}}" class="rp-tip">还没有。</view>
+    <view wx:for="{{d ? d.rules : []}}" wx:key="id" class="rp-item">
+      <view class="rp-item__t">{{item.text}}</view>
+      <view class="rp-ans">{{item.answer}}</view>
+      <view class="rp-item__m">{{item.answered_by}} · {{item.answered_at}}</view>
+    </view>
+  </view>
+</view>

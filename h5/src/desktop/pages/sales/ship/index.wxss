@@ -1,0 +1,60 @@
+/* 订单发货（电脑版模板 index.wxml 用；通用样式在 src/styles/desktop.css） */
+.sp-dk-main {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.sp-dk-strong {
+  font-weight: 600;
+}
+
+.sp-dk-price {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.sp-dk-side {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sp-dk-ok {
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: #ecfdf5;
+  color: #047857;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.sp-dk-err {
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 13px;
+}
+
+.sp-dk-wait {
+  padding: 24px 8px;
+}
+
+.sp-dk-review {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1d4ed8;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* 内容不满一屏时操作条也贴在底部 */
+.sp-dk-bar {
+  margin-top: auto;
+}

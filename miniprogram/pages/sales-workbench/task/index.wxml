@@ -1,0 +1,67 @@
+<view class="page-wrap page-wrap--no-tab tk-page">
+  <view wx:if="{{!t}}" class="list-footer">加载中…</view>
+  <block wx:else>
+    <view class="card">
+      <view class="tk-head">
+        <text class="tag {{tagClass}}">{{t.state}}</text>
+        <text class="tag {{t.late ? 'tag-danger' : ''}}">交付 {{t.due}}{{t.late ? '（已过）' : ''}}</text>
+      </view>
+      <view class="tk-title">{{t.title}}</view>
+      <view class="tk-k">范围（做到哪算完）</view>
+      <view class="tk-v">{{t.scope}}</view>
+      <view class="tk-meta">{{t.created_by}} 派给 {{t.assignee}} · {{t.created_at}}<text wx:if="{{t.sku_code}}"> · 货号 {{t.sku_code}}</text></view>
+    </view>
+
+    <view wx:if="{{t.handoff}}" class="card tk-handoff">
+      <view class="tk-k">上一个人留的话</view>
+      <view class="tk-v">{{t.handoff}}</view>
+    </view>
+    <view wx:if="{{t.state === '等待外部'}}" class="card tk-note">在等 {{t.wait_who}}：{{t.wait_why}}<text wx:if="{{t.wait_until}}">，{{t.wait_until}} 复查</text></view>
+    <view wx:elif="{{t.note && (t.state === '退回补正' || t.state === '受阻待接管' || t.state === '待验收')}}" class="card tk-note {{t.state === '待验收' ? '' : 'tk-note--red'}}">
+      {{t.state === '退回补正' ? '退回意见' : t.state === '受阻待接管' ? '卡在' : '交上来的'}}：{{t.note}}
+    </view>
+
+    <view wx:if="{{t.can.length}}" class="card">
+      <view class="tk-acts">
+        <button wx:if="{{can.accept}}" class="btn btn-primary btn-sm" data-a="accept" bindtap="tapAct">接收</button>
+        <button wx:if="{{can.submit}}" class="btn btn-primary btn-sm" data-a="submit" bindtap="tapAct">{{t.state === '退回补正' ? '补完再交' : '交验收'}}</button>
+        <button wx:if="{{can.wait}}" class="btn btn-outline btn-sm" data-a="wait" bindtap="tapAct">等待外部</button>
+        <button wx:if="{{can.resume}}" class="btn btn-primary btn-sm" data-a="resume" bindtap="tapAct">恢复执行</button>
+        <button wx:if="{{can.block}}" class="btn btn-outline btn-sm" data-a="block" bindtap="tapAct">受阻，要主管接管</button>
+        <button wx:if="{{can.approve}}" class="btn btn-success btn-sm" data-a="approve" bindtap="tapAct">验收通过</button>
+        <button wx:if="{{can.reject}}" class="btn btn-outline btn-sm" data-a="reject" bindtap="tapAct">退回补正</button>
+        <button wx:if="{{can.takeover}}" class="btn btn-primary btn-sm" data-a="takeover" bindtap="tapAct">接管恢复</button>
+        <button wx:if="{{can.reassign}}" class="btn btn-outline btn-sm" data-a="reassign" bindtap="tapAct">改派</button>
+        <button wx:if="{{can.cancel}}" class="btn btn-outline btn-sm tk-cancel" data-a="cancel" bindtap="tapAct">撤销</button>
+      </view>
+
+      <view wx:if="{{form}}" class="tk-form">
+        <block wx:if="{{form === 'wait'}}">
+          <input class="input" placeholder="等谁（仓管 / 客户 / 同行）" value="{{waitWho}}" data-key="waitWho" bindinput="onInput" />
+          <input class="input tk-gap" placeholder="等什么" value="{{waitWhy}}" data-key="waitWhy" bindinput="onInput" />
+          <input class="input tk-gap" placeholder="哪天复查（可不写）" value="{{waitUntil}}" data-key="waitUntil" bindinput="onInput" />
+        </block>
+        <block wx:else>
+          <picker wx:if="{{form === 'reassign'}}" mode="selector" range="{{staffNames}}" value="{{toIdx}}" bindchange="onPickTo">
+            <view class="input tk-pick">{{toIdx >= 0 ? '派给 ' + staffNames[toIdx] : '选派给谁'}}</view>
+          </picker>
+          <textarea class="input input--textarea tk-gap" auto-height="{{true}}" placeholder="{{formHint}}" value="{{note}}" data-key="note" bindinput="onInput" />
+        </block>
+        <view class="tk-acts tk-gap">
+          <button class="btn btn-primary btn-sm" data-a="{{form}}" disabled="{{busy}}" bindtap="tapAct">确定</button>
+          <button class="btn btn-outline btn-sm" bindtap="cancelForm">算了</button>
+        </view>
+      </view>
+    </view>
+    <view wx:elif="{{t.state === '待验收' || t.state === '受阻待接管'}}" class="card tk-wait">交上去了，等主管{{t.state === '待验收' ? '验收' : '接管'}}。</view>
+
+    <view class="card">
+      <view class="card-head">记录</view>
+      <view wx:for="{{t.log}}" wx:key="at" class="tk-log">
+        <text class="tk-log__at">{{item.at}}</text>
+        <text class="tk-log__who">{{item.by}} {{item.action}}</text>
+        <text wx:if="{{item.note}}" class="tk-log__note">{{item.note}}</text>
+      </view>
+    </view>
+  </block>
+</view>

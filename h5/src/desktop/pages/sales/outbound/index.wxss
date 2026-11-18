@@ -1,0 +1,113 @@
+/* 自提 / 切单出库（电脑版模板 index.wxml 用；通用样式在 src/styles/desktop.css） */
+.ob-dk-side {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.ob-dk-headlink {
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.ob-dk-empty {
+  padding: 20px 8px;
+}
+
+.ob-dk-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  font-size: 18px;
+}
+
+.ob-dk-gap {
+  margin-top: 12px;
+}
+
+.ob-dk-ok {
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: #ecfdf5;
+  color: #047857;
+  font-size: 13px;
+}
+
+.ob-dk-err {
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 13px;
+}
+
+.ob-dk-evidence {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ob-dk-add {
+  width: 96px;
+  height: 96px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border: 1px dashed #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  color: #6b7280;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.ob-dk-add:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+.ob-dk-add__plus {
+  font-size: 22px;
+  line-height: 1;
+}
+
+/* textarea 默认 300px 宽（同小程序），电脑上撑满 */
+.ob-dk-textarea {
+  width: 100%;
+  height: 72px;
+}
+
+.ob-dk-pay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.ob-dk-qr {
+  width: 220px;
+  height: 220px;
+}
+
+.ob-dk-amount {
+  font-size: 24px;
+  font-weight: 600;
+  color: #dc2626;
+}
+
+.ob-dk-countdown {
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 内容不满一屏时操作条也贴在底部 */
+.ob-dk-bar {
+  margin-top: auto;
+}

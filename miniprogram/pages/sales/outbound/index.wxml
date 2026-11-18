@@ -1,0 +1,140 @@
+<view class="page-wrap page-wrap--no-tab sales-outbound-page">
+  <view class="card">
+    <view class="card-head">{{pageTitle}}</view>
+    <view class="form-note">{{pageNote}}</view>
+
+    <view class="form-group form-group--code">
+      <text class="form-label">货号<text class="req">*</text></text>
+      <view class="code-input-field">
+        <input
+          class="input input--code"
+          placeholder="扫码或输入货号"
+          data-key="sku_code"
+          value="{{form.sku_code}}"
+          bindinput="onInput"
+          bindblur="onCodeBlur"
+        />
+        <button class="btn btn-outline btn-sm btn-block code-input-scan" bindtap="scanSku">扫码填入</button>
+      </view>
+
+      <view wx:if="{{skuLoading}}" class="sku-brief sku-brief--loading">查询商品中…</view>
+      <view wx:elif="{{skuError}}" class="sku-brief sku-brief--error">{{skuError}}</view>
+      <view wx:elif="{{sku}}" class="sku-brief" bindtap="goSkuDetail">
+        <view class="sku-brief-thumb">
+          <media-thumb
+            wx:if="{{sku.cover_thumb_url || sku.cover_url}}"
+            url="{{sku.cover_thumb_url || sku.cover_url}}"
+            preview-url="{{sku.cover_url}}"
+            size="small"
+          />
+          <view wx:else class="sku-brief-icon">{{sku.product_name ? sku.product_name[0] : '货'}}</view>
+        </view>
+        <view class="sku-brief-info">
+          <view class="sku-brief-name">{{sku.product_name}}<text wx:if="{{sku.spec}}"> · {{sku.spec}}</text></view>
+          <view class="sku-brief-sub">{{sku.sku_code}}<text wx:if="{{sku.suggest_price}}"> · 参考价 ¥{{sku.suggest_price}}</text></view>
+          <view wx:if="{{sku.on_shelf_count > 0}}" class="sku-brief-warn">仍在 {{sku.on_shelf_count}} 个店铺在架，请先全部下架后再自提</view>
+          <view wx:else class="sku-brief-ok">已全部下架，可自提出库</view>
+        </view>
+        <text class="sku-brief-arrow">详情 ›</text>
+      </view>
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">买家昵称<text class="req">*</text></text>
+      <input class="input" placeholder="买家昵称" data-key="buyer_name" value="{{form.buyer_name}}" bindinput="onInput" />
+    </view>
+
+    <view class="form-row form-row--short">
+      <view class="form-group">
+        <text class="form-label">售价<text class="req">*</text></text>
+        <input class="input input--price" placeholder="0.00" type="digit" data-key="sale_price" value="{{form.sale_price}}" bindinput="onInput" />
+      </view>
+      <view class="form-group" wx:if="{{form.outbound_type === 'SWITCH'}}">
+        <text class="form-label">快递费</text>
+        <input class="input input--price" placeholder="0.00" type="digit" data-key="express_fee" value="{{form.express_fee}}" bindinput="onInput" />
+      </view>
+    </view>
+
+    <block wx:if="{{form.outbound_type === 'SWITCH'}}">
+      <view class="form-group form-group--code">
+        <text class="form-label">快递运单号<text class="req">*</text></text>
+        <input class="input input--code" placeholder="切单发货运单号" data-key="tracking_no" value="{{form.tracking_no}}" bindinput="onInput" />
+      </view>
+      <view class="form-group form-group--code">
+        <text class="form-label">手机后四位</text>
+        <input
+          class="input input--code input--phone-suffix"
+          placeholder="顺丰查询选填，收/寄件人手机号后 4 位"
+          type="number"
+          maxlength="4"
+          data-key="tracking_phone_suffix"
+          value="{{form.tracking_phone_suffix}}"
+          bindinput="onPhoneSuffixInput"
+        />
+      </view>
+      <view class="form-group">
+        <text class="form-label">闲鱼服务费</text>
+        <input class="input input--price" placeholder="订单页上的服务费，还没出来先空着" type="digit" data-key="platform_fee" value="{{form.platform_fee}}" bindinput="onInput" />
+      </view>
+      <!-- 无忧卖暂时下线(2026-09):开关隐藏,form.worry_free 恒为 false;恢复时解开注释即可
+      <view class="form-group form-group--switch">
+        <view class="switch-label">
+          <text class="form-label">无忧卖（2.6% 手续费）</text>
+          <text class="label-hint">关闭按普通订单 1.6% 计手续费</text>
+        </view>
+        <switch checked="{{form.worry_free}}" bindchange="onWorryFreeChange" />
+      </view>
+      -->
+    </block>
+
+    <!-- 成交凭证：自提与切单发货都需留证（至少 1 个，图片/视频） -->
+    <view class="section-label">成交凭证<text class="req">*</text>（至少 1 个）</view>
+    <view class="upload-section">
+      <text class="label-hint">聊天 / 收款 / 物流截图等成交留证（已传 {{form.evidence_urls.length}} 个）</text>
+      <view class="upload-zone {{form.evidence_urls.length ? 'upload-zone--compact' : ''}}" bindtap="uploadEvidence">
+        <block wx:if="{{!form.evidence_urls.length}}">
+          <view class="uz-camera"></view>
+          <view class="uz-text">上传成交凭证</view>
+          <view class="uz-hint">图片 / 视频 · 可多次追加</view>
+        </block>
+        <block wx:else>
+          <media-gallery urls="{{form.evidence_urls}}" display-urls="{{evidenceDisplayUrls}}" thumb-size="medium" />
+          <view class="upload-replace-hint">点击继续追加</view>
+        </block>
+      </view>
+    </view>
+
+    <block wx:if="{{form.outbound_type === 'PICKUP'}}">
+      <view wx:if="{{pay}}" class="pay-qr-section">
+        <view class="section-label">买家扫码支付</view>
+        <view class="pay-qr-box">
+          <image class="pay-qr-img" src="{{pay.qr_image}}" mode="aspectFit" show-menu-by-longpress="{{true}}" />
+          <view class="pay-qr-amount">¥{{form.sale_price}}</view>
+          <view class="pay-qr-tip">请买家用支付宝扫码支付，支付成功后自动出库</view>
+          <view class="pay-qr-countdown">剩余支付时间 {{countdownText}}</view>
+          <view class="pay-qr-status">{{polling ? '等待支付中…' : ''}}</view>
+        </view>
+        <button class="btn btn-outline btn-block" bindtap="cancelPayment">取消并重新生成</button>
+      </view>
+    </block>
+
+    <view class="form-group">
+      <text class="form-label">备注</text>
+      <textarea class="input input--textarea" auto-height="{{true}}" placeholder="可选" data-key="remark" value="{{form.remark}}" bindinput="onInput" />
+    </view>
+
+    <button
+      wx:if="{{form.outbound_type === 'PICKUP' && !pay}}"
+      class="btn-primary btn-block submit-btn"
+      bindtap="generatePayment"
+      loading="{{submitting}}"
+      disabled="{{sku && sku.on_shelf_count > 0}}"
+    >{{sku && sku.on_shelf_count > 0 ? '请先从各账号下架' : '生成收款码'}}</button>
+    <button
+      wx:if="{{form.outbound_type === 'SWITCH'}}"
+      class="btn-primary btn-block submit-btn"
+      bindtap="submit"
+      loading="{{submitting}}"
+    >确认出库</button>
+  </view>
+</view>

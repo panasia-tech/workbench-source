@@ -1,0 +1,118 @@
+<wxs module="fmt" src="../../utils/format.wxs" />
+
+<!-- 「今天」：问候 + 三张卡 + 一列任务（先红后黄），照销售工作台交付包的排法，浅色 -->
+<view class="page-wrap page-wrap--no-tab swb-page">
+  <view class="swb-head">
+    <view class="swb-eyebrow">{{ov && ov.me ? (ov.me.department || '销售部') + ' · ' + ov.me.role_label : ''}}</view>
+    <view class="swb-hello">{{greet}}{{ov && ov.me ? '，' + ov.me.name : ''}}</view>
+    <view class="swb-lead">
+      红的先做，黄的有空看，没列出来的不用管。从最上面一条开始。
+      <text class="swb-q swb-help-btn" bindtap="toggleHelp">?</text>
+    </view>
+    <view wx:if="{{showHelp}}" class="swb-help">
+      <view>一件货只占一行，写的是它最急的那个问题，点「去处理」直接去处理那一项；还有别的问题写「另有 N 项」，到「库存商品」里看全。</view>
+      <view>实物当天 17:00 前卖出的当天 17:00 前发，之后卖出的次日 17:00 前发，过了就变红。</view>
+      <view>每种颜色最多列 {{30}} 条，按最急的排，其余去「库存商品」看。做完一条，回到这页就少一条。</view>
+    </view>
+  </view>
+
+  <view class="swb-acts">
+    <view class="swb-act swb-report" bindtap="goReport">遇到没见过的情况</view>
+    <view class="swb-act swb-dev" bindtap="goDev">提给开发</view>
+  </view>
+
+  <view wx:if="{{ov && ov.is_sup}}" class="swb-assign" bindtap="goAssign">
+    <text class="swb-assign__t">加派任务</text>
+    <text class="swb-assign__s">要人判断的活从这里派给销售，派出去的在这里验收</text>
+  </view>
+
+  <view wx:if="{{locked}}" class="swb-gate">
+    <view class="swb-gate__text">真实任务先锁着：先做完上手练习，做完才能上架、审批、发货。</view>
+    <view class="swb-gate__btn" bindtap="goPractice">去练习</view>
+  </view>
+
+  <view class="swb-cards">
+    <view class="swb-card">
+      <view class="swb-card__k">今天的提成</view>
+      <view class="swb-card__big">{{ov && ov.commission !== null ? '¥' + fmt.money(ov.commission) : '—'}}</view>
+      <view class="swb-card__k2">本月 {{ov && ov.commission_month !== null ? '¥' + fmt.money(ov.commission_month) : '—'}}</view>
+    </view>
+    <view class="swb-card" bindtap="goSales">
+      <view class="swb-card__k">今日成交</view>
+      <view class="swb-card__big">{{ov && ov.today_deals !== null ? ov.today_deals : '—'}}<text class="swb-card__unit" wx:if="{{ov && ov.today_deals !== null}}"> 件</text></view>
+      <view class="swb-card__k2">{{ov && ov.today_amount !== null ? '¥' + fmt.money(ov.today_amount) : '金额拿不到'}} · 在架 {{ov && ov.listed !== null ? ov.listed : '—'}} 条</view>
+    </view>
+    <view class="swb-card swb-card--wide">
+      <view class="swb-card__k">我今天的任务</view>
+      <view class="swb-card__big">{{red}}<text class="swb-card__unit"> 件红</text></view>
+      <view class="swb-card__tags">
+        <text class="swb-pill swb-pill--yellow">黄 {{yellow}}</text>
+        <text class="swb-pill">共 {{red + yellow}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{loading && !loaded}}" class="list-footer">加载中…</view>
+
+  <block wx:if="{{loaded}}">
+    <view class="swb-grp">
+      <view class="swb-dot swb-dot--red"></view>
+      <text>要处理，先做这些</text>
+      <text class="swb-grp__n">{{red}}</text>
+    </view>
+    <view wx:if="{{!reds.length}}" class="swb-empty">今天没有红灯。</view>
+    <view
+      wx:for="{{reds}}"
+      wx:key="key"
+      class="swb-row swb-row--red"
+      data-url="{{item.url}}"
+      data-off="{{item.off}}"
+      bindtap="openTodo"
+    >
+      <view class="swb-row__ic">✕</view>
+      <image wx:if="{{item.thumb}}" class="swb-row__th" src="{{item.thumb}}" mode="aspectFill" lazy-load="{{true}}" />
+      <view wx:else class="swb-row__th swb-row__th--none">{{item.tag}}</view>
+      <view class="swb-row__mid">
+        <view class="swb-row__line"><text class="swb-tag swb-tag--red">{{item.tag}}</text>{{item.title}}</view>
+        <view wx:if="{{item.sub}}" class="swb-row__sub">{{item.sub}}</view>
+      </view>
+      <view class="swb-row__btn {{item.off ? 'is-off' : ''}}">{{item.off ? '🔒 ' : ''}}{{item.button}}</view>
+    </view>
+    <view wx:if="{{redMore}}" class="swb-more">还有 {{redMore}} 件红的没列出来（按最急的排）。<text class="swb-link" data-level="red" bindtap="goGoods">去「库存商品」看全部</text></view>
+
+    <view class="swb-grp">
+      <view class="swb-dot swb-dot--yellow"></view>
+      <text>注意，有空看看</text>
+      <text class="swb-grp__n">{{yellow}}</text>
+    </view>
+    <view wx:if="{{!ambs.length}}" class="swb-empty">没有要留意的。</view>
+    <view
+      wx:for="{{ambs}}"
+      wx:key="key"
+      class="swb-row swb-row--yellow"
+      data-url="{{item.url}}"
+      data-off="{{item.off}}"
+      bindtap="openTodo"
+    >
+      <view class="swb-row__ic">!</view>
+      <image wx:if="{{item.thumb}}" class="swb-row__th" src="{{item.thumb}}" mode="aspectFill" lazy-load="{{true}}" />
+      <view wx:else class="swb-row__th swb-row__th--none">{{item.tag}}</view>
+      <view class="swb-row__mid">
+        <view class="swb-row__line"><text class="swb-tag swb-tag--yellow">{{item.tag}}</text>{{item.title}}</view>
+        <view wx:if="{{item.sub}}" class="swb-row__sub">{{item.sub}}</view>
+      </view>
+      <view class="swb-row__btn swb-row__btn--plain {{item.off ? 'is-off' : ''}}">{{item.off ? '🔒 ' : ''}}{{item.button}}</view>
+    </view>
+    <view wx:if="{{ambMore}}" class="swb-more">还有 {{ambMore}} 件黄的没列出来。<text class="swb-link" data-level="yellow" bindtap="goGoods">去「库存商品」看全部</text></view>
+  </block>
+
+  <view class="card swb-accs" wx:if="{{accounts.length}}">
+    <view class="card-head">{{ov.accounts_scope === 'mine' ? '我的号' : '全部号'}}</view>
+    <view wx:for="{{accounts}}" wx:key="nick" class="swb-acc" bindtap="goChat">
+      <view class="swb-acc__nick">{{item.nick}}</view>
+      <view class="swb-acc__meta">
+        在架 {{item.listed}}<text wx:if="{{item.waiting}}" class="swb-acc__wait"> · {{item.waiting}} 个在等</text>
+      </view>
+    </view>
+  </view>
+</view>

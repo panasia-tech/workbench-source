@@ -1,0 +1,116 @@
+<!-- 一件货：照销售工作台交付包（浅色）——图 + 问题箱 + 四个价，更多详情折叠，下面横排五步、点哪步看哪步 -->
+<view class="page-wrap page-wrap--no-tab si-page">
+  <view wx:if="{{loading}}" class="list-footer">加载中…</view>
+  <block wx:if="{{d}}">
+    <view class="si-hero">
+      <view class="si-gal">
+        <view class="si-pic si-pic--{{d.card.level}}">
+          <image wx:if="{{d.photos.length}}" class="si-pic__img" src="{{d.photos[cur]}}" mode="aspectFill" />
+          <view wx:else class="si-pic__none"><text class="si-pic__none-t">待补图</text><text>这件货没有验货实拍图，不拿别的图占位</text></view>
+          <text wx:if="{{d.photos.length}}" class="si-pic__kind">实拍图</text>
+        </view>
+        <view wx:if="{{d.photos.length > 1}}" class="si-thumbs">
+          <image wx:for="{{d.photos}}" wx:key="*this" class="si-thumb {{index === cur ? 'is-on' : ''}}" src="{{item}}" mode="aspectFill" data-i="{{index}}" bindtap="pickPhoto" />
+        </view>
+      </view>
+
+      <view class="si-info">
+        <view class="si-tags">
+          <text class="si-badge si-badge--{{d.card.level}}">{{d.badge}}</text>
+          <text class="si-tag si-tag--dark">{{d.card.locked ? '锁单' : (d.card.listed ? '在售' : '在库')}}</text>
+          <text wx:if="{{d.facts.brand}}" class="si-tag">{{d.facts.brand}}</text>
+        </view>
+        <view class="si-name">{{d.card.product_name}}</view>
+        <view class="si-codes">货号 <text class="si-b">{{d.card.sku_code}}</text>　库位 <text class="si-b">{{d.card.location_code || '—'}}</text>　成色 <text class="si-b">{{d.facts.condition_grade || '—'}}</text></view>
+
+        <view class="si-issues si-issues--{{d.card.level}}">
+          <view class="si-issues__t">{{d.card.issues.length ? '现在有 ' + d.card.issues.length + ' 件事要看' : '这件货没有要处理的事'}}</view>
+          <view wx:for="{{d.card.issues}}" wx:key="text" class="si-issue" data-url="{{item.url}}" bindtap="go">
+            <text class="si-dot si-dot--{{item.level}}"></text>
+            <text class="si-issue__text">{{item.text}}</text>
+            <text class="si-link">去看 ›</text>
+          </view>
+          <view wx:if="{{!d.card.issues.length}}" class="si-ok">价、图、审批、库龄都在正常范围。</view>
+        </view>
+
+        <view class="si-facts">
+          <view class="si-fact"><view class="si-fact__k">成本</view><view class="si-fact__v">{{d.facts.cost_price ? '¥' + d.facts.cost_price : '没有'}}</view></view>
+          <view class="si-fact"><view class="si-fact__k">最低价</view><view class="si-fact__v">{{d.facts.floor_price ? '¥' + d.facts.floor_price : '—'}}</view><view class="si-fact__s">成本 × {{d.facts.min_cost_ratio}}</view></view>
+          <view class="si-fact"><view class="si-fact__k">建议价</view><view class="si-fact__v">{{d.facts.suggest_price ? '¥' + d.facts.suggest_price : '没有'}}</view></view>
+          <view class="si-fact"><view class="si-fact__k">行情价</view><view class="si-fact__v">{{d.facts.market_price ? '¥' + d.facts.market_price : '没有'}}</view><view class="si-fact__s">{{d.facts.market_price ? d.facts.market_basis : '爬虫还没爬到'}}</view></view>
+          <view class="si-fact si-fact--link" data-url="{{d.facts.clean_url}}" bindtap="go"><view class="si-fact__k">清洗价</view><view class="si-fact__v {{d.facts.clean_price ? 'si-green' : 'si-muted'}}">{{d.facts.clean_price ? '¥' + d.facts.clean_price.price : '没有'}}</view><view class="si-fact__s si-link">{{d.facts.clean_price ? 'v' + d.facts.clean_price.version + ' · 去看 ›' : '去清洗 ›'}}</view></view>
+        </view>
+      </view>
+    </view>
+
+    <view class="si-card si-more">
+      <view class="si-more__head" bindtap="toggleMore">
+        <text class="si-more__t">更多详情</text>
+        <text wx:if="{{d.cycleText}}" class="si-chip si-chip--{{d.card.age_stage}}">库龄：{{d.cycleText}}</text>
+        <text class="si-chip">在架 {{d.card.listed}}/{{d.card.shop_total}} 个号</text>
+        <text class="si-chip">实拍 {{d.card.photo_count}} · 库位图 {{d.card.location_count}}</text>
+        <text class="si-link si-more__arrow">{{showMore ? '收起' : '展开'}}</text>
+      </view>
+      <view wx:if="{{showMore}}" class="si-more__body">
+        <view class="si-row"><text class="si-row__k">品牌型号</text><text>{{d.facts.brand || '—'}} {{d.facts.model || ''}}</text></view>
+        <view class="si-row"><text class="si-row__k">来源</text><text>{{d.card.source || '—'}}</text></view>
+        <view class="si-row" bindtap="goDetail"><text class="si-row__k">完整商品详情（流转、关联单号）</text><text class="si-link">去看 ›</text></view>
+      </view>
+    </view>
+
+    <view class="si-card si-flow">
+      <view class="si-flow__head">
+        <text class="si-flow__t">下一步</text>
+        <text class="si-flow__s">一步一步来，灰色的按钮会告诉你为什么</text>
+        <text class="si-q" bindtap="toggleHelp">?</text>
+      </view>
+      <view wx:if="{{showHelp}}" class="si-help">补齐信息 → 每个号定价选图 → 审批（自己提交的要别人批，低于最低价只有管理员能批）→ 发布上架 → 卖出后发货。点上面的圆圈看那一步；没轮到的步骤说明先做哪步。</view>
+
+      <view class="si-steps">
+        <view wx:for="{{d.steps}}" wx:key="no" class="si-st si-st--{{item.state}} {{sel === item.no ? 'is-sel' : ''}}" data-no="{{item.no}}" bindtap="pickStep">
+          <view class="si-st__i">{{item.done ? '✓' : item.no}}</view>
+          <view class="si-st__t">{{item.title}}</view>
+        </view>
+      </view>
+
+      <view wx:if="{{step}}" class="si-pn">
+        <view class="si-pn__t">{{step.title}}<text wx:if="{{step.skipped}}" class="si-skip">跳过</text><text wx:elif="{{step.state === 'done'}}" class="si-done">做完了</text></view>
+        <view wx:if="{{hint}}" class="si-pn__n">{{hint}}</view>
+        <view wx:else class="si-pn__n {{step.state === 'locked' ? 'si-pn__n--lock' : ''}}">{{step.state === 'locked' ? '🔒 ' + step.lock : step.note}}</view>
+        <view wx:if="{{step.no === 2 && d.shops}}" class="si-pn__rule">成本 {{d.facts.cost_price ? '¥' + d.facts.cost_price : '没有'}}　最低价 {{d.facts.floor_price ? '¥' + d.facts.floor_price : '—'}}（成本 × {{d.facts.min_cost_ratio}}）　行情价 {{d.facts.market_price ? '¥' + d.facts.market_price : '没有'}}。各号的图不能重复。</view>
+
+        <view wx:if="{{rows.length}}" class="si-shops">
+          <view wx:for="{{rows}}" wx:key="id" class="si-shop si-shop--{{item.tone}}">
+            <view class="si-shop__h">
+              <text class="si-shop__n">{{item.label}}</text>
+              <text class="si-stag si-stag--{{item.tone}}">{{item.state_label}}</text>
+            </view>
+            <view class="si-shop__p">{{item.price ? '售价 ¥' + item.price : '还没填价'}}<text wx:if="{{item.below_floor}}" class="si-warn-red">　低于最低价</text><text wx:elif="{{item.high}}" class="si-warn-y">　高于成本 5 倍</text></view>
+            <view class="si-shop__imgs">
+              <image wx:for="{{item.thumbs}}" wx:for-item="u" wx:key="*this" class="si-shop__img" src="{{u}}" mode="aspectFill" />
+              <text wx:if="{{!item.thumbs.length}}" class="si-muted">还没选图</text>
+              <text wx:elif="{{item.image_count > item.thumbs.length}}" class="si-muted">+{{item.image_count - item.thumbs.length}}</text>
+            </view>
+            <view wx:if="{{item.note && (item.below_floor || item.state === 'SUBMITTED')}}" class="si-shop__note">{{item.below_floor ? '为什么低价' : '备注'}}：{{item.note}}</view>
+            <view wx:if="{{item.review_note && item.state === 'REJECTED'}}" class="si-shop__note">退回原因：{{item.review_note}}</view>
+            <view wx:if="{{item.problem}}" class="si-shop__note">{{item.problem}}</view>
+            <view wx:if="{{item.submitted_by_name && item.state === 'SUBMITTED'}}" class="si-muted si-shop__by">{{item.submitted_by_name}} 提交</view>
+            <view wx:if="{{step.no === 3 && item.state === 'SUBMITTED'}}" class="si-shop__acts">
+              <view class="si-btn {{item.reviewLock ? 'si-btn--off' : 'si-btn--ok'}}" data-id="{{item.id}}" data-label="{{item.label}}" data-lock="{{item.reviewLock}}" bindtap="approve">通过</view>
+              <view class="si-btn si-btn--plain" data-id="{{item.id}}" data-label="{{item.label}}" bindtap="reject">退回</view>
+            </view>
+            <view wx:if="{{item.reviewLock}}" class="si-muted si-shop__by">{{item.reviewLock}}</view>
+          </view>
+        </view>
+        <view wx:elif="{{(step.no === 3 || step.no === 4) && d.shops}}" class="si-muted si-pn__empty">{{step.no === 3 ? '现在没有等审批的号。' : '还没有批过的号可以发。'}}</view>
+
+        <view class="si-pn__acts">
+          <view wx:if="{{step.state === 'locked'}}" class="si-btn si-btn--off" data-lock="{{step.lock}}" bindtap="tapLocked">{{step.button || '没轮到'}}</view>
+          <view wx:elif="{{step.url && step.state === 'current'}}" class="si-btn" data-url="{{step.url}}" bindtap="go">{{step.button}}</view>
+          <view wx:elif="{{step.url && !step.skipped}}" class="si-btn si-btn--plain" data-url="{{step.url}}" bindtap="go">{{step.button}}</view>
+          <view wx:if="{{step.no === 5 && d.sold_pending}}" class="si-btn si-btn--plain" bindtap="buyerCancelled">买家取消了</view>
+        </view>
+      </view>
+    </view>
+  </block>
+</view>

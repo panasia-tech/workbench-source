@@ -1,0 +1,25 @@
+.status-tabs {
+  white-space: nowrap;
+  margin: 16rpx 0;
+}
+
+.status-tab {
+  display: inline-block;
+  padding: 12rpx 32rpx;
+  margin-right: 16rpx;
+  border-radius: 32rpx;
+  font-size: 26rpx;
+  color: var(--text-primary);
+  background: #fff;
+  border: 2rpx solid var(--color-primary-border);
+}
+
+.status-tab--active {
+  color: #fff;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.li-sub--time {
+  color: #9CA3AF;
+}

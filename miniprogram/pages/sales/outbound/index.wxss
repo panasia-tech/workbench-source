@@ -1,0 +1,237 @@
+/* 无忧卖开关行：标签左、开关右 */
+.sales-outbound-page .form-group--switch {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sales-outbound-page .form-group--switch .switch-label {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+  min-width: 0;
+}
+
+.sales-outbound-page .form-note {
+  font-size: 24rpx;
+  color: #6B7280;
+  margin: -8rpx 0 24rpx;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.sales-outbound-page .label-hint {
+  display: block;
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #6B7280;
+  margin: 4rpx 0 12rpx;
+}
+
+.sales-outbound-page .upload-section {
+  margin-bottom: 24rpx;
+}
+
+.sales-outbound-page .upload-zone {
+  margin-bottom: 0;
+  min-height: 160rpx;
+  padding: 32rpx 28rpx;
+  border-radius: 24rpx;
+  border: 2rpx dashed #E5E7EB;
+  background: #F9FAFB;
+}
+
+.sales-outbound-page .upload-zone:active {
+  border-color: #2563EB;
+  background: #EFF6FF;
+}
+
+.sales-outbound-page .upload-zone--compact {
+  min-height: auto;
+  padding: 24rpx;
+}
+
+.sales-outbound-page .upload-zone--has-image {
+  padding: 24rpx;
+  border-style: solid;
+  border-color: #BFDBFE;
+}
+
+.sales-outbound-page .uz-camera {
+  width: 88rpx;
+  height: 72rpx;
+  margin: 0 auto 20rpx;
+  background: #E5E7EB;
+  border-radius: 12rpx;
+  position: relative;
+}
+
+.sales-outbound-page .uz-camera::after {
+  content: '';
+  position: absolute;
+  top: -12rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32rpx;
+  height: 12rpx;
+  background: #D1D5DB;
+  border-radius: 6rpx 6rpx 0 0;
+}
+
+.sales-outbound-page .upload-preview-slot {
+  border-radius: 24rpx;
+  overflow: hidden;
+  max-height: 400rpx;
+}
+
+.sales-outbound-page .upload-replace-hint {
+  font-size: 22rpx;
+  color: #6B7280;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 16rpx;
+}
+
+.sales-outbound-page .sku-brief {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  margin-top: 16rpx;
+  padding: 20rpx;
+  background: #F8FAFC;
+  border: 2rpx solid #E5E7EB;
+  border-radius: 16rpx;
+}
+
+.sales-outbound-page .sku-brief--loading,
+.sales-outbound-page .sku-brief--error {
+  display: block;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #6B7280;
+}
+
+.sales-outbound-page .sku-brief--error {
+  color: #DC2626;
+  background: #FEF2F2;
+  border-color: #FECACA;
+}
+
+.sales-outbound-page .sku-brief-thumb {
+  flex: none;
+  width: 96rpx;
+  height: 96rpx;
+}
+
+.sales-outbound-page .sku-brief-icon {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 12rpx;
+  background: #E5E7EB;
+  color: #6B7280;
+  font-size: 36rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sales-outbound-page .sku-brief-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.sales-outbound-page .sku-brief-name {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #111827;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sales-outbound-page .sku-brief-sub {
+  font-size: 22rpx;
+  color: #6B7280;
+  margin-top: 4rpx;
+}
+
+.sales-outbound-page .sku-brief-warn {
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #DC2626;
+  margin-top: 6rpx;
+}
+
+.sales-outbound-page .sku-brief-ok {
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #059669;
+  margin-top: 6rpx;
+}
+
+.sales-outbound-page .sku-brief-arrow {
+  flex: none;
+  font-size: 24rpx;
+  color: #2563EB;
+  font-weight: 600;
+}
+
+.sales-outbound-page .form-label .req {
+  color: #DC2626;
+  margin-left: 4rpx;
+}
+
+.sales-outbound-page .submit-btn {
+  margin-top: 12rpx;
+  height: 96rpx;
+  font-size: 30rpx;
+}
+
+.sales-outbound-page .pay-qr-section {
+  margin-top: 16rpx;
+}
+
+.sales-outbound-page .pay-qr-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24rpx;
+  background: #F8FAFC;
+  border-radius: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.sales-outbound-page .pay-qr-img {
+  width: 420rpx;
+  height: 420rpx;
+  background: #fff;
+  border-radius: 12rpx;
+}
+
+.sales-outbound-page .pay-qr-amount {
+  font-size: 44rpx;
+  font-weight: 700;
+  color: #111827;
+  margin-top: 16rpx;
+}
+
+.sales-outbound-page .pay-qr-tip {
+  font-size: 24rpx;
+  color: #6B7280;
+  margin-top: 8rpx;
+  text-align: center;
+}
+
+.sales-outbound-page .pay-qr-countdown {
+  font-size: 28rpx;
+  color: #DC2626;
+  margin-top: 12rpx;
+}
+
+.sales-outbound-page .pay-qr-status {
+  font-size: 24rpx;
+  color: #2563EB;
+  margin-top: 6rpx;
+  min-height: 30rpx;
+}

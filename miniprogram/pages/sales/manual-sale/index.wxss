@@ -1,0 +1,355 @@
+/* 整页：底部留出固定操作栏空间 */
+.sales-manual-page {
+  padding-bottom: calc(168rpx + env(safe-area-inset-bottom));
+}
+
+/* 交易方式分段（自提 / 平台交易） */
+.sales-manual-page .status-segment {
+  display: flex;
+  gap: 12rpx;
+  padding: 6rpx;
+  background: #F9FAFB;
+  border-radius: 40rpx;
+}
+
+.sales-manual-page .status-seg {
+  flex: 1;
+  padding: 16rpx 0;
+  text-align: center;
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #6B7280;
+  border-radius: 36rpx;
+}
+
+.sales-manual-page .status-seg.active {
+  background: var(--color-primary-bg);
+  color: var(--color-primary);
+  box-shadow: 0 2rpx 8rpx rgba(15, 23, 42, 0.08);
+}
+
+/* 无忧卖开关行：标签左、开关右 */
+.sales-manual-page .form-group--switch {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* 顶部说明条 */
+.sales-manual-page .manual-intro {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8rpx;
+  margin-bottom: 20rpx;
+  padding: 16rpx 20rpx;
+  background: #FEF3F2;
+  border: 1rpx solid #FECACA;
+  border-radius: 16rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #B42318;
+  line-height: 1.5;
+}
+
+.sales-manual-page .manual-intro-tag {
+  flex: none;
+  padding: 2rpx 12rpx;
+  background: #DC2626;
+  color: #fff;
+  border-radius: 999rpx;
+  font-size: 20rpx;
+}
+
+/* 卡片间距 */
+.sales-manual-page .manual-card {
+  margin-bottom: 20rpx;
+}
+
+/* 分步标题 */
+.sales-manual-page .manual-step {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  margin-bottom: 24rpx;
+}
+
+.sales-manual-page .manual-step-no {
+  flex: none;
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  background: #2563EB;
+  color: #fff;
+  font-size: 24rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sales-manual-page .manual-step-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #111827;
+}
+
+.sales-manual-page .manual-step-opt {
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #9CA3AF;
+}
+
+.sales-manual-page .sku-empty-hint {
+  margin-top: 16rpx;
+  padding: 24rpx;
+  text-align: center;
+  font-size: 24rpx;
+  color: #9CA3AF;
+  background: #F9FAFB;
+  border: 2rpx dashed #E5E7EB;
+  border-radius: 16rpx;
+}
+
+/* 突出的成交价 */
+.sales-manual-page .price-field {
+  margin-bottom: 24rpx;
+}
+
+.sales-manual-page .price-input-wrap {
+  display: flex;
+  align-items: center;
+  margin-top: 8rpx;
+  padding: 8rpx 24rpx;
+  background: #F8FAFC;
+  border: 2rpx solid #BFDBFE;
+  border-radius: 16rpx;
+}
+
+.sales-manual-page .price-symbol {
+  flex: none;
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #2563EB;
+  margin-right: 10rpx;
+}
+
+.sales-manual-page .price-input {
+  flex: 1;
+  height: 84rpx;
+  font-size: 48rpx;
+  font-weight: 700;
+  color: #111827;
+}
+
+.sales-manual-page .form-label .req {
+  color: #DC2626;
+  margin-left: 4rpx;
+}
+
+/* 店铺下拉 */
+.sales-manual-page .picker-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 84rpx;
+  padding: 0 24rpx;
+  background: #F8FAFC;
+  border: 2rpx solid #E5E7EB;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  color: #111827;
+}
+
+.sales-manual-page .picker-field--placeholder {
+  color: #9CA3AF;
+}
+
+.sales-manual-page .picker-arrow {
+  flex: none;
+  margin-left: 12rpx;
+  font-size: 24rpx;
+  color: #9CA3AF;
+}
+
+/* 上传区 */
+.sales-manual-page .label-hint {
+  display: block;
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #6B7280;
+  margin: 4rpx 0 12rpx;
+}
+
+.sales-manual-page .upload-section {
+  margin-bottom: 24rpx;
+}
+
+.sales-manual-page .upload-zone {
+  margin-bottom: 0;
+  min-height: 160rpx;
+  padding: 32rpx 28rpx;
+  border-radius: 24rpx;
+  border: 2rpx dashed #E5E7EB;
+  background: #F9FAFB;
+}
+
+.sales-manual-page .upload-zone:active {
+  border-color: #2563EB;
+  background: #EFF6FF;
+}
+
+.sales-manual-page .upload-zone--compact {
+  min-height: auto;
+  padding: 24rpx;
+}
+
+.sales-manual-page .uz-camera {
+  width: 88rpx;
+  height: 72rpx;
+  margin: 0 auto 20rpx;
+  background: #E5E7EB;
+  border-radius: 12rpx;
+  position: relative;
+}
+
+.sales-manual-page .uz-camera::after {
+  content: '';
+  position: absolute;
+  top: -12rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32rpx;
+  height: 12rpx;
+  background: #D1D5DB;
+  border-radius: 6rpx 6rpx 0 0;
+}
+
+.sales-manual-page .upload-replace-hint {
+  font-size: 22rpx;
+  color: #6B7280;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 16rpx;
+}
+
+/* SKU 简卡 */
+.sales-manual-page .sku-brief {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  margin-top: 16rpx;
+  padding: 20rpx;
+  background: #F8FAFC;
+  border: 2rpx solid #E5E7EB;
+  border-radius: 16rpx;
+}
+
+.sales-manual-page .sku-brief--loading,
+.sales-manual-page .sku-brief--error {
+  display: block;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #6B7280;
+}
+
+.sales-manual-page .sku-brief--error {
+  color: #DC2626;
+  background: #FEF2F2;
+  border-color: #FECACA;
+}
+
+.sales-manual-page .sku-brief-thumb {
+  flex: none;
+  width: 96rpx;
+  height: 96rpx;
+}
+
+.sales-manual-page .sku-brief-icon {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 12rpx;
+  background: #E5E7EB;
+  color: #6B7280;
+  font-size: 36rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sales-manual-page .sku-brief-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.sales-manual-page .sku-brief-name {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #111827;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sales-manual-page .sku-brief-sub {
+  font-size: 22rpx;
+  color: #6B7280;
+  margin-top: 4rpx;
+}
+
+.sales-manual-page .sku-brief-warn {
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #DC2626;
+  margin-top: 6rpx;
+  line-height: 1.4;
+}
+
+.sales-manual-page .sku-brief-arrow {
+  flex: none;
+  font-size: 24rpx;
+  color: #2563EB;
+  font-weight: 600;
+}
+
+/* 底部固定操作栏 */
+.sales-manual-page .manual-footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 16rpx 24rpx calc(16rpx + env(safe-area-inset-bottom));
+  background: #fff;
+  border-top: 1rpx solid #EEF0F3;
+  box-shadow: 0 -4rpx 16rpx rgba(17, 24, 39, 0.06);
+}
+
+.sales-manual-page .footer-amount {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.sales-manual-page .footer-amount-label {
+  font-size: 20rpx;
+  color: #9CA3AF;
+}
+
+.sales-manual-page .footer-amount-num {
+  font-size: 38rpx;
+  font-weight: 700;
+  color: #DC2626;
+}
+
+.sales-manual-page .footer-submit {
+  flex: 1;
+  height: 88rpx;
+  font-size: 30rpx;
+  margin: 0;
+}

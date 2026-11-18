@@ -1,0 +1,89 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<view class="page-wrap page-wrap--no-tab sales-detail-page" wx:if="{{order}}">
+  <view class="card" wx:if="{{order.cover_url}}">
+    <view class="card-head">商品图片</view>
+    <view class="sd-cover">
+      <media-thumb
+        url="{{order.cover_thumb_url || order.cover_url}}"
+        preview-url="{{order.cover_url}}"
+        size="large"
+      />
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-head">订单信息</view>
+    <view class="detail-row">
+      <text class="detail-label">单号</text>
+      <text class="detail-value">{{order.order_no}}</text>
+    </view>
+    <view class="detail-row" wx:if="{{order.external_order_no}}">
+      <text class="detail-label">平台单号</text>
+      <text class="detail-value">{{order.external_order_no}}</text>
+    </view>
+    <view class="detail-row">
+      <text class="detail-label">商品</text>
+      <text class="detail-value">{{fmt.productLine(order.product_title, order.product_spec) || '—'}}</text>
+    </view>
+    <view class="detail-row" wx:if="{{order.sku_code}}">
+      <text class="detail-label">货号</text>
+      <text class="detail-value">{{order.sku_code}}</text>
+    </view>
+    <view class="detail-row">
+      <text class="detail-label">下单时间</text>
+      <text class="detail-value">{{fmt.datetime(order.created_at)}}</text>
+    </view>
+    <view class="detail-row">
+      <text class="detail-label">买家</text>
+      <text class="detail-value">{{order.buyer_name || '—'}}</text>
+    </view>
+    <view class="detail-row">
+      <text class="detail-label">金额</text>
+      <text class="detail-value detail-value--price">¥{{fmt.money(order.amount)}}</text>
+    </view>
+    <view class="detail-row">
+      <text class="detail-label">店铺</text>
+      <text class="detail-value">{{fmt.platformLabel(order.shop_name, order.platform)}}</text>
+    </view>
+    <view class="detail-row">
+      <text class="detail-label">状态</text>
+      <view class="tag {{fmt.saleStatusTag(order.status)}}">{{fmt.saleStatusLabel(order.status)}}</view>
+    </view>
+    <view class="detail-row" wx:if="{{order.tracking_no}}">
+      <text class="detail-label">运单号</text>
+      <text class="detail-value">{{order.tracking_no}}</text>
+    </view>
+    <view class="detail-row" wx:if="{{order.tracking_phone_suffix}}">
+      <text class="detail-label">手机后四位</text>
+      <text class="detail-value">{{order.tracking_phone_suffix}}</text>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{order.tracking_no}}">
+    <view class="card-head card-head--split">
+      <view class="card-head-main">物流轨迹</view>
+      <button class="btn btn-outline btn-sm" bindtap="refreshExpress" disabled="{{expressLoading}}">
+        {{expressLoading ? '查询中…' : '刷新'}}
+      </button>
+    </view>
+    <view class="pd-express-scroll">
+      <view wx:if="{{expressResult && expressResult.msg && !expressResult.traces.length}}" class="pd-express-msg">
+        {{expressResult.msg}}
+      </view>
+      <view wx:if="{{!expressResult || (!expressResult.traces.length && !expressResult.msg)}}" class="empty empty--compact">
+        <view class="e-text">点击刷新查询物流</view>
+      </view>
+      <view class="pd-timeline" wx:if="{{expressResult && expressResult.traces.length}}">
+        <view wx:for="{{expressResult.traces}}" wx:key="time" class="pd-tl-item">
+          <view class="tl-title">{{item.context}}</view>
+          <view class="tl-time">{{item.time}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{order.status === 'PENDING'}}">
+    <button class="btn-success btn-block" bindtap="goShip">去发货</button>
+  </view>
+</view>

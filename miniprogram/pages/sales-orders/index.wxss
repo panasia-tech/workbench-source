@@ -1,0 +1,78 @@
+/* 闲鱼订单：照交付包（浅色）。红 = 现在动手，黄 = 今天做，绿 = 不用管 */
+.so-page .so-head__t { font-size: 44rpx; font-weight: 800; color: #111827; }
+.so-page .so-head__s { margin-top: 8rpx; font-size: 25rpx; color: #6B7280; line-height: 1.6; }
+.so-page .so-b { color: #111827; font-weight: 700; }
+.so-page .so-q { display: inline-block; width: 36rpx; height: 36rpx; line-height: 36rpx; margin-left: 8rpx; text-align: center; border-radius: 50%; border: 1rpx solid #D1D5DB; color: #6B7280; font-size: 22rpx; }
+.so-page .so-help { margin-top: 12rpx; padding: 14rpx 18rpx; border-radius: 12rpx; background: #FFFFFF; font-size: 24rpx; color: #4B5563; line-height: 1.6; }
+.so-page .so-rule { margin-top: 18rpx; padding: 16rpx 20rpx; border-radius: 16rpx; background: #FFFFFF; border: 1rpx solid #E5E7EB; font-size: 24rpx; color: #4B5563; line-height: 1.6; }
+
+.so-page .so-tabs { display: flex; flex-wrap: wrap; gap: 12rpx; margin-top: 20rpx; }
+.so-page .so-tab { display: flex; align-items: center; gap: 8rpx; padding: 10rpx 20rpx; border-radius: 999rpx; background: #FFFFFF; border: 1rpx solid #E5E7EB; font-size: 24rpx; font-weight: 600; color: #374151; }
+.so-page .so-tab.is-on { background: #111827; border-color: #111827; color: #FFFFFF; }
+.so-page .so-tab__n { font-size: 21rpx; font-weight: 700; opacity: 0.6; }
+.so-page .so-dot { width: 14rpx; height: 14rpx; border-radius: 50%; }
+.so-page .so-dot--red { background: #DC2626; }
+.so-page .so-dot--yellow { background: #F59E0B; }
+.so-page .so-dot--green { background: #059669; }
+.so-page .so-empty { padding: 40rpx 0; text-align: center; color: #9CA3AF; font-size: 26rpx; }
+
+.so-page .so-cols { margin-top: 20rpx; }
+.so-page .so-side { display: none; }
+.so-page .so-o { margin-bottom: 16rpx; padding: 20rpx 22rpx; border-radius: 22rpx; background: #FFFFFF; border-left: 10rpx solid #E5E7EB; box-shadow: 0 2rpx 12rpx rgba(15, 23, 42, 0.06); }
+.so-page .so-o--red { border-left-color: #DC2626; }
+.so-page .so-o--yellow { border-left-color: #F59E0B; }
+.so-page .so-o--green { border-left-color: #10B981; }
+.so-page .so-o.is-sel { box-shadow: 0 0 0 3rpx #2563EB, 0 2rpx 12rpx rgba(15, 23, 42, 0.06); }
+.so-page .so-o__top { display: flex; gap: 18rpx; }
+.so-page .so-thumb { flex: none; width: 108rpx; height: 108rpx; border-radius: 16rpx; background: #F3F4F6; }
+.so-page .so-thumb--none { display: flex; align-items: center; justify-content: center; color: #9CA3AF; font-size: 22rpx; }
+.so-page .so-o__main { flex: 1; min-width: 0; }
+.so-page .so-tag { display: inline-block; padding: 2rpx 14rpx; border-radius: 8rpx; font-size: 21rpx; font-weight: 700; }
+.so-page .so-tag--red { background: #FEE2E2; color: #B91C1C; }
+.so-page .so-tag--yellow { background: #FEF3C7; color: #92400E; }
+.so-page .so-tag--green { background: #D1FAE5; color: #065F46; }
+.so-page .so-o__t { margin-top: 6rpx; font-size: 28rpx; font-weight: 800; color: #111827; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.so-page .so-o__m { display: flex; flex-wrap: wrap; align-items: center; gap: 4rpx 16rpx; margin-top: 6rpx; font-size: 22rpx; color: #6B7280; }
+.so-page .so-pill { padding: 0 12rpx; border-radius: 8rpx; background: #F3F4F6; color: #374151; font-size: 20rpx; }
+.so-page .so-why { margin-top: 14rpx; padding: 12rpx 16rpx; border-radius: 14rpx; font-size: 23rpx; line-height: 1.5; }
+.so-page .so-why--red { background: #FEF2F2; color: #B91C1C; }
+.so-page .so-why--yellow { background: #FFFBEB; color: #92400E; }
+.so-page .so-why--big { font-size: 26rpx; margin-top: 18rpx; }
+
+.so-page .so-det { padding: 22rpx; border-radius: 22rpx; background: #FFFFFF; box-shadow: 0 2rpx 12rpx rgba(15, 23, 42, 0.06); }
+.so-page .so-det--inline { margin: -6rpx 0 18rpx; background: #F9FAFB; box-shadow: none; border: 1rpx solid #E5E7EB; }
+.so-page .so-det--empty { padding: 60rpx 32rpx; text-align: center; color: #9CA3AF; font-size: 26rpx; }
+.so-page .so-det__h { display: flex; align-items: center; justify-content: space-between; gap: 12rpx; }
+.so-page .so-muted { color: #9CA3AF; font-size: 22rpx; }
+.so-page .so-det__t { margin-top: 10rpx; font-size: 34rpx; font-weight: 800; color: #111827; line-height: 1.35; }
+.so-page .so-kv { display: grid; grid-template-columns: auto 1fr; gap: 10rpx 24rpx; margin-top: 16rpx; font-size: 24rpx; color: #1F2937; }
+.so-page .so-kv__k { color: #6B7280; }
+.so-page .so-det__h4 { margin-top: 18rpx; font-size: 26rpx; font-weight: 800; color: #111827; }
+.so-page .so-det--inline .so-det__h4 { margin-top: 0; }
+.so-page .so-det__p { margin-top: 6rpx; font-size: 24rpx; color: #4B5563; line-height: 1.6; }
+.so-page .so-det__acts { display: flex; gap: 12rpx; margin-top: 16rpx; }
+.so-page .so-btn { padding: 12rpx 28rpx; border-radius: 999rpx; background: #2563EB; color: #FFFFFF; font-size: 25rpx; font-weight: 700; }
+.so-page .so-btn--plain { background: #EFF6FF; color: #1D4ED8; }
+
+/* 电脑上：左边订单，右边详情一栏跟着滚 */
+@media (min-width: 1024px) {
+  .so-page .so-head__t { font-size: 28px; }
+  .so-page .so-head__s, .so-page .so-rule { font-size: 14px; }
+  .so-page .so-tab { font-size: 14px; padding: 6px 14px; cursor: pointer; }
+  .so-page .so-tab__n { font-size: 12px; }
+  .so-page .so-cols { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+  .so-page .so-side { display: block; position: sticky; top: 12px; }
+  .so-page .so-det--inline { display: none; }
+  .so-page .so-o { cursor: pointer; padding: 14px 16px; border-radius: 16px; }
+  .so-page .so-thumb { width: 56px; height: 56px; border-radius: 10px; }
+  .so-page .so-o__t { font-size: 15px; }
+  .so-page .so-o__m, .so-page .so-why { font-size: 13px; }
+  .so-page .so-tag { font-size: 12px; }
+  .so-page .so-det { padding: 20px 22px; border-radius: 18px; }
+  .so-page .so-det--empty { font-size: 14px; padding: 36px 24px; }
+  .so-page .so-det__t { font-size: 20px; }
+  .so-page .so-kv, .so-page .so-det__p { font-size: 14px; }
+  .so-page .so-why--big { font-size: 14px; }
+  .so-page .so-det__h4 { font-size: 15px; }
+  .so-page .so-btn { cursor: pointer; font-size: 14px; padding: 7px 18px; }
+}

@@ -1,0 +1,67 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<view class="page-wrap page-wrap--no-tab record-page">
+  <view class="card filter-card">
+    <view class="search-bar">
+      <input class="search-input" placeholder="搜索货号/商品/买家/出库单号" value="{{q}}" bindinput="onSearchInput" confirm-type="search" bindconfirm="onSearch" />
+    </view>
+    <view class="date-row">
+      <picker mode="date" value="{{dateFrom}}" bindchange="onDateFromChange">
+        <view class="date-pill {{dateFrom ? 'date-pill--filled' : ''}}">{{dateFrom || '开始日期'}}</view>
+      </picker>
+      <text class="date-sep">至</text>
+      <picker mode="date" value="{{dateTo}}" bindchange="onDateToChange">
+        <view class="date-pill {{dateTo ? 'date-pill--filled' : ''}}">{{dateTo || '结束日期'}}</view>
+      </picker>
+    </view>
+    <button class="btn search-btn" bindtap="onSearch">搜索</button>
+    <view class="filter-meta">共 {{total}} 条出库记录</view>
+  </view>
+
+  <scroll-view scroll-x class="status-tabs" enhanced show-scrollbar="{{false}}">
+    <view
+      wx:for="{{typeTabs}}"
+      wx:key="key"
+      class="status-tab {{typeKey === item.key ? 'status-tab--active' : ''}}"
+      data-key="{{item.key}}"
+      bindtap="onTypeTab"
+    >{{item.label}}</view>
+  </scroll-view>
+
+  <view class="card list-card">
+    <view wx:if="{{!list.length && !loading}}" class="empty">
+      <view class="e-icon">—</view>
+      <view class="e-text">暂无出库记录</view>
+    </view>
+    <view wx:for="{{list}}" wx:key="id" class="list-item" bindtap="openDetail" data-code="{{item.sku_code}}">
+      <view class="li-thumb-wrap">
+        <media-thumb
+          wx:if="{{item.cover_thumb_url || item.cover_url}}"
+          url="{{item.cover_thumb_url || item.cover_url}}"
+          preview-url="{{item.cover_url}}"
+          size="small"
+        />
+        <!-- 没有产品图时,退而显示仓库定位图(找货用),角标区分 -->
+        <block wx:elif="{{item.location_images[0]}}">
+          <media-thumb url="{{item.location_images[0]}}" preview-url="{{item.location_images[0]}}" size="small" />
+          <view class="media-loc-badge">定位</view>
+        </block>
+        <view wx:else class="li-icon">{{fmt.iconChar(item.product_name || item.buyer_name)}}</view>
+      </view>
+      <view class="li-info">
+        <view class="li-title">{{fmt.productLine(item.product_name, item.product_spec) || item.outbound_no}}</view>
+        <view class="li-sub">{{item.sku_code}} · {{item.buyer_name || '—'}}{{item.operator_name ? ' · ' + item.operator_name : ''}}</view>
+        <view class="li-sub li-sub--time">出库时间 {{fmt.datetime(item.created_at)}}</view>
+      </view>
+      <view class="li-meta">
+        <view class="li-price">¥{{fmt.money(item.sale_price)}}</view>
+        <view wx:if="{{item.fee_editable}}" class="ob-fee {{item.platform_fee == null ? 'ob-fee--empty' : ''}}" catchtap="editFee" data-index="{{index}}">{{item.platform_fee == null ? '补服务费' : '服务费 ¥' + fmt.money(item.platform_fee)}}</view>
+        <view class="tag li-tag {{item.typeTag}}">{{item.typeLabel}}</view>
+        <view wx:if="{{item.has_return}}" class="tag tag-warning li-tag">已退/退货中</view>
+        <view wx:else class="ob-return-btn" hover-class="ob-return-btn--hover" catchtap="goReturn" data-code="{{item.sku_code}}">商品退回</view>
+      </view>
+    </view>
+    <view wx:if="{{loading}}" class="list-footer">加载中…</view>
+    <view wx:elif="{{noMore && list.length}}" class="list-footer">没有更多了</view>
+  </view>
+</view>

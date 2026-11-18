@@ -1,0 +1,81 @@
+<!-- 库存商品：照销售工作台交付包的卡片墙（浅色）。红 = 现在动手，黄 = 注意，绿 = 不用管 -->
+<view class="page-wrap page-wrap--no-tab sg-page">
+  <view class="sg-sum">
+    <view class="sg-big sg-big--red" data-key="red" bindtap="pickLevel"><text class="sg-big__n">{{counts.red}}</text> 件要处理</view>
+    <view class="sg-big sg-big--yellow" data-key="yellow" bindtap="pickLevel"><text class="sg-big__n">{{counts.yellow}}</text> 件注意</view>
+    <view class="sg-big sg-big--green" data-key="green" bindtap="pickLevel"><text class="sg-big__n">{{counts.green}}</text> 件正常</view>
+    <text class="sg-total">共 {{total}} 件</text>
+  </view>
+
+  <view class="sg-bar">
+    <input class="input sg-search" placeholder="搜名称、货号、品牌" value="{{q}}" confirm-type="search" bindinput="onSearch" bindconfirm="doSearch" />
+    <text class="sg-q" bindtap="toggleHelp">?</text>
+  </view>
+  <view wx:if="{{showHelp}}" class="sg-help">红的现在动手，黄的留意或今天做，绿的不用管。一件货有几个问题，卡片取最严重的颜色，点卡片下面那条直接去处理。图只放实拍，没有实拍的写「待补图」，不拿别的图冒充。「第 N 周期」按链接焕新 7 天一轮数。</view>
+
+  <view wx:if="{{pool.length}}" class="sg-pool">
+    <text class="sg-pool__k">同款图池</text>
+    <text wx:for="{{pool}}" wx:key="key" class="sg-pool__i sg-pool__i--{{item.key}}">{{item.label}} {{item.n}} 款</text>
+    <text wx:if="{{isAdmin}}" class="sg-pool__go" bindtap="goPool">去审核 ›</text>
+  </view>
+
+  <view class="sg-segs">
+    <view class="sg-seg">
+      <text class="sg-seg__i {{!level ? 'is-on' : ''}}" data-key="" bindtap="pickLevel">全部</text>
+      <text class="sg-seg__i {{level === 'red' ? 'is-on' : ''}}" data-key="red" bindtap="pickLevel"><text class="sg-dot sg-dot--red"></text>要处理</text>
+      <text class="sg-seg__i {{level === 'yellow' ? 'is-on' : ''}}" data-key="yellow" bindtap="pickLevel"><text class="sg-dot sg-dot--yellow"></text>注意</text>
+      <text class="sg-seg__i {{level === 'green' ? 'is-on' : ''}}" data-key="green" bindtap="pickLevel"><text class="sg-dot sg-dot--green"></text>正常</text>
+    </view>
+    <view class="sg-seg">
+      <text class="sg-seg__k">按</text>
+      <text class="sg-seg__i {{group === 'level' ? 'is-on' : ''}}" data-key="level" bindtap="pickGroup">状态</text>
+      <text class="sg-seg__i {{group === 'type' ? 'is-on' : ''}}" data-key="type" bindtap="pickGroup">品类</text>
+      <text class="sg-seg__i {{group === 'source' ? 'is-on' : ''}}" data-key="source" bindtap="pickGroup">来源</text>
+    </view>
+  </view>
+
+  <view wx:if="{{loading && !loaded}}" class="list-footer">加载中…</view>
+  <view wx:if="{{loaded && !groups.length}}" class="sg-empty">{{q ? '没有找到「' + q + '」' : (level ? '这一类现在没有商品' : '没有在库的货')}}</view>
+
+  <block wx:for="{{groups}}" wx:for-item="g" wx:key="key">
+    <view class="sg-group"><text wx:if="{{g.dot}}" class="sg-dot sg-dot--{{g.dot}}"></text>{{g.title}}<text class="sg-group__n">{{g.items.length}}</text></view>
+    <view class="sg-grid">
+      <view wx:for="{{g.items}}" wx:key="sku_code" class="sg-card sg-card--{{item.level}}" data-url="{{item.url}}" bindtap="openCard">
+        <view class="sg-pic">
+          <image wx:if="{{item.thumb}}" class="sg-pic__img" src="{{item.thumb}}" mode="aspectFill" lazy-load="{{true}}" />
+          <view wx:else class="sg-pic__none"><text class="sg-pic__none-t">待补图</text><text>没有验货实拍图</text></view>
+          <text class="sg-badge sg-badge--{{item.level}}">{{item.badge}}</text>
+          <text wx:if="{{item.locked}}" class="sg-kind">锁单</text>
+          <text wx:else class="sg-kind">实物</text>
+          <text wx:if="{{item.thumb}}" class="sg-photo">实拍图</text>
+        </view>
+        <view class="sg-body">
+          <view class="sg-name">{{item.product_name}}</view>
+          <view class="sg-meta">{{item.sku_code}}<text wx:if="{{item.location_code}}"> · 库位 {{item.location_code}}</text></view>
+          <view class="sg-imgline">
+            <text class="{{item.photo_count ? '' : 'sg-bad'}}">实拍图 {{item.photo_count}}</text>
+            <text class="{{item.location_count ? '' : 'sg-warn'}}">库位图 {{item.location_count}}</text>
+            <text>上架 {{item.listed}}/{{item.shop_total}} 个号</text>
+            <text wx:if="{{item.pool}}" class="{{item.pool === '可用' ? '' : 'sg-warn'}}">同款图{{item.pool}}</text>
+          </view>
+          <view class="sg-m">
+            <text>{{item.cost ? '成本 ' + item.cost : '成本未填'}}</text>
+            <text class="sg-age sg-age--{{item.age_stage}}">{{item.cycleText}}</text>
+          </view>
+          <view class="sg-priceline">
+            <text wx:if="{{item.trendText}}" class="sg-trend sg-trend--{{item.trendLevel || 'flat'}}">{{item.trendText}}</text>
+            <text class="sg-clean" data-code="{{item.sku_code}}" catchtap="goClean">清洗价格 ›</text>
+          </view>
+          <view wx:if="{{item.shopSum.length}}" class="sg-chips">
+            <text class="sg-chip">各号</text>
+            <text wx:for="{{item.shopSum}}" wx:for-item="x" wx:key="k" class="sg-chip sg-chip--{{x.k}}">{{x.n}} {{x.t}}</text>
+          </view>
+          <view wx:if="{{item.top}}" class="sg-issue sg-issue--{{item.top.level}}" data-url="{{item.top.url}}" catchtap="openIssue">
+            {{item.top.text}}<text wx:if="{{item.more}}" class="sg-more"> +{{item.more}}</text>
+          </view>
+          <view wx:else class="sg-issue sg-issue--green">一切正常，不用管</view>
+        </view>
+      </view>
+    </view>
+  </block>
+</view>
