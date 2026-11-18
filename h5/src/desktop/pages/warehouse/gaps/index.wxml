@@ -1,0 +1,107 @@
+<!-- 库存缺口（电脑版）：缺口种类 tab（带件数）+ 搜索 + 表格 + 页码；「哪些算缺口」改成居中对话框 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">库存缺口</view>
+      <view class="dk-sub">在库没在卖的货还缺什么 · 共 {{total}} 件</view>
+    </view>
+    <view wx:if="{{isAdmin}}" class="dk-btn" bindtap="openSetting">哪些算缺口</view>
+  </view>
+
+  <view class="dk-card">
+    <view class="dk-toolbar">
+      <view class="dk-tabs">
+        <view
+          wx:for="{{kinds}}"
+          wx:key="key"
+          class="dk-tab {{kind === item.key ? 'dk-tab--on' : ''}}"
+          data-kind="{{item.key}}"
+          bindtap="switchKind"
+        >{{item.label}} <text class="dk-tab__n">{{item.total}}</text></view>
+      </view>
+      <input
+        class="dk-input dk-search"
+        placeholder="货号 / 商品名 / 型号 / 库位"
+        value="{{q}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+      />
+      <view class="dk-btn" bindtap="onScanSearch">扫码搜</view>
+    </view>
+
+    <view class="dk-table-wrap">
+      <table class="dk-table">
+        <thead>
+          <tr>
+            <th>商品</th>
+            <th>货号</th>
+            <th>库位</th>
+            <th class="dk-num">在库</th>
+            <th class="dk-num">行情</th>
+            <th class="dk-num">成本</th>
+            <th>缺口</th>
+            <th>说明</th>
+            <th class="dk-ops">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr wx:for="{{list}}" wx:key="sku_code">
+            <td>
+              <view class="dk-media">
+                <view class="wgp-dk-thumb">
+                  <media-thumb wx:if="{{item.image}}" url="{{item.image}}" preview-url="{{item.image}}" size="small" />
+                  <view wx:else class="wgp-dk-none">无图</view>
+                </view>
+                <view class="dk-grow">
+                  <view class="dk-cell-main dk-ellipsis wgp-dk-name" title="{{item.product_name}}">{{item.product_name}}</view>
+                  <view wx:if="{{item.brand || item.model}}" class="dk-cell-sub">{{item.brand || ''}} {{item.model || ''}}</view>
+                </view>
+              </view>
+            </td>
+            <td class="dk-nowrap">{{item.sku_code}}</td>
+            <td class="dk-nowrap">{{item.location_code || '未分配'}}</td>
+            <td class="dk-num">{{item.stock_days !== null ? item.stock_days + ' 天' : '—'}}</td>
+            <td class="dk-num {{item.kind === 'below_cost' ? 'wgp-dk-red' : ''}}">{{item.market_price ? '¥' + item.market_price : '—'}}</td>
+            <td class="dk-num">{{item.cost_price ? '¥' + item.cost_price : '—'}}</td>
+            <td class="dk-nowrap"><text class="dk-tag {{item.tagClass}}">{{item.kind_label}}</text></td>
+            <td>
+              <view class="wgp-dk-note {{item.waiting ? 'dk-muted' : ''}}"><text wx:if="{{item.waiting}}" class="dk-tag wgp-dk-wait">不用管</text>{{item.note}}</view>
+            </td>
+            <td class="dk-ops">
+              <text wx:if="{{!item.waiting}}" class="dk-link" data-url="{{item.action_url}}" bindtap="goFix">{{item.action_label}}</text>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </view>
+
+    <view wx:if="{{!list.length && !loading}}" class="dk-empty">没有要补的货</view>
+    <view wx:if="{{loading && !list.length}}" class="dk-empty">加载中…</view>
+
+    <view wx:if="{{total > dkPageSize}}" class="dk-pager">
+      <text>共 {{total}} 件，每页 {{dkPageSize}} 件</text>
+      <view class="dk-row">
+        <view class="dk-btn dk-btn--sm {{dkPage <= 1 ? 'dk-btn--disabled' : ''}}" bindtap="dkPrev">上一页</view>
+        <text>第 {{dkPage}} / {{dkPages}} 页</text>
+        <view class="dk-btn dk-btn--sm {{dkPage >= dkPages ? 'dk-btn--disabled' : ''}}" bindtap="dkNext">下一页</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 哪些算缺口：居中对话框 -->
+  <view wx:if="{{settingOpen}}" class="wgp-dk-mask" bindtap="closeSetting">
+    <view class="wgp-dk-dialog" catchtap="dkNoop">
+      <view class="dk-card__head">哪些算缺口</view>
+      <view class="dk-card__body wgp-dk-checks">
+        <view wx:for="{{allKinds}}" wx:key="key" class="wgp-dk-check" data-key="{{item.key}}" bindtap="toggleKind">
+          <text class="wgp-dk-box {{item.checked ? 'wgp-dk-box--on' : ''}}">{{item.checked ? '✓' : ''}}</text>
+          <text>{{item.label}}</text>
+        </view>
+      </view>
+      <view class="wgp-dk-foot">
+        <view class="dk-btn" bindtap="closeSetting">取消</view>
+        <view class="dk-btn dk-btn--primary" bindtap="saveSetting">保存</view>
+      </view>
+    </view>
+  </view>
+</view>

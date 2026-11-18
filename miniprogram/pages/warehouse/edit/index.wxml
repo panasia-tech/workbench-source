@@ -1,0 +1,99 @@
+<view class="page-wrap page-wrap--no-tab sku-edit-page" wx:if="{{!loading}}">
+  <view class="card">
+    <view class="card-head">基本信息 · {{code}}</view>
+
+    <view class="form-group">
+      <text class="form-label">货号<text class="req">*</text></text>
+      <view class="sku-edit-scan-wrap">
+        <input class="form-input sku-edit-scan-input" value="{{form.sku_code}}" data-field="sku_code" bindinput="onInput" placeholder="扫码或手填货号" />
+        <view class="sku-edit-scan-icon" catchtap="scanSkuCode">
+          <view class="scan-frame"></view>
+          <view class="scan-line"></view>
+        </view>
+      </view>
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">商品名称<text class="req">*</text></text>
+      <input class="form-input" value="{{form.product_name}}" data-field="product_name" bindinput="onInput" placeholder="商品名称" />
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">型号</text>
+      <input class="form-input" value="{{form.model}}" data-field="model" bindinput="onInput" placeholder="型号" />
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">规格</text>
+      <input class="form-input" value="{{form.spec}}" data-field="spec" bindinput="onInput" placeholder="规格" />
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">序列号</text>
+      <view class="sku-edit-scan-wrap">
+        <input class="form-input sku-edit-scan-input" value="{{form.serial_number}}" data-field="serial_number" bindinput="onInput" placeholder="扫码或手填" />
+        <view class="sku-edit-scan-icon" catchtap="scanSerial">
+          <view class="scan-frame"></view>
+          <view class="scan-line"></view>
+        </view>
+      </view>
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">69码</text>
+      <view class="sku-edit-scan-wrap">
+        <input class="form-input sku-edit-scan-input" value="{{form.barcode}}" data-field="barcode" bindinput="onInput" placeholder="扫码或手填69码" />
+        <view class="sku-edit-scan-icon" catchtap="scanBarcode69">
+          <view class="scan-frame"></view>
+          <view class="scan-line"></view>
+        </view>
+      </view>
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">库位</text>
+      <picker mode="selector" range="{{locations}}" range-key="label" value="{{locationIndex}}" bindchange="pickLocation">
+        <view class="form-input sku-edit-picker">{{form.location_code || '选择库位'}}</view>
+      </picker>
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">成色</text>
+      <picker mode="selector" range="{{grades}}" value="{{gradeIndex}}" bindchange="pickGrade">
+        <view class="form-input sku-edit-picker">{{form.condition_grade || '选择成色'}}</view>
+      </picker>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-head">产品实拍图</view>
+    <view class="form-note">用于上架和客户展示，第一张将作为封面</view>
+    <view class="sku-edit-grid" wx:if="{{form.images.length}}">
+      <view class="sku-edit-thumb" wx:for="{{form.images}}" wx:key="*this">
+        <media-thumb url="{{imageDisplay[index] || item}}" size="fill" preview="{{true}}" />
+        <view class="sku-edit-thumb__del" data-type="product" data-index="{{index}}" catchtap="removeImage">×</view>
+      </view>
+    </view>
+    <view class="upload-zone upload-zone--compact" data-type="product" bindtap="addImage">
+      <view class="uz-plus">+</view>
+      <view class="uz-text">添加实拍图</view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-head">仓库定位图</view>
+    <view class="form-note">用于找货、盘点定位，不会展示给客户</view>
+    <view class="sku-edit-grid" wx:if="{{form.location_images.length}}">
+      <view class="sku-edit-thumb" wx:for="{{form.location_images}}" wx:key="*this">
+        <media-thumb url="{{locationImageDisplay[index] || item}}" size="fill" preview="{{true}}" />
+        <view class="sku-edit-thumb__del" data-type="location" data-index="{{index}}" catchtap="removeImage">×</view>
+      </view>
+    </view>
+    <view class="upload-zone upload-zone--compact" data-type="location" bindtap="addImage">
+      <view class="uz-plus">+</view>
+      <view class="uz-text">添加定位图</view>
+    </view>
+  </view>
+
+  <button class="btn-primary btn-block sku-edit-save" loading="{{saving}}" bindtap="save">保存</button>
+</view>

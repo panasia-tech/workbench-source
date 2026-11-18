@@ -1,0 +1,91 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<!-- 拒签记录（电脑版）：搜索 / 扫码 + 日期，表格 + 页码；点行看拒签详情（openItem 原样） -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">拒签记录</view>
+      <view class="dk-sub">共 {{total}} 单拒签退回</view>
+    </view>
+  </view>
+
+  <view class="dk-card">
+    <view class="dk-toolbar">
+      <input
+        class="dk-input dk-search"
+        placeholder="验货单号 / 采购单 / 商品 / 物流单号"
+        value="{{q}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+        bindconfirm="onSearch"
+      />
+      <view class="dk-btn" bindtap="onScanSearch">扫码搜</view>
+      <picker mode="date" value="{{dateFrom}}" end="{{dateTo || ''}}" bindchange="onDateFromChange">
+        <view class="dk-select {{dateFrom ? '' : 'dk-muted'}}">{{dateFrom || '开始日期'}}</view>
+      </picker>
+      <text class="dk-muted">至</text>
+      <picker mode="date" value="{{dateTo}}" start="{{dateFrom || ''}}" bindchange="onDateToChange">
+        <view class="dk-select {{dateTo ? '' : 'dk-muted'}}">{{dateTo || '结束日期'}}</view>
+      </picker>
+      <text wx:if="{{dateFrom || dateTo}}" class="dk-link" bindtap="clearDate">清除日期</text>
+      <view class="dk-btn dk-btn--primary" bindtap="onSearch">搜索</view>
+    </view>
+
+    <view class="dk-table-wrap">
+      <table class="dk-table">
+        <thead>
+          <tr>
+            <th>商品</th>
+            <th>验货单</th>
+            <th>采购单</th>
+            <th>拒签时间</th>
+            <th>操作人</th>
+            <th class="dk-num">采购价</th>
+            <th>状态</th>
+            <th class="dk-ops">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr wx:for="{{list}}" wx:key="id" class="dk-tr--click" data-id="{{item.id}}" bindtap="openItem">
+            <td>
+              <view class="dk-media">
+                <image
+                  wx:if="{{item.product_image_thumb}}"
+                  class="dk-thumb"
+                  src="{{item.product_image_thumb}}"
+                  mode="aspectFill"
+                  data-url="{{item.product_image || item.product_image_thumb}}"
+                  catchtap="dkPreview"
+                />
+                <view wx:else class="dk-thumb rj-dk-ph">拒</view>
+                <view class="dk-grow">
+                  <view class="dk-cell-main dk-ellipsis" title="{{item.product_name}}">{{item.product_name || item.inspect_no}}</view>
+                  <view class="dk-cell-sub">{{item.spec || '—'}}</view>
+                </view>
+              </view>
+            </td>
+            <td class="dk-nowrap">{{item.inspect_no}}</td>
+            <td class="dk-nowrap">{{item.order_no || '—'}}</td>
+            <td class="dk-nowrap">{{fmt.datetime(item.inspected_at || item.created_at)}}</td>
+            <td class="dk-nowrap">{{item.operator_name || '—'}}</td>
+            <td class="dk-num">{{item.unit_price ? '¥' + fmt.money(item.unit_price) : '—'}}</td>
+            <td class="dk-nowrap"><text class="dk-tag tag-danger">拒签退回</text></td>
+            <td class="dk-ops"><text class="dk-link" data-id="{{item.id}}" catchtap="openItem">详情</text></td>
+          </tr>
+        </tbody>
+      </table>
+    </view>
+
+    <view wx:if="{{!list.length && !loading}}" class="dk-empty">暂无拒签记录</view>
+    <view wx:if="{{loading && !list.length}}" class="dk-empty">加载中…</view>
+
+    <view wx:if="{{total > dkPageSize}}" class="dk-pager">
+      <text>共 {{total}} 条，每页 {{dkPageSize}} 条</text>
+      <view class="dk-row">
+        <view class="dk-btn dk-btn--sm {{dkPage <= 1 ? 'dk-btn--disabled' : ''}}" bindtap="dkPrev">上一页</view>
+        <text>第 {{dkPage}} / {{dkPages}} 页</text>
+        <view class="dk-btn dk-btn--sm {{dkPage >= dkPages ? 'dk-btn--disabled' : ''}}" bindtap="dkNext">下一页</view>
+      </view>
+    </view>
+  </view>
+</view>

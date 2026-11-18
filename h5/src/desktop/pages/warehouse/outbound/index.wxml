@@ -1,0 +1,44 @@
+<!-- 手动出库（电脑版）：两栏表单 + 底部操作条 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">手动出库</view>
+      <view class="dk-sub">货号和售价必填；货号可用扫码枪扫进输入框</view>
+    </view>
+  </view>
+
+  <view class="dk-card">
+    <view class="dk-card__body">
+      <view class="dk-form">
+        <view class="dk-field">
+          <text class="dk-label dk-label--req">货号</text>
+          <view class="wob-dk-scan">
+            <input class="dk-input dk-grow" placeholder="扫码或输入货号" data-key="sku_code" value="{{form.sku_code}}" bindinput="onInput" />
+            <view class="dk-btn" bindtap="scanSku">扫码填入</view>
+          </view>
+        </view>
+        <view class="dk-field">
+          <text class="dk-label dk-label--req">售价（¥）</text>
+          <input class="dk-input" placeholder="0.00" type="digit" data-key="sale_price" value="{{form.sale_price}}" bindinput="onInput" />
+        </view>
+        <view class="dk-field">
+          <text class="dk-label">买家</text>
+          <input class="dk-input" placeholder="买家昵称" data-key="buyer_name" value="{{form.buyer_name}}" bindinput="onInput" />
+        </view>
+        <view class="dk-field">
+          <text class="dk-label">闲鱼服务费</text>
+          <input class="dk-input" placeholder="订单页上的服务费，还没出来先空着" type="digit" data-key="platform_fee" value="{{form.platform_fee}}" bindinput="onInput" />
+        </view>
+        <view class="dk-field">
+          <text class="dk-label">运单号</text>
+          <input class="dk-input" placeholder="快递运单号（选填）" data-key="tracking_no" value="{{form.tracking_no}}" bindinput="onInput" />
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="dk-actionbar wob-dk-bar">
+    <view class="dk-btn" bindtap="dkBack">取消</view>
+    <view class="dk-btn dk-btn--primary {{submitting ? 'dk-btn--disabled' : ''}}" bindtap="submit">{{submitting ? '出库中…' : '确认出库'}}</view>
+  </view>
+</view>

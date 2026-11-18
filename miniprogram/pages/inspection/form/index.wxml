@@ -1,0 +1,247 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<view class="page-wrap page-wrap--no-tab insp-form-page">
+  <view class="card" wx:if="{{task}}">
+    <view class="insp-form-head">
+      <view class="insp-hero-thumb" wx:if="{{task.product_image_thumb}}">
+        <media-thumb
+          url="{{task.product_image_thumb}}"
+          preview-url="{{task.product_image}}"
+          size="fill"
+          preview="{{true}}"
+        />
+        <text class="insp-hero-badge">实拍图</text>
+      </view>
+      <view class="insp-hero-thumb insp-hero-thumb--empty" wx:else>
+        <text class="insp-hero-ph">暂无实拍图</text>
+      </view>
+      <view class="insp-form-head-main">
+        <view class="card-head">验货处理</view>
+        <view class="insp-form-sub">{{task.product_name || task.order_no || task.inspect_no}}{{task.spec ? ' · ' + task.spec : ''}}</view>
+        <navigator class="insp-check-entry" url="/pages/inspection/check/index?id={{taskId}}" hover-class="none">
+          <text class="insp-check-entry__title">逐项学习验货规范</text>
+          <text class="insp-check-entry__sub">看操作视频和判定标准，逐项记录结果；坏货和货不对版也要验完 ›</text>
+        </navigator>
+        <view class="insp-form-meta">
+          <text class="tag tag-warning insp-form-tag">{{fmt.statusLabel(task.order_status)}}</text>
+          <text class="insp-form-price" wx:if="{{task.unit_price}}">{{fmt.money(task.unit_price)}} 元</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="condition-warn" wx:if="{{task.condition_warning}}">
+      <text class="condition-warn__icon">⚠</text>
+      <text class="condition-warn__text">实拍图含「{{task.condition_warning_text || '全新'}}」字样，请重点核对货况是否与全新/几乎全新相符</text>
+    </view>
+
+    <view class="mode-switch">
+      <view
+        class="mode-option {{actionType === 'INBOUND' ? 'active' : ''}}"
+        data-type="INBOUND"
+        bindtap="pickAction"
+      >
+        <text class="mode-check">{{actionType === 'INBOUND' ? '✓' : ''}}</text>
+        <text>验货入库</text>
+      </view>
+      <view
+        class="mode-option {{actionType === 'REJECT' ? 'active' : ''}}"
+        data-type="REJECT"
+        bindtap="pickAction"
+      >
+        <text class="mode-check">{{actionType === 'REJECT' ? '✓' : ''}}</text>
+        <text>拒签退回</text>
+      </view>
+    </view>
+
+    <!-- 入库模式 -->
+    <block wx:if="{{actionType === 'INBOUND'}}">
+      <view class="form-section">
+        <text class="form-label">上传入库商品图 / 视频<text class="req">*</text></text>
+        <view class="form-note">入库图必传，可传图片或视频；瑕疵素材下一步补充；货不对板时采购可进待议价清单</view>
+        <view wx:if="{{form.listing_images.length}}" class="upload-preview-grid">
+          <view wx:for="{{form.listing_images}}" wx:key="*this" class="upload-preview-item">
+            <media-thumb url="{{listingDisplayUrls[index] || item}}" size="fill" preview="{{true}}" />
+          </view>
+        </view>
+        <view class="upload-zone {{form.listing_images.length ? 'upload-zone--compact' : ''}}" data-type="listing" bindtap="addImage">
+          <block wx:if="{{!form.listing_images.length}}">
+            <view class="uz-camera"></view>
+            <view class="uz-text">上传入库图 / 视频</view>
+            <view class="uz-hint">必传，至少 1 张</view>
+          </block>
+          <block wx:else>
+            <view class="uz-plus">+</view>
+            <view class="uz-text">继续添加图片 / 视频</view>
+          </block>
+        </view>
+      </view>
+
+      <view class="form-group">
+        <text class="form-label">验货结果<text class="req">*</text></text>
+        <view class="pill-group">
+          <text class="pill {{form.inspection_result === 'PASSED' ? 'active' : ''}}" data-result="PASSED" bindtap="pickResult">验货通过</text>
+          <text class="pill {{form.inspection_result === 'MISMATCH' ? 'active' : ''}}" data-result="MISMATCH" bindtap="pickResult">货不对板</text>
+        </view>
+      </view>
+
+      <view class="form-section">
+        <text class="form-label">瑕疵照片 / 视频<text class="label-hint"> 选填</text></text>
+        <view class="form-note">普通二手瑕疵不会触发问题单，会进入待议价清单</view>
+        <view class="action-bar">
+          <button class="btn btn-sm" data-type="defect" bindtap="addImage">上传瑕疵照片</button>
+          <button class="btn btn-sm btn-outline" data-type="defect_video" bindtap="addImage">上传瑕疵视频</button>
+        </view>
+        <view wx:if="{{form.defect_images.length}}" class="pd-media-block">
+          <media-gallery urls="{{form.defect_images}}" display-urls="{{defectDisplayUrls}}" thumb-size="medium" />
+        </view>
+        <view wx:if="{{form.defect_videos.length}}" class="form-note">已上传 {{form.defect_videos.length}} 个瑕疵视频</view>
+      </view>
+
+      <view class="form-section">
+        <text class="form-label">仓库定位图 / 视频<text class="label-hint"> 选填</text></text>
+        <view class="form-note">货放到库位后顺手拍一张或拍段视频，用于找货盘点，不会展示给客户</view>
+        <view class="action-bar">
+          <button class="btn btn-sm" data-type="location" bindtap="addImage">上传图片 / 视频</button>
+        </view>
+        <view wx:if="{{form.location_images.length}}" class="pd-media-block">
+          <media-gallery urls="{{form.location_images}}" display-urls="{{locationDisplayUrls}}" thumb-size="medium" />
+        </view>
+      </view>
+
+      <view class="form-section">
+        <text class="form-label">扫码或手填</text>
+        <view class="form-note">选「货不对板」仍会正常入库，但会生成待议价工单</view>
+        <view class="form-group form-group--code">
+          <text class="form-label">货号</text>
+          <input class="input input--code" placeholder="货号（可扫码或手填）" data-key="sku_code" value="{{form.sku_code}}" bindinput="onInput" />
+          <view class="code-btn-row">
+            <button class="btn btn-outline btn-sm code-btn" bindtap="scanSkuCode">扫码填货号</button>
+            <button class="btn btn-outline btn-sm code-btn" bindtap="ocrSkuCode">拍照识别货号</button>
+          </view>
+        </view>
+        <view class="form-group form-group--code">
+          <text class="form-label">序列号</text>
+          <input class="input input--code" placeholder="序列号（可扫码或手填）" data-key="serial_number" value="{{form.serial_number}}" bindinput="onInput" />
+          <view class="code-btn-row">
+            <button class="btn btn-outline btn-sm code-btn" bindtap="scanSerialNumber">扫码填序列号</button>
+            <button class="btn btn-outline btn-sm code-btn" bindtap="ocrSerialNumber">拍照识别序列号</button>
+          </view>
+        </view>
+        <view class="form-group form-group--code">
+          <text class="form-label">69码<text class="label-hint"> 选填</text></text>
+          <input class="input input--code" placeholder="69码（可扫码或手填）" data-key="barcode" value="{{form.barcode}}" bindinput="onInput" />
+          <view class="code-btn-row">
+            <button class="btn btn-outline btn-sm code-btn" bindtap="scanBarcode69">扫码填69码</button>
+          </view>
+        </view>
+        <view class="scan-status">
+          <text>货号：{{form.sku_code ? form.sku_code : '未填写'}}</text>
+          <text>序列号：{{form.serial_number ? form.serial_number : '未填写'}}</text>
+          <text>69码：{{form.barcode ? form.barcode : '未填写'}}</text>
+        </view>
+        <view class="form-note">货号、序列号各自拍照识别更准；也可扫码或手填</view>
+      </view>
+
+      <view class="form-group">
+        <text class="form-label">库位<text class="req">*</text></text>
+        <view
+          wx:if="{{locations.length}}"
+          class="input picker-field {{form.location_code ? '' : 'picker-field--empty'}}"
+          bindtap="openLocationPicker"
+        >{{locationLabel || '选择库位'}}</view>
+        <view wx:else class="input picker-field picker-field--empty">暂无可用库位，请联系管理员配置</view>
+      </view>
+
+      <view class="form-group">
+        <text class="form-label">商品类型<text class="req">*</text></text>
+        <picker mode="selector" range="{{productTypes}}" value="{{productTypeIndex}}" bindchange="pickProductType">
+          <view class="input picker-field {{form.product_type ? '' : 'picker-field--empty'}}">{{form.product_type || '选择商品类型'}}</view>
+        </picker>
+      </view>
+
+      <view class="form-group">
+        <text class="form-label">成色<text class="req">*</text></text>
+        <picker mode="selector" range="{{grades}}" value="{{gradeIndex}}" bindchange="pickGrade">
+          <view class="input picker-field {{form.condition_grade ? '' : 'picker-field--empty'}}">{{form.condition_grade || '选择成色'}}</view>
+        </picker>
+      </view>
+
+      <view class="form-group" wx:if="{{form.inspection_result === 'MISMATCH'}}">
+        <text class="form-label">货不对板说明<text class="label-hint"> 选填</text></text>
+        <textarea class="input" auto-height="{{true}}" placeholder="描述与采购单不符之处" data-key="mismatch_remark" value="{{form.mismatch_remark}}" bindinput="onInput" />
+      </view>
+
+      <view class="form-group" wx:if="{{tagOptions.length}}">
+        <text class="form-label">仓库标签<text class="label-hint"> 选填 · 可多选</text></text>
+        <view class="tag-chip-group">
+          <text
+            wx:for="{{tagOptions}}"
+            wx:key="id"
+            class="tag-chip {{form.tags.indexOf(item.name) >= 0 ? 'tag-chip--active' : ''}}"
+            data-name="{{item.name}}"
+            bindtap="toggleTag"
+          >{{item.name}}</text>
+        </view>
+      </view>
+
+      <view class="form-group">
+        <text class="form-label">验货备注<text class="label-hint"> 选填</text></text>
+        <textarea class="input" auto-height="{{true}}" placeholder="其他说明" data-key="remark" value="{{form.remark}}" bindinput="onInput" />
+      </view>
+
+      <button class="btn-primary btn-block" bindtap="submit" loading="{{submitting}}" disabled="{{submitting}}">提交验货并入库</button>
+    </block>
+
+    <!-- 拒签模式 -->
+    <block wx:else>
+      <view class="form-section">
+        <text class="form-label">拒签原因<text class="req">*</text></text>
+        <view class="form-note">拒签后订单将标记为已撤销，不会生成库存</view>
+        <textarea class="input" auto-height="{{true}}" placeholder="请说明拒签原因，如严重货不对板、破损拒收等" data-key="remark" value="{{form.remark}}" bindinput="onInput" />
+      </view>
+
+      <view class="form-section">
+        <text class="form-label">拒签证据图 / 视频<text class="label-hint"> 选填</text></text>
+        <view wx:if="{{form.reject_images.length}}" class="upload-preview-grid">
+          <view wx:for="{{form.reject_images}}" wx:key="*this" class="upload-preview-item">
+            <media-thumb url="{{rejectDisplayUrls[index] || item}}" size="fill" preview="{{true}}" />
+          </view>
+        </view>
+        <view class="upload-zone {{form.reject_images.length ? 'upload-zone--compact' : ''}}" data-type="reject" bindtap="addImage">
+          <block wx:if="{{!form.reject_images.length}}">
+            <view class="uz-camera"></view>
+            <view class="uz-text">上传拒签证据图 / 视频</view>
+            <view class="uz-hint">可选，最多 4 个</view>
+          </block>
+          <block wx:else>
+            <view class="uz-plus">+</view>
+            <view class="uz-text">继续添加图片 / 视频</view>
+          </block>
+        </view>
+      </view>
+
+      <button class="btn-danger btn-block" bindtap="submit" loading="{{submitting}}" disabled="{{submitting}}">确认拒签退回</button>
+    </block>
+  </view>
+
+  <view wx:if="{{locationPickerVisible}}" class="picker-sheet-mask" bindtap="closeLocationPicker" />
+  <view wx:if="{{locationPickerVisible}}" class="picker-sheet">
+    <view class="picker-sheet__bar">
+      <text class="picker-sheet__btn" bindtap="closeLocationPicker">取消</text>
+      <text class="picker-sheet__title">选择库位</text>
+      <text class="picker-sheet__btn picker-sheet__btn--confirm" bindtap="confirmLocationPicker">确定</text>
+    </view>
+    <picker-view
+      class="picker-sheet__view"
+      indicator-style="height: 112rpx;"
+      value="{{tempLocationIndex}}"
+      bindchange="onLocationPickerChange"
+    >
+      <picker-view-column>
+        <view wx:for="{{locations}}" wx:key="code" class="picker-sheet__item">
+          <text class="picker-sheet__text">{{item.label}}</text>
+        </view>
+      </picker-view-column>
+    </picker-view>
+  </view>
+</view>

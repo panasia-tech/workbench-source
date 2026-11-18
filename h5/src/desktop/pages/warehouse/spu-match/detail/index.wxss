@@ -1,0 +1,272 @@
+/* 匹配商品（电脑版模板用；smd-dk- 开头，手机模板里不出现） */
+.smd-dk-split {
+  grid-template-columns: minmax(0, 1fr) 340px;
+}
+
+.smd-dk-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.smd-dk-returned {
+  border-color: #fecaca;
+}
+
+.smd-dk-returned .dk-card__head {
+  color: #b91c1c;
+  background: #fef2f2;
+  border-radius: 8px 8px 0 0;
+}
+
+.smd-dk-reason {
+  margin-bottom: 10px;
+  color: #111827;
+}
+
+.smd-dk-chosen {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.smd-dk-note {
+  margin-top: 6px;
+  color: #374151;
+}
+
+.smd-dk-effect {
+  margin-top: 4px;
+  color: #b45309;
+}
+
+.smd-dk-state {
+  padding: 12px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.smd-dk-state.sm-state--ok {
+  border-color: #a7f3d0;
+  background: #ecfdf5;
+}
+
+.smd-dk-state.sm-state--warn {
+  border-color: #fde68a;
+  background: #fffbeb;
+}
+
+.smd-dk-state.sm-state--bad {
+  border-color: #fecaca;
+  background: #fef2f2;
+}
+
+.smd-dk-state__word {
+  padding: 1px 8px;
+  border-radius: 4px;
+  background: rgba(17, 24, 39, 0.08);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.smd-dk-state__title {
+  font-weight: 600;
+}
+
+.smd-dk-state__detail {
+  margin-top: 6px;
+  color: #374151;
+}
+
+.smd-dk-state__next {
+  margin-top: 4px;
+  font-weight: 500;
+  color: #1d4ed8;
+}
+
+.smd-dk-radio-col {
+  width: 28px;
+}
+
+.smd-dk-radio {
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid #9ca3af;
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+.smd-dk-radio--on {
+  border: 4px solid #2563eb;
+}
+
+.smd-dk-diff {
+  color: #c2410c;
+  font-weight: 500;
+}
+
+.smd-dk-why {
+  min-width: 140px;
+}
+
+.smd-dk-search {
+  border-top: 1px solid #f0f1f3;
+}
+
+.smd-dk-search .dk-input {
+  width: 100%;
+}
+
+.smd-dk-hits {
+  margin-top: 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+}
+
+.smd-dk-hit {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.smd-dk-hit + .smd-dk-hit {
+  border-top: 1px solid #f0f1f3;
+}
+
+.smd-dk-hit:hover {
+  background: #f8fafc;
+}
+
+.smd-dk-hit__pick {
+  margin-left: auto;
+}
+
+.smd-dk-thumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 6px 0;
+}
+
+.smd-dk-thumb-wrap {
+  position: relative;
+}
+
+.smd-dk-thumb {
+  width: 72px;
+  height: 72px;
+  border-radius: 6px;
+  background: #f3f4f6;
+  cursor: zoom-in;
+  display: block;
+}
+
+.smd-dk-thumb--s {
+  width: 48px;
+  height: 48px;
+}
+
+.smd-dk-x {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(17, 24, 39, 0.6);
+  color: #fff;
+  font-size: 13px;
+  line-height: 18px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.smd-dk-x:hover {
+  background: #dc2626;
+}
+
+.smd-dk-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed #cbd5e1;
+  background: #f8fafc;
+  color: #6b7280;
+  font-size: 22px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.smd-dk-add--text {
+  width: auto;
+  padding: 0 14px;
+  font-size: 13px;
+}
+
+.smd-dk-add:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+.smd-dk-foot {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 16px;
+  border-top: 1px solid #f0f1f3;
+}
+
+.smd-dk-full {
+  width: 100%;
+}
+
+.smd-dk-mt {
+  margin-top: 12px;
+}
+
+.smd-dk-cover {
+  width: 100%;
+  height: 200px;
+  border-radius: 6px;
+  background: #f3f4f6;
+  display: block;
+  cursor: zoom-in;
+}
+
+.smd-dk-name {
+  margin: 10px 0 12px;
+  font-size: 15px;
+}
+
+.smd-dk-log {
+  padding-bottom: 12px;
+  font-size: 13px;
+}
+
+.smd-dk-log + .smd-dk-log {
+  padding-top: 12px;
+  border-top: 1px solid #f0f1f3;
+}
+
+.smd-dk-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(17, 24, 39, 0.45);
+}
+
+.smd-dk-dialog {
+  width: 480px;
+  max-width: calc(100vw - 48px);
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.2);
+}

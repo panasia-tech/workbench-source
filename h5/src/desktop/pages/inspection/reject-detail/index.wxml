@@ -1,0 +1,75 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<!-- 拒签详情（电脑版）：拒签原因放最上面，左边采购和操作信息，右边商品图和拒签凭证 -->
+<view class="dk-page" wx:if="{{task}}">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title dk-row">
+        <text>{{task.product_name || task.inspect_no}}</text>
+        <text class="dk-tag tag-danger">拒签退回</text>
+      </view>
+      <view class="dk-sub">{{task.inspect_no}}{{task.spec ? ' · ' + task.spec : ''}}</view>
+    </view>
+  </view>
+
+  <view class="rd-dk-reason">
+    <view class="rd-dk-reason__k">⚠ 拒签原因</view>
+    <view class="rd-dk-reason__v">{{task.remark || '（未填写）'}}</view>
+  </view>
+
+  <view class="dk-split">
+    <view class="rd-dk-col">
+      <view class="dk-card">
+        <view class="dk-card__head"><text>采购信息</text></view>
+        <view class="dk-card__body">
+          <view class="dk-desc">
+            <view class="dk-desc__item dk-desc__item--full"><text class="dk-desc__k">商品名称</text><text class="dk-desc__v">{{task.product_name || '—'}}</text></view>
+            <view class="dk-desc__item"><text class="dk-desc__k">品牌</text><text class="dk-desc__v">{{task.brand || '—'}}</text></view>
+            <view class="dk-desc__item"><text class="dk-desc__k">型号</text><text class="dk-desc__v">{{task.model || '—'}}</text></view>
+            <view class="dk-desc__item"><text class="dk-desc__k">采购价</text><text class="dk-desc__v">¥{{fmt.money(task.unit_price)}}</text></view>
+            <view class="dk-desc__item"><text class="dk-desc__k">采购单号</text><text class="dk-desc__v">{{task.order_no || '—'}}</text></view>
+            <view wx:if="{{task.tracking_no}}" class="dk-desc__item"><text class="dk-desc__k">物流单号</text><text class="dk-desc__v">{{task.tracking_no}}</text></view>
+          </view>
+        </view>
+      </view>
+
+      <view class="dk-card">
+        <view class="dk-card__head"><text>操作信息</text></view>
+        <view class="dk-card__body">
+          <view class="dk-desc">
+            <view class="dk-desc__item"><text class="dk-desc__k">操作人</text><text class="dk-desc__v">{{task.operator_name || '—'}}</text></view>
+            <view class="dk-desc__item"><text class="dk-desc__k">拒签时间</text><text class="dk-desc__v">{{fmt.datetime(task.inspected_at || task.created_at)}}</text></view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="rd-dk-col">
+      <view class="dk-card">
+        <view class="dk-card__head"><text>商品图</text></view>
+        <view class="dk-card__body">
+          <image
+            wx:if="{{task.product_image_thumb}}"
+            class="rd-dk-cover"
+            src="{{task.product_image_thumb}}"
+            mode="aspectFill"
+            data-url="{{task.product_image || task.product_image_thumb}}"
+            bindtap="dkPreview"
+          />
+          <view wx:else class="dk-muted">暂无商品图</view>
+        </view>
+      </view>
+
+      <view wx:if="{{task.reject_images.length}}" class="dk-card">
+        <view class="dk-card__head"><text>拒签凭证</text></view>
+        <view class="dk-card__body"><media-gallery urls="{{task.reject_images}}" thumb-size="large" /></view>
+      </view>
+    </view>
+  </view>
+</view>
+<view class="dk-page" wx:elif="{{loading}}">
+  <view class="dk-card"><view class="dk-empty">加载中…</view></view>
+</view>
+<view class="dk-page" wx:else>
+  <view class="dk-card"><view class="dk-empty">未找到拒签记录</view></view>
+</view>

@@ -1,0 +1,76 @@
+/* 验货任务（电脑版模板 index.wxml 用；手机模板里没有 insp-dk- 类名） */
+.insp-dk-warn {
+  color: #c2410c;
+}
+
+.insp-dk-ph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+.insp-dk-piece {
+  margin-right: 6px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.insp-dk-gap {
+  margin-left: 4px;
+}
+
+.insp-dk-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+}
+
+.insp-dk-exp {
+  max-width: 240px;
+}
+
+.insp-dk-exp__head {
+  flex-wrap: nowrap;
+}
+
+.insp-dk-exp__sum {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* 待召回：表格上方一块浅红底 */
+.insp-dk-recall {
+  margin: 0 16px 12px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  background: #fff7f7;
+  overflow: hidden;
+}
+
+.insp-dk-recall__head {
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #b91c1c;
+  border-bottom: 1px solid #fee2e2;
+}
+
+.insp-dk-recall .dk-table td {
+  background: transparent;
+}
+
+.insp-dk-warn-tag {
+  height: 18px;
+  padding: 0 6px;
+  font-size: 11px;
+}
+
+.insp-dk-name {
+  max-width: 250px;
+}

@@ -1,0 +1,103 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<view class="page-wrap page-wrap--no-tab insp-detail-page" wx:if="{{task}}">
+  <view class="card">
+    <view class="card-head">{{task.inspect_no}}</view>
+    <view class="tag {{task.status === 'PENDING' ? 'tag-warning' : (task.action_type === 'REJECT' ? 'tag-danger' : 'tag-success')}}">
+      {{task.status === 'PENDING' ? fmt.statusLabel(task.status) : (fmt.inspectionActionLabel(task.action_type) || fmt.statusLabel(task.status))}}
+    </view>
+
+    <view class="condition-warn" wx:if="{{task.condition_warning}}">
+      <text class="condition-warn__icon">⚠</text>
+      <text class="condition-warn__text">实拍图含「{{task.condition_warning_text || '全新'}}」字样，请重点核对货况</text>
+    </view>
+
+    <view class="pd-info-grid" style="margin-top: 24rpx;">
+      <view class="pd-info-item pd-info-item--wide">
+        <view class="pdi-label">商品名称</view>
+        <view class="pdi-value">{{task.product_name || '—'}}</view>
+      </view>
+      <view class="pd-info-item">
+        <view class="pdi-label">品牌</view>
+        <view class="pdi-value">{{task.brand || '—'}}</view>
+      </view>
+      <view class="pd-info-item">
+        <view class="pdi-label">型号</view>
+        <view class="pdi-value">{{task.model || '—'}}</view>
+      </view>
+      <view class="pd-info-item">
+        <view class="pdi-label">规格</view>
+        <view class="pdi-value">{{task.spec || '—'}}</view>
+      </view>
+      <view class="pd-info-item">
+        <view class="pdi-label">采购价</view>
+        <view class="pdi-value">¥{{fmt.money(task.unit_price)}}</view>
+      </view>
+      <view class="pd-info-item pd-info-item--wide">
+        <view class="pdi-label">采购单号</view>
+        <view class="pdi-value">{{task.order_no || '—'}}</view>
+      </view>
+      <view class="pd-info-item" wx:if="{{task.inspection_result}}">
+        <view class="pdi-label">验货结果</view>
+        <view class="pdi-value">{{fmt.inspectionResultLabel(task.inspection_result) || task.inspection_result}}</view>
+      </view>
+      <view class="pd-info-item" wx:if="{{task.action_type === 'INBOUND'}}">
+        <view class="pdi-label">实收金额</view>
+        <view class="pdi-value">
+          ¥{{fmt.money(task.actual_amount || task.unit_price)}}
+          <text wx:if="{{!task.actual_amount}}" class="insp-hint">沿用采购价</text>
+        </view>
+      </view>
+      <view class="pd-info-item" wx:if="{{task.location_code}}">
+        <view class="pdi-label">库位</view>
+        <view class="pdi-value">{{task.location_code}}</view>
+      </view>
+      <view class="pd-info-item" wx:if="{{task.inspected_at}}">
+        <view class="pdi-label">验货时间</view>
+        <view class="pdi-value">{{fmt.datetime(task.inspected_at)}}</view>
+      </view>
+    </view>
+
+    <view class="insp-remark" wx:if="{{task.mismatch_remark}}">
+      <view class="pdi-label">货不对板说明</view>
+      <view class="pdi-value">{{task.mismatch_remark}}</view>
+    </view>
+    <view class="insp-remark" wx:if="{{task.remark}}">
+      <view class="pdi-label">备注</view>
+      <view class="pdi-value">{{task.remark}}</view>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{task.product_image_thumb}}">
+    <view class="card-head">商品图</view>
+    <media-thumb
+      url="{{task.product_image_thumb}}"
+      preview-url="{{task.product_image}}"
+      size="large"
+      preview="{{true}}"
+    />
+  </view>
+
+  <view class="card" wx:if="{{task.listing_images.length}}">
+    <view class="card-head">上架图</view>
+    <media-gallery urls="{{task.listing_images}}" thumb-size="large" />
+  </view>
+
+  <view class="card" wx:if="{{task.defect_images.length || task.defect_videos.length}}">
+    <view class="card-head">瑕疵记录</view>
+    <media-gallery wx:if="{{task.defect_images.length}}" urls="{{task.defect_images}}" thumb-size="large" />
+    <media-gallery wx:if="{{task.defect_videos.length}}" urls="{{task.defect_videos}}" thumb-size="large" />
+  </view>
+
+  <view class="card" wx:if="{{task.reject_images.length}}">
+    <view class="card-head">拒签凭证</view>
+    <media-gallery urls="{{task.reject_images}}" thumb-size="large" />
+  </view>
+</view>
+
+<view class="page-wrap page-wrap--no-tab" wx:elif="{{loading}}">
+  <view class="card"><view class="empty"><view class="e-text">加载中…</view></view></view>
+</view>
+<view class="page-wrap page-wrap--no-tab" wx:else>
+  <view class="card"><view class="empty"><view class="e-text">未找到验货记录</view></view></view>
+</view>

@@ -1,0 +1,66 @@
+/* 店铺下架（电脑版模板用；wso-dk- 开头，手机模板里不出现） */
+.wso-dk-chk {
+  width: 40px;
+}
+
+.wso-dk-box {
+  width: 16px;
+  height: 16px;
+  border: 1px solid #9ca3af;
+  border-radius: 4px;
+  background: #fff;
+  color: #fff;
+  font-size: 12px;
+  line-height: 16px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.wso-dk-box--on {
+  border-color: #2563eb;
+  background: #2563eb;
+}
+
+.wso-dk-box--disabled {
+  border-color: #e5e7eb;
+  background: #f3f4f6;
+  cursor: not-allowed;
+}
+
+.wso-dk-off td {
+  color: #9ca3af;
+}
+
+.wso-dk-err {
+  color: #dc2626;
+  font-size: 12px;
+}
+
+.wso-dk-poll {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  padding: 2px 10px;
+  border-radius: 4px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 12px;
+}
+
+.wso-dk-poll--stale {
+  background: #fff7ed;
+  color: #c2410c;
+  cursor: pointer;
+}
+
+.wso-dk-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.wso-dk-bar {
+  margin-top: auto;
+}

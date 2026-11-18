@@ -1,0 +1,11 @@
+/* 列表样式沿用货号更换 / 69码更换页 */
+@import "../barcode-migration/index.wxss";
+
+.spu-match-page .sku-item__spu {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #059669;
+  line-height: 1.45;
+}
+

@@ -1,0 +1,28 @@
+<view class="page-wrap page-wrap--no-tab rt-page">
+  <view class="card">
+    <view class="rt-h">补测待办</view>
+    <view class="rt-muted">验货单已提交，但还有「无法测试」的项目。点进去补测成通过或不通过，全检才算完成。</view>
+  </view>
+
+  <view class="card">
+    <view wx:if="{{!list.length && !loading}}" class="empty">
+      <view class="e-icon">—</view>
+      <view class="e-text">暂无待补测</view>
+    </view>
+    <view
+      wx:for="{{list}}"
+      wx:key="task_id"
+      class="rt-item"
+      data-id="{{item.task_id}}"
+      bindtap="openItem"
+    >
+      <view class="rt-title">{{item.product_name || item.inspect_no}}</view>
+      <view class="rt-sub">{{item.inspect_no}} · {{item.order_no || '—'}}<text wx:if="{{item.sku_code}}"> · {{item.sku_code}}</text></view>
+      <view class="rt-tags">
+        <text wx:for="{{item.items}}" wx:for-item="it" wx:key="item_key" class="tag tag-warning rt-tag">{{it.title}}</text>
+      </view>
+      <view class="rt-sub" wx:if="{{item.since}}">无法测试于 {{item.since}}</view>
+    </view>
+    <view wx:if="{{loading}}" class="list-loading">加载中…</view>
+  </view>
+</view>

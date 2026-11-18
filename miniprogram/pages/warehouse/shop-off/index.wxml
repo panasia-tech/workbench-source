@@ -1,0 +1,60 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<view class="page-wrap page-wrap--no-tab">
+  <view class="card">
+    <view class="card-head">店铺下架 · {{skuCode}}</view>
+    <view class="form-hint">勾选要下架的店铺，默认全选在架店铺；确认后由服务端下架（真机模式为异步，会先显示「下架中」再收敛为已下架）。</view>
+
+    <view wx:if="{{!loading && !shops.length}}" class="empty">
+      <view class="e-icon">—</view>
+      <view class="e-text">暂无启用的销售店铺</view>
+    </view>
+
+    <block wx:elif="{{shops.length}}">
+      <view class="dl-toolbar" wx:if="{{delistableCount}}">
+        <view class="dl-pick-all" bindtap="toggleSelectAll">
+          <view class="dl-check {{allSelected ? 'dl-check--on' : ''}}">
+            <text wx:if="{{allSelected}}" class="dl-check-mark">✓</text>
+          </view>
+          <text class="dl-pick-label">{{allSelected ? '取消全选' : '全选'}}</text>
+        </view>
+        <text class="dl-meta">已选 {{selectedCount}} / {{delistableCount}} 个在架店铺</text>
+      </view>
+
+      <view wx:if="{{hasTransient && !pollExhausted}}" class="dl-poll-hint">
+        <text class="dl-poll-dot"></text>真机处理中，自动刷新状态…
+      </view>
+      <view wx:if="{{pollExhausted}}" class="dl-poll-hint dl-poll-hint--stale" bindtap="manualRefresh">
+        仍在处理中，点此刷新
+      </view>
+
+      <view wx:for="{{shops}}" wx:key="shop_id" class="dl-shop {{item.canDelist ? '' : 'dl-shop--disabled'}}">
+        <view class="dl-shop-main" data-id="{{item.shop_id}}" bindtap="toggleShop">
+          <view class="dl-check {{item.selected ? 'dl-check--on' : ''}} {{item.canDelist ? '' : 'dl-check--disabled'}}">
+            <text wx:if="{{item.selected}}" class="dl-check-mark">✓</text>
+          </view>
+          <view class="dl-shop-body">
+            <view class="dl-shop-name">{{item.shop_label}}</view>
+            <view class="dl-shop-code">{{item.shop_code}}</view>
+          </view>
+          <view class="tag {{item.transient ? 'tag-processing' : ''}} {{fmt.shopStateTag(item.publish_status, item.gc_pending)}}">
+            {{fmt.shopStateLabel(item.publish_status, item.gc_pending)}}
+          </view>
+        </view>
+        <view wx:if="{{item.last_error}}" class="dl-shop-err">{{item.last_error}}</view>
+      </view>
+
+      <button
+        wx:if="{{delistableCount}}"
+        class="btn-primary btn-block"
+        style="margin-top: 32rpx;"
+        bindtap="submitDelist"
+        loading="{{submitting}}"
+        disabled="{{submitting || !selectedCount}}"
+      >{{selectedCount === delistableCount && delistableCount ? '一键下架全部店铺' : '下架所选店铺'}}</button>
+      <view wx:else class="form-hint" style="margin-top: 24rpx; text-align: center;">
+        当前无在架店铺可下架（可能正在处理中）
+      </view>
+    </block>
+  </view>
+</view>

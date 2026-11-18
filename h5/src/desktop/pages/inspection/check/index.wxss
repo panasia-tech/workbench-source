@@ -1,0 +1,346 @@
+/* 逐项验货（电脑版模板 index.wxml 用；手机模板里没有 ck-dk- 类名） */
+.ck-dk-split {
+  grid-template-columns: minmax(0, 1fr) 420px;
+}
+
+.ck-dk-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.ck-dk-gap {
+  margin-top: 12px;
+}
+
+.ck-dk-banner {
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.ck-dk-banner--warn {
+  border: 1px solid #fde68a;
+  background: #fffbeb;
+  color: #b45309;
+}
+
+.ck-dk-exc {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  border-left: 4px solid #f59e0b;
+  background: #fff;
+}
+
+.ck-dk-exc--late {
+  border-left-color: #ef4444;
+}
+
+.ck-dk-exc__head {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.ck-dk-late {
+  color: #b91c1c;
+}
+
+.ck-dk-chip {
+  height: 32px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 13px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.ck-dk-chip:hover {
+  border-color: #2563eb;
+}
+
+.ck-dk-chip--on {
+  border-color: #2563eb;
+  background: #eff4ff;
+  color: #1d4ed8;
+  font-weight: 600;
+}
+
+.ck-dk-select {
+  max-width: 320px;
+}
+
+.ck-dk-steps {
+  margin-top: 8px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 16px;
+}
+
+.ck-dk-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #374151;
+}
+
+.ck-dk-step__no {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  border-radius: 50%;
+  background: #f3f4f6;
+  color: #6b7280;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ck-dk-no {
+  width: 32px;
+}
+
+.ck-dk-note {
+  max-width: 260px;
+}
+
+.ck-dk-hint {
+  margin-top: 2px;
+  font-size: 12px;
+  color: #b45309;
+}
+
+.ck-dk-done {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 12px 16px 16px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: #ecfdf5;
+  color: #047857;
+  font-size: 13px;
+}
+
+.ck-dk-pick {
+  padding: 28px 16px;
+}
+
+/* 填写面板 */
+.ck-dk-edit {
+  border-color: #93c5fd;
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.08);
+}
+
+.ck-dk-edit__body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ck-dk-edit__foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 16px;
+  border-top: 1px solid #f0f1f3;
+}
+
+.ck-dk-guide {
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: #eff6ff;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #374151;
+}
+
+.ck-dk-std {
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: #f9fafb;
+  font-size: 13px;
+  color: #374151;
+}
+
+.ck-dk-results {
+  display: flex;
+  gap: 8px;
+}
+
+.ck-dk-result {
+  flex: 1;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.ck-dk-result:hover {
+  border-color: #2563eb;
+}
+
+.ck-dk-result--on.ck-dk-result--PASS {
+  border-color: #059669;
+  background: #ecfdf5;
+  color: #047857;
+  font-weight: 600;
+}
+
+.ck-dk-result--on.ck-dk-result--FAIL {
+  border-color: #dc2626;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+.ck-dk-result--on.ck-dk-result--UNTESTABLE {
+  border-color: #d97706;
+  background: #fffbeb;
+  color: #b45309;
+  font-weight: 600;
+}
+
+.ck-dk-ta {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ck-dk-photos {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.ck-dk-photo {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 6px;
+  background: #f3f4f6;
+}
+
+.ck-dk-photo__img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: 6px;
+  cursor: zoom-in;
+}
+
+.ck-dk-photo__x {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(17, 24, 39, 0.72);
+  color: #fff;
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.ck-dk-photo__x:hover {
+  background: #dc2626;
+}
+
+.ck-dk-photo--add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed #d1d5db;
+  background: #fafafa;
+  color: #6b7280;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.ck-dk-photo--add:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+.ck-dk-ev {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid #f3f4f6;
+  cursor: pointer;
+}
+
+.ck-dk-hist {
+  font-size: 13px;
+  line-height: 1.8;
+  color: #374151;
+}
+
+/* 发现异常：居中对话框 */
+.ck-dk-mask {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(17, 24, 39, 0.45);
+}
+
+.ck-dk-dialog {
+  width: 520px;
+  max-width: calc(100vw - 48px);
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.25);
+}
+
+.ck-dk-dialog__head {
+  padding: 16px 20px 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.ck-dk-dialog__body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 20px;
+}
+
+.ck-dk-dialog__foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 20px 16px;
+}
+
+/* W11 卖家原话对照 */
+.ck-dk-claim { margin-bottom: 12px; }
+.ck-dk-claim__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 24px; }
+.ck-dk-claim__line { font-size: 13px; line-height: 1.6; word-break: break-all; }
+.ck-dk-claim__k { display: inline-block; min-width: 36px; margin-right: 8px; color: #6b7280; }
+.ck-dk-claim__desc { margin-top: 4px; max-height: 96px; overflow-y: auto; }
+.ck-dk-dim { display: inline-block; margin-right: 6px; padding: 0 6px; border-radius: 4px; background: #eef2ff; color: #4338ca; font-size: 12px; }
+.ck-dk-newp { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 12px; padding: 10px 12px; border-radius: 6px; background: #fef2f2; color: #b91c1c; font-size: 13px; }
+.ck-dk-flags { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+.ck-dk-flag { padding: 4px 12px; border: 1px solid #d1d5db; border-radius: 6px; background: #fff; font-size: 13px; white-space: nowrap; cursor: pointer; }
+.ck-dk-flag--on { border-color: #2563eb; background: #eff6ff; color: #2563eb; }

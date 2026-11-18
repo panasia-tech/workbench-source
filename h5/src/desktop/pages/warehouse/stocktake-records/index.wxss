@@ -1,0 +1,8 @@
+/* 盘点记录（电脑版模板用；wsr-dk- 开头，手机模板里不出现） */
+.wsr-dk-danger {
+  color: #dc2626;
+}
+
+.wsr-dk-warn {
+  color: #c2410c;
+}

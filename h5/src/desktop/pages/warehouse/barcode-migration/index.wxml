@@ -1,0 +1,136 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<!-- 69码更换（电脑版）：分类 tab + 搜索 + 表格 + 页码；改码弹层改成居中对话框 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">69码更换</view>
+      <view class="dk-sub">共 {{total}} 条 · {{tab === 'pending' ? '在库且 69码 为空' : (tab === 'done' ? '已录 69码 且条码库已查到' : '已录 69码 但条码库没查到')}}</view>
+    </view>
+  </view>
+
+  <view class="dk-card">
+    <view class="dk-toolbar">
+      <view class="dk-tabs">
+        <view
+          wx:for="{{tabs}}"
+          wx:key="key"
+          class="dk-tab {{tab === item.key ? 'dk-tab--on' : ''}}"
+          data-tab="{{item.key}}"
+          bindtap="switchTab"
+        >{{item.label}}</view>
+      </view>
+      <input
+        class="dk-input dk-search"
+        placeholder="货号 / 69码 / 商品名 / 库位"
+        value="{{q}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+        bindconfirm="onSearch"
+      />
+      <view class="dk-btn" bindtap="onScanSearch">扫码搜</view>
+      <view class="dk-btn dk-btn--primary" bindtap="onSearch">搜索</view>
+    </view>
+
+    <view class="dk-table-wrap">
+      <table class="dk-table">
+        <thead>
+          <tr>
+            <th>货号</th>
+            <th>商品</th>
+            <th>69码 / 条码库信息</th>
+            <th>更换</th>
+            <th>{{tab === 'pending' ? '入库时间' : '最近更换'}}</th>
+            <th wx:if="{{tab === 'done'}}">更换人</th>
+            <th class="dk-ops">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr wx:for="{{list}}" wx:key="id" class="dk-tr--click" data-code="{{item.sku_code}}" bindtap="openDetail">
+            <td class="dk-nowrap dk-cell-main">{{item.sku_code}}</td>
+            <td>
+              <view class="dk-ellipsis wbm-dk-name" title="{{item.product_name}}">{{item.product_name}}</view>
+              <view class="dk-cell-sub">{{item.spec || '—'}} · 库位 {{item.location_code || '未分配'}} · {{fmt.statusLabel(item.status)}}</view>
+            </td>
+            <td>
+              <view class="dk-nowrap {{item.barcode ? '' : 'dk-muted'}}">{{item.barcode || '未录入'}}</view>
+              <view wx:if="{{item.barcode}}" class="dk-cell-sub dk-ellipsis wbm-dk-spu {{item.spu_text ? '' : 'wbm-dk-miss'}}" title="{{item.spu_text}}">{{item.spu_text || '条码库未查到该 69码，可重新查询或重录'}}</view>
+            </td>
+            <td class="dk-nowrap"><text class="dk-tag {{item.migration_status === 'DONE' ? 'tag-success' : 'tag-warning'}}">{{item.migration_status === 'DONE' ? '已更换' : '待更换'}}</text></td>
+            <td class="dk-nowrap">{{tab === 'pending' ? fmt.datetime(item.inbound_at) : (item.last_barcode_at ? fmt.datetime(item.last_barcode_at) : '入库时录入')}}</td>
+            <td wx:if="{{tab === 'done'}}">
+              <block wx:if="{{item.last_barcode_at}}">
+                <view class="dk-nowrap">{{item.last_barcode_operator_name || '无操作人记录'}}<text wx:if="{{item.last_barcode_source}}" class="dk-muted"> · {{item.last_barcode_source}}</text></view>
+                <view wx:if="{{item.last_barcode_old}}" class="dk-cell-sub">原 {{item.last_barcode_old}}</view>
+              </block>
+              <text wx:else class="dk-muted">—</text>
+            </td>
+            <td class="dk-ops">
+              <block wx:if="{{item.can_migrate}}">
+                <text
+                  wx:if="{{tab === 'missing'}}"
+                  class="dk-link {{relookupCode === item.sku_code ? 'dk-muted' : ''}}"
+                  data-code="{{item.sku_code}}"
+                  catchtap="relookup"
+                >{{relookupCode === item.sku_code ? '查询中…' : '重新查询'}}</text>
+                <text class="dk-link" data-code="{{item.sku_code}}" data-barcode="{{item.barcode}}" catchtap="openEditor">{{item.barcode ? '更换 69码' : '录入 69码'}}</text>
+              </block>
+              <text class="dk-link" data-code="{{item.sku_code}}" catchtap="openDetail">详情</text>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </view>
+
+    <view wx:if="{{!list.length && !loading}}" class="dk-empty">{{tab === 'pending' ? '暂无缺 69码 的商品' : (tab === 'done' ? '暂无已查到 SPU 的商品' : '没有查不到的 69码')}}</view>
+    <view wx:if="{{loading && !list.length}}" class="dk-empty">加载中…</view>
+
+    <view wx:if="{{total > dkPageSize}}" class="dk-pager">
+      <text>共 {{total}} 条，每页 {{dkPageSize}} 条</text>
+      <view class="dk-row">
+        <view class="dk-btn dk-btn--sm {{dkPage <= 1 ? 'dk-btn--disabled' : ''}}" bindtap="dkPrev">上一页</view>
+        <text>第 {{dkPage}} / {{dkPages}} 页</text>
+        <view class="dk-btn dk-btn--sm {{dkPage >= dkPages ? 'dk-btn--disabled' : ''}}" bindtap="dkNext">下一页</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 69码更换：居中对话框 -->
+  <view wx:if="{{editorVisible}}" class="wbm-dk-mask" bindtap="closeEditor">
+    <view class="wbm-dk-dialog" catchtap="dkNoop">
+      <view class="dk-card__head">69码更换</view>
+      <view class="dk-card__body">
+        <view class="dk-form">
+          <view class="dk-field">
+            <text class="dk-label">货号</text>
+            <text class="dk-cell-main">{{editorSkuCode}}</text>
+          </view>
+          <view class="dk-field">
+            <text class="dk-label">原 69码</text>
+            <text>{{editorOldBarcode || '未录入'}}</text>
+          </view>
+          <view class="dk-field dk-field--full">
+            <text class="dk-label dk-label--req">新 69码</text>
+            <view class="wbm-dk-row">
+              <input
+                class="dk-input dk-grow"
+                type="number"
+                placeholder="扫描或输入 13 位商品条码"
+                value="{{editorNewBarcode}}"
+                bindinput="onEditorInput"
+                confirm-type="done"
+                bindconfirm="submitBarcode"
+              />
+              <view class="dk-btn" bindtap="scanNewBarcode">扫码</view>
+            </view>
+            <text class="dk-help">8 / 12 / 13 / 14 位数字</text>
+          </view>
+        </view>
+      </view>
+      <view class="wbm-dk-foot">
+        <view class="dk-btn" bindtap="closeEditor">取消</view>
+        <view class="dk-btn dk-btn--primary {{saving ? 'dk-btn--disabled' : ''}}" bindtap="submitBarcode">{{saving ? '提交中…' : '确定'}}</view>
+      </view>
+    </view>
+  </view>
+</view>

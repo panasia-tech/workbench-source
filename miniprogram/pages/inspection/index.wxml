@@ -1,0 +1,129 @@
+<wxs module="fmt" src="../../utils/format.wxs" />
+
+<view class="page-wrap page-wrap--no-tab insp-page">
+  <view class="entry-row">
+    <view class="entry-chip" hover-class="entry-chip--hover" bindtap="goRecords">
+      <text class="entry-chip__dot"></text>
+      <text class="entry-chip__label">验货记录</text>
+      <text class="entry-chip__arrow">›</text>
+    </view>
+    <view class="entry-chip entry-chip--warn" hover-class="entry-chip--hover" bindtap="goRetests">
+      <text class="entry-chip__dot"></text>
+      <text class="entry-chip__label">补测待办</text>
+      <text class="entry-chip__arrow">›</text>
+    </view>
+    <view class="entry-chip entry-chip--danger" hover-class="entry-chip--hover" bindtap="goRejects">
+      <text class="entry-chip__dot"></text>
+      <text class="entry-chip__label">拒签记录</text>
+      <text class="entry-chip__arrow">›</text>
+    </view>
+  </view>
+
+  <view class="search-bar">
+    <view class="search-input-wrap">
+      <input
+        class="search-input search-input--with-scan"
+        placeholder="货号 / 采购单 / 商品名称…"
+        value="{{q}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+        bindconfirm="onSearch"
+      />
+      <view class="search-scan-icon" catchtap="onScanSearch" aria-role="button">
+        <view class="scan-frame"></view>
+        <view class="scan-line"></view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-head card-head--split">
+      <view class="card-head-main">
+        待验货
+        <view class="tag tag-warning head-extra">{{tasks.length + recallPinned.length}} 票</view>
+      </view>
+      <view
+        wx:if="{{trackingCount}}"
+        class="express-batch-btn {{batchRefreshing ? 'is-disabled' : ''}}"
+        bindtap="refreshAllExpress"
+      >{{batchRefreshing ? '刷新中…' : '刷新本页物流'}}</view>
+    </view>
+    <view wx:if="{{!tasks.length && !recallPinned.length}}" class="empty">
+      <view class="e-icon">—</view>
+      <view class="e-text">暂无待验货商品</view>
+    </view>
+
+    <!-- 议价成功 24h 内待召回的在库商品，置顶提醒仓管 -->
+    <view
+      wx:for="{{recallPinned}}"
+      wx:for-item="rec"
+      wx:key="sku_id"
+      class="list-item list-item--stacked recall-item"
+      data-code="{{rec.sku_code}}"
+      bindtap="openRecall"
+    >
+      <view class="list-item__main">
+        <view class="li-thumb-wrap">
+          <media-thumb
+            wx:if="{{rec.cover_thumb_url}}"
+            url="{{rec.cover_thumb_url}}"
+            preview-url="{{rec.cover_url}}"
+            size="small"
+          />
+          <view wx:else class="li-icon">{{rec.product_name[0] || '召'}}</view>
+        </view>
+        <view class="li-info">
+          <view class="li-title">{{rec.product_name || rec.sku_code}}</view>
+          <view class="li-sub">{{rec.sku_code}}{{rec.location_code ? ' · 库位 ' + rec.location_code : ''}}</view>
+          <view class="li-sub li-sub--time">议价时间 {{fmt.datetime(rec.negotiated_at)}}</view>
+        </view>
+        <view class="li-meta">
+          <view class="recall-tag li-tag">请及时召回商品</view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:for="{{tasks}}" wx:key="id" class="list-item list-item--stacked" data-id="{{item.id}}" bindtap="openForm">
+      <view class="list-item__main">
+        <view class="li-thumb-wrap">
+          <media-thumb
+            wx:if="{{item.product_image_thumb}}"
+            url="{{item.product_image_thumb}}"
+            preview-url="{{item.product_image}}"
+            size="small"
+          />
+          <view wx:else class="li-icon">{{item.product_name[0] || '验'}}</view>
+        </view>
+        <view class="li-info">
+          <view class="li-title"><text wx:if="{{item.piece_label}}" class="insp-piece-tag">{{item.piece_label}}</text>{{item.product_name || item.inspect_no}}</view>
+          <view class="li-sub">{{item.order_no || item.inspect_no}}{{item.spec ? ' · ' + item.spec : ''}}</view>
+          <view class="li-sub li-sub--time">创建时间 {{fmt.datetime(item.created_at)}}</view>
+        </view>
+        <view class="li-meta">
+          <view class="li-price">¥{{fmt.money(item.unit_price)}}</view>
+          <view wx:if="{{item.condition_warning}}" class="condition-warn-tag li-tag">⚠{{item.condition_warning_text || '全新'}}</view>
+          <view class="tag tag-warning li-tag">待验货</view>
+        </view>
+      </view>
+      <view
+        wx:if="{{item.tracking_no}}"
+        class="li-express-zone"
+        catchtap="onRefreshExpress"
+        data-id="{{item.id}}"
+        data-no="{{item.tracking_no}}"
+        data-phone="{{item.tracking_phone_suffix}}"
+        data-cached="{{item.express_summary ? '1' : '0'}}"
+      >
+        <view class="li-express-zone-head">
+          <text class="li-express-zone-label">物流</text>
+          <text class="li-express-zone-no">{{item.tracking_no}}</text>
+          <view class="li-express-zone-action">{{refreshingId === item.id ? '查询中…' : (item.express_summary ? '刷新' : '查询')}}</view>
+        </view>
+        <view class="li-express-zone-scroll" wx:if="{{item.express_summary}}">
+          <view class="li-express-zone-body">{{item.express_summary}}</view>
+        </view>
+        <view class="li-express-zone-hint" wx:elif="{{refreshingId !== item.id}}">点此区域查询 / 刷新物流</view>
+      </view>
+    </view>
+  </view>
+</view>

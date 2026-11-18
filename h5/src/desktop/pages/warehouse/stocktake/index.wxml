@@ -1,0 +1,103 @@
+<!-- 扫码盘点（电脑版）：盘点中左边是已扫清单（表格），右边是计数、扫码 / 手输、暂停与完成比对 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">扫码盘点</view>
+      <view class="dk-sub">挨个扫货上的条码，扫完点「完成比对」。系统拿全部在库货对一遍，告诉你对上几件、少了哪些、多了哪些。</view>
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="dk-card dk-empty">加载中…</view>
+
+  <!-- 没有没结的单：开一张 -->
+  <view wx:elif="{{!session}}" class="dk-card">
+    <view class="dk-card__body wst-dk-intro">
+      <view class="wst-dk-intro__text">现在没有进行中的盘点单。一个人同时只有一张没结的盘点单；电脑上可以用 USB 扫码枪对着输入框扫。</view>
+      <view class="dk-btn dk-btn--primary {{busy ? 'dk-btn--disabled' : ''}}" bindtap="start">{{busy ? '开始中…' : '开始盘点'}}</view>
+    </view>
+  </view>
+
+  <!-- 盘点中 / 已暂停 -->
+  <view wx:elif="{{session.status === 'IN_PROGRESS' || session.status === 'PAUSED'}}" class="dk-split">
+    <view class="dk-card">
+      <view class="dk-card__head">
+        <text>最近扫的 <text class="dk-sub">{{recent.length}} 条，最新的在上面</text></text>
+      </view>
+      <view wx:if="{{!recent.length}}" class="dk-empty">还没扫</view>
+      <view wx:else class="dk-table-wrap">
+        <table class="dk-table">
+          <thead>
+            <tr>
+              <th class="dk-num">#</th>
+              <th>货号</th>
+              <th>商品</th>
+              <th>库位</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr wx:for="{{recent}}" wx:key="sku_code">
+              <td class="dk-num dk-muted">{{recent.length - index}}</td>
+              <td class="dk-nowrap dk-cell-main">{{item.sku_code}}</td>
+              <td>
+                <text wx:if="{{item.product_name}}">{{item.product_name}}</text>
+                <text wx:else class="dk-tag tag-warning">系统里没有这个货号</text>
+              </td>
+              <td class="dk-nowrap">{{item.location_code || '—'}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </view>
+    </view>
+
+    <view class="wst-dk-side">
+      <view class="dk-stat">
+        <view class="dk-stat__label">已扫 / 系统在库</view>
+        <view class="dk-stat__value"><text class="wst-dk-big">{{session.scanned_count}}</text> / {{session.warehouse_count}}</view>
+        <view class="dk-stat__hint">{{session.session_no}}<text wx:if="{{session.status === 'PAUSED'}}" class="dk-tag tag-warning wst-dk-gap">已暂停</text></view>
+      </view>
+
+      <view wx:if="{{session.status === 'PAUSED'}}" class="dk-card">
+        <view class="dk-card__body">
+          <view class="dk-btn dk-btn--primary wst-dk-block" bindtap="resume">继续盘点</view>
+        </view>
+      </view>
+      <view wx:else class="dk-card">
+        <view class="dk-card__head">扫码</view>
+        <view class="dk-card__body wst-dk-scanbox">
+          <view class="dk-field">
+            <text class="dk-label">手输货号 / 扫码枪扫进来，回车添加</text>
+            <view class="wst-dk-row">
+              <input class="dk-input dk-grow" placeholder="条码扫不出来就手输货号" value="{{code}}" bindinput="onCodeInput" confirm-type="done" bindconfirm="addTyped" />
+              <view class="dk-btn" bindtap="addTyped">添加</view>
+            </view>
+          </view>
+          <view class="dk-btn dk-btn--primary wst-dk-block" bindtap="scan">扫码</view>
+          <view class="wst-dk-keep">
+            <text>扫完一件自动扫下一件</text>
+            <switch checked="{{keepScanning}}" bindchange="onKeepScanning" />
+          </view>
+        </view>
+      </view>
+
+      <view class="dk-card">
+        <view class="dk-card__body wst-dk-actions">
+          <view wx:if="{{session.status === 'IN_PROGRESS'}}" class="dk-btn dk-grow" bindtap="pause">暂停</view>
+          <view class="dk-btn dk-btn--primary dk-grow {{busy ? 'dk-btn--disabled' : ''}}" bindtap="complete">{{busy ? '比对中…' : '完成比对'}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 比对完了还没结：有差异待提交、审批中、被驳回 -->
+  <view wx:else class="dk-card">
+    <view class="dk-card__head">
+      <text>{{session.session_no}}</text>
+    </view>
+    <view class="dk-card__body wst-dk-intro">
+      <view class="wst-dk-intro__text" wx:if="{{session.status === 'PENDING_APPROVAL'}}">这张单已提交，等管理员审批。审完才能开新的盘点。</view>
+      <view class="wst-dk-intro__text wst-dk-warn" wx:elif="{{session.status === 'REJECTED'}}">管理员驳回了：{{session.review_comment || '没写原因'}}。看一下差异，重新提交。</view>
+      <view class="wst-dk-intro__text" wx:else>上次盘点有差异还没提交审批，提交后才能开新的盘点。</view>
+      <view class="dk-btn dk-btn--primary" bindtap="openResult">看差异</view>
+    </view>
+  </view>
+</view>

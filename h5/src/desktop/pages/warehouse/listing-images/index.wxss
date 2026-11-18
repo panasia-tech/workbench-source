@@ -1,0 +1,371 @@
+/* 上架图片管理（电脑版模板 index.wxml 用；lim-dk- 开头，手机模板里不出现）。
+ * 之前「居中一列」时这里放的是把手机模板图片格子改成一行 6 个的规则；现在 ≥1024 换成电脑版模板，那条规则用不上了，删掉。 */
+.lim-dk-sum {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+}
+
+.lim-dk-sum__img {
+  width: 64px;
+  height: 64px;
+  flex: none;
+  border-radius: 8px;
+  background: #f3f4f6;
+}
+
+.lim-dk-none {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  font-size: 12px;
+}
+
+.lim-dk-note {
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 13px;
+}
+
+.lim-dk-tabsbar {
+  border-bottom: 1px solid #f0f1f3;
+}
+
+.lim-dk-acc {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  min-height: 360px;
+}
+
+.lim-dk-side {
+  padding: 12px;
+  border-right: 1px solid #f0f1f3;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lim-dk-chip {
+  padding: 8px 12px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.lim-dk-chip:hover {
+  background: #f8fafc;
+}
+
+.lim-dk-chip--on,
+.lim-dk-chip--on:hover {
+  border-color: #bfdbfe;
+  background: #eff6ff;
+}
+
+.lim-dk-chip__name {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.lim-dk-chip--on .lim-dk-chip__name {
+  color: #2563eb;
+}
+
+.lim-dk-chip__sub {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.lim-dk-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #d1d5db;
+}
+
+.lim-dk-dot--live {
+  background: #16a34a;
+}
+
+.lim-dk-main {
+  min-width: 0;
+  padding: 16px;
+}
+
+.lim-dk-row {
+  padding: 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.lim-dk-row:hover {
+  background: #f8fafc;
+}
+
+.lim-dk-row + .lim-dk-row {
+  border-top: 1px solid #f0f1f3;
+}
+
+.lim-dk-row__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.lim-dk-row__n {
+  margin-left: auto;
+  font-size: 13px;
+}
+
+.lim-dk-strip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lim-dk-strip__img {
+  width: 56px;
+  height: 56px;
+  border-radius: 4px;
+  background: #f3f4f6;
+}
+
+.lim-dk-strip__more {
+  font-size: 13px;
+}
+
+.lim-dk-warn {
+  color: #b45309;
+  font-size: 12px;
+}
+
+.lim-dk-block {
+  display: block;
+  margin-bottom: 12px;
+}
+
+.lim-dk-sec {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.lim-dk-sec__title {
+  flex: 1;
+  min-width: 0;
+  padding-left: 10px;
+  border-left: 3px solid #2563eb;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.lim-dk-ops {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: #f8fafc;
+}
+
+.lim-dk-all {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.lim-dk-box {
+  width: 16px;
+  height: 16px;
+  border: 1px solid #9ca3af;
+  border-radius: 4px;
+  background: #fff;
+  color: #fff;
+  font-size: 12px;
+  line-height: 16px;
+  text-align: center;
+}
+
+.lim-dk-box--on {
+  border-color: #2563eb;
+  background: #2563eb;
+}
+
+.lim-dk-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+.lim-dk-grid--sm {
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+}
+
+.lim-dk-cell {
+  position: relative;
+  aspect-ratio: 1;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f3f4f6;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.lim-dk-cell:hover {
+  border-color: #bfdbfe;
+}
+
+.lim-dk-cell--on,
+.lim-dk-cell--on:hover {
+  border-color: #2563eb;
+}
+
+.lim-dk-cell--taken {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.lim-dk-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.lim-dk-img--gone {
+  opacity: 0.6;
+}
+
+.lim-dk-badge {
+  position: absolute;
+  left: 6px;
+  top: 6px;
+  padding: 0 6px;
+  border-radius: 4px;
+  background: rgba(17, 24, 39, 0.7);
+  color: #fff;
+  font-size: 11px;
+  line-height: 18px;
+}
+
+.lim-dk-badge--bad {
+  background: rgba(220, 38, 38, 0.85);
+}
+
+.lim-dk-sortno {
+  position: absolute;
+  right: 6px;
+  top: 6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #f97316;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 22px;
+  text-align: center;
+}
+
+.lim-dk-tick {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #2563eb;
+  color: #fff;
+  font-size: 12px;
+  line-height: 20px;
+  text-align: center;
+}
+
+.lim-dk-used {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 2px 6px;
+  background: rgba(37, 99, 235, 0.85);
+  color: #fff;
+  font-size: 11px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lim-dk-used--free {
+  background: rgba(107, 114, 128, 0.75);
+}
+
+.lim-dk-used--bad {
+  background: rgba(220, 38, 38, 0.85);
+}
+
+.lim-dk-zoom {
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  padding: 0 6px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #1f2937;
+  font-size: 11px;
+  line-height: 20px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.lim-dk-cell:hover .lim-dk-zoom {
+  opacity: 1;
+}
+
+.lim-dk-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(17, 24, 39, 0.45);
+}
+
+.lim-dk-dialog {
+  width: 760px;
+  max-width: calc(100vw - 48px);
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.2);
+}
+
+.lim-dk-dialog__body {
+  max-height: 60vh;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.lim-dk-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 16px;
+  border-top: 1px solid #f0f1f3;
+}
+
+.lim-dk-tip {
+  margin-top: 10px;
+}

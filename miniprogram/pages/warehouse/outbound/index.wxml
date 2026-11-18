@@ -1,0 +1,29 @@
+<view class="page-wrap page-wrap--no-tab">
+  <view class="card">
+    <view class="card-head">手动出库</view>
+    <view class="form-group form-group--code">
+      <text class="form-label">货号</text>
+      <view class="code-input-field">
+        <input class="input input--code" placeholder="扫码或输入货号" data-key="sku_code" value="{{form.sku_code}}" bindinput="onInput" />
+        <button class="btn btn-outline btn-sm btn-block code-input-scan" bindtap="scanSku">扫码填入</button>
+      </view>
+    </view>
+    <view class="form-group">
+      <text class="form-label">买家</text>
+      <input class="input" placeholder="买家昵称" data-key="buyer_name" value="{{form.buyer_name}}" bindinput="onInput" />
+    </view>
+    <view class="form-group">
+      <text class="form-label">售价 ¥</text>
+      <input class="input input--price" placeholder="0.00" type="digit" data-key="sale_price" value="{{form.sale_price}}" bindinput="onInput" />
+    </view>
+    <view class="form-group">
+      <text class="form-label">闲鱼服务费</text>
+      <input class="input input--price" placeholder="订单页上的服务费，还没出来先空着" type="digit" data-key="platform_fee" value="{{form.platform_fee}}" bindinput="onInput" />
+    </view>
+    <view class="form-group form-group--code">
+      <text class="form-label">运单号</text>
+      <input class="input input--code" placeholder="快递运单号（选填）" data-key="tracking_no" value="{{form.tracking_no}}" bindinput="onInput" />
+    </view>
+    <button class="btn-primary btn-block" bindtap="submit" loading="{{submitting}}" disabled="{{submitting}}">确认出库</button>
+  </view>
+</view>

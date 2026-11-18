@@ -1,0 +1,27 @@
+/* 验货详情 */
+
+.insp-detail-page .card {
+  overflow: hidden;
+}
+
+.insp-detail-page .card-head {
+  word-break: break-all;
+}
+
+.insp-remark {
+  background: #F5F7FA;
+  border-radius: 32rpx;
+  padding: 20rpx 24rpx;
+  margin-bottom: 12rpx;
+}
+
+.insp-remark .pdi-value {
+  font-weight: 500;
+}
+
+.insp-hint {
+  font-size: 20rpx;
+  color: #9CA3AF;
+  font-weight: 500;
+  margin-left: 8rpx;
+}

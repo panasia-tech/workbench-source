@@ -1,0 +1,103 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<view class="page-wrap page-wrap--no-tab record-page ir-page">
+  <view class="card filter-card">
+    <view class="search-bar">
+      <view class="search-input-wrap">
+        <input class="search-input search-input--with-scan" placeholder="搜索验货单号/采购单/商品" value="{{q}}" bindinput="onSearchInput" confirm-type="search" bindconfirm="onSearch" />
+        <view class="search-scan-icon" catchtap="onScanSearch" aria-role="button">
+          <view class="scan-frame"></view>
+          <view class="scan-line"></view>
+        </view>
+      </view>
+    </view>
+    <view class="date-row">
+      <picker mode="date" value="{{dateFrom}}" bindchange="onDateFromChange">
+        <view class="date-pill {{dateFrom ? 'date-pill--filled' : ''}}">{{dateFrom || '开始日期'}}</view>
+      </picker>
+      <text class="date-sep">至</text>
+      <picker mode="date" value="{{dateTo}}" bindchange="onDateToChange">
+        <view class="date-pill {{dateTo ? 'date-pill--filled' : ''}}">{{dateTo || '结束日期'}}</view>
+      </picker>
+    </view>
+    <view class="status-segment">
+      <text class="status-seg {{status === 'PENDING' ? 'active' : ''}}" data-status="PENDING" bindtap="pickStatus">待验货</text>
+      <text class="status-seg {{status === 'DONE' ? 'active' : ''}}" data-status="DONE" bindtap="pickStatus">已完成</text>
+    </view>
+    <button class="btn search-btn" bindtap="onSearch">搜索</button>
+    <view class="filter-meta">共 {{total}} 条记录</view>
+  </view>
+
+  <view class="card list-card">
+    <view wx:if="{{!list.length && !loading}}" class="empty">
+      <view class="e-icon">—</view>
+      <view class="e-text">暂无验货记录</view>
+    </view>
+    <view
+      wx:for="{{list}}"
+      wx:key="id"
+      class="list-item list-item--stacked"
+      data-id="{{item.id}}"
+      data-status="{{item.status}}"
+      bindtap="openItem"
+    >
+      <view class="list-item__main">
+        <view class="li-thumb-wrap">
+          <media-thumb
+            wx:if="{{item.product_image_thumb}}"
+            url="{{item.product_image_thumb}}"
+            preview-url="{{item.product_image}}"
+            size="small"
+          />
+          <view wx:else class="li-icon">验</view>
+        </view>
+        <view class="li-info">
+          <view class="li-title">{{item.product_name || item.inspect_no}}</view>
+          <view class="li-sub">{{item.inspect_no}} · {{item.order_no || '—'}}{{item.spec ? ' · ' + item.spec : ''}}{{item.operator_name ? ' · ' + item.operator_name : ''}}</view>
+          <view class="li-sub li-sub--time">{{item.status === 'DONE' ? '验货时间 ' + fmt.datetime(item.inspected_at || item.created_at) : '创建时间 ' + fmt.datetime(item.created_at)}}</view>
+          <view class="li-sub li-sub--extra" wx:if="{{item.status === 'DONE' && item.action_type}}">
+            {{fmt.inspectionActionLabel(item.action_type)}}{{item.inspection_result ? ' · ' + fmt.inspectionResultLabel(item.inspection_result) : ''}}
+          </view>
+          <view class="li-amount-row" wx:if="{{item.status === 'DONE' && item.action_type === 'INBOUND'}}">
+            <text class="li-amount-label">实收</text>
+            <text class="li-amount-value">¥{{fmt.money(item.actual_amount || item.unit_price)}}</text>
+            <text wx:if="{{!item.actual_amount}}" class="li-amount-tag">以议价为准</text>
+          </view>
+        </view>
+        <view class="li-meta">
+          <view class="li-price" wx:if="{{item.unit_price}}">¥{{fmt.money(item.unit_price)}}</view>
+          <view class="tag {{item.status === 'PENDING' ? 'tag-warning' : (item.action_type === 'REJECT' ? 'tag-danger' : 'tag-success')}} li-tag">{{item.status === 'PENDING' ? fmt.statusLabel(item.status) : (fmt.inspectionActionLabel(item.action_type) || fmt.statusLabel(item.status))}}</view>
+        </view>
+      </view>
+      <view
+        wx:if="{{item.tracking_no && item.status === 'PENDING'}}"
+        class="li-express-zone"
+        catchtap="onRefreshExpress"
+        data-id="{{item.id}}"
+        data-no="{{item.tracking_no}}"
+        data-cached="{{item.express_summary ? '1' : '0'}}"
+      >
+        <view class="li-express-zone-head">
+          <text class="li-express-zone-label">物流</text>
+          <text class="li-express-zone-no">{{item.tracking_no}}</text>
+          <view class="li-express-zone-action">{{refreshingId === item.id ? '查询中…' : (item.express_summary ? '刷新' : '查询')}}</view>
+        </view>
+        <view class="li-express-zone-scroll" wx:if="{{item.express_summary}}">
+          <view class="li-express-zone-body">{{item.express_summary}}</view>
+        </view>
+        <view class="li-express-zone-hint" wx:elif="{{refreshingId !== item.id}}">点此区域查询 / 刷新物流</view>
+      </view>
+      <view class="li-express-zone li-express-zone--readonly" wx:elif="{{item.tracking_no}}">
+        <view class="li-express-zone-head">
+          <text class="li-express-zone-label">物流</text>
+          <text class="li-express-zone-no">{{item.tracking_no}}</text>
+        </view>
+        <view class="li-express-zone-scroll" wx:if="{{item.express_summary}}">
+          <view class="li-express-zone-body">{{item.express_summary}}</view>
+        </view>
+      </view>
+    </view>
+    <view wx:if="{{loading}}" class="list-footer">加载中...</view>
+    <view wx:elif="{{noMore && list.length}}" class="list-footer">没有更多了</view>
+  </view>
+</view>

@@ -1,0 +1,43 @@
+/* 69码更换（电脑版模板用；wbm-dk- 开头，手机模板里不出现） */
+.wbm-dk-row {
+  display: flex;
+  gap: 8px;
+}
+
+.wbm-dk-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(17, 24, 39, 0.45);
+}
+
+.wbm-dk-dialog {
+  width: 480px;
+  max-width: calc(100vw - 48px);
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.2);
+}
+
+.wbm-dk-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 16px;
+  border-top: 1px solid #f0f1f3;
+}
+
+.wbm-dk-miss {
+  color: #c2410c;
+}
+
+.wbm-dk-name {
+  max-width: 300px;
+}
+
+.wbm-dk-spu {
+  max-width: 260px;
+}

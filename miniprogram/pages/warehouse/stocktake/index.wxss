@@ -1,0 +1,26 @@
+.page { padding: 20rpx; }
+.hint { text-align: center; color: #999; padding: 40rpx 0; }
+
+.st-intro { padding: 32rpx; }
+.st-title { font-size: 32rpx; font-weight: 600; }
+.st-text { font-size: 28rpx; color: #555; margin: 16rpx 0 28rpx; line-height: 1.6; }
+
+.st-count { padding: 32rpx; text-align: center; }
+.st-num { font-size: 32rpx; color: #555; }
+.st-big { font-size: 72rpx; font-weight: 700; color: #1565C0; }
+.st-sub { font-size: 24rpx; color: #999; margin-top: 8rpx; }
+
+.st-scan { height: 120rpx; line-height: 120rpx; font-size: 36rpx; }
+.st-keep { display: flex; justify-content: space-between; align-items: center; font-size: 26rpx; color: #666; margin-top: 20rpx; }
+.st-input { display: flex; gap: 16rpx; align-items: center; margin-top: 20rpx; }
+.st-field { flex: 1; height: 72rpx; padding: 0 20rpx; background: #f5f6f7; border-radius: 12rpx; font-size: 28rpx; }
+
+.st-list-head { font-size: 28rpx; font-weight: 600; margin-bottom: 8rpx; }
+.st-li { display: flex; flex-direction: column; padding: 16rpx 0; border-bottom: 1rpx solid #f0f0f0; }
+.st-li:last-child { border-bottom: none; }
+.st-code { font-size: 28rpx; color: #222; }
+.st-name { font-size: 24rpx; color: #888; margin-top: 4rpx; }
+.st-name--warn { color: #e08600; }
+
+.st-actions { display: flex; gap: 20rpx; padding: 10rpx 0 40rpx; }
+.st-actions .btn { flex: 1; }

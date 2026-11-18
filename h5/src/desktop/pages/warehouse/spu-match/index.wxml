@@ -1,0 +1,77 @@
+<!-- 商品匹配（电脑版）：分类 tab + 搜索 + 表格 + 页码，点一行进匹配页 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">商品匹配</view>
+      <view class="dk-sub">共 {{total}} 件 · {{hint}}</view>
+    </view>
+  </view>
+
+  <view class="dk-card">
+    <view class="dk-toolbar">
+      <view class="dk-tabs">
+        <view
+          wx:for="{{tabs}}"
+          wx:key="key"
+          class="dk-tab {{tab === item.key ? 'dk-tab--on' : ''}}"
+          data-tab="{{item.key}}"
+          bindtap="switchTab"
+        >{{item.label}}</view>
+      </view>
+      <input
+        class="dk-input dk-search"
+        placeholder="货号 / 69码 / 商品名 / 型号 / 库位"
+        value="{{q}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+      />
+      <view class="dk-btn" bindtap="onScanSearch">扫码搜</view>
+    </view>
+
+    <view class="dk-table-wrap">
+      <table class="dk-table">
+        <thead>
+          <tr>
+            <th>货号</th>
+            <th>商品</th>
+            <th>型号 / 69码</th>
+            <th>库位</th>
+            <th>状态</th>
+            <th>{{tab === 'returned' ? '已选商品 / 退回原因' : '已选商品'}}</th>
+            <th class="dk-ops">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr wx:for="{{list}}" wx:key="sku_code" class="dk-tr--click" data-code="{{item.sku_code}}" bindtap="openDetail">
+            <td class="dk-nowrap dk-cell-main">{{item.sku_code}}</td>
+            <td><view class="dk-ellipsis wspm-dk-name" title="{{item.product_name}}">{{item.product_name}}</view></td>
+            <td class="dk-nowrap">
+              <view class="{{item.model ? '' : 'dk-muted'}}">{{item.model || '型号未登记'}}</view>
+              <view class="dk-cell-sub">{{item.barcode || '69码未录入'}}</view>
+            </td>
+            <td class="dk-nowrap">{{item.location_code || '未分配'}}</td>
+            <td class="dk-nowrap"><text class="dk-tag {{item.tagClass}}">{{item.tagText}}</text></td>
+            <td>
+              <view wx:if="{{item.spu}}" class="dk-ellipsis" title="{{item.spu}}">{{item.spu}}</view>
+              <view wx:if="{{item.return_reason}}" class="wspm-dk-miss wspm-dk-wrap">退回原因：{{item.return_reason}}</view>
+              <text wx:if="{{!item.spu && !item.return_reason}}" class="dk-muted">—</text>
+            </td>
+            <td class="dk-ops"><text class="dk-link">{{tab === 'todo' || tab === 'returned' ? '去匹配' : '查看'}}</text></td>
+          </tr>
+        </tbody>
+      </table>
+    </view>
+
+    <view wx:if="{{!list.length && !loading}}" class="dk-empty">这里没有货</view>
+    <view wx:if="{{loading && !list.length}}" class="dk-empty">加载中…</view>
+
+    <view wx:if="{{total > dkPageSize}}" class="dk-pager">
+      <text>共 {{total}} 件，每页 {{dkPageSize}} 件</text>
+      <view class="dk-row">
+        <view class="dk-btn dk-btn--sm {{dkPage <= 1 ? 'dk-btn--disabled' : ''}}" bindtap="dkPrev">上一页</view>
+        <text>第 {{dkPage}} / {{dkPages}} 页</text>
+        <view class="dk-btn dk-btn--sm {{dkPage >= dkPages ? 'dk-btn--disabled' : ''}}" bindtap="dkNext">下一页</view>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,86 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<view class="page-wrap page-wrap--no-tab reject-detail-page" wx:if="{{task}}">
+  <!-- 拒签主卡：红色 hero + 拒签原因前置 -->
+  <view class="card reject-hero-card">
+    <view class="reject-hero">
+      <view class="reject-hero-thumb" wx:if="{{task.product_image_thumb}}">
+        <media-thumb url="{{task.product_image_thumb}}" preview-url="{{task.product_image}}" size="fill" preview="{{true}}" />
+      </view>
+      <view class="reject-hero-thumb reject-hero-thumb--empty" wx:else>
+        <text class="reject-hero-ph">拒</text>
+      </view>
+      <view class="reject-hero-main">
+        <view class="reject-badge">拒签退回</view>
+        <view class="reject-hero-title">{{task.product_name || task.inspect_no}}</view>
+        <view class="reject-hero-sub">{{task.inspect_no}}{{task.spec ? ' · ' + task.spec : ''}}</view>
+      </view>
+    </view>
+
+    <view class="reject-reason">
+      <view class="reject-reason-label">
+        <text class="reject-reason-icon">⚠</text> 拒签原因
+      </view>
+      <view class="reject-reason-text">{{task.remark || '（未填写）'}}</view>
+    </view>
+  </view>
+
+  <!-- 采购信息 -->
+  <view class="card">
+    <view class="card-head">采购信息</view>
+    <view class="pd-info-grid">
+      <view class="pd-info-item pd-info-item--wide">
+        <view class="pdi-label">商品名称</view>
+        <view class="pdi-value">{{task.product_name || '—'}}</view>
+      </view>
+      <view class="pd-info-item">
+        <view class="pdi-label">品牌</view>
+        <view class="pdi-value">{{task.brand || '—'}}</view>
+      </view>
+      <view class="pd-info-item">
+        <view class="pdi-label">型号</view>
+        <view class="pdi-value">{{task.model || '—'}}</view>
+      </view>
+      <view class="pd-info-item">
+        <view class="pdi-label">采购价</view>
+        <view class="pdi-value">¥{{fmt.money(task.unit_price)}}</view>
+      </view>
+      <view class="pd-info-item">
+        <view class="pdi-label">采购单号</view>
+        <view class="pdi-value">{{task.order_no || '—'}}</view>
+      </view>
+      <view class="pd-info-item pd-info-item--wide" wx:if="{{task.tracking_no}}">
+        <view class="pdi-label">物流单号</view>
+        <view class="pdi-value">{{task.tracking_no}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 拒签凭证 -->
+  <view class="card" wx:if="{{task.reject_images.length}}">
+    <view class="card-head">拒签凭证</view>
+    <media-gallery urls="{{task.reject_images}}" thumb-size="large" />
+  </view>
+
+  <!-- 操作信息 -->
+  <view class="card">
+    <view class="card-head">操作信息</view>
+    <view class="pd-info-grid">
+      <view class="pd-info-item">
+        <view class="pdi-label">操作人</view>
+        <view class="pdi-value">{{task.operator_name || '—'}}</view>
+      </view>
+      <view class="pd-info-item">
+        <view class="pdi-label">拒签时间</view>
+        <view class="pdi-value">{{fmt.datetime(task.inspected_at || task.created_at)}}</view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<view class="page-wrap page-wrap--no-tab" wx:elif="{{loading}}">
+  <view class="card"><view class="empty"><view class="e-text">加载中…</view></view></view>
+</view>
+<view class="page-wrap page-wrap--no-tab" wx:else>
+  <view class="card"><view class="empty"><view class="e-text">未找到拒签记录</view></view></view>
+</view>

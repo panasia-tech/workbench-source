@@ -1,0 +1,91 @@
+<view class="page-wrap page-wrap--no-tab sku-migration-page gaps-page">
+  <view class="search-bar">
+    <view class="search-input-wrap">
+      <input
+        class="search-input search-input--with-scan"
+        placeholder="货号 / 商品名 / 型号 / 库位"
+        value="{{q}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+      />
+      <view class="search-scan-icon" catchtap="onScanSearch" aria-role="button">
+        <view class="scan-frame"></view>
+        <view class="scan-line"></view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card filter-card">
+    <scroll-view class="gaps-kind-scroll" scroll-x enable-flex>
+      <view class="status-segment">
+        <text
+          wx:for="{{kinds}}"
+          wx:key="key"
+          class="status-seg {{kind === item.key ? 'active' : ''}}"
+          data-kind="{{item.key}}"
+          bindtap="switchKind"
+        >{{item.label}} {{item.total}}</text>
+      </view>
+    </scroll-view>
+    <view class="filter-meta">
+      <text>共 {{total}} 件</text>
+      <text wx:if="{{isAdmin}}" class="gaps-setting" bindtap="openSetting">哪些算缺口 ›</text>
+    </view>
+  </view>
+
+  <view class="card list-card">
+    <view wx:if="{{!list.length && !loading}}" class="empty">
+      <view class="e-icon">—</view>
+      <view class="e-text">没有要补的货</view>
+    </view>
+
+    <view wx:for="{{list}}" wx:key="sku_code" class="sku-item gaps-item">
+      <view class="gaps-item__row">
+        <view class="gaps-thumb">
+          <media-thumb wx:if="{{item.image}}" url="{{item.image}}" preview-url="{{item.image}}" size="small" />
+          <view wx:else class="gaps-thumb__none">无图</view>
+        </view>
+        <view class="gaps-item__body">
+          <view class="sku-item__head">
+            <view class="sku-item__code">{{item.sku_code}}</view>
+            <view class="tag {{item.tagClass}}">{{item.kind_label}}</view>
+          </view>
+          <view class="sku-item__name">{{item.product_name}}</view>
+          <view class="sku-item__sub">
+            <text wx:if="{{item.brand || item.model}}">{{item.brand || ''}} {{item.model || ''}} · </text>库位 {{item.location_code || '未分配'}}<text wx:if="{{item.stock_days !== null}}"> · 在库 {{item.stock_days}} 天</text>
+          </view>
+          <view wx:if="{{item.market_price}}" class="sku-item__sub">
+            行情 <text class="{{item.kind === 'below_cost' ? 'gaps-red' : ''}}">¥{{item.market_price}}</text><text wx:if="{{item.cost_price}}"> · 成本 ¥{{item.cost_price}}</text>
+          </view>
+          <view class="gaps-note {{item.waiting ? 'gaps-note--wait' : ''}}">
+            <text wx:if="{{item.waiting}}" class="gaps-wait">不用管</text>{{item.note}}
+          </view>
+        </view>
+      </view>
+      <button
+        wx:if="{{!item.waiting}}"
+        class="btn btn-outline btn-block sku-item__action"
+        data-url="{{item.action_url}}"
+        bindtap="goFix"
+      >{{item.action_label}}</button>
+    </view>
+    <view wx:if="{{loading}}" class="list-footer">加载中…</view>
+    <view wx:elif="{{noMore && list.length}}" class="list-footer">没有更多了</view>
+  </view>
+
+  <view wx:if="{{settingOpen}}" class="editor-mask" bindtap="closeSetting" catchtouchmove="true">
+    <view class="editor-sheet" catchtap="">
+      <view class="editor-sheet__head">
+        <text class="editor-sheet__cancel" bindtap="closeSetting">取消</text>
+        <text class="editor-sheet__title">哪些算缺口</text>
+        <text class="editor-sheet__confirm" bindtap="saveSetting">保存</text>
+      </view>
+      <view class="editor-sheet__body">
+        <view wx:for="{{allKinds}}" wx:key="key" class="gaps-check" data-key="{{item.key}}" bindtap="toggleKind">
+          <text class="gaps-box {{item.checked ? 'gaps-box--on' : ''}}">{{item.checked ? '✓' : ''}}</text>
+          <text>{{item.label}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

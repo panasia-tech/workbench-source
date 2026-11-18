@@ -1,0 +1,56 @@
+<view class="page">
+  <view wx:if="{{loading}}" class="hint">加载中…</view>
+
+  <!-- 没有没结的单:开一张 -->
+  <view wx:elif="{{!session}}" class="card st-intro">
+    <view class="st-title">扫码盘点</view>
+    <view class="st-text">挨个扫货上的条码，扫完点「完成比对」。系统拿全部在库货对一遍，告诉你对上几件、少了哪些、多了哪些。</view>
+    <button class="btn btn-primary btn-block" loading="{{busy}}" bindtap="start">开始盘点</button>
+  </view>
+
+  <!-- 盘点中 / 已暂停 -->
+  <block wx:elif="{{session.status === 'IN_PROGRESS' || session.status === 'PAUSED'}}">
+    <view class="card st-count">
+      <view class="st-num"><text class="st-big">{{session.scanned_count}}</text> / {{session.warehouse_count}}</view>
+      <view class="st-sub">已扫 / 系统在库　{{session.session_no}}{{session.status === 'PAUSED' ? '　已暂停' : ''}}</view>
+    </view>
+
+    <view wx:if="{{session.status === 'PAUSED'}}" class="card">
+      <button class="btn btn-primary btn-block" bindtap="resume">继续盘点</button>
+    </view>
+    <view wx:else class="card">
+      <button class="btn btn-primary btn-block st-scan" bindtap="scan">扫码</button>
+      <view class="st-keep">
+        <text>扫完一件自动扫下一件</text>
+        <switch checked="{{keepScanning}}" bindchange="onKeepScanning" />
+      </view>
+      <view class="st-input">
+        <input class="st-field" placeholder="条码扫不出来就手输货号" value="{{code}}" bindinput="onCodeInput" confirm-type="done" bindconfirm="addTyped" />
+        <button class="btn btn-outline btn-sm" bindtap="addTyped">添加</button>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="st-list-head">最近扫的</view>
+      <view wx:if="{{!recent.length}}" class="hint">还没扫</view>
+      <view wx:for="{{recent}}" wx:key="sku_code" class="st-li">
+        <text class="st-code">{{item.sku_code}}</text>
+        <text class="st-name {{item.product_name ? '' : 'st-name--warn'}}">{{item.product_name || '系统里没有这个货号'}}{{item.location_code ? ' · ' + item.location_code : ''}}</text>
+      </view>
+    </view>
+
+    <view class="st-actions">
+      <button wx:if="{{session.status === 'IN_PROGRESS'}}" class="btn btn-outline" bindtap="pause">暂停</button>
+      <button class="btn btn-primary" loading="{{busy}}" bindtap="complete">完成比对</button>
+    </view>
+  </block>
+
+  <!-- 比对完了还没结:有差异待提交、审批中、被驳回 -->
+  <view wx:else class="card st-intro">
+    <view class="st-title">{{session.session_no}}</view>
+    <view class="st-text" wx:if="{{session.status === 'PENDING_APPROVAL'}}">这张单已提交，等管理员审批。审完才能开新的盘点。</view>
+    <view class="st-text" wx:elif="{{session.status === 'REJECTED'}}">管理员驳回了：{{session.review_comment || '没写原因'}}。看一下差异，重新提交。</view>
+    <view class="st-text" wx:else>上次盘点有差异还没提交审批，提交后才能开新的盘点。</view>
+    <button class="btn btn-primary btn-block" bindtap="openResult">看差异</button>
+  </view>
+</view>

@@ -1,0 +1,127 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<!-- 验货记录（电脑版）：状态 tab + 搜索 / 扫码 + 日期，表格 + 页码。待验货的行点进验货页，已完成的点进详情（openItem 原样） -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">验货记录</view>
+      <view class="dk-sub">共 {{total}} 条记录</view>
+    </view>
+  </view>
+
+  <view class="dk-card">
+    <view class="dk-toolbar">
+      <view class="dk-tabs">
+        <view class="dk-tab {{!status ? 'dk-tab--on' : ''}}" bindtap="dkAllStatus">全部</view>
+        <view class="dk-tab {{status === 'PENDING' ? 'dk-tab--on' : ''}}" data-status="PENDING" bindtap="dkPickStatus">待验货</view>
+        <view class="dk-tab {{status === 'DONE' ? 'dk-tab--on' : ''}}" data-status="DONE" bindtap="dkPickStatus">已完成</view>
+      </view>
+      <input
+        class="dk-input dk-search"
+        placeholder="验货单号 / 采购单 / 商品"
+        value="{{q}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+        bindconfirm="onSearch"
+      />
+      <view class="dk-btn" bindtap="onScanSearch">扫码搜</view>
+      <picker mode="date" value="{{dateFrom}}" bindchange="onDateFromChange">
+        <view class="dk-select {{dateFrom ? '' : 'dk-muted'}}">{{dateFrom || '开始日期'}}</view>
+      </picker>
+      <text class="dk-muted">至</text>
+      <picker mode="date" value="{{dateTo}}" bindchange="onDateToChange">
+        <view class="dk-select {{dateTo ? '' : 'dk-muted'}}">{{dateTo || '结束日期'}}</view>
+      </picker>
+      <text wx:if="{{dateFrom || dateTo}}" class="dk-link" bindtap="dkClearDates">清除日期</text>
+      <view class="dk-btn dk-btn--primary" bindtap="onSearch">搜索</view>
+    </view>
+
+    <view class="dk-table-wrap">
+      <table class="dk-table">
+        <thead>
+          <tr>
+            <th>商品</th>
+            <th>验货单 / 采购单</th>
+            <th>时间 / 操作人</th>
+            <th>处理结果</th>
+            <th class="dk-num">采购价 / 实收</th>
+            <th>物流</th>
+            <th class="dk-ops">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr wx:for="{{list}}" wx:key="id" class="dk-tr--click" data-id="{{item.id}}" data-status="{{item.status}}" bindtap="openItem">
+            <td>
+              <view class="dk-media">
+                <image
+                  wx:if="{{item.product_image_thumb}}"
+                  class="dk-thumb"
+                  src="{{item.product_image_thumb}}"
+                  mode="aspectFill"
+                  data-url="{{item.product_image || item.product_image_thumb}}"
+                  catchtap="dkPreview"
+                />
+                <view wx:else class="dk-thumb ir-dk-ph">验</view>
+                <view class="dk-grow">
+                  <view class="dk-cell-main dk-ellipsis ir-dk-name" title="{{item.product_name}}">{{item.product_name || item.inspect_no}}</view>
+                  <view class="dk-cell-sub">{{item.spec || '—'}}</view>
+                </view>
+              </view>
+            </td>
+            <td class="dk-nowrap">
+              <view>{{item.inspect_no}}</view>
+              <view class="dk-cell-sub">{{item.order_no || '—'}}</view>
+            </td>
+            <td class="dk-nowrap">
+              <view>{{item.status === 'DONE' ? fmt.datetime(item.inspected_at || item.created_at) : fmt.datetime(item.created_at)}}</view>
+              <view class="dk-cell-sub">{{item.status === 'DONE' ? '验货' : '创建'}}{{item.operator_name ? ' · ' + item.operator_name : ''}}</view>
+            </td>
+            <td class="dk-nowrap">
+              <text class="dk-tag {{item.status === 'PENDING' ? 'tag-warning' : (item.action_type === 'REJECT' ? 'tag-danger' : 'tag-success')}}">{{item.status === 'PENDING' ? fmt.statusLabel(item.status) : (fmt.inspectionActionLabel(item.action_type) || fmt.statusLabel(item.status))}}</text>
+              <view wx:if="{{item.status === 'DONE' && item.inspection_result}}" class="dk-cell-sub">{{fmt.inspectionResultLabel(item.inspection_result)}}</view>
+            </td>
+            <td class="dk-num">
+              <view>{{item.unit_price ? '¥' + fmt.money(item.unit_price) : '—'}}</view>
+              <block wx:if="{{item.status === 'DONE' && item.action_type === 'INBOUND'}}">
+                <view class="dk-cell-sub">实收 ¥{{fmt.money(item.actual_amount || item.unit_price)}}</view>
+                <view wx:if="{{!item.actual_amount}}" class="dk-cell-sub ir-dk-note">以议价为准</view>
+              </block>
+            </td>
+            <td>
+              <view wx:if="{{item.tracking_no}}" class="ir-dk-exp">
+                <view class="dk-row ir-dk-exp__head">
+                  <text class="ir-dk-mono">{{item.tracking_no}}</text>
+                  <text
+                    wx:if="{{item.status === 'PENDING'}}"
+                    class="dk-link"
+                    data-id="{{item.id}}"
+                    data-no="{{item.tracking_no}}"
+                    data-cached="{{item.express_summary ? '1' : '0'}}"
+                    catchtap="onRefreshExpress"
+                  >{{refreshingId === item.id ? '查询中…' : (item.express_summary ? '刷新' : '查询')}}</text>
+                </view>
+                <view wx:if="{{item.express_summary}}" class="dk-cell-sub ir-dk-exp__sum" title="{{item.express_summary}}">{{item.express_summary}}</view>
+              </view>
+              <text wx:else class="dk-muted">—</text>
+            </td>
+            <td class="dk-ops">
+              <text class="dk-link" data-id="{{item.id}}" data-status="{{item.status}}" catchtap="openItem">{{item.status === 'PENDING' ? '去验货' : '详情'}}</text>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </view>
+
+    <view wx:if="{{!list.length && !loading}}" class="dk-empty">暂无验货记录</view>
+    <view wx:if="{{loading && !list.length}}" class="dk-empty">加载中…</view>
+
+    <view wx:if="{{total > dkPageSize}}" class="dk-pager">
+      <text>共 {{total}} 条，每页 {{dkPageSize}} 条</text>
+      <view class="dk-row">
+        <view class="dk-btn dk-btn--sm {{dkPage <= 1 ? 'dk-btn--disabled' : ''}}" bindtap="dkPrev">上一页</view>
+        <text>第 {{dkPage}} / {{dkPages}} 页</text>
+        <view class="dk-btn dk-btn--sm {{dkPage >= dkPages ? 'dk-btn--disabled' : ''}}" bindtap="dkNext">下一页</view>
+      </view>
+    </view>
+  </view>
+</view>

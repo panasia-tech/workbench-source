@@ -1,0 +1,37 @@
+/* 拒签详情（电脑版模板 index.wxml 用；手机模板里没有 rd-dk- 类名） */
+.rd-dk-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.rd-dk-reason {
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+}
+
+.rd-dk-reason__k {
+  font-size: 13px;
+  font-weight: 600;
+  color: #b91c1c;
+}
+
+.rd-dk-reason__v {
+  margin-top: 4px;
+  font-size: 14px;
+  color: #1f2937;
+  white-space: pre-wrap;
+}
+
+.rd-dk-cover {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  display: block;
+  border-radius: 6px;
+  background: #f3f4f6;
+  cursor: zoom-in;
+}

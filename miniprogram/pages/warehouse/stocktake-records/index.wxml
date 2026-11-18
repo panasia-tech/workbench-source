@@ -1,0 +1,30 @@
+<view class="page">
+  <view class="filter-bar">
+    <view
+      wx:for="{{options}}"
+      wx:key="value"
+      class="filter-chip {{statusFilter === item.value ? 'filter-chip--on' : ''}}"
+      data-value="{{item.value}}"
+      bindtap="pickStatus"
+    >{{item.label}}</view>
+  </view>
+
+  <view wx:if="{{loading}}" class="hint">加载中…</view>
+  <view wx:elif="{{!list.length}}" class="hint">暂无盘点记录</view>
+
+  <view wx:else>
+    <view class="card rec" wx:for="{{list}}" wx:key="id" data-id="{{item.id}}" bindtap="openDetail">
+      <view class="rec-head">
+        <text class="rec-no">{{item.session_no}}</text>
+        <text class="rec-status">{{item.statusLabel}}</text>
+      </view>
+      <view class="rec-meta">操作员：{{item.operator_name || '—'}}</view>
+      <view class="rec-stats">
+        <text class="rs">实盘 {{item.scanned_count}}</text>
+        <text class="rs rs-danger">盘亏 {{item.missing_count}}</text>
+        <text class="rs rs-warn">盘盈 {{item.surplus_count}}</text>
+      </view>
+      <view class="rec-time">{{item.completedText !== '—' ? '完成 ' + item.completedText : '开始 ' + item.startedText}}</view>
+    </view>
+  </view>
+</view>

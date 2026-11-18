@@ -1,0 +1,250 @@
+<!-- 逐项验货（电脑版）：左边项目表（点一行在右边填结果），右边填写面板 + 开箱视频与凭证 + 改答案记录；
+     「发现异常」是居中对话框。方法全是这页原来的 -->
+<view class="dk-page" wx:if="{{loaded}}">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title dk-row">
+        <text wx:if="{{task.piece_label}}" class="dk-tag dk-tag--blue">{{task.piece_label}}</text>
+        <text>{{task.product_name}}</text>
+        <text class="dk-tag {{fullCheck.state === 'COMPLETE' ? 'dk-tag--green' : (fullCheck.state === 'RETEST' ? 'dk-tag--red' : (fullCheck.state === 'IN_PROGRESS' ? 'dk-tag--orange' : ''))}}">{{fullCheck.label}}</text>
+      </view>
+      <view class="dk-sub">{{task.order_no}} · {{task.inspect_no}}{{task.model ? ' · ' + task.model : ''}}</view>
+    </view>
+    <view class="dk-row">
+      <view wx:if="{{pending && items.length}}" class="dk-btn dk-btn--danger" bindtap="openException">发现异常</view>
+    </view>
+  </view>
+
+  <view wx:if="{{!pending && fullCheck.state === 'RETEST'}}" class="ck-dk-banner ck-dk-banner--warn">验货单已提交。点「无法测试」的项目补测成通过或不通过。</view>
+
+  <view wx:for="{{exceptions}}" wx:key="id" class="ck-dk-exc {{item.overdue ? 'ck-dk-exc--late' : ''}}">
+    <view class="ck-dk-exc__head">异常：{{item.description}}</view>
+    <view class="dk-sub">{{item.notice || '还没发通知'}}<text wx:if="{{item.overdue_parts.length}}" class="ck-dk-late">；超时：{{item.overdue_parts}}</text></view>
+  </view>
+
+  <!-- W11：卖家原来怎么说的（下单时那版商品快照），和实物对照 -->
+  <view wx:if="{{compare}}" class="dk-card ck-dk-claim">
+    <view class="dk-card__head">
+      <text>卖家原来怎么说的</text>
+      <text wx:if="{{compare.snapshot}}" class="dk-sub">{{compare.snapshot.capture_kind_label}}{{compare.snapshot.frozen_at ? ' · 下单时冻结' : ''}}</text>
+    </view>
+    <view class="dk-card__body">
+      <block wx:if="{{compare.snapshot}}">
+        <view class="ck-dk-claim__grid">
+          <view class="ck-dk-claim__line"><text class="ck-dk-claim__k">标题</text>{{compare.snapshot.title || '—'}}</view>
+          <view wx:if="{{compare.snapshot.declared_model || compare.snapshot.specs}}" class="ck-dk-claim__line"><text class="ck-dk-claim__k">型号</text>{{compare.snapshot.declared_model || ''}} {{compare.snapshot.specs || ''}}</view>
+          <view wx:if="{{compare.snapshot.condition_text}}" class="ck-dk-claim__line"><text class="ck-dk-claim__k">成色</text>{{compare.snapshot.condition_text}}</view>
+          <view wx:if="{{compare.snapshot.accessories_text}}" class="ck-dk-claim__line"><text class="ck-dk-claim__k">配件</text>{{compare.snapshot.accessories_text}}</view>
+        </view>
+        <view wx:if="{{compare.snapshot.description}}" class="ck-dk-claim__line ck-dk-claim__desc"><text class="ck-dk-claim__k">描述</text>{{compare.snapshot.description}}</view>
+      </block>
+      <view wx:else class="dk-muted">这单没有存卖家原话（商品快照），按采购截图核对。</view>
+      <view wx:for="{{compare.risks}}" wx:key="index" class="ck-dk-banner ck-dk-banner--warn">{{item}}</view>
+    </view>
+  </view>
+
+  <view class="dk-split ck-dk-split">
+    <view class="ck-dk-col">
+      <!-- 还没开始：选规范、预览步骤 -->
+      <view wx:if="{{!items.length}}" class="dk-card">
+        <view class="dk-card__head"><text>验货流程</text></view>
+        <view class="dk-card__body">
+          <block wx:if="{{pending}}">
+            <view class="dk-field">
+              <text class="dk-label dk-label--req">验货规范</text>
+              <view wx:if="{{templates.length <= 10}}" class="dk-row">
+                <view
+                  wx:for="{{templates}}"
+                  wx:key="id"
+                  class="ck-dk-chip {{templateIndex === index ? 'ck-dk-chip--on' : ''}}"
+                  data-index="{{index}}"
+                  bindtap="dkPickTemplate"
+                >{{item.name}}</view>
+                <text wx:if="{{!templates.length}}" class="dk-muted">没有可用的验货规范</text>
+              </view>
+              <picker wx:else range="{{templates}}" range-key="name" value="{{templateIndex}}" bindchange="onTemplateChange">
+                <view class="dk-select ck-dk-select {{templateIndex >= 0 ? '' : 'dk-muted'}}">{{templateIndex >= 0 ? templates[templateIndex].name : '选验货规范'}}</view>
+              </picker>
+            </view>
+            <block wx:if="{{preview.length}}">
+              <view class="dk-help ck-dk-gap">系统按商品匹配到的规范，开始前可以先看一遍全部步骤：</view>
+              <view class="ck-dk-steps">
+                <view wx:for="{{preview}}" wx:key="index" class="ck-dk-step"><text class="ck-dk-step__no">{{index + 1}}</text>{{item}}</view>
+              </view>
+            </block>
+            <view class="ck-dk-gap">
+              <view class="dk-btn dk-btn--primary {{busy ? 'dk-btn--disabled' : ''}}" bindtap="startCheck">{{busy ? '处理中…' : '开始逐项验货'}}</view>
+            </view>
+          </block>
+          <view wx:else class="dk-muted">这张单子没有逐项记录。</view>
+        </view>
+      </view>
+
+      <!-- 逐项 -->
+      <view wx:else class="dk-card">
+        <view class="dk-card__head">
+          <text>逐项验货 {{doneCount}}/{{items.length}}</text>
+          <text class="dk-sub">坏货、货不对版也要验完；测不了的选「无法测试」，写原因并拍照</text>
+        </view>
+        <view class="dk-table-wrap">
+          <table class="dk-table">
+            <thead>
+              <tr>
+                <th class="ck-dk-no">#</th>
+                <th>项目</th>
+                <th>结果</th>
+                <th>说明</th>
+                <th class="dk-num">照片</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                wx:for="{{items}}"
+                wx:key="item_key"
+                class="{{item.editable ? 'dk-tr--click' : ''}} {{editingKey === item.item_key ? 'dk-tr--on' : ''}}"
+                data-key="{{item.item_key}}"
+                bindtap="openItem"
+              >
+                <td class="ck-dk-no dk-muted">{{index + 1}}</td>
+                <td>
+                  <view class="dk-cell-main"><text class="ck-dk-dim">{{item.dimension_label}}</text>{{item.title}}<text wx:if="{{item.need_photo}}" class="dk-muted">（要拍照）</text></view>
+                  <view wx:if="{{item.review_hint}}" class="ck-dk-hint">{{item.review_hint}}</view>
+                </td>
+                <td class="dk-nowrap">
+                  <text wx:if="{{item.result}}" class="dk-tag {{item.resultClass}}">{{item.resultLabel}}</text>
+                  <text wx:else class="dk-muted">未验</text>
+                </td>
+                <td>
+                  <view class="dk-ellipsis ck-dk-note" title="{{item.note}}">{{item.note || '—'}}</view>
+                  <view wx:if="{{item.result === 'FAIL'}}" class="dk-muted">{{item.disclosed ? '卖家原来说过' : '卖家没说过'}} · 原因：{{item.cause_label || '待判'}}</view>
+                </td>
+                <td class="dk-num">{{item.evidence.length || '—'}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </view>
+        <view wx:if="{{newProblems.length}}" class="ck-dk-newp">
+          <text>卖家没说过的问题：{{newProblems}}</text>
+          <view wx:if="{{pending}}" class="dk-btn dk-btn--danger" bindtap="raiseFromItems">建差异工单</view>
+        </view>
+        <view wx:if="{{pending && doneCount === items.length}}" class="ck-dk-done">
+          <text>都验完了，回验货页提交入库或拒签。</text>
+          <view class="dk-btn dk-btn--primary" bindtap="backToForm">回验货页</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="ck-dk-col">
+      <!-- 填写面板：编辑中的那一项 -->
+      <block wx:for="{{items}}" wx:key="item_key">
+        <view wx:if="{{editingKey === item.item_key && editing}}" class="dk-card ck-dk-edit">
+          <view class="dk-card__head">
+            <text>{{index + 1}}. {{item.title}}</text>
+            <text wx:if="{{item.need_photo}}" class="dk-tag dk-tag--blue">要拍照</text>
+          </view>
+          <view class="dk-card__body ck-dk-edit__body">
+            <view wx:if="{{item.guide}}" class="ck-dk-guide">{{item.guide}}</view>
+            <view wx:if="{{item.standard}}" class="ck-dk-std">判定标准：{{item.standard}}</view>
+            <view wx:if="{{item.video_url}}" class="dk-link" data-url="{{item.video_url}}" bindtap="playTutorial">▶ 看这一步的操作视频</view>
+            <view wx:if="{{retesting}}" class="ck-dk-banner ck-dk-banner--warn">补测：原来「无法测试」，原因：{{item.note}}</view>
+
+            <view class="ck-dk-results">
+              <view
+                wx:for="{{results}}"
+                wx:for-item="r"
+                wx:key="key"
+                wx:if="{{!retesting || r.key !== 'UNTESTABLE'}}"
+                class="ck-dk-result ck-dk-result--{{r.key}} {{editing.result === r.key ? 'ck-dk-result--on' : ''}}"
+                data-key="{{r.key}}"
+                bindtap="pickResult"
+              >{{r.label}}</view>
+            </view>
+
+            <block wx:if="{{editing.result === 'FAIL'}}">
+              <input class="dk-input" maxlength="64" value="{{editing.defect_part}}" data-key="defect_part" bindinput="onField" placeholder="瑕疵部位，如 屏幕右下角" />
+              <input class="dk-input" maxlength="255" value="{{editing.seller_claim}}" data-key="seller_claim" bindinput="onField" placeholder="卖家原来怎么描述的（给采购议价对比，选填）" />
+              <view wx:if="{{editing.claim && !editing.seller_claim}}" class="dk-link" bindtap="useClaim">带入卖家原话：{{editing.claim}}</view>
+              <view class="ck-dk-flags">
+                <view class="ck-dk-flag {{editing.disclosed ? 'ck-dk-flag--on' : ''}}" bindtap="toggleDisclosed">{{editing.disclosed ? '✓ 卖家原来说过' : '卖家原来说过？'}}</view>
+                <text class="dk-muted">原因</text>
+                <view wx:for="{{causes}}" wx:for-item="c" wx:key="key" class="ck-dk-flag {{editing.cause === c.key ? 'ck-dk-flag--on' : ''}}" data-key="{{c.key}}" bindtap="pickCause">{{c.label}}</view>
+              </view>
+            </block>
+            <textarea
+              class="dk-input ck-dk-ta"
+              maxlength="300"
+              value="{{editing.note}}"
+              bindinput="onNote"
+              placeholder="{{editing.result === 'UNTESTABLE' ? '为什么测不了（必填）' : (editing.result === 'FAIL' ? '哪里不行、在什么部位' : '说明（选填）')}}"
+            />
+            <view class="ck-dk-photos">
+              <view wx:for="{{editing.files}}" wx:for-item="f" wx:key="raw" class="ck-dk-photo">
+                <image src="{{f.url}}" mode="aspectFill" class="ck-dk-photo__img" data-url="{{f.url}}" bindtap="dkPreview" />
+                <view class="ck-dk-photo__x" data-index="{{index}}" bindtap="removePhoto">×</view>
+              </view>
+              <view class="ck-dk-photo ck-dk-photo--add" bindtap="addPhoto">+ 照片</view>
+            </view>
+          </view>
+          <view class="ck-dk-edit__foot">
+            <view class="dk-btn" bindtap="closeItem">收起</view>
+            <view class="dk-btn dk-btn--primary {{busy ? 'dk-btn--disabled' : ''}}" bindtap="saveItem">{{busy ? '保存中…' : (retesting ? '保存补测' : '保存，下一项')}}</view>
+          </view>
+        </view>
+      </block>
+      <view wx:if="{{items.length && !editingKey}}" class="dk-card">
+        <view class="dk-empty ck-dk-pick">{{pending ? '点左边一项开始验' : '点左边「无法测试」的项目补测'}}</view>
+      </view>
+
+      <view class="dk-card">
+        <view class="dk-card__head">
+          <text>开箱视频与凭证</text>
+          <view wx:if="{{pending}}" class="dk-btn dk-btn--sm" bindtap="recordVideo">传开箱视频</view>
+        </view>
+        <view class="dk-card__body">
+          <view class="dk-help">拆封前先开始录：拍清外包装和面单，再拆封、取出商品、拍型号 / 序列号和配件。</view>
+          <view wx:if="{{!evidence.length}}" class="dk-muted ck-dk-gap">还没有凭证</view>
+          <view wx:for="{{evidence}}" wx:key="id" class="ck-dk-ev" data-index="{{index}}" bindtap="openEvidence">
+            <text class="dk-tag">{{item.kindLabel}}</text>
+            <text class="dk-grow dk-sub">{{item.recorded_by_name}}</text>
+            <text class="dk-link">查看</text>
+          </view>
+        </view>
+      </view>
+
+      <view wx:if="{{history.length}}" class="dk-card">
+        <view class="dk-card__head"><text>改答案和补测记录</text></view>
+        <view class="dk-card__body">
+          <view wx:for="{{history}}" wx:key="index" class="ck-dk-hist">
+            <text class="dk-muted">{{item.at}}</text> {{item.operator}} {{item.action}}「{{item.item}}」：{{item.from}} → {{item.to}}
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{exceptionOpen}}" class="ck-dk-mask" bindtap="closeException">
+    <view class="ck-dk-dialog" catchtap="noop">
+      <view class="ck-dk-dialog__head">发现异常</view>
+      <view class="ck-dk-dialog__body">
+        <view class="dk-row">
+          <view
+            wx:for="{{exceptionTypes}}"
+            wx:key="key"
+            class="ck-dk-chip {{exceptionType === item.key ? 'ck-dk-chip--on' : ''}}"
+            data-key="{{item.key}}"
+            bindtap="pickExceptionType"
+          >{{item.label}}</view>
+        </view>
+        <textarea class="dk-input ck-dk-ta" maxlength="300" value="{{exceptionText}}" bindinput="onExceptionText" placeholder="什么情况，在哪个部位" />
+        <view class="dk-help">登记后会立刻通知业务员和采购（10 分钟内要处理）。登记完继续验完其余项目。</view>
+      </view>
+      <view class="ck-dk-dialog__foot">
+        <view class="dk-btn" bindtap="closeException">取消</view>
+        <view class="dk-btn dk-btn--primary {{busy ? 'dk-btn--disabled' : ''}}" bindtap="submitException">通知处理</view>
+      </view>
+    </view>
+  </view>
+</view>
+<view class="dk-page" wx:else>
+  <view class="dk-card"><view class="dk-empty">加载中…</view></view>
+</view>
