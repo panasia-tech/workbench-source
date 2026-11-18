@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>采购 Copilot v5.0</title>
+  <link rel="stylesheet" href="sidebar.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- 顶部栏 -->
+    <header class="top">
+      <div class="top-r1">
+        <div class="brand">
+          <span class="brand-pill">采购 Copilot</span>
+          <span class="conn-dot" id="conn-dot"></span>
+          <span id="conn-text" style="font-size:11.5px;color:#6b7280;font-weight:700">已连工作台</span>
+        </div>
+        <div class="top-btns">
+          <button type="button" class="icon-btn" id="btn-refresh" title="刷新同步">↻</button>
+          <button type="button" class="icon-btn" id="btn-open-full" title="打开7模块完整工作台">↗ 完整台</button>
+          <button type="button" class="icon-btn" id="btn-close" title="收起侧边栏">✕</button>
+        </div>
+      </div>
+      <select id="conv-select" class="conv-picker" aria-label="选择当前会话"></select>
+    </header>
+
+    <!-- 主内容滚动区（四 Dock 视图） -->
+    <main class="main">
+      <!-- ================= DOCK 1: 会话 ================= -->
+      <section id="pane-session" class="pane active">
+        <!-- 商品原始快照缩略条 -->
+        <div class="snap-mini">
+          <img id="snap-thumb" src="" alt="快照图" />
+          <div class="snap-txt">
+            <b id="snap-title">加载商品原始快照…</b>
+            <small id="snap-sub">买前写几乎全新/图模糊：绝不追问成色</small>
+          </div>
+          <button type="button" class="btn ylw" id="btn-view-snap">🔍 大图</button>
+        </div>
+
+        <!-- 收藏卖家 / 慢慢压价 / 自动状态快捷栏 -->
+        <div class="act-row">
+          <button type="button" class="btn" id="btn-fav-seller">☆ 收藏卖家</button>
+          <button type="button" class="btn" id="btn-slow-toggle">⏳ 移入慢慢压价</button>
+          <button type="button" class="btn" id="btn-pause-toggle">⏸ 暂停自动</button>
+        </div>
+
+        <!-- 5% 退款率 & 纠纷率防红标实时盾 -->
+        <div class="card" id="acct-risk-card" style="background:#fffbeb;border-color:#f59e0b">
+          <div class="card-hd">
+            <b>🛡️ 5% 退款/纠纷防红标盾</b>
+            <span class="tag red">非必要绝不扯皮/介入</span>
+          </div>
+          <div id="acct-risk-txt" style="font-size:11.5px;color:#374151;line-height:1.45">
+            正在读取当前闲鱼号近30天退款率与纠纷率…
+          </div>
+        </div>
+
+        <!-- SVG 买卖双方逐轮报价折线图 -->
+        <div class="card">
+          <div class="card-hd">
+            <b>买卖双方逐轮报价折线图</b>
+            <span class="legend">
+              <i class="dot s"></i>卖家 <i class="dot b"></i>我方 <i class="dot c"></i>上限
+            </span>
+          </div>
+          <div class="svg-wrap" id="svg-chart-box"></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px">
+            <span id="diff-ref-txt">比公司参考价省 —</span>
+            <b id="pre-comm-txt" style="color:#059669">预计买前10%提成 —</b>
+          </div>
+        </div>
+
+        <!-- 买前打标给仓管重点深检 -->
+        <div class="card">
+          <div class="card-hd">
+            <b>🎯 买前二次议价潜力打标</b>
+            <span class="tag red">别多嘴追问划痕！</span>
+          </div>
+          <div id="suspect-note" style="font-size:12px;color:#374151">
+            卖家标称『几乎全新』或图片模糊时，一键给赵仓管打重点深检标：
+          </div>
+          <button type="button" class="btn dark full" id="btn-tag-warehouse">
+            🎯 给赵仓管打「质疑成色·派送10m深检」标
+          </button>
+        </div>
+
+        <!-- 买家口吻安全话术 -->
+        <div class="card">
+          <div class="card-hd">
+            <b>💬 一键填入安全买家话术</b>
+            <span class="tag acc">自动防泄密</span>
+          </div>
+          <div class="tpl-list" id="safe-tpl-list"></div>
+        </div>
+      </section>
+
+      <!-- ================= DOCK 2: 行情 ================= -->
+      <section id="pane-market" class="pane">
+        <div class="card">
+          <div class="card-hd">
+            <b>📊 当前机型四维价格尺</b>
+            <span class="tag acc" id="mkt-status-tag">已匹配</span>
+          </div>
+          <div class="m-grid">
+            <div class="m-box"><span>首轮试探价</span><b id="mkt-first">—</b></div>
+            <div class="m-box"><span>目标成交价</span><b id="mkt-target" class="grn">—</b></div>
+            <div class="m-box"><span>最高出价上限</span><b id="mkt-ceil" class="acc">—</b></div>
+            <div class="m-box"><span>冻结参考价 M</span><b id="mkt-ref">—</b></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-hd">
+            <b>🔧 人工修正型号/规格匹配</b>
+            <span class="tag amb">解冲突拦截</span>
+          </div>
+          <select id="fix-model-select" class="conv-picker"></select>
+          <button type="button" class="btn pri full" id="btn-fix-model">
+            确认按所选规格匹配并解除拦截
+          </button>
+        </div>
+
+        <div class="card">
+          <div class="card-hd">
+            <b>📈 历史参考价版本柱状对比</b>
+          </div>
+          <div id="ver-bars-box" style="display:grid;gap:7px"></div>
+        </div>
+      </section>
+
+      <!-- ================= DOCK 3: 工单（双轨二次议价 + 12大心理博弈） ================= -->
+      <section id="pane-tickets" class="pane">
+        <div class="card">
+          <div class="card-hd">
+            <b>🛠️ 二次议价工单 · 双轨切换</b>
+            <span class="tag grn">到货差价×10%</span>
+          </div>
+          <select id="ticket-select" class="conv-picker"></select>
+          <div class="act-row">
+            <button type="button" class="btn" id="btn-track-sf">⚡ 顺丰10m拒签轨</button>
+            <button type="button" class="btn" id="btn-track-signed">📦 已签收先退货轨</button>
+          </div>
+          <div id="tk-summary" style="font-size:12px;color:#374151;background:#f8fafc;padding:8px 10px;border-radius:9px"></div>
+        </div>
+
+        <!-- 首刀半价 vs P3 精确锚 + 欲擒故纵 -->
+        <div class="card">
+          <div class="card-hd">
+            <b>🔪 核心实战金句一键复制</b>
+            <span class="tag ylw" id="tk-comm-tag">预计提成 —</span>
+          </div>
+          <div class="tpl-list" id="tk-core-scripts"></div>
+        </div>
+
+        <!-- 12 大增量心理学(P1-P6) × 博弈学(G1-G6) 点选武器库 -->
+        <div class="card">
+          <div class="card-hd">
+            <b>🧠 P1–P6 × ♟️ G1–G6 十二奇兵</b>
+            <span class="tag acc">自动留痕</span>
+          </div>
+          <select id="anchor-select" class="conv-picker"></select>
+          <div id="anchor-quote" style="font-size:12px;line-height:1.5;background:#f8fafc;border:1px solid #e5e7eb;padding:9px 10px;border-radius:10px"></div>
+          <button type="button" class="btn pri full" id="btn-copy-anchor">
+            📋 复制该奇兵话术并写入工单博弈留痕
+          </button>
+        </div>
+
+        <!-- 整单全退关闭脱离管辖 + T+1 支付宝对公 -->
+        <div class="card">
+          <div class="card-hd">
+            <b>🏦 整单全退关单 + T+1 支付宝对公</b>
+            <span class="tag red">防红标防差评</span>
+          </div>
+          <div class="act-row">
+            <button type="button" class="btn full" id="btn-copy-corp">📋 复制「整单退走次日10点对公支付」话术</button>
+            <button type="button" class="btn dark full" id="btn-open-case-step">↗ 打开该单第8步登记支付宝对公 ›</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= DOCK 4: 收益（两段各10% · 三栏独立） ================= -->
+      <section id="pane-earnings" class="pane">
+        <div class="earn-hero">
+          <div style="display:flex;justify-content:space-between;font-size:12px;opacity:.9">
+            <span>今日累计预计提成</span>
+            <span id="earn-target-lbl">目标 ¥1,000</span>
+          </div>
+          <div class="eh-big" id="earn-today-big">¥0.00</div>
+          <div class="eh-track"><i id="earn-bar-fill" style="width:0%"></i></div>
+          <div id="earn-remain-lbl" style="font-size:11.5px;opacity:.92">正在同步收益进度…</div>
+        </div>
+
+        <div class="earn-3">
+          <div><span>预计提成</span><b id="e-col-exp">¥0</b><small>买前+到货在途</small></div>
+          <div><span>已确认待发</span><b id="e-col-conf" style="color:#2563eb">¥0</b><small>财务已确认</small></div>
+          <div><span>已发放落袋</span><b id="e-col-paid" style="color:#059669">¥0</b><small>已入工资单</small></div>
+        </div>
+
+        <div class="card">
+          <div class="card-hd">
+            <b>🧾 次日10:00前 · 昨日对账单抓全核对</b>
+            <span class="tag red" id="stmt-badge">待核对</span>
+          </div>
+          <div id="stmt-summary-txt" style="font-size:11.5px;color:#374151;line-height:1.45">
+            财务次日 10:00 前发来昨日对账单，核查采购订单是否 100% 抓全…
+          </div>
+          <button type="button" class="btn pri full" id="btn-open-reconcile">
+            ↗ 打开采购单抓全核对台（一键补抓漏单）
+          </button>
+        </div>
+
+        <div class="card">
+          <div class="card-hd">
+            <b>📐 两段各 10% 零重算明细</b>
+            <span class="tag grn">绝不重复计提</span>
+          </div>
+          <div style="font-size:11.5px;color:#6b7280;line-height:1.45">
+            买前 = <code>(参考M − 首轮P)×10%</code>；到货 = <code>实际退差R×10%</code>；全额退货未留成自动冲零。
+          </div>
+          <div id="comm-rows-box" class="tpl-list"></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- 底部固定 4-Dock 导航栏 -->
+    <nav class="dock" aria-label="Copilot四模块导航">
+      <button type="button" class="active" data-dock="session"><span class="ic">💬</span><span>会话</span></button>
+      <button type="button" data-dock="market"><span class="ic">📈</span><span>行情</span></button>
+      <button type="button" data-dock="tickets"><span class="ic">🛠️</span><span>工单</span></button>
+      <button type="button" data-dock="earnings"><span class="ic">💰</span><span>收益</span></button>
+    </nav>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <script src="sidebar.js"></script>
+</body>
+</html>
