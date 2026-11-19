@@ -1,9 +1,9 @@
-"""大台账：法人 → 主体（个体户/公司）→ 支付宝 → 店铺。
+"""管理运营公司受托大台账：签约委托客户 → 受托主体（个体户/公司）→ 支付宝 → 托管店铺。
 
 11-09 技术对接会定的第三步，11-09 老板定口径：
   - 四层就是这四层，客户不单独一层；
   - 管理员看全部；业务员只能往里填，填完自己也看不到；
-  - 管理员可以把某个法人临时开放给某个人，那人打开后看一小段时间，过了就再也看不到；
+  - 管理员可以把某个委托客户受托档案临时开放给经办人，那人打开后看一小段时间，过了就再也看不到；
   - 每次看、改、开放都留记录（ledger_access_log）。
 
 身份证号、银行卡号、支付密码、短信验证码不进这几张表（11-14 老板全量台账第一步再次确认：密码不存）。
@@ -11,11 +11,11 @@
 11-14 第一步加的：主体的税务、年报；支付宝分主资金号 / 收款号 / 采购号；不走支付宝结算的店铺
 （微信小店、抖店……）直接挂在主体下面；店铺的服务费率、保证金；账单流水分类。规矩见 services/ledger.py。
 
-第二步加的：法人名下的手机卡（一证五号、主副卡、外部合约卡、话费）；代理 IP；设备（AdsPower 环境、手机、电脑），
+第二步加的：委托客户实名手机卡（一证五号、主副卡、外部合约卡、话费）；代理 IP；设备（AdsPower 环境、手机、电脑），
 设备从群控同步过来（services/ledger_assets.py）。代理的账号密码同样不存。
 
 第三步加的：店铺分销售店 / 采购号 / 引流号（买卖不混用）；支付宝的限额和财务科目；店铺冻结款、开票口径、
-财务科目、单店月度损益；法人的代持协议到期日、刷脸响应时效；主体经营范围。
+财务科目、单店月度损益；签约委托客户托管运营合同到期日、刷脸配合时效；受托主体经营范围。
 
 第四步（审计报告里另外 12 个模块）：别的台账都记在 ledger_record 一张表里，按 kind 分（对公账户、U 盾、印章、
 数电票、代账月结、商户号、外币卡、上游预存款、同行、远控单、代开店客户、背调、服务器、房产……），字段和规矩见
@@ -56,12 +56,12 @@ class LedgerLegalPerson(Base, TimestampMixin, _Entry):
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_uuid)
     name: Mapped[str] = mapped_column(String(64), index=True)
-    phone: Mapped[str | None] = mapped_column(String(32), nullable=True)  # 法人本人主设备手机号
+    phone: Mapped[str | None] = mapped_column(String(32), nullable=True)  # 委托客户法人本人主设备手机号
     email: Mapped[str | None] = mapped_column(String(128), nullable=True)  # 法人主邮箱
     # 名下原来就有的个人卡，每家运营商几张：{"中国联通": 2}。一证五号，公司再开的卡要扣掉这些
     personal_cards: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     face_sla: Mapped[str | None] = mapped_column(String(64), nullable=True)  # 平台要刷脸时他多久能响应，比如「2 小时内」
-    agreement_end: Mapped[date | None] = mapped_column(Date, nullable=True)  # 代持协议到期日，到期前提醒续签
+    agreement_end: Mapped[date | None] = mapped_column(Date, nullable=True)  # 托管运营合同到期日，到期前提醒续签
 
 
 class LedgerEntity(Base, TimestampMixin, _Entry):
@@ -152,9 +152,9 @@ class LedgerShop(Base, TimestampMixin, _Entry):
 class LedgerSim(Base, TimestampMixin, _Entry):
     """手机卡。挂在给哪个法人用的那个法人下面。
 
-    master 主卡 / sub 副卡（挂在同一法人、同一运营商的主卡下）都实名在法人本人名下，和他原有的个人卡一起
+    master 客户主卡 / sub 客户副卡（挂在同一委托客户、同一运营商的主卡下）均实名在委托客户法人本人名下，和他原有的个人卡一起
     算一证五号；external 外部合约卡实名在别人名下，不占法人的名额，但合约到期要换绑；
-    employee 员工实名卡：员工用自己身份证办的卡给公司用，离职交回卡也能去营业厅挂失补卡，一直标红，要尽快换成法人卡。
+    employee 员工实名卡：员工用自己身份证办的卡给公司用，离职交回卡也能去营业厅挂失补卡，一直标红，须尽快换绑为委托客户实名或合规授权卡。
     """
 
     __tablename__ = "ledger_sim"

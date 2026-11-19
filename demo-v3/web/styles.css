@@ -1530,7 +1530,7 @@ table.ledger-table tbody tr.row-warn td {
   color: var(--ink-secondary);
 }
 
-/* 法人标准矩阵「看缺口」统筹卡片网格 */
+/* 委托客户托管配额「看缺口」统筹卡片网格 */
 .gap-lp-card {
   background: #ffffff;
   border: 1px solid var(--border-light);

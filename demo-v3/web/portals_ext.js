@@ -109,7 +109,7 @@
         <div class="gap-lp-card">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
             <div class="op-btns">
-              <strong style="font-size:14px;">👤 法人矩阵统筹：${esc(row.legal_person_name)}</strong>
+              <strong style="font-size:14px;">👤 委托客户托管统筹：${esc(row.legal_person_name)}</strong>
               ${row.total_gap_count > 0
                 ? `<span class="badge badge-red">待补总缺口 ${row.total_gap_count} 项</span>`
                 : `<span class="badge badge-green">✓ 标准配额已满编</span>`}
@@ -168,7 +168,7 @@
 
       ${renderFoldCard({
         id: "boss:gap_matrix",
-        title: `📊 全维缺口自动统筹表（法人基建缺口 + 13平台开店缺口 + 教程缺口）`,
+        title: `📊 全维缺口自动统筹表（客户受托基建缺口 + 13平台建店缺口 + 教程缺口）`,
         tipKey: "gap_radar",
         variant: totalShortage > 0 ? "warn" : "",
         pillsHtml: `
@@ -682,7 +682,7 @@
       <div class="page-header">
         <div>
           <h2>🧭 主管端 · 缺口统筹拆单与员工开店负载面板 ${qTip("gap_radar")}</h2>
-          <span class="cell-sub">按法人标准配额缺口向员工派发重复性建店任务单（系统硬防呆：若目标平台尚无已发布教程，禁止盲派裸单）</span>
+          <span class="cell-sub">按委托客户托管协议目标缺口向员工派发标准建店任务单（系统硬防呆：若目标平台尚无已发布教程，禁止盲派裸单）</span>
         </div>
         <button type="button" class="btn btn-primary btn-sm" data-open-dispatch-modal="lp-wyq">+ 新建派单任务</button>
       </div>
@@ -703,7 +703,7 @@
         <div class="gap-lp-card">
           <div style="display:flex;justify-content:space-between;align-items:center;">
             <strong>👤 ${esc(row.legal_person_name)} · 待补总缺口 ${row.total_gap_count} 项</strong>
-            <button type="button" class="btn btn-primary btn-xs" data-open-dispatch-modal="${esc(row.legal_person_id)}">+ 针对此法人派单</button>
+            <button type="button" class="btn btn-primary btn-xs" data-open-dispatch-modal="${esc(row.legal_person_id)}">+ 针对此客户派单</button>
           </div>
           <div class="gap-plat-strip">
             ${(row.platform_gaps || []).filter((pg) => pg.target > 0).map((pg) => `
@@ -1294,7 +1294,7 @@
           </select>
         </div>
         <div class="form-field">
-          <label>归属法人 *</label>
+          <label>所属委托客户 *</label>
           <select id="dp-lp" class="select-control">
             ${lps.map((lp) => `<option value="${esc(lp.id)}" ${lp.id === presetLpId ? "selected" : ""}>${esc(lp.name)}</option>`).join("")}
           </select>
@@ -1460,8 +1460,8 @@
             },
             {
               step_code: "P02",
-              title: "上传营业执照并趁法人在场完成实名扫脸认证",
-              guide: "1. 上传清晰营业执照原件图；\n2. 全程录屏法人扫脸直至出现认证成功绿色回执页。",
+              title: "上传受托执照并预约委托客户法人完成实名扫脸认证",
+              guide: "1. 上传清晰营业执照原件图；\n2. 全程录屏客户法人本人配合扫脸直至出现认证成功绿色回执页。",
               warn_text: "录像必须包含最终认证成功页面，严禁中途停止录制！",
               require_review: 1,
               unlock_vault_lockin: 0,

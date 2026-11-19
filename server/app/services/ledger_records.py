@@ -355,7 +355,7 @@ KINDS: dict[str, dict] = {
     "contract": {
         "label": "纸质合同", "group": "client", "name_label": "合同",
         "fields": [
-            F("ctype", "类型", "select", options=_sel(nominee="代持", custody="托管", lease="租赁", service="服务",
+            F("ctype", "类型", "select", options=_sel(nominee="委托授权", custody="全权托管", lease="租赁", service="服务",
                                                     labor="劳动", other="其他"), required=True, list=True),
             F("legal_person_id", "哪个法人", "lp"),
             F("party", "对方", list=True),
@@ -387,7 +387,7 @@ KINDS: dict[str, dict] = {
     "bgcheck": {
         "label": "背调记录", "group": "bgcheck", "name_label": "查的谁",
         "fields": [
-            F("subject", "是什么人", "select", options=_sel(nominee="代持法人", card_supplier="供卡人", finance="管钱岗",
+            F("subject", "是什么人", "select", options=_sel(nominee="签约委托客户法人", card_supplier="授权供卡协办", finance="管钱岗",
                                                           other="其他"), required=True, list=True),
             F("legal_person_id", "台账里的法人", "lp"),
             F("checked_on", "查的日期", "date", required=True, list=True),
@@ -1182,7 +1182,7 @@ def alerts(rec: LedgerRecord, ctx: dict) -> list[dict]:
     elif k == "contract":
         out += _due("", _ddate(a.get("end_on")), today)
         if a.get("ctype") == "nominee" and not a.get("cabinet"):
-            out.append({"level": "warn", "text": "代持协议纸质原件放在哪没记"})
+            out.append({"level": "warn", "text": "托管运营合同纸质原件放在哪没记"})
     elif k == "risk_ticket":
         if not a.get("resolved_at") and a.get("opened_at"):
             opened = datetime.strptime(a["opened_at"], "%Y-%m-%d %H:%M")
@@ -1396,7 +1396,7 @@ def radar(db: Session) -> list[dict]:
     for lp in db.query(LedgerLegalPerson).filter(LedgerLegalPerson.status == "active").all():
         if lp.id not in checked:
             out.append({"level": "warn", "group": "bgcheck", "kind": "bgcheck", "title": f"法人 · {lp.name}",
-                        "text": "还没做过背调（失信 / 限高 / 涉诉 / 反诈），代持期间每 90 天查一次"})
+                        "text": "还没做过背景核验（失信 / 限高 / 涉诉 / 反诈），受托托管期间每 90 天复查一次"})
     # 离职员工还知道的密码
     names, gone = _staff_names(db), departed(db)
     left: dict[str, list] = {}

@@ -11,7 +11,7 @@
 4. 「定位 × 公司受控网 × 坐班/居家」四象限实时合规引擎（上班时间硬红线）：
    - 🟢 在司合规 (compliant_office)：定位在公司围栏内 + 已连接公司千兆有线内网或公司受控业务 Wi-Fi (PanAsia-Corp-5G / PanAsia-Procure-VLAN)；
    - 🔵 报备居家合规 (compliant_wfh)：OA 已批居家办公 + 定位在员工报备住址 + 已拨通公司加密 VPN 受控隧道；
-   - 🔴 在司未连公司网违规 (violation_office_no_corp_net)：定位在公司围栏内，却断开公司网使用 4G/5G 流量或个人热点（防逃避公司网关审计与分流策略）；
+   - 🔴 在司未连公司网违规 (violation_office_no_corp_net)：定位在公司围栏内，却断开公司网使用 4G/5G 流量或个人热点（防逃避公司网关审计与路由策略）；
    - 🚨 未报备离司/假坐班真居家违规 (violation_unapproved_offsite)：正常坐班日（无居家审批），上班时间设备定位离开公司围栏！
 5. 资产核减/报废/转二手售卖防泄密硬阻断：只要设备仍插有在用 SIM 卡、挂载 AdsPower 窗口或关联在用平台店铺账号，硬阻断报废核减与转售入库。
 """
@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS mobile_device_telemetry (
     os_version TEXT NOT NULL DEFAULT 'Android 14 / HyperOS',
     adb_fingerprint_status TEXT NOT NULL DEFAULT 'verified_locked'
         CHECK (adb_fingerprint_status IN ('verified_locked', 'pending_flash', 'tamper_alert')),
-    network_isolation_mode TEXT NOT NULL DEFAULT '在司强制连公司受控Wi-Fi(软路由独享家宽分流)',
+    network_isolation_mode TEXT NOT NULL DEFAULT '在司强制连公司受控Wi-Fi(软路由独享家宽路由)',
     last_heartbeat_at TEXT NOT NULL DEFAULT '2026-11-18 14:35:00',
     health_grade TEXT NOT NULL DEFAULT 'healthy' CHECK (health_grade IN ('healthy', 'warning', 'critical')),
     health_note TEXT NOT NULL DEFAULT '',
@@ -118,7 +118,7 @@ CREATE TABLE IF NOT EXISTS device_asset_and_compliance (
     net_conn_kind TEXT NOT NULL DEFAULT 'corp_wifi'
         CHECK (net_conn_kind IN ('corp_lan', 'corp_wifi', 'corp_vpn', 'cellular_5g', 'external_wifi_or_hotspot')),
     connected_ssid_or_nic TEXT NOT NULL DEFAULT 'PanAsia-Corp-5G',
-    gateway_egress_note TEXT NOT NULL DEFAULT '公司软路由透明分流至独享家宽IP',
+    gateway_egress_note TEXT NOT NULL DEFAULT '公司软路由透明路由至独享家宽IP',
     remote_locked INTEGER NOT NULL DEFAULT 0 CHECK (remote_locked IN (0, 1)),
     compliance_note TEXT NOT NULL DEFAULT '',
     last_located_at TEXT NOT NULL DEFAULT '2026-11-18 14:35:00',
@@ -206,11 +206,11 @@ def ensure_cluster_and_health_seeded(conn: sqlite3.Connection) -> None:
         extra_mac_pros = [
             ("dev-pc-03", "lp-ljg", "MAC-PRO-03", "adspower_pc_host", "Apple Mac Pro (M2 Ultra · 64GB 统一内存 / 1TB)", "C02MP64G0003", "", "", "host_cluster", None, None, "A区中控机柜-U03", "林婷", "AdsPower Enterprise v6.8.5, Local API :50325", "active", "【3号销售主力机 · 内存与高温预警】承载林建国主体3~4闲鱼与京东/小红书店窗"),
             ("dev-pc-04", "lp-ljg", "MAC-PRO-04", "adspower_pc_host", "Apple Mac Pro (M2 Ultra · 64GB 统一内存 / 1TB)", "C02MP64G0004", "", "", "host_cluster", None, None, "C区社媒机柜-U04", "陈晓雯", "AdsPower Enterprise v6.8.5, 社媒素材助手", "active", "【4号社媒种草隔离专机 · 配额50号】专跑小红书种草号与私域引流窗口，防连坐店铺"),
-            ("dev-pc-05", "lp-wyq", "MAC-PRO-05", "adspower_pc_host", "Apple Mac Pro (M2 Ultra · 64GB 统一内存 / 1TB)", "C02MP64G0005", "", "", "host_cluster", None, None, "A区中控机柜-U05", "赵宇", "AdsPower Enterprise v6.8.5, Local API :50325", "active", "【5号二号法人扩盘机 · 配额50号】承接王雅琴及新法人扩盘矩阵店铺窗口"),
+            ("dev-pc-05", "lp-wyq", "MAC-PRO-05", "adspower_pc_host", "Apple Mac Pro (M2 Ultra · 64GB 统一内存 / 1TB)", "C02MP64G0005", "", "", "host_cluster", None, None, "A区中控机柜-U05", "赵宇", "AdsPower Enterprise v6.8.5, Local API :50325", "active", "【5号二号客户托管专机 · 配额50号】承接王雅琴等签约委托客户受托店铺窗口"),
             ("dev-pc-06", "lp-ljg", "MAC-PRO-06", "adspower_pc_host", "Apple Mac Pro (M2 Ultra · 64GB 统一内存 / 1TB)", "C02MP64G0006", "", "", "host_cluster", None, None, "A区中控机柜-U06", "赵宇", "AdsPower Enterprise v6.8.5, 抖店/微信小店后台", "active", "【6号多平台小店专机 · 配额50号】承接抖店、淘宝企业店与新增微信小店独立环境"),
-            ("dev-pc-07", None, "MAC-PRO-07", "adspower_pc_host", "Apple Mac Pro (M2 Ultra · 64GB 统一内存 / 1TB)", "C02MP64G0007", "", "", "host_cluster", None, None, "D区扩盘机柜-U07", "周安", "AdsPower Enterprise v6.8.5, Local API :50325", "active", "【7号矩阵扩盘标准机 · 50槽空余待派】已装妥环境待新法人下店迁入"),
-            ("dev-pc-08", None, "MAC-PRO-08", "adspower_pc_host", "Apple Mac Pro (M2 Ultra · 64GB 统一内存 / 1TB)", "C02MP64G0008", "", "", "host_cluster", None, None, "D区扩盘机柜-U08", "周安", "AdsPower Enterprise v6.8.5, Local API :50325", "active", "【8号矩阵扩盘标准机 · 50槽空余待派】"),
-            ("dev-pc-09", None, "MAC-PRO-09", "adspower_pc_host", "Apple Mac Pro (M2 Ultra · 64GB 统一内存 / 1TB)", "C02MP64G0009", "", "", "host_cluster", None, None, "D区扩盘机柜-U09", "周安", "AdsPower Enterprise v6.8.5, Local API :50325", "active", "【9号矩阵扩盘标准机 · 50槽空余待派】"),
+            ("dev-pc-07", None, "MAC-PRO-07", "adspower_pc_host", "Apple Mac Pro (M2 Ultra · 64GB 统一内存 / 1TB)", "C02MP64G0007", "", "", "host_cluster", None, None, "D区托管预备机柜-U07", "周安", "AdsPower Enterprise v6.8.5, Local API :50325", "active", "【7号新签客户托管预备机 · 50槽空余待派】已装妥安全隔离环境待新签约客户店铺迁入"),
+            ("dev-pc-08", None, "MAC-PRO-08", "adspower_pc_host", "Apple Mac Pro (M2 Ultra · 64GB 统一内存 / 1TB)", "C02MP64G0008", "", "", "host_cluster", None, None, "D区托管预备机柜-U08", "周安", "AdsPower Enterprise v6.8.5, Local API :50325", "active", "【8号新签客户托管预备机 · 50槽空余待派】"),
+            ("dev-pc-09", None, "MAC-PRO-09", "adspower_pc_host", "Apple Mac Pro (M2 Ultra · 64GB 统一内存 / 1TB)", "C02MP64G0009", "", "", "host_cluster", None, None, "D区托管预备机柜-U09", "周安", "AdsPower Enterprise v6.8.5, Local API :50325", "active", "【9号新签客户托管预备机 · 50槽空余待派】"),
             ("dev-pc-10", None, "MAC-PRO-10", "adspower_pc_host", "Apple Mac Pro (M2 Ultra · 64GB 统一内存 / 1TB)", "C02MP64G0010", "", "", "host_cluster", None, None, "D区热备机柜-U10", "周安", "AdsPower Enterprise v6.8.5 (待启动守护进程)", "maintenance", "【10号灾备热备机 · Local API待唤醒】用于单机故障时5分钟接管云同步窗口"),
         ]
         cur.executemany(
@@ -233,9 +233,9 @@ def ensure_cluster_and_health_seeded(conn: sqlite3.Connection) -> None:
                 proxy_ip_id, role_isolation, fingerprint_locked, cookie_backup_at, profile_status, notes)
                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)""",
             (
-                "ads-20", "ADS-020", "402", "w2n5y02", "山屿优选-闲鱼2店窗[建店中]", "宁波二号法人组",
+                "ads-20", "ADS-020", "402", "w2n5y02", "山屿优选-闲鱼2店窗[建店中]", "宁波二号委托客户组",
                 "dev-pc-05", "px-17", "sales_only", 1, "2026-11-16 18:00", "active",
-                "部署在 MAC-PRO-05 扩盘机，绑定独享家宽 IP-NB-17"
+                "部署在 MAC-PRO-05 客户托管专机，绑定独享家宽 IP-NB-17"
             ),
         )
         cur.execute("UPDATE platform_accounts SET adspower_profile_id = 'ads-20' WHERE id = 'pa-wyq-xy02' AND adspower_profile_id IS NULL")
@@ -246,11 +246,11 @@ def ensure_cluster_and_health_seeded(conn: sqlite3.Connection) -> None:
             ("dev-pc-02", "MAC-PRO-02", "B区机柜-U02", "采购买券物理隔离机", "Apple M2 Ultra (24核)", 64, 50, 32, 2, 18.2, 0.0, 31, 48.5, 1420, "行情爬虫租约持有(market)", 1024, 215, 14.2, "10.10.20.102", "v6.8.5", "SunBrowser 130", 50325, "online", 12, "2026-11-18 14:35:00", "healthy", "采购专窗独立运行并持有行情爬虫租约，与销售店铺物理零交集"),
             ("dev-pc-03", "MAC-PRO-03", "A区机柜-U03", "销售主力集群(主体3~4)", "Apple M2 Ultra (24核)", 64, 50, 32, 5, 57.6, 6.2, 88, 76.8, 2890, "", 1024, 790, 148.6, "10.10.20.103", "v6.8.4", "SunBrowser 130", 50325, "online", 29, "2026-11-18 14:35:00", "critical", "🚨 CPU负载 88% · 芯片温度 76.8℃ · 64GB内存已占 57.6GB (90%) 且触发 6.2GB Swap！连续29天未清历史缓存(148.6GB)，请立即点击『一键释放缓存降温降载』！"),
             ("dev-pc-04", "MAC-PRO-04", "C区机柜-U04", "社媒种草导流隔离机", "Apple M2 Ultra (24核)", 64, 50, 32, 2, 19.5, 0.0, 21, 44.0, 1310, "", 1024, 240, 18.0, "10.10.20.104", "v6.8.5", "SunBrowser 130", 50325, "online", 7, "2026-11-18 14:35:00", "healthy", "小红书种草窗口环境纯净，温度与负载正常"),
-            ("dev-pc-05", "MAC-PRO-05", "A区机柜-U05", "二号法人扩盘主力机", "Apple M2 Ultra (24核)", 64, 50, 32, 2, 17.8, 0.0, 16, 43.2, 1290, "", 1024, 190, 11.4, "10.10.20.105", "v6.8.5", "SunBrowser 130", 50325, "online", 4, "2026-11-18 14:35:00", "healthy", "承载王雅琴新开店铺窗口，槽位余量充足"),
+            ("dev-pc-05", "MAC-PRO-05", "A区机柜-U05", "二号客户托管专机", "Apple M2 Ultra (24核)", 64, 50, 32, 2, 17.8, 0.0, 16, 43.2, 1290, "", 1024, 190, 11.4, "10.10.20.105", "v6.8.5", "SunBrowser 130", 50325, "online", 4, "2026-11-18 14:35:00", "healthy", "承载王雅琴新开店铺窗口，槽位余量充足"),
             ("dev-pc-06", "MAC-PRO-06", "A区机柜-U06", "综合电商(淘/抖/微店)专机", "Apple M2 Ultra (24核)", 64, 50, 32, 2, 24.1, 0.0, 24, 45.6, 1350, "", 1024, 265, 21.8, "10.10.20.106", "v6.8.5", "SunBrowser 130", 50325, "online", 11, "2026-11-18 14:35:00", "healthy", "承载淘宝企业店与抖店复合窗口，运行平稳"),
-            ("dev-pc-07", "MAC-PRO-07", "D区机柜-U07", "矩阵扩盘预备集群", "Apple M2 Ultra (24核)", 64, 50, 32, 0, 9.4, 0.0, 6, 38.5, 1180, "", 1024, 120, 2.1, "10.10.20.107", "v6.8.5", "SunBrowser 130", 50325, "online", 3, "2026-11-18 14:35:00", "healthy", "50/50 账号槽位全空待命，随时承接新法人 50 店扩盘"),
-            ("dev-pc-08", "MAC-PRO-08", "D区机柜-U08", "矩阵扩盘预备集群", "Apple M2 Ultra (24核)", 64, 50, 32, 0, 9.1, 0.0, 5, 38.1, 1180, "", 1024, 118, 2.0, "10.10.20.108", "v6.8.5", "SunBrowser 130", 50325, "online", 3, "2026-11-18 14:35:00", "healthy", "50/50 账号槽位全空待命"),
-            ("dev-pc-09", "MAC-PRO-09", "D区机柜-U09", "矩阵扩盘预备集群", "Apple M2 Ultra (24核)", 64, 50, 32, 0, 9.2, 0.0, 5, 38.3, 1180, "", 1024, 119, 2.0, "10.10.20.109", "v6.8.5", "SunBrowser 130", 50325, "online", 3, "2026-11-18 14:35:00", "healthy", "50/50 账号槽位全空待命"),
+            ("dev-pc-07", "MAC-PRO-07", "D区机柜-U07", "新签客户托管预备集群", "Apple M2 Ultra (24核)", 64, 50, 32, 0, 9.4, 0.0, 6, 38.5, 1180, "", 1024, 120, 2.1, "10.10.20.107", "v6.8.5", "SunBrowser 130", 50325, "online", 3, "2026-11-18 14:35:00", "healthy", "50/50 账号槽位全空待命，随时承接新签约客户 50 店受托入驻"),
+            ("dev-pc-08", "MAC-PRO-08", "D区机柜-U08", "新签客户托管预备集群", "Apple M2 Ultra (24核)", 64, 50, 32, 0, 9.1, 0.0, 5, 38.1, 1180, "", 1024, 118, 2.0, "10.10.20.108", "v6.8.5", "SunBrowser 130", 50325, "online", 3, "2026-11-18 14:35:00", "healthy", "50/50 账号槽位全空待命"),
+            ("dev-pc-09", "MAC-PRO-09", "D区机柜-U09", "新签客户托管预备集群", "Apple M2 Ultra (24核)", 64, 50, 32, 0, 9.2, 0.0, 5, 38.3, 1180, "", 1024, 119, 2.0, "10.10.20.109", "v6.8.5", "SunBrowser 130", 50325, "online", 3, "2026-11-18 14:35:00", "healthy", "50/50 账号槽位全空待命"),
             ("dev-pc-10", "MAC-PRO-10", "D区机柜-U10", "热备接管与灾备专机", "Apple M2 Ultra (24核)", 64, 50, 32, 0, 8.6, 0.0, 4, 37.8, 1160, "", 1024, 115, 1.8, "10.10.20.110", "v6.8.5", "SunBrowser 130", 50325, "degraded", 1, "2026-11-18 14:10:00", "warning", "⚠️ 热备机在司有线内网在线，但 AdsPower Local API (:50325) 守护服务未开启，建议一键唤醒保持热备就绪"),
         ]
         cur.executemany(
@@ -273,7 +273,7 @@ def ensure_cluster_and_health_seeded(conn: sqlite3.Connection) -> None:
                 """INSERT INTO mac_host_cluster_telemetry
                    (device_id, host_code, rack_slot, cluster_zone, ram_total_gb, max_account_quota, health_grade, health_note)
                    VALUES (?,?,?,?,64,50,'healthy','新增宿主机就绪')""",
-                (pid, pcode, "扩盘机柜区", "矩阵扩盘集群"),
+                (pid, pcode, "新签客户预备机柜区", "新签客户托管预备集群"),
             )
 
     phone_rows = cur.execute("SELECT id, device_code, device_kind FROM physical_devices WHERE device_kind <> 'adspower_pc_host'").fetchall()
@@ -289,7 +289,7 @@ def ensure_cluster_and_health_seeded(conn: sqlite3.Connection) -> None:
         elif pid == "dev-ph-15":
             cpu_p, ram_p, bat, temp_c, plug_risk, free_gb, adb_st, grade, note = (
                 19, 41, 96, 32.0, 0, 198, "pending_flash", "warning",
-                "⚠️ 二号法人新扩盘手机：尚未联系程序员(微信 z15859900434)完成自研设备指纹 ADB 灌录锁定，正式挂多店前请补灌录！"
+                "⚠️ 二号委托客户受托终端：尚未联系程序员(微信 z15859900434)完成自研设备指纹 ADB 灌录锁定，正式挂载运营前请补灌录！"
             )
         else:
             cpu_p = 20 + (idx * 7) % 38
@@ -303,7 +303,7 @@ def ensure_cluster_and_health_seeded(conn: sqlite3.Connection) -> None:
             note = "自研 ADB 设备指纹锁定完好，负载、电池与温控正常"
 
         os_ver = "iOS 17.6 (严禁越狱)" if "iPhone" in (pcode or "") or pid == "dev-ph-13" else "Android 14 · ADB指纹锁死"
-        net_mode = "在司连公司采购受控Wi-Fi (PanAsia-Procure-VLAN)" if pkind == "procurement_phone" else "在司连公司业务受控Wi-Fi (PanAsia-Corp-5G · 软路由独享家宽分流)"
+        net_mode = "在司连公司采购受控Wi-Fi (PanAsia-Procure-VLAN)" if pkind == "procurement_phone" else "在司连公司业务受控Wi-Fi (PanAsia-Corp-5G · 软路由独享家宽路由)"
         cur.execute(
             """INSERT INTO mobile_device_telemetry
                (device_id, cpu_load_pct, ram_usage_pct, battery_health_pct, battery_temp_c, always_plugged_risk,
@@ -398,7 +398,7 @@ def ensure_cluster_and_health_seeded(conn: sqlite3.Connection) -> None:
                 dist_km = 0.01
                 net_kind = "cellular_5g"
                 ssid_nic = "中国移动 5G 蜂窝流量 (未连接公司Wi-Fi!)"
-                gw_note = "⚠️ 已脱离公司软路由网关与独享家宽分流策略"
+                gw_note = "⚠️ 已脱离公司软路由网关与独享家宽路由策略"
                 comp_note = "🚨 违规：上班时间定位在公司3F工位，但手机断开了 PanAsia-Corp-5G 公司网改走5G流量，违反《设备使用协议》在司必连公司网规定！"
             # 案例B (dev-ph-11)：今日排班为正常坐班（未批居家），上班时间定位却在14.6km外的余杭住宅小区连着家庭宽带 -> 触发「未报备离司/假坐班真居家」红灯！
             elif did == "dev-ph-11":
@@ -433,7 +433,7 @@ def ensure_cluster_and_health_seeded(conn: sqlite3.Connection) -> None:
                 dist_km = 0.0
                 net_kind = "corp_wifi"
                 ssid_nic = "PanAsia-Procure-VLAN (公司采购受控网)" if d["device_kind"] == "procurement_phone" else "PanAsia-Corp-5G (公司业务受控Wi-Fi)"
-                gw_note = "公司软路由按设备 MAC 自动透明分流至对应独享家宽 IP"
+                gw_note = "公司软路由按设备 MAC 自动透明路由至对应独享家宽 IP"
                 comp_note = "在司坐班且稳定连接公司受控 Wi-Fi，符合《公司设备使用协议》"
 
         cur.execute(
@@ -675,7 +675,7 @@ def build_cluster_health_overview(conn: sqlite3.Connection) -> dict:
                 "target_kind": "compliance",
                 "target_id": dev_item["device_id"],
                 "title": f"【在司断网违规】{d_code} ({dev_item['asset_no']} · 保管:{dev_item['custodian_staff']}) 定位在公司，却使用 {dev_item.get('connected_ssid_or_nic')}",
-                "detail": dev_item.get("compliance_note") or "规定在公司办公必须连接公司受控网络，禁止私切流量或个人热点！",
+                "detail": dev_item.get("compliance_note") or "规定在公司办公必须连接公司受控网络，禁止私切蜂窝流量或个人热点！",
                 "action_type": "enforce_corp_wifi",
                 "action_label": "📡 强制重连公司受控网 ›",
             })

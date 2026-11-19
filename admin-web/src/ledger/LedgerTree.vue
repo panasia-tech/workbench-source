@@ -26,7 +26,7 @@ function simLine(c) {
         <div>
           <b>{{ lp.name }}</b><span v-if="editable && lp.needs_check" class="lg-tag">要核对</span>
           <div class="lg-muted">{{ lp.phone || '没填手机号' }}<span v-if="lp.email"> · {{ lp.email }}</span></div>
-          <div v-if="lp.face_sla || lp.agreement_end" class="lg-muted">{{ [lp.face_sla && '刷脸 ' + lp.face_sla, lp.agreement_end && '代持协议到 ' + lp.agreement_end].filter(Boolean).join(' · ') }}</div>
+          <div v-if="lp.face_sla || lp.agreement_end" class="lg-muted">{{ [lp.face_sla && '刷脸 ' + lp.face_sla, lp.agreement_end && '托管合同到 ' + lp.agreement_end].filter(Boolean).join(' · ') }}</div>
           <div v-for="(x, i) in lp.alerts || []" :key="i" :class="['lt-alert', 'lt-alert--' + x.level]">{{ x.text }}</div>
           <div v-if="lp.note" class="lg-muted">{{ lp.note }}</div>
         </div>

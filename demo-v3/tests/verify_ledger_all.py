@@ -76,7 +76,7 @@ def main() -> None:
         else:
             raise RuntimeError("Server failed to start")
 
-        # Case 1: Bootstrap structure & 林建国 1法人->4主体->4税->4年报->14企支->14闲鱼店+全平台
+        # Case 1: Bootstrap structure & 1号签约委托客户林建国 1客户->4受托主体->4税->4年报->14企支->14闲鱼店+全平台
         code, boot_res = req_json(base, "/api/bootstrap?today=2026-11-14")
         assert code == 200 and boot_res["ok"], "bootstrap failed"
         d = boot_res["data"]
@@ -91,7 +91,7 @@ def main() -> None:
         assert len(ljg_alis) == 14, f"Expected 14 enterprise Alipays for LJG, got {len(ljg_alis)}"
         assert len(ljg_xy_sales) == 14, f"Expected 14 Xianyu stores for LJG, got {len(ljg_xy_sales)}"
         assert all(g["passed"] for g in d["guardrails"]), f"Initial guardrails should all pass: {d['guardrails']}"
-        print("[PASS] Case 1: 1法人 -> 4主体 / 4税务 / 4工商年报 / 14企支 / 14闲鱼店+全矩阵基准核验通过")
+        print("[PASS] Case 1: 1委托客户 -> 4受托主体 / 4税务 / 4工商年报 / 14企支 / 14闲鱼店+全矩阵基准核验通过")
 
         # Case 2: 税法红线阻断 - 跨营业执照主体因公支付串户
         code, res = req_json(base, "/api/records/alipay_accounts", "POST", {
@@ -386,7 +386,7 @@ def main() -> None:
             "case_id": "case-ali-ali-18",
             "step_code": "C10",
             "verdict": "approve",
-            "review_note": "法人现场企业管家授权截图清晰无误，放行！",
+            "review_note": "委托客户法人现场企业管家授权截图清晰无误，放行！",
         }, extra_headers=sup_hdr)
         assert code == 200 and c10_rev["ok"]
 

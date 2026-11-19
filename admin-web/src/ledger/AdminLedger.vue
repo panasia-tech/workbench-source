@@ -113,7 +113,7 @@ function onRole() {
   d.alipay_id = ''
 }
 const entityChoices = computed(() => (current.value ? current.value.entities.map((e) => ({ id: e.id, label: e.name })) : []))
-// 副卡挂在同一法人、同一运营商的主卡下
+// 副卡挂在同一委托客户、同一运营商的主卡下
 const masterChoices = computed(() => (current.value?.sims || []).filter(
   (c) => c.category === 'master' && c.status !== 'closed' && c.carrier === edit.value.data.carrier && c.id !== edit.value.id,
 ))
@@ -516,7 +516,7 @@ onMounted(async () => {
         <el-form-item label="主设备手机号"><el-input v-model="edit.data.phone" /></el-form-item>
         <el-form-item label="主邮箱"><el-input v-model="edit.data.email" /></el-form-item>
         <el-form-item label="平台要刷脸时他多久能响应"><el-input v-model="edit.data.face_sla" placeholder="比如 2 小时内" /></el-form-item>
-        <el-form-item label="代持协议到期日">
+        <el-form-item label="托管运营合同到期日">
           <el-date-picker v-model="edit.data.agreement_end" type="date" value-format="YYYY-MM-DD" placeholder="到期前 30 天提醒续签" style="width: 100%" />
         </el-form-item>
         <el-form-item label="名下原来就有的个人卡（一证五号要扣掉）">
@@ -539,7 +539,7 @@ onMounted(async () => {
           <el-radio-group v-model="edit.data.category">
             <el-radio v-for="(label, k) in opts.sim_categories" :key="k" :value="k">{{ label }}</el-radio>
           </el-radio-group>
-          <div class="lg-muted ad-hint">主卡、副卡实名在法人本人名下，算一证五号；外部合约卡实名在别人名下；员工实名卡是员工用自己身份证办的，离职后能挂失补卡，尽快换掉</div>
+          <div class="lg-muted ad-hint">主卡、副卡实名在委托客户法人本人名下，算一证五号；第三方授权卡依通信授权协议管理；员工实名卡是员工用自己身份证办的，离职后能挂失补卡，尽快换掉</div>
         </el-form-item>
         <el-form-item v-if="edit.data.category === 'employee'" label="在哪个员工名下">
           <el-select v-model="edit.data.staff_id" filterable style="width: 100%" @visible-change="(v) => v && loadStaff()">
@@ -610,7 +610,7 @@ onMounted(async () => {
         <el-form-item label="经营范围"><el-input v-model="edit.data.business_scope" type="textarea" :rows="2" /></el-form-item>
         <el-form-item label="数电票每月授信额度（元）"><el-input v-model="edit.data.invoice_quota" placeholder="开到 80% 提醒" /></el-form-item>
         </template>
-        <p v-else class="lg-muted">没执照的个人闲鱼号挂这里，不算进一张执照 3 家闲鱼店里，也没有年报、免税线提醒。</p>
+        <p v-else class="lg-muted">无执照个人受托测试号挂此处，不计入受托企业执照额度，亦无年报及企业阈值提醒。</p>
       </template>
       <template v-else-if="edit.level === 'alipay'">
         <el-form-item v-if="edit.id && parentChoices.length > 1" label="属于哪个主体">

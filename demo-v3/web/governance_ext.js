@@ -147,7 +147,7 @@
       <div class="page-header">
         <div>
           <h2>${isBoss ? "👑 老板终审与工作台治理专区" : "🏛 总经办统筹工作台"} · 全司 Wiki / 培训视频 / KPI / OKR 缺口台账 ${qTip("gov_isolation")}</h2>
-          <span class="cell-sub">独立于「法人/执照/支付宝/号卡」资产线之外的组织基建专区：总经办与各主管在此提报补缺，老板一键终审锁死后全工作台 ? 帮助槽实时点亮</span>
+          <span class="cell-sub">独立于「委托客户/执照/支付宝/号卡」受托资产线之外的管理运营公司组织基建专区：总经办与各主管在此提报补缺，老板一键终审锁死后全工作台 ? 帮助槽实时点亮</span>
         </div>
         <div class="op-btns">
           <button type="button" class="btn btn-primary btn-sm" data-open-gov-create="${esc(localFilter.wb === "ALL" ? "sales" : localFilter.wb)}">+ 登记/派发新缺口槽位</button>

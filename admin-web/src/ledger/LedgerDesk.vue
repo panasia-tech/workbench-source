@@ -195,7 +195,7 @@ function simKind(c) {
               <el-descriptions-item label="主设备手机号">{{ sel.row.phone || '没填手机号' }}</el-descriptions-item>
               <el-descriptions-item label="主邮箱">{{ sel.row.email || '—' }}</el-descriptions-item>
               <el-descriptions-item label="刷脸响应">{{ sel.row.face_sla || '—' }}</el-descriptions-item>
-              <el-descriptions-item label="代持协议到期">{{ sel.row.agreement_end || '—' }}</el-descriptions-item>
+              <el-descriptions-item label="托管合同到期">{{ sel.row.agreement_end || '—' }}</el-descriptions-item>
               <el-descriptions-item label="一证五号" :span="2">
                 <span v-if="!quota.length" class="lgd-muted">名下还没有卡</span>
                 <span v-for="q in quota" :key="q.carrier" :class="['ldk-quota', { 'lgd-danger': q.n >= 5 }]">
@@ -225,7 +225,7 @@ function simKind(c) {
                 <el-tooltip content="ERP 出库单按这件货在哪家店记了售出、归到挂着那家店的主体；平台上成交但没进 ERP 的不算" placement="top">
                   <span class="lgd-muted ldk-q">至少</span>
                 </el-tooltip>
-                <span v-if="sel.row.tax_payer === 'small'" class="lgd-muted">/ 30 万免税线</span>
+                <span v-if="sel.row.tax_payer === 'small'" class="lgd-muted">/ 30 万法定阈值</span>
               </el-descriptions-item>
               <el-descriptions-item label="经营范围" :span="2">{{ sel.row.business_scope || '—' }}</el-descriptions-item>
               <el-descriptions-item label="每月开票额度">{{ money(sel.row.invoice_quota) }}</el-descriptions-item>

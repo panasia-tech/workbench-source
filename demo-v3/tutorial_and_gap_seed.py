@@ -15,7 +15,7 @@ import uuid
 
 
 TUTORIAL_GAP_DDL = """
--- 1. 法人矩阵标准扩盘目标配额表（用于自动倒推证照/号卡/家宽/支付宝/各平台开店缺口）
+-- 1. 委托客户受托托管目标配额表（用于自动倒推客户证照/号卡/家宽/支付宝/各平台受托建店缺口）
 CREATE TABLE IF NOT EXISTS matrix_quota_targets (
     id TEXT PRIMARY KEY,
     legal_person_id TEXT NOT NULL UNIQUE REFERENCES legal_persons(id) ON DELETE CASCADE,
@@ -179,29 +179,29 @@ ALIPAY_STAGES = [
         "steps": [
             {
                 "code": "A01",
-                "title": "锁定路线台账槽位与登记法人本人主设备/腾讯主邮箱",
+                "title": "锁定托管服务槽位与登记客户主体法人主设备/腾讯主邮箱",
                 "who": "开店员工 + 主管",
                 "when": "新建任一企业支付宝前第一步执行",
-                "guide": "1. 在路线台账确认本账号归属哪条营业执照路线（路线1本地照 / 路线2~4外地园区照）；\n2. 明确本账户在主体内的唯一角色：3选1主资金池(master_fund) / 因公采购子号(purchase_only) / 纯销售收款号(sales_only)；\n3. 核对并登记法人本人的主设备手机号与腾讯主邮箱（@qq.com 或 @foxmail.com），用于承载工商与支付宝最高安全实名。",
-                "warn": "外部电话卡非法人本人持有有注销风险，运营商邮箱随停机失效！关键实名根锚点必须绑定法人主设备与腾讯主邮箱（@qq.com/@foxmail.com）。",
+                "guide": "1. 在受托台账确认本账号归属哪位签约客户及对应营业执照（每家客户主体独立建档、独立核算）；\n2. 明确本账户在主体内的唯一角色：3选1主资金池(master_fund) / 因公采购子号(purchase_only) / 纯销售收款号(sales_only)；\n3. 核对并登记客户法人本人的主设备手机号与腾讯主邮箱（@qq.com 或 @foxmail.com），用于承载工商与支付宝最高安全实名。",
+                "warn": "第三方授权合约卡到期存在回收风险，运营商邮箱随停机失效！关键实名根锚点必须绑定委托客户客户法人本人主设备与腾讯主邮箱（@qq.com/@foxmail.com）。",
                 "deliver": "路线槽位、资金角色与法人腾讯主邮箱核对登记完成",
-                "stop": "法人协议未签或主邮箱非腾讯系时暂停，联系主管补齐",
+                "stop": "托管运营合同未签或主邮箱非腾讯系时暂停，联系主管补齐",
                 "guards": [_G("多条执照路线并行推进时", "没定槽位先注册导致14个号串线", "必填槽位编码与角色枚举校验", "先定槽位再动卡，绝不口头记账", "回到路线台账重新核配槽位", "主管", "槽位确认记录")],
                 "materials": [
                     ("slot_confirm", "归属执照路线与资金角色确认", "text", 1, "例：ENT-WYQ-01 · 第2销售收款号 (sales_only)"),
-                    ("legal_qq_mail", "法人本人主邮箱(@qq.com/@foxmail.com)", "text", 1, "严禁填139/189/163等易回收或绑卡邮箱"),
+                    ("legal_qq_mail", "委托客户法人主邮箱(@qq.com/@foxmail.com)", "text", 1, "严禁填139/189/163等易回收或绑卡邮箱"),
                 ],
             },
             {
                 "code": "A02",
-                "title": "领取并激活本路线专属手机卡（联通99元200G·1主4副/外部补缺卡）",
-                "who": "开店员工（法人现场配合实名）",
+                "title": "领取并激活受托店铺专用手机卡（联通99元200G·1主4副/第三方授权卡）",
+                "who": "开店员工（委托客户法人配合实名）",
                 "when": "办理执照预留与注册企业支付宝之前",
-                "guide": "1. 按一主4副动态配额（5 - 原有个人存量卡）办理联通99元200G大流量主副卡，名额不足缺口从已签协议的外部补缺卡池领用；\n2. 当天办卡当天激活，当场拨打电话与打开网页测试通话、短信、流量均正常；\n3. 从台账锁定该号码，严禁随手拿桌面未登记卡。",
+                "guide": "1. 按一主4副动态配额（5 - 原有个人存量卡）办理联通99元200G大流量主副卡，名额不足缺口从已签通信授权协议的第三方授权卡池领用；\n2. 当天办卡当天激活，当场拨打电话与打开网页测试通话、短信、流量均正常；\n3. 从台账锁定该号码，严禁随手拿桌面未登记卡。",
                 "warn": "宁可人等号，不可号等人！没有已激活手机号，执照预留与企业支付宝收码会全线卡死。",
                 "deliver": "手机卡实名激活且通话短信正常，已绑入台账",
-                "stop": "一证通查名额超限无法激活时，转外部合约卡渠道补齐",
-                "guards": [_G("法人原有1~2张存量移动/联通卡时", "强开第5张自社卡被营业厅拒办", "台账自动核算 5-存量卡 上限拦截", "超上限直接领用带到期预警的外部合约卡", "改走外部供卡协议领卡", "号卡管理员", "营业厅受理单照片")],
+                "stop": "一证通查名额超限无法激活时，转第三方授权合约卡渠道补齐",
+                "guards": [_G("委托客户原有1~2张存量移动/联通卡时", "强开第5张客户实名卡被营业厅拒办", "台账自动核算 5-存量卡 上限拦截", "超上限直接领用带到期预警的第三方授权合约卡", "改走第三方通信授权协议领卡", "号卡管理员", "营业厅受理单照片")],
                 "materials": [
                     ("sim_phone", "领用激活的11位手机号", "text", 1, "从台账号码池选取，禁止跨路线混用"),
                     ("sim_receipt_img", "办卡受理凭证照片/截图", "text", 1, "填写上传凭证说明或图片文件名（四角完整）"),
@@ -248,7 +248,7 @@ ALIPAY_STAGES = [
             {
                 "code": "B05",
                 "title": "电脑打开 b.alipay.com 用个人支付宝扫码创单（反向授权登录）",
-                "who": "开店员工（法人/超管扫码）",
+                "who": "开店员工（委托客户法人/管理员扫码）",
                 "when": "在绑定好家宽代理的 AdsPower 专窗内操作",
                 "guide": "1. 在对应 AdsPower 浏览器专窗打开支付宝商家平台 https://b.alipay.com ，点击「注册企业支付宝」；\n2. 使用个人支付宝扫码创建申请单（该个人支付宝将成为本企业号的超级管理员），即「支付宝授权登录」；\n3. 全程录屏留存授权创建过程。",
                 "warn": "【核心反直觉红线】企业支付宝必须用个人支付宝扫码授权登录（与个人淘宝号严禁支付宝快捷登录截然相反）！此步 100% 会弹出「不当注册」类安全提示，属预期正常流程，按引导继续即可！",
@@ -268,7 +268,7 @@ ALIPAY_STAGES = [
                 "guide": "1. 用干净的私人手机将本主体营业执照原图发送至当前办理端并上传；\n2. 严禁把 4 条不同路线的执照图片混放在同一部业务工作机相册里，装错一次整条路线作废。",
                 "warn": "四条路线的证照材料必须物理分文件夹存放！跨路线传错执照会直接污染支付宝主体实名历史。",
                 "deliver": "本路线营业执照原图准确上传通过初检",
-                "stop": "图片模糊反光被拒时联系法人/财会重拍原件",
+                "stop": "图片模糊反光被拒时联系委托客户/代账会计重拍原件",
                 "guards": [_G("同时办理4本执照共12个企支时", "传成隔壁路线的营业执照图片", "上传前核对执照尾号与路线编码", "传图前念一遍执照商号全称", "撤回申请单换正确执照重传", "开店员工", "上传界面截图")],
                 "materials": [
                     ("license_send_proof", "营业执照发送与上传界面截图", "text", 1, "确认商号与当前路线一致"),
@@ -290,18 +290,18 @@ ALIPAY_STAGES = [
             },
             {
                 "code": "B08",
-                "title": "完成法人扫脸核验 / 开户确认函与对公或法人一类卡验证",
-                "who": "法人配合刷脸 + 员工跟进 · 主管审核",
+                "title": "完成客户法人扫脸核验 / 开户确认函与对公或客户客户法人本人一类卡验证",
+                "who": "客户法人配合刷脸 + 员工跟进 · 主管审核",
                 "when": "实名核身与银行账户验证环节",
-                "guide": "1. 提前预约法人在 10~15 分钟 SLA 窗口内现场或官方端完成人脸核验；\n2. 有限公司主体填写对公基本户完成小额打款验证；个体户主体绑定法人本人一类结算银行卡；\n3. 录制/截图实名通过状态提交主管审核。",
+                "guide": "1. 提前预约委托客户法人在 10~15 分钟 SLA 窗口内现场或官方端完成人脸核验；\n2. 有限公司主体填写对公基本户完成小额打款验证；个体户主体绑定客户法人本人一类结算银行卡；\n3. 录制/截图实名通过状态提交主管审核。",
                 "warn": "扫脸与打款金额只在支付宝官方页面由法人/财务完成，严禁把人脸照片或银行卡取款密码发在聊天群！",
                 "deliver": "企业支付宝实名核身与结算银行卡验证通过",
                 "stop": "法人连续2次刷脸不过立即停止，排查光线或证件有效期，勿硬刷锁号",
                 "require_confirm": 1,
                 "require_review": 1,
-                "guards": [_G("异地法人配合刷脸时", "截图发超时二维码反复催刷触发风控", "要求先约好法人在线再点生成核身码", "人到齐再出码，一次刷过", "冷却24小时后改开户确认函认证", "主管", "实名通过截图")],
+                "guards": [_G("异地客户法人配合刷脸时", "截图发超时二维码反复催刷触发风控", "要求先约好法人在线再点生成核身码", "人到齐再出码，一次刷过", "冷却24小时后改开户确认函认证", "主管", "实名通过截图")],
                 "materials": [
-                    ("face_bank_proof", "法人核身及银行卡验证通过截图", "text", 1, "脱敏展示尾号与通过状态"),
+                    ("face_bank_proof", "客户法人核身及银行卡验证通过截图", "text", 1, "脱敏展示尾号与通过状态"),
                 ],
             },
             {
@@ -324,21 +324,21 @@ ALIPAY_STAGES = [
     {
         "code": "ALI-P2",
         "title": "阶段 3 · 第1天企业管家授权与因公支付架构（解锁闲鱼认证硬闸口 ①）",
-        "desc": "趁法人在场必须当天完成企业管家一键授权，并按税法红线配置同主体3选1主户与因公支付。",
+        "desc": "趁委托客户法人在场必须当天完成企业管家一键授权，并按税法红线配置同主体3选1主户与因公支付。",
         "duration": "开户第 1 天必做",
         "steps": [
             {
                 "code": "C10",
-                "title": "【第1天铁律】趁法人在场搜「企业管家」一键授权管理员 ★解锁闲鱼认证★",
+                "title": "【第1天铁律】趁委托客户法人在场搜「企业管家」一键授权管理员 ★解锁闲鱼认证★",
                 "who": "开店员工 + 法人现场扫脸 · 主管审核",
-                "when": "企业支付宝开户成功的第 1 天法人仍在场时立即执行",
-                "guide": "1. 打开支付宝搜索「企业管家」，趁法人在场按引导完成「一键授权管理员」；\n2. 授权过程通常要求法人扫脸，务必当场一次办妥，绝不拖到事后补；\n3. 在企业管家里截图确认全部企业支付宝账号凭证可见，提交主管审核。",
+                "when": "企业支付宝开户成功的第 1 天委托客户法人在场时立即执行",
+                "guide": "1. 打开支付宝搜索「企业管家」，趁委托客户法人在场按引导完成「一键授权管理员」；\n2. 授权过程通常要求客户法人扫脸，务必当场一次办妥，绝不拖到事后补；\n3. 在企业管家里截图确认全部企业支付宝账号凭证可见，提交主管审核。",
                 "warn": "【生死时点】这一步必须在第 1 天法人环节做完！拖到改天法人不在场无法扫脸，整条路线的企业支付宝与下挂闲鱼企业店都会被卡死！（★本步审核通过后，自动解锁关联闲鱼店 S09 企业入驻认证！）",
                 "deliver": "企业管家管理员一键授权生效，解锁下挂闲鱼企业店认证",
-                "stop": "法人暂离场时挂起等待，严禁未经授权强绑",
+                "stop": "委托客户法人暂离场时挂起等待，严禁未经授权强绑",
                 "require_confirm": 1,
                 "require_review": 1,
-                "guards": [_G("第1天开完户以为万事大吉放走法人", "次日配权限弹法人扫脸无人配合导致停摆", "跨轨硬闸口：C10未审过直接锁死闲鱼企业店S09认证", "法人在场先搜企业管家拿完授权再收工", "重新预约法人现场补扫脸授权", "主管", "企业管家授权生效截图")],
+                "guards": [_G("第1天开完户以为万事大吉客户法人未授权便离场", "次日配权限弹客户法人扫脸无人配合导致停摆", "跨轨硬闸口：C10未审过直接锁死闲鱼企业店S09认证", "法人在场先搜企业管家拿完授权再收工", "重新预约法人现场补扫脸授权", "主管", "企业管家授权生效截图")],
                 "materials": [
                     ("ent_steward_img", "支付宝「企业管家」管理员授权成功截图", "text", 1, "需清晰显示管理员已生效"),
                 ],
@@ -352,7 +352,7 @@ ALIPAY_STAGES = [
                 "warn": "违反税法死线：因公支付严禁跨营业执照主体代扣串户！且严禁同一支付宝既买又卖！",
                 "deliver": "主体内资金池/因公代扣/纯销售隔离配置完毕",
                 "stop": "主体归属核对不一致时由系统触发器直接阻断",
-                "guards": [_G("多主体采购子号配置因公代扣时", "误绑到另一张营业执照的主资金号上", "数据库触发器 + API 双重硬阻断跨主体串户", "只绑本营业执照名下的唯一主户", "重选同主体 master_fund 账号", "主管/老板", "因公签约或收款隔离记录")],
+                "guards": [_G("多委托客户/多主体采购子号配置因公代扣时", "误绑到另一张营业执照的主资金号上", "数据库触发器 + API 双重硬阻断跨主体串户", "只绑本营业执照名下的唯一主户", "重选同主体 master_fund 账号", "主管/老板", "因公签约或收款隔离记录")],
                 "materials": [
                     ("fund_role_check", "账户资金隔离与因公签约确认说明", "text", 1, "写明：主资金户 / 因公扣XX主户 / 纯销售收款"),
                 ],
@@ -415,7 +415,7 @@ ALIPAY_STAGES = [
                 "who": "开店员工对接程序员 · 主管终核",
                 "when": "0.xx 测试次日（T+1 出日账单后）",
                 "guide": "1. 次日 T+1 日账单生成后，联系公司程序员（外部微信：z15859900434）；\n2. 与程序员逐笔核对：统筹软件 API 拉到的测试金额与本账号在 D14 登记的 0.xx 元 100% 一致；\n3. 核对无误后由主管审核通过，台账自动标记「账单已连通」并解锁下挂闲鱼店最后一步 S18 正式上架！",
-                "warn": "【财务生死线】账单 API 与企业支付宝对应错乱会直接污染全公司财务与免税额核算！本步未核实通过前，关联闲鱼店 S18 硬锁死严禁开售！",
+                "warn": "【财务生死线】账单 API 与企业支付宝对应错乱会直接污染受托客户财税对账与纳税申报核验！本步未核实通过前，关联闲鱼店 S18 硬锁死严禁开售！",
                 "deliver": "程序员确认账单 API 映射 100% 准确，解锁下挂闲鱼店正式开售",
                 "stop": "API 拉取金额对不上时立即停用映射，协同程序员重配密钥对",
                 "require_confirm": 1,
@@ -514,7 +514,7 @@ XIANYU_STAGES = [
     {
         "code": "XY-P2",
         "title": "阶段 2 · 淘宝底层注册·防不当注册登录与跨轨企业认证",
-        "desc": "手机快捷登录防不当注册、法人扫脸录像留存，并在关联企业支付宝通过 C10 企业管家授权后完成企业店认证。",
+        "desc": "手机快捷登录防不当注册、客户法人扫脸录像留存，并在关联企业支付宝通过 C10 企业管家授权后完成企业店认证。",
         "duration": "第 2~3 天",
         "steps": [
             {
@@ -710,7 +710,7 @@ XIANYU_STAGES = [
                 "title": "核对路线槽位零交叉并打印档案袋标签（DA-YYYY-XXXX）归档入柜",
                 "who": "开店员工提交 · 主管审核",
                 "when": "正式开售前档案收口",
-                "guide": "1. 在台账复核本店「执照-企支-手机号-沃邮箱/子邮-设备-家宽IP-Ads窗口」无任何跨路线交叉重复；\n2. 将执照副本、身份证复印件、代持/供卡协议装入实体档案袋，粘贴系统标签号（格式 DA-2026-XXXX）入柜拍照。",
+                "guide": "1. 在台账复核本店「执照-企支-手机号-沃邮箱/子邮-设备-家宽IP-Ads窗口」无任何跨路线交叉重复；\n2. 将托管运营合同、执照副本、身份证复印件与通信授权协议装入客户档案袋，粘贴系统标签号（格式 DA-2026-XXXX）入柜拍照。",
                 "warn": "映射表错一格后面财务全是糊涂账；纸质档案袋标签号必须与电子台账完全一致！",
                 "deliver": "电子槽位核验零交叉，实体档案袋贴标入柜",
                 "stop": "发现同一手机号或邮箱误挂两条路线时立即整改解绑",
@@ -852,7 +852,7 @@ def ensure_tutorials_and_gaps_seeded(conn: sqlite3.Connection) -> None:
         conn.commit()
         return
 
-    # 1) 写入法人矩阵标准目标配额（主力法人林建国 vs 扩盘中二号法人王雅琴——直观呈现全维缺口对比！）
+    # 1) 写入委托客户受托目标配额（1号主力委托客户林建国 vs 2号新签约客户王雅琴——直观呈现全维受托缺口对比！）
     lp1_plat_targets = {
         "xianyu": 15,            # 14销售店 + 1独立采购号（已满15，其中1店待T+1核验开售、1店代理过期受限）
         "wechat_shop": 3,        # 现有2，缺1家（主体2待开微信小店）
@@ -869,7 +869,7 @@ def ensure_tutorials_and_gaps_seeded(conn: sqlite3.Connection) -> None:
         "jd_buyer": 1,           # 现有1
     }
     lp2_plat_targets = {
-        "xianyu": 14,            # 二号法人王雅琴标准扩盘目标：4本执照 -> 14家闲鱼店（当前仅1家在售+2家开店中，净缺口11家！）
+        "xianyu": 14,            # 二号签约委托客户王雅琴托管目标：4本执照 -> 14家闲鱼店（当前仅1家在售+2家开店中，净缺口11家！）
         "wechat_shop": 2,
         "xiaohongshu_shop": 2,
         "dianping": 2,
@@ -882,7 +882,7 @@ def ensure_tutorials_and_gaps_seeded(conn: sqlite3.Connection) -> None:
            VALUES (?,?,?,?,?,?,?,?,?,?,?)""",
         [
             ("mqt-ljg", "lp-ljg", 4, 4, 4, 14, 16, 14, 16, json.dumps(lp1_plat_targets, ensure_ascii=False), "林建国主力成熟矩阵：闲鱼14店已齐，新平台小店与买券号少量扩充缺口"),
-            ("mqt-wyq", "lp-wyq", 4, 4, 4, 12, 14, 14, 14, json.dumps(lp2_plat_targets, ensure_ascii=False), "王雅琴二号法人扩盘矩阵：标准1法人→4执照→12企支→14闲鱼店扩建中，缺口集中待派单！"),
+            ("mqt-wyq", "lp-wyq", 4, 4, 4, 12, 14, 14, 14, json.dumps(lp2_plat_targets, ensure_ascii=False), "二号委托客户王雅琴托管矩阵：4受托执照→12企支→14受托闲鱼店建店中，缺口集中待派单！"),
         ],
     )
 
@@ -934,7 +934,7 @@ def ensure_tutorials_and_gaps_seeded(conn: sqlite3.Connection) -> None:
                 "desc": "复用闲鱼已验证过的同主体营业执照与异平台合法复用家宽 IP 入驻微信小店。",
                 "duration": "第 1~2 天",
                 "steps": [
-                    {"code": "W01", "title": "选定营业执照与异平台复用家宽代理 IP", "guide": "1. 选择当季免税额度充裕的营业执照；2. 在 AdsPower 绑定一条尚未挂微信小店的家宽 IP（可与闲鱼合法跨平台复用）。", "warn": "同一条家宽 IP 严禁挂 2 家微信小店！", "deliver": "主体与家宽锁定", "materials": [("wxs_px", "复用的家宽编号", "text", 1, "如 IP-JX-05")]},
+                    {"code": "W01", "title": "选定营业执照与异平台复用家宽代理 IP", "guide": "1. 选择已签署托管合同且税务工商状态正常的对应委托客户营业执照；2. 在 AdsPower 绑定一条尚未挂微信小店的家宽 IP（可与闲鱼合法跨平台复用）。", "warn": "同一条家宽 IP 严禁挂 2 家微信小店！", "deliver": "主体与家宽锁定", "materials": [("wxs_px", "复用的家宽编号", "text", 1, "如 IP-JX-05")]},
                     {"code": "W02", "title": "打开 shop.weixin.qq.com 扫码入驻并上传执照法人实名", "guide": "上传清晰营业执照与法人身份证，法人微信扫码完成实名核验。", "warn": "超级管理员微信号绑定的手机号必须已纳入台账监控！", "deliver": "主体审核通过", "require_review": 1, "materials": [("wxs_cert", "微信小店主体认证通过截图", "text", 1, "含小店原始ID")]},
                 ],
             },
@@ -944,14 +944,14 @@ def ensure_tutorials_and_gaps_seeded(conn: sqlite3.Connection) -> None:
                 "desc": "完成微信支付商户号签约、缴纳类目保证金并登记原路退保账户。",
                 "duration": "第 3 天",
                 "steps": [
-                    {"code": "W03", "title": "完成微信支付商户号(mch_id)开户并绑同主体结算银行卡", "guide": "个体户绑法人一类卡、有限公司绑对公基本户，将 mch_id 填入本账号财务预留槽。", "warn": "严禁绑定非本执照法人的私人卡！", "deliver": "mch_id 签约生效", "require_review": 1, "materials": [("mch_id_val", "生成的财付通商户号 mch_id", "text", 1, "如 mch_168830205")]},
+                    {"code": "W03", "title": "完成微信支付商户号(mch_id)开户并绑该委托客户同主体结算银行卡", "guide": "个体户绑客户客户法人本人一类卡、有限公司绑对公基本户，将 mch_id 填入本账号财务预留槽。", "warn": "严禁绑定非本执照对应客户主体法人的私人卡！", "deliver": "mch_id 签约生效", "require_review": 1, "materials": [("mch_id_val", "生成的财付通商户号 mch_id", "text", 1, "如 mch_168830205")]},
                     {"code": "W04", "title": "缴纳类目店铺保证金并登记原路退保出资户", "guide": "按虚拟/生活卡券类目缴纳保证金（如¥5000），在台账登记原出资卡防退保迷失。", "warn": "关店退保必须原路退回原出资户！", "deliver": "保证金缴清可上架", "require_confirm": 1, "require_review": 1, "materials": [("dep_voucher", "微信小店保证金缴纳回执", "text", 1, "注明出资卡尾号")]},
                 ],
             },
         ],
     )
 
-    # 3) 为二号法人王雅琴新增 1 个正在开户中的销售支付宝 + 2 家正在开店中的闲鱼店，以便真实直观呈现「跨轨双锁拦截 + 材料打回重交」！
+    # 3) 为二号委托客户王雅琴新增 1 个正在开户中的销售支付宝 + 2 家正在开店中的闲鱼店，以便真实直观呈现「跨轨双锁拦截 + 材料打回重交」！
     cur.execute(
         """INSERT OR IGNORE INTO alipay_accounts
            (id, legal_person_id, business_entity_id, account_code, account_name, login_email, alipay_uid,
@@ -977,7 +977,7 @@ def ensure_tutorials_and_gaps_seeded(conn: sqlite3.Connection) -> None:
         (
             "px-17", "IP-NB-17", "蛟龙家宽代理", "套餐⑤独享家宽-25M", "浙江宁波·联通家宽", "SOCKS5",
             "nb17.jl-resi.net", 21017, "anch_nb17", "Jk9#mP2x17", "124.160.88.62", 1000,
-            "2026-11-14", "2026-12-14", "online", "待接入OA/钉钉续费", "二号法人山屿闲鱼2店独占家宽IP"
+            "2026-11-14", "2026-12-14", "online", "待接入OA/钉钉续费", "二号委托客户山屿闲鱼2店独占家宽IP"
         ),
     )
 
@@ -995,7 +995,7 @@ def ensure_tutorials_and_gaps_seeded(conn: sqlite3.Connection) -> None:
                 "pa-wyq-xy02", "lp-wyq", "ent-wyq-01", "xianyu", "WYQ-XY02", "山屿优选卡券2店[建店中]",
                 "tb_wyq9002", "sales_only", "售卖茶饮电子券与AI权益", "sim-17", "ali-18", None, "px-17",
                 "dev-ph-15", None, "alipay_direct", "待企支C10/D15解锁", "宁波银行鄞州支行 *6618",
-                "确认收货实时", 60, 0, "待S14缴保登记", 0, 0, 0, 0, "个体普票季度30万免税池",
+                "确认收货实时", 60, 0, "待S14缴保登记", 0, 0, 0, 0, "个体普票按季30万阈值合规监测",
                 "ERP-SHOP-WYQ-XY02", "建店第8/18步·等企支C10解锁S09", "赵宇", "warming",
                 "【跨轨锁演示①】前8步已完成，第9步S09企业认证因关联支付宝ALI-WYQ-S2尚未完成C10企业管家授权而自动锁止！"
             ),
@@ -1003,9 +1003,9 @@ def ensure_tutorials_and_gaps_seeded(conn: sqlite3.Connection) -> None:
                 "pa-wyq-xy03", "lp-wyq", "ent-wyq-01", "xianyu", "WYQ-XY03", "山屿数码服务3店[材料被打回]",
                 "tb_wyq9003", "sales_only", "售卖远程装机与数码服务", "sim-18", "ali-16", None, None,
                 "dev-ph-15", None, "alipay_direct", "待绑定家宽与完成扫脸", "宁波银行鄞州支行 *6618",
-                "确认收货实时", 60, 0, "待S14缴保登记", 0, 0, 0, 0, "个体普票季度30万免税池",
+                "确认收货实时", 60, 0, "待S14缴保登记", 0, 0, 0, 0, "个体普票按季30万阈值合规监测",
                 "ERP-SHOP-WYQ-XY03", "建店第7/18步·S08扫脸被打回", "陈晓雯", "warming",
-                "【打回重交演示】第8步S08法人扫脸录像缺少认证成功尾帧被主管周安打回，员工端红标置顶待重交；且尚未分配家宽IP！"
+                "【打回重交演示】第8步S08客户法人扫脸录像缺少认证成功尾帧被主管周安打回，员工端红标置顶待重交；且尚未分配家宽IP！"
             ),
         ],
     )
@@ -1056,7 +1056,7 @@ def ensure_tutorials_and_gaps_seeded(conn: sqlite3.Connection) -> None:
                    (id, template_id, target_kind, target_id, legal_person_id, business_entity_id,
                     case_title, assigned_staff, supervisor_staff, status, started_at, due_at, notes)
                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)""",
-                (cid, "tpl-alipay-ent", "alipay", aid, lp_id, be_id, f"{acode} · {aname}", "赵宇", "周安", "in_progress", "2026-11-14", "2026-11-21", "待趁法人在场完成 C10 企业管家授权"),
+                (cid, "tpl-alipay-ent", "alipay", aid, lp_id, be_id, f"{acode} · {aname}", "赵宇", "周安", "in_progress", "2026-11-14", "2026-11-21", "待趁委托客户法人在场完成 C10 企业管家授权"),
             )
             _fast_approve_steps(cid, ali_ordered_codes[:9], ali_steps_map, "赵宇", "2026-11-14")
         elif aid in ("ali-12", "ali-13", "ali-14"):
@@ -1471,7 +1471,7 @@ def build_gap_and_issues_overview(
         sim_now = cur.execute("SELECT COUNT(*) FROM sim_cards WHERE legal_person_id = ? AND sim_status <> 'retired'", (lid,)).fetchone()[0]
         phone_now = cur.execute("SELECT COUNT(*) FROM physical_devices WHERE legal_person_id = ? AND device_kind IN ('work_phone', 'procurement_phone')", (lid,)).fetchone()[0]
 
-        # 计算该法人可用自社剩余卡槽 vs 需采购外部卡缺口
+        # 计算该委托客户实名可办剩余卡槽 vs 第三方授权卡需求
         quotas = cur.execute("SELECT statutory_limit, existing_personal_cards, carrier, holder_name FROM carrier_quotas WHERE legal_person_id = ?", (lid,)).fetchall()
         company_remaining_openable = 0
         for q in quotas:
@@ -1520,7 +1520,7 @@ def build_gap_and_issues_overview(
                 {"key": "tax", "label": "电子税务局登记", "target": t["target_tax_regs"], "ready": tax_now, "building": 0, "gap": max(0, t["target_tax_regs"] - tax_now)},
                 {"key": "annual", "label": "工商年报建档", "target": t["target_annual_reports"], "ready": ar_now, "building": 0, "gap": max(0, t["target_annual_reports"] - ar_now)},
                 {"key": "alipay", "label": "企业支付宝(已通API)", "target": t["target_alipays"], "ready": ali_ready, "building": ali_building, "gap": max(0, t["target_alipays"] - ali_ready - ali_building)},
-                {"key": "sims", "label": "实名手机卡槽", "target": t["target_sim_slots"], "ready": sim_now, "building": 0, "gap": sim_gap, "sub_note": f"自社余量{company_remaining_openable}张 · 需外部补缺{external_sim_need}张" if sim_gap > 0 else "配额充足"},
+                {"key": "sims", "label": "实名手机卡槽", "target": t["target_sim_slots"], "ready": sim_now, "building": 0, "gap": sim_gap, "sub_note": f"客户名额余量{company_remaining_openable}张 · 需第三方授权卡{external_sim_need}张" if sim_gap > 0 else "配额充足"},
                 {"key": "phones", "label": "ADB指纹专用手机", "target": t["target_work_phones"], "ready": phone_now, "building": 0, "gap": max(0, t["target_work_phones"] - phone_now)},
                 {"key": "stores", "label": "全平台账号总槽位", "target": total_plat_target, "ready": total_plat_ready, "building": total_plat_building, "gap": max(0, total_plat_target - total_plat_ready - total_plat_building)},
             ],
@@ -1579,17 +1579,17 @@ def build_gap_and_issues_overview(
                 "action_label": "立即续期 ›",
             })
 
-    # 红灯 4：矩阵扩盘硬缺口 & 11个平台缺标准教程
+    # 红灯 4：委托客户受托配额缺口 & 11个平台缺标准教程
     for gc in lp_gap_cards:
         store_gap = next(m["gap"] for m in gc["metrics"] if m["key"] == "stores")
         lic_gap = next(m["gap"] for m in gc["metrics"] if m["key"] == "licenses")
         if store_gap > 0 or lic_gap > 0:
             action_issues.append({
                 "level": "red" if lic_gap > 0 else "yellow",
-                "category": "矩阵扩盘缺口",
+                "category": "受托客户配额缺口",
                 "legal_person_id": gc["legal_person_id"],
                 "assigned_staff": "周安",
-                "title": f"【统筹缺口】法人「{gc['legal_person_name']}」当前差 {lic_gap} 本执照、{store_gap} 个商业账号槽位待开",
+                "title": f"【受托缺口】委托客户「{gc['legal_person_name']}」托管清单尚差 {lic_gap} 本客户执照、{store_gap} 个受托店铺槽位待建",
                 "detail": gc["notes"],
                 "action_type": "jump_gap",
                 "action_target": gc["legal_person_id"],

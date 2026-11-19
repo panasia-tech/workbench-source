@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS ledger_mobile_device_telemetry (
     os_version              VARCHAR(64)   NOT NULL DEFAULT 'Android 14 / HyperOS',
     adb_fingerprint_status  VARCHAR(32)   NOT NULL DEFAULT 'verified_locked'
         CHECK (adb_fingerprint_status IN ('verified_locked', 'pending_flash', 'drift_risk')),
-    network_isolation_mode  VARCHAR(128)  NOT NULL DEFAULT '在司强制连公司受控Wi-Fi(软路由独享家宽分流)',
+    network_isolation_mode  VARCHAR(128)  NOT NULL DEFAULT '在司强制连公司受控Wi-Fi(软路由独享家宽路由)',
     health_grade            VARCHAR(32)   NOT NULL DEFAULT 'healthy'
         CHECK (health_grade IN ('healthy', 'warning', 'critical')),
     health_note             TEXT          NOT NULL DEFAULT '',
@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS ledger_device_asset_and_compliance (
     net_conn_kind           VARCHAR(48)   NOT NULL DEFAULT 'corp_wifi'
         CHECK (net_conn_kind IN ('corp_lan', 'corp_wifi', 'corp_vpn', 'cellular_5g', 'external_wifi_or_hotspot')),
     connected_ssid_or_nic   VARCHAR(128)  NOT NULL DEFAULT 'PanAsia-Corp-5G',
-    gateway_egress_note     VARCHAR(255)  NOT NULL DEFAULT '公司软路由透明分流至独享家宽IP',
+    gateway_egress_note     VARCHAR(255)  NOT NULL DEFAULT '公司软路由透明路由至独享家宽IP',
     remote_locked           BOOLEAN       NOT NULL DEFAULT FALSE,
     compliance_note         TEXT          NOT NULL DEFAULT '',
     last_located_at         TIMESTAMPTZ   NOT NULL DEFAULT NOW(),
@@ -173,7 +173,7 @@ BEGIN
      WHERE ap.host_device_id = v_host_id;
 
     IF GREATEST(v_win_cnt, v_acc_cnt) > v_max_quota THEN
-        RAISE EXCEPTION '【Mac Pro 单机 50 账号容量硬阻断】宿主机 % 已超过上限 % 个账号槽位，请分流至空闲 Mac Pro 机柜！',
+        RAISE EXCEPTION '【Mac Pro 单机 50 账号容量硬阻断】宿主机 % 已超过上限 % 个账号槽位，请迁入空闲 Mac Pro 机柜！',
             COALESCE(v_host_code, v_host_id), v_max_quota;
     END IF;
 

@@ -7,32 +7,32 @@
     mindmap_arch: {
       cat: "全局拓扑逻辑",
       title: "全景思维导图（目录式层层穿透）",
-      def: "将「法人 → 营业执照主体 → 税局/年报/企业支付宝/各平台账号」以及底层「家宽IP/手机卡/设备」按树状分支组织，默认折叠非紧急分支。",
+      def: "将「签约委托客户 → 受托营业执照主体 → 税局/年报/企业支付宝/各托管账号」及底层「家宽IP/手机卡/托管设备集群」按树状分支组织，默认折叠非紧急分支。",
       logic: [
-        "顶层按【法人】统管，每 3~4 家主力网店拆分归属 1 本独立【营业执照主体】；",
+        "顶层按【签约委托客户】隔离建档（管理运营公司代管运维，客户独立主体独立核算），每本【营业执照主体】承载约 3~4 家受托店铺；",
         "每个营业执照衍生出独立的税务局登记、工商年报，以及严禁跨执照混用的企业支付宝闭环；",
         "点击任意节点的「+数字」即可逐层展开子目录，点击节点名称直接呼出右侧详情抽屉。"
       ],
       guard: "全局搜索框输入关键词时，所有匹配的折叠分支将自动展开。"
     },
     entity_4shop: {
-      cat: "主体拆分逻辑",
-      title: "每 4 店 1 营业执照主体",
-      def: "同一法人名下注册多本个体户/公司营业执照（如林建国名下 4 个主体），每本执照承载约 4 家主力店铺。",
+      cat: "受托主体隔离逻辑",
+      title: "受托主体与店铺独立隔离（每 3~4 店 1 执照）",
+      def: "每位签约委托客户名下的营业执照均由客户依法设立，委托泛亚托管运营；单本执照承载约 3~4 家受托网店，严禁跨客户/跨主体资金与账务混同。",
       logic: [
-        "防平台连坐：单本执照下店铺受限不会波及其他执照下的店铺；",
-        "税务免税池独立：每本个体户执照单独核算季度免税销售额度；",
-        "衍生义务：4 本执照意味着必须同步维护 4 套电子税务局申报与 4 份工商年报，漏掉任何一份都会导致对应 4 家店被冻结。"
+        "平台风控物理隔离：单一委托主体受限不影响其余受托客户的店铺运营；",
+        "财税独立核算：每本受托执照单独建档电子税务局与增值税申报水位，严禁任何跨主体开票或拆单行为；",
+        "衍生运维义务：本运营公司须同步跟踪受托主体的电子税局申报与工商年报提醒，防止遗漏导致客户账户受限。"
       ],
       guard: "系统强制将营业执照与税务登记、工商年报 1:1 独立建档。"
     },
     tax_30w: {
       cat: "财税衍生逻辑",
-      title: "小规模季度 30 万免税额度监控",
-      def: "小规模纳税人（含个体户）每季度增值税普票销售额不超过 30 万元可免征增值税。",
+      title: "受托主体季度 30 万法定申报阈值预警",
+      def: "小规模纳税人按季 30 万元销售额为现行增值税关键法定申报节点，超线须按规定计税或评估转登记。",
       logic: [
-        "一旦某本营业执照单季销售额突破 30 万红线，往往触发全额计税而非仅超额部分计税；",
-        "因此当台账监测到某执照季度销售额占比 ≥ 80%（24万元）时即亮黄灯，提醒将后续订单分流至其他低水位主体。"
+        "本管理运营公司仅提供受托财税水位监测预警，不做任何跨主体拆单开票或避税操作；",
+        "当台账监测到某委托主体季度销售额达法定阈值的 80%（24万元）时自动亮黄灯，提前提醒该委托客户及其代账会计做好纳税申报、税金预留或一般纳税人评估。"
       ],
       guard: "办税手机号同步纳入号码关联索引，换卡前强制预警防收不到税局验证码。"
     },
@@ -137,15 +137,15 @@
       title: "运营商「一主 4 副」扣除个人存量卡限制",
       def: "工信部与三大运营商规定：同一身份证在单一运营商名下最多实名 5 张卡（通常为 1 张主卡 + 4 张副卡）。",
       logic: [
-        "为什么实际开不出 5 张：法人或配合办卡人平时自己已经在用 1~2 张个人移动/联通卡（占坑存量卡）；",
-        "例如林建国本人原有 1 张移动卡，则公司借用其名额最多只能新开 4 张移动卡（1主3副）；超出缺口必须引入外部合作实名卡补齐。"
+        "为什么实际办不出 5 张：委托客户法人名下平时自己已在用 1~2 张个人移动/联通卡（存量占坑）；",
+        "例如客户林建国原有 1 张移动卡，则其名下配合受托店铺运营最多可新办 4 张移动卡（1主3副）；超出配额需签妥第三方通信授权合约卡。"
       ],
-      guard: "系统按 (实名人, 运营商) 自动计算「5 - 原有个人卡 = 公司可开上限」，超额录入直接拦截。"
+      guard: "系统按 (客户实名人, 运营商) 自动计算「5 - 客户原自用卡 = 受托可办上限」，超额录入直接拦截。"
     },
     external_sim: {
       cat: "换绑防失联逻辑",
-      title: "外部补缺合约卡 & 到期一键批量换绑",
-      def: "用于填补「一主4副」实名缺口的外部合作手机卡，通常带有 6~12 个月固定合约期，到期需退卡或换卡。",
+      title: "第三方授权合约卡 & 到期一键批量换绑",
+      def: "委托客户实名卡槽满额后，通过正规通信授权协议接入的第三方合约卡，通常带有 6~12 个月合约期，到期需配合客户退卡或换绑。",
       logic: [
         "衍生高危痛点：1 张手机号往往同时绑着税务局、企业支付宝、微信、小红书、闲鱼等五六个核心账号；",
         "若合约到期直接停机弃卡而漏改某几个平台的绑定手机，后续触发二次短信验证时账号将彻底死锁无法找回！"
@@ -157,7 +157,7 @@
       title: "话费余额台账（主副共享池 vs 独立计费）与 OA 预留",
       def: "全量纳管每张手机卡的月租、出账日、计费模式及实时话费余额，防止欠费停机收不到验证码。",
       logic: [
-        "自社「一主4副」中，副卡自身不设独立余额，统一共享扣减主卡话费池；外部卡与主卡则独立核算余额；",
+        "客户实名「一主4副」中，副卡不设独立余额，共享扣减主卡话费池；第三方授权合约卡与主卡则独立核算余额；",
         "当有效余额低于「1.2 倍月租」或低于 ¥25 时自动飘红预警；目前已预留审批单号字段，后续无缝直连钉钉/OA自动充值流程。"
       ],
       guard: "支持在手机卡抽屉内随时登记充值与月租核减流水。"
@@ -199,8 +199,8 @@
       title: "每个账号独立财务结算、佣金与损益预留槽",
       def: "全量 33+ 个商业账号并非全部直连企业支付宝，系统为每一个账号独立预留了多通道清算路由、商户号、银行卡、费率、保证金原路退回与月度净毛利核算槽位。",
       logic: [
-        "多清算通道分流：闲鱼/淘宝店走【企业支付宝直连(普通0.6%/鱼小铺1.6%)】；微信小店走【财付通商户号 mch_id → T+1银行卡】；抖店走【抖音/合众商户号】；小红书小店走【千帆钱包】；京东POP走【京东企业钱包】；采购专号走【因公支付直扣同主体主户】；海外采购预留【外币卡结算槽】；",
-        "单店净毛利与提成基数：自动按「月销GMV - 售后退款 - 采购成本 - 平台佣金(bps)」预留净毛利计算口径，无缝衔接销售10%净毛利提成与主体季度30万免税水位；",
+        "多清算通道路由：闲鱼/淘宝店走【企业支付宝直连(普通0.6%/鱼小铺1.6%)】；微信小店走【财付通商户号 mch_id → T+1银行卡】；抖店走【抖音/合众商户号】；小红书小店走【千帆钱包】；京东POP走【京东企业钱包】；采购专号走【因公支付直扣同主体主户】；海外采购预留【外币卡结算槽】；",
+        "单店净毛利与提成基数：自动按「月销GMV - 售后退款 - 采购成本 - 平台佣金(bps)」预留净毛利计算口径，无缝衔接我方托管运营净毛利服务费/提成核算与受托主体按季 30 万申报水位监测；",
         "保证金防丢锚点：单独记录每家小店的保证金金额、原出资账户与账期冻结款，关店退保时严防退错卡或遗漏。"
       ],
       guard: "纯社媒引流号强制锁定为「纯引流零收付 (no_settlement)」，严禁配置收付款通道；所有账号均预留金蝶/ERP/钉钉OA科目映射码。"
@@ -217,8 +217,8 @@
     },
     gap_radar: {
       cat: "统筹看缺口引擎",
-      title: "法人标准矩阵目标 vs 实时净缺口自动倒推",
-      def: "告别静态备忘录：按每个法人预设的标准矩阵配额（执照/税/年报/企业支付宝/¥10家宽/真机/号卡 + 13平台目标店数）实时扣减已就绪与在建数量，自动算出净缺口。",
+      title: "签约委托客户托管目标 vs 实时建店缺口倒推",
+      def: "告别静态备忘录：按每位签约委托客户合同约定的托管目标（客户执照/税/年报/企支/¥10家宽/终端/号卡 + 13平台受托目标店数）实时扣减已就绪与在建数量，自动算出净缺口。",
       logic: [
         "首屏红→黄→绿问题箱按紧急度排序：红=现在要动手（过期家宽、被打回开店步骤、跨轨锁死店铺、硬缺口）；黄=待审或临期；绿=正常闭环；",
         "支持直接从缺口项一键派发标准开店任务单给对应员工；若某平台尚无已发布教程，系统自动启动 Lock 防呆拦截并引导主管先做教程。"
@@ -230,7 +230,7 @@
       title: "企业支付宝(15步) ↔ 闲鱼开店(18步) 分段双轨硬锁死",
       def: "企业支付宝与闲鱼店并非孤立流程，系统拆分为 15 步企支轨与 18 步闲鱼轨并通过两道跨轨门禁（Gate-1 / Gate-2）实时互锁。",
       logic: [
-        "Gate-1（锁死 S09 企业店认证）：关联企业支付宝未完成第10步 C10（第1天趁法人在场搜『企业管家』一键授权管理员）前，硬锁死闲鱼店 S09 营业执照认证；",
+        "Gate-1（锁死 S09 企业店认证）：关联企业支付宝未完成第10步 C10（第1天趁委托客户法人在场搜『企业管家』一键授权管理员）前，硬锁死闲鱼店 S09 营业执照认证；",
         "Gate-2（锁死 S18 正式上架开售）：关联企业支付宝未完成第15步 D15（打印公司名A4纸开支付产品 + 互不相同0.xx元测试 + 次日T+1与程序员核实账单API映射）前，硬锁死闲鱼店 S18 开售，严防卖货后财务对不上账！",
         "个人号与企业号反向红线：个人淘宝/闲鱼号严禁主动绑支付宝（必发五位数静物顺系统弹窗绑）；企业支付宝必须用个人支付宝扫码创单。"
       ],
@@ -260,9 +260,9 @@
     gov_isolation: {
       cat: "同库分专区架构",
       title: "为什么把各工作台 Wiki / 培训视频 / KPI·OKR 放同一系统但做 UI 分区隔离？",
-      def: "全公司共用一个底层数据库（无需多维护第二套工作台），但在界面上将「法人/执照/支付宝/号卡资产线」与「六大工作台组织制度基建线」严格物理分栏隔离。",
+      def: "全公司共用一个底层数据库（无需多维护第二套工作台），但在界面上将「委托客户/执照/支付宝/号卡受托资产线」与「六大工作台组织制度基建线」严格物理分栏隔离。",
       logic: [
-        "零界面混同：资产线按『法人→执照→企支→店铺』组织，制度线按『销售/客服/采购/仓管/开店/总经办』组织，分处左侧独立专区，绝不揉进同一张表；",
+        "零界面混同：受托资产线按『委托客户→执照→企支→店铺』组织，制度线按『销售/客服/采购/仓管/开店/总经办』组织，分处左侧独立专区，绝不揉进同一张表；",
         "轻索引不造轮子：长篇正文仍在钉钉/飞书 Wiki 编写，视频大文件存钉钉盘/OSS，台账只管『缺口清单、结构化KPI公式、回填链接与版本审批』；",
         "一处终审全司点亮：总经办初审、老板拍板终审通过后，对应子工作台页面右上角 ? 里的『待录视频/待补Wiki/KPI口径』自动实时点亮！"
       ],
@@ -277,14 +277,14 @@
         "动态并发红线（64GB 内存防 Swap 抖动）：64GB 内存下每个打开的 Chromium 窗口约占 1.3~1.8GB，同时打开 ≤ 32 窗为安全区；若僵尸窗口不关导致内存冲破 85% 并触发 macOS Swap 交换内存，会导致 SOCKS5 家宽隧道超时断连甚至页面崩溃；",
         "一键无损降载与真机双巡检：支持一键清理 Chromium 冗余图片/视频缓存并回收闲置窗口内存（100% 保留登录态 Cookie 与环境指纹），同时纳管 15 部实体手机的 7×24h 插电防鼓包告警与程序员 ADB 指纹锁死状态。"
       ],
-      guard: "后端在新增 AdsPower 窗口或挂载新平台账号时自动核算目标 Mac Pro 已占槽位数，满 50 个槽位当场硬拦截并引导分流至空闲扩盘机柜！"
+      guard: "后端在新增 AdsPower 窗口或挂载新平台账号时自动核算目标 Mac Pro 已占槽位数，满 50 个槽位当场硬拦截并引导迁入空闲托管预备机柜！"
     },
     loc_corp_net_policy: {
       cat: "受控设备在岗与网络红线",
       title: "「物理定位 × 公司受控网 × 坐班/居家」实时交叉合规判定",
       def: "全员已签署《公司设备使用协议》，知情所有业务电脑与业务手机受公司统一 MDM/守护端管控：上班时间必须使用公司受控设备，且通过『实时定位 + 当前连接网络』交叉校验在司办公与居家办公合规性。",
       logic: [
-        "🟢 在司办公必连公司网：若设备定位在公司围栏内（杭州滨江总部），则必须连接公司千兆有线内网或公司业务受控 Wi-Fi（PanAsia-Corp-5G / PanAsia-Procure-VLAN，底层由软路由自动分流至对应独享静态家宽 IP）；若人在公司却切回个人 4G/5G 流量或连外部野生热点，系统当场亮红灯告警！",
+        "🟢 在司办公必连公司网：若设备定位在公司围栏内（杭州滨江总部），则必须连接公司千兆有线内网或公司业务受控 Wi-Fi（PanAsia-Corp-5G / PanAsia-Procure-VLAN，底层由软路由自动路由至对应独享静态家宽 IP）；若人在公司却切回个人 4G/5G 流量或连外部野生热点，系统当场亮红灯告警！",
         "🔵 居家办公必持审批 + 连公司 VPN：定位离开公司围栏时，系统自动核对当日是否有 OA 居家办公审批单；已批居家且拨通公司加密 VPN 隧道判为蓝色合规，否则直接判定为『🚨 未报备私带业务设备离司 / 假坐班真居家』最高级红灯！",
         "⚡ 管控处置闭环：发现违规可一键下发『强制切回公司受控 Wi-Fi』『补录居家审批并连 VPN』『登记召回在司』或『远程锁屏停派业务任务』。"
       ],
@@ -364,7 +364,7 @@
   const BOSS_NAV_ITEMS = [
     { key: "overview", title: "01 统筹缺口与导图" },
     { key: "onboarding_hub", title: "02 开店流程·终审" },
-    { key: "entities", title: "03 法人·执照·税·年报" },
+    { key: "entities", title: "03 委托客户·执照·税·年报" },
     { key: "alipay", title: "04 企支·财务槽·流水" },
     { key: "platforms", title: "05 全平台账号矩阵" },
     { key: "network_ads", title: "06 家宽·Ads联动" },
@@ -612,10 +612,10 @@
 
   function simCategoryBadge(cat) {
     const map = {
-      company_master: `<span class="badge badge-blue">自社主卡</span>`,
-      company_sub: `<span class="badge badge-cyan">自社副卡</span>`,
-      personal_existing: `<span class="badge badge-gray">个人存量卡</span>`,
-      external_contract: `<span class="badge badge-amber">外部合约卡</span>`,
+      company_master: `<span class="badge badge-blue">客户实名主卡</span>`,
+      company_sub: `<span class="badge badge-cyan">客户实名副卡</span>`,
+      personal_existing: `<span class="badge badge-gray">客户自用存量卡</span>`,
+      external_contract: `<span class="badge badge-amber">第三方授权卡</span>`,
     };
     return map[cat] || `<span class="badge badge-gray">${esc(cat)}</span>`;
   }
@@ -648,7 +648,7 @@
     const sel = document.getElementById("lp-filter");
     const lps = state.boot.legal_persons || [];
     const current = state.lpFilter;
-    let html = `<option value="ALL" ${current === "ALL" ? "selected" : ""}>全公司汇总（${lps.length}法人 · ${state.boot.business_entities.length}主体）</option>`;
+    let html = `<option value="ALL" ${current === "ALL" ? "selected" : ""}>全平台受托汇总（${lps.length}位委托客户 · ${state.boot.business_entities.length}个受托主体）</option>`;
     for (const lp of lps) {
       const entCnt = state.boot.business_entities.filter((e) => e.legal_person_id === lp.id).length;
       const aliCnt = state.boot.alipay_accounts.filter((a) => a.legal_person_id === lp.id).length;
@@ -750,7 +750,7 @@
     const activeLp = state.boot.legal_persons.find((x) => x.id === state.lpFilter);
     const ch = state.boot.cluster_health || {};
     const chSum = ch.summary || {};
-    const rootTitle = activeLp ? `👤 法人：${activeLp.name}` : `🏢 全公司总览（${state.boot.legal_persons.length}位法人）`;
+    const rootTitle = activeLp ? `👤 委托客户：${activeLp.name}` : `🏢 受托运营总览（${state.boot.legal_persons.length}位签约委托客户）`;
     const rootSub = `${c.entities.length} 执照 · ${c.alipays.length} 企支 · ${c.platforms.length} 业务号 · ${chSum.mac_host_count || 10}台64G Mac Pro`;
 
     const entityBranches = c.entities.map((ent) => {
@@ -955,7 +955,7 @@
                 {
                   id: `mac:${m.device_id}:standby`,
                   kind: "leaf",
-                  title: `📦 满血空闲扩盘槽位 (余 ${m.remaining_slots}/${m.max_account_quota} 号)`,
+                  title: `📦 满血空闲托管预备槽位 (余 ${m.remaining_slots}/${m.max_account_quota} 号)`,
                   sub: `${m.lan_ip} · 可随时挂载新开店铺窗口`,
                   clickAttr: `data-detail-machost="${esc(m.device_id)}"`
                 }
@@ -1304,7 +1304,7 @@
               <tr>
                 <th>主体编号</th>
                 <th>营业执照名称</th>
-                <th>季度免税进度 ${qTip("tax_30w")}</th>
+                <th>按季申报阈值水位 ${qTip("tax_30w")}</th>
                 <th>工商年报 ${qTip("annual_report")}</th>
                 <th>3选1主资金池 ${qTip("master_3in1")}</th>
                 <th>挂载企支 / 店铺</th>
@@ -1417,7 +1417,7 @@
 
     return `
       <div class="page-header">
-        <h2>法人 · 营业执照 · 税务登记 · 工商年报 ${qTip("entity_4shop")}</h2>
+        <h2>签约委托客户 · 受托营业执照 · 税务登记 · 工商年报 ${qTip("entity_4shop")}</h2>
         <div class="op-btns">
           <button class="btn btn-outline btn-sm" data-batch-fold="${foldIds.join(",")}" data-batch-dir="open">展开全部</button>
           <button class="btn btn-outline btn-sm" data-batch-fold="${foldIds.join(",")}" data-batch-dir="close">全部折叠</button>
@@ -1427,7 +1427,7 @@
 
       ${renderFoldCard({
         id: "ent:licenses",
-        title: `🏛 营业执照主体 (${c.entities.length})`,
+        title: `🏛 受托客户营业执照主体 (${c.entities.length})`,
         tipKey: "entity_4shop",
         pillsHtml: `<span class="badge badge-blue">每约 4 店 1 照</span>`,
         bodyHtml: `
@@ -1438,7 +1438,7 @@
                   <th>编号</th>
                   <th>营业执照全称</th>
                   <th>统一社会信用代码</th>
-                  <th>性质 / 法人</th>
+                  <th>主体性质 / 委托客户法人</th>
                   <th>登记机关</th>
                   <th>下挂企支 / 店铺</th>
                   <th>状态</th>
@@ -1487,7 +1487,7 @@
                   <th>主管税务局</th>
                   <th>纳税资质</th>
                   <th>办税员 & 绑定手机</th>
-                  <th>季度销售额 / 30万免税线 ${qTip("tax_30w")}</th>
+                  <th>季度销售额 / 30万法定阈值 ${qTip("tax_30w")}</th>
                   <th>申报状态</th>
                   <th>操作</th>
                 </tr>
@@ -1559,19 +1559,19 @@
 
       ${renderFoldCard({
         id: "ent:lps",
-        title: `👤 法人档案与代持协议 (${lps.length})`,
+        title: `👤 签约委托客户档案与托管运营合同 (${lps.length})`,
         pillsHtml: `<span class="badge badge-gray">身份证 · 刷脸配合SLA</span>`,
-        actionHtml: `<button class="btn btn-outline btn-xs" data-open-create="legal_persons">+ 新增法人</button>`,
+        actionHtml: `<button class="btn btn-outline btn-xs" data-open-create="legal_persons">+ 新增委托客户</button>`,
         bodyHtml: `
           <div class="table-wrap">
             <table class="ledger-table">
               <thead>
                 <tr>
-                  <th>法人姓名</th>
+                  <th>委托客户 / 法人姓名</th>
                   <th>身份证号</th>
                   <th>本人主手机</th>
                   <th>刷脸响应SLA</th>
-                  <th>代持协议编号 & 到期</th>
+                  <th>托管运营合同号 & 到期</th>
                   <th>操作</th>
                 </tr>
               </thead>
@@ -3439,7 +3439,7 @@
 
     const html = `
       <div class="kv-grid">
-        <div class="kv-item"><label>主体编号 / 法人</label><div>${esc(e.entity_code)} · ${esc(e.legal_person_name)}</div></div>
+        <div class="kv-item"><label>主体编号 / 委托客户</label><div>${esc(e.entity_code)} · ${esc(e.legal_person_name)}</div></div>
         <div class="kv-item"><label>统一社会信用代码</label><div class="mono">${esc(e.uscc)}</div></div>
         <div class="kv-item"><label>注册地址</label><div>${esc(e.registered_address)}</div></div>
         <div class="kv-item"><label>税务与年报</label><div>${tax ? `季开 ${tax.quota_usage_pct}%` : "未登记"} · ${ar && ar.report_status === "publicized" ? `${ar.report_year}已公示` : "待年报"}</div></div>
@@ -3587,17 +3587,17 @@
 
     const schemas = {
       legal_persons: [
-        { k: "name", label: "法人姓名", req: true },
+        { k: "name", label: "委托客户/法人姓名", req: true },
         { k: "id_card_no", label: "身份证号码", req: true },
         { k: "primary_phone", label: "本人主联系手机", req: true },
         { k: "residence_city", label: "常驻城市", def: "浙江杭州" },
         { k: "face_verify_sla", label: "刷脸响应SLA", def: "15分钟内响应" },
-        { k: "agency_contract_no", label: "代持协议号", def: "AGR-2026-NEW" },
-        { k: "contract_expires_at", label: "协议到期日", type: "date", def: "2028-12-31" },
+        { k: "agency_contract_no", label: "托管运营合同号", def: "AGR-CUSTODY-2026-NEW" },
+        { k: "contract_expires_at", label: "托管合同到期日", type: "date", def: "2028-12-31" },
         { k: "notes", label: "备注", span: 2 },
       ],
       business_entities: [
-        { k: "legal_person_id", label: "归属法人", opts: lpOpts },
+        { k: "legal_person_id", label: "所属委托客户", opts: lpOpts },
         { k: "entity_code", label: "主体编码", def: "ENT-NEW-05", req: true },
         { k: "entity_name", label: "营业执照全称", span: 2, req: true },
         { k: "uscc", label: "统一社会信用代码", req: true },
@@ -3619,7 +3619,7 @@
         { k: "bound_sim_id", label: "绑定办税手机", opts: simOpts },
         { k: "current_period", label: "当前税期", def: "2026-Q4" },
         { k: "quarter_sales_fen", label: "本季销售额(分)", type: "number", def: 0 },
-        { k: "quarter_exempt_limit_fen", label: "免税红线(分)", type: "number", def: 30000000 },
+        { k: "quarter_exempt_limit_fen", label: "法定按季阈值(分)", type: "number", def: 30000000 },
         { k: "filing_status", label: "申报状态", opts: [{ v: "filed", l: "已申报完税" }, { v: "pending", l: "待申报" }] },
         { k: "next_due_date", label: "下次截止日", type: "date", def: "2027-01-15" },
         { k: "notes", label: "备注", span: 2 },
@@ -3636,7 +3636,7 @@
         { k: "notes", label: "备注", span: 2 },
       ],
       alipay_accounts: [
-        { k: "legal_person_id", label: "归属法人", opts: lpOpts },
+        { k: "legal_person_id", label: "所属委托客户", opts: lpOpts },
         { k: "business_entity_id", label: "归属营业执照", opts: entOpts },
         { k: "account_code", label: "台账编号", def: "ALI-NEW-01", req: true },
         { k: "account_name", label: "企业支付宝名称", req: true },
@@ -3671,7 +3671,7 @@
         { k: "oa_finance_voucher_no", label: "OA/ERP财务凭证号槽", def: "待关联OA/ERP" },
       ],
       platform_accounts: [
-        { k: "legal_person_id", label: "归属法人", opts: lpOpts },
+        { k: "legal_person_id", label: "所属委托客户", opts: lpOpts },
         { k: "business_entity_id", label: "归属营业执照", opts: [{ v: "", l: "-- 非执照号 --" }, ...entOpts] },
         { k: "platform", label: "业务平台", opts: platOpts },
         { k: "account_role", label: "买卖定位", opts: [{ v: "sales_only", l: "🟢 销售店铺" }, { v: "purchase_only", l: "🟠 采购买卡券号" }, { v: "marketing_only", l: "🟣 社媒引流号" }] },
@@ -3690,7 +3690,7 @@
         { k: "month_gmv_fen", label: "当月销项GMV(分)", type: "number", def: 0 },
         { k: "month_cost_fen", label: "当月采购成本(分)", type: "number", def: 0 },
         { k: "month_refund_fen", label: "当月退单冲回(分)", type: "number", def: 0 },
-        { k: "tax_invoice_mode", label: "税票与计税口径", def: "个体普票季度30万免税池" },
+        { k: "tax_invoice_mode", label: "税票与计税口径", def: "个体普票按季30万阈值合规监测" },
         { k: "finance_book_code", label: "ERP/金蝶科目 & OA映射槽", def: "ERP-SHOP-NEW" },
         { k: "alipay_account_id", label: "收付款支付宝", opts: aliOpts },
         { k: "bound_sim_id", label: "绑定手机卡", opts: simOpts },
@@ -3725,7 +3725,7 @@
         { k: "role_isolation", label: "隔离属性", opts: [{ v: "sales_only", l: "销售窗" }, { v: "purchase_only", l: "采购窗" }, { v: "marketing_only", l: "社媒窗" }] },
       ],
       physical_devices: [
-        { k: "legal_person_id", label: "归属法人", opts: [{ v: "", l: "-- 公共宿主 --" }, ...lpOpts] },
+        { k: "legal_person_id", label: "托管客户(公用留空)", opts: [{ v: "", l: "-- 运营公司公共集群 --" }, ...lpOpts] },
         { k: "device_code", label: "设备编号", def: "DEV-PH-16", req: true },
         { k: "device_kind", label: "设备类型", opts: [{ v: "work_phone", l: "销售工作手机" }, { v: "procurement_phone", l: "采购买卡券专机" }, { v: "adspower_pc_host", l: "AdsPower电脑宿主机" }] },
         { k: "brand_model", label: "品牌型号", def: "Redmi Note 13 Pro", req: true },
@@ -3737,10 +3737,10 @@
         { k: "custodian_staff", label: "保管人", def: "陈晓雯" },
       ],
       sim_cards: [
-        { k: "legal_person_id", label: "归属法人", opts: lpOpts },
+        { k: "legal_person_id", label: "所属委托客户", opts: lpOpts },
         { k: "phone_number", label: "11位手机号", req: true },
         { k: "carrier", label: "运营商", opts: [{ v: "中国移动", l: "中国移动" }, { v: "中国联通", l: "中国联通" }, { v: "中国电信", l: "中国电信" }] },
-        { k: "card_category", label: "号卡性质", opts: [{ v: "external_contract", l: "外部补缺合约卡" }, { v: "company_master", l: "自社新开主卡" }, { v: "company_sub", l: "自社新开副卡" }] },
+        { k: "card_category", label: "号卡性质", opts: [{ v: "external_contract", l: "第三方授权合约卡" }, { v: "company_master", l: "客户实名新开主卡" }, { v: "company_sub", l: "客户实名新开副卡" }] },
         { k: "master_sim_id", label: "所属主卡(副卡选)", opts: simOpts },
         { k: "real_name_holder", label: "实名人姓名", def: "林建国", req: true },
         { k: "billing_mode", label: "计费方式", opts: [{ v: "independent", l: "独立余额扣费" }, { v: "shared_master", l: "共享主卡话费池" }] },
@@ -3749,7 +3749,7 @@
         { k: "contract_end_date", label: "外部卡合约到期日", type: "date" },
       ],
       carrier_quotas: [
-        { k: "legal_person_id", label: "关联法人", opts: lpOpts },
+        { k: "legal_person_id", label: "关联委托客户", opts: lpOpts },
         { k: "holder_name", label: "实名人姓名", req: true },
         { k: "holder_id_card", label: "身份证号", req: true },
         { k: "carrier", label: "运营商", opts: [{ v: "中国移动", l: "中国移动" }, { v: "中国联通", l: "中国联通" }, { v: "中国电信", l: "中国电信" }] },
@@ -3761,7 +3761,7 @@
   }
 
   const TABLE_TITLES = {
-    legal_persons: "法人主体",
+    legal_persons: "签约委托客户",
     business_entities: "营业执照主体",
     tax_registrations: "税务局登记",
     annual_reports: "工商年报",
@@ -4275,7 +4275,7 @@
           </select>
         </div>
         <div class="form-field">
-          <label>归属法人视角</label>
+          <label>委托客户视角</label>
           <select name="legal_person_id" class="select-control">
             <option value="">-- 公共底层基础设施 --</option>
             ${lpOpts.map((o) => `<option value="${esc(o.v)}" ${(init.legal_person_id || "lp-ljg") === o.v ? "selected" : ""}>${esc(o.l)}</option>`).join("")}

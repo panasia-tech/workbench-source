@@ -85,7 +85,7 @@ DEFAULT_POLICIES: list[dict[str, Any]] = [
         "current_month_used_yuan": 101200,
         "overflow_mode": "pause_new_listings",
         "enabled": 1,
-        "notes": "一次性后台预设：已达月度排期上限，新商品自动分流空闲组",
+        "notes": "一次性后台预设：已达月度排期上限，新商品自动分配至空闲组",
     },
 ]
 

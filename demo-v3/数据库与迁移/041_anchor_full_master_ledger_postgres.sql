@@ -4,11 +4,11 @@
 
 BEGIN;
 
--- 1. 解除法人 5/6 槽位死锁与经营单元固定6枚举死锁
+-- 1. 解除委托客户 5/6 槽位死锁与经营单元固定6枚举死锁
 ALTER TABLE legal_person_account_plans DROP CONSTRAINT IF EXISTS legal_person_account_plans_plan_check;
 ALTER TABLE operation_units DROP CONSTRAINT IF EXISTS operation_units_profile_check;
 
--- 2. 补齐营业执照核心字段，并将税务登记、工商年报唯一键从 legal_person_id 下沉至 business_entity_id（支持 1法人 -> 4执照 -> 4税务 + 4年报）
+-- 2. 补齐营业执照核心字段，并将税务登记、工商年报唯一键从 legal_person_id 下沉至 business_entity_id（支持 1签约委托客户 -> 4受托执照 -> 4税务 + 4年报）
 ALTER TABLE business_entities
   ADD COLUMN IF NOT EXISTS uscc TEXT UNIQUE,
   ADD COLUMN IF NOT EXISTS registration_authority TEXT,
@@ -136,7 +136,7 @@ CREATE TABLE IF NOT EXISTS ledger_platform_accounts (
   month_gmv_cents BIGINT NOT NULL DEFAULT 0,
   month_cost_cents BIGINT NOT NULL DEFAULT 0,
   month_refund_cents BIGINT NOT NULL DEFAULT 0,
-  tax_invoice_mode TEXT NOT NULL DEFAULT '个体普票季度30万免税池',
+  tax_invoice_mode TEXT NOT NULL DEFAULT '个体普票按季30万阈值合规监测',
   finance_book_code TEXT NOT NULL DEFAULT '',
   proxy_ip_id UUID REFERENCES ledger_proxy_ips(id) ON DELETE RESTRICT,
   adspower_profile_id TEXT,

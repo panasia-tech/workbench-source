@@ -43,7 +43,7 @@
         return false;
       }
       if (hostFilter === "ALERT" && m.effective_health_grade === "healthy" && m.loc_net_compliance_level === "green") return false;
-      if (hostFilter === "SALES" && !m.cluster_zone.includes("销售") && !m.cluster_zone.includes("扩盘主力") && !m.cluster_zone.includes("电商")) return false;
+      if (hostFilter === "SALES" && !m.cluster_zone.includes("销售") && !m.cluster_zone.includes("客户托管") && !m.cluster_zone.includes("电商")) return false;
       if (hostFilter === "ISO" && !m.cluster_zone.includes("采购") && !m.cluster_zone.includes("社媒")) return false;
       if (hostFilter === "STANDBY" && !m.cluster_zone.includes("预备") && !m.cluster_zone.includes("热备")) return false;
       return matchSearch(m);
@@ -162,7 +162,7 @@
           <button type="button" class="pill ${hostFilter === "ALERT" ? "active" : ""}" data-mac-filter="ALERT">🚨 仅看负载/高温/待巡检机</button>
           <button type="button" class="pill ${hostFilter === "SALES" ? "active" : ""}" data-mac-filter="SALES">🟢 销售主力机群</button>
           <button type="button" class="pill ${hostFilter === "ISO" ? "active" : ""}" data-mac-filter="ISO">🟠 采购/社媒物理隔离机</button>
-          <button type="button" class="pill ${hostFilter === "STANDBY" ? "active" : ""}" data-mac-filter="STANDBY">📦 待派扩盘/热备机柜</button>
+          <button type="button" class="pill ${hostFilter === "STANDBY" ? "active" : ""}" data-mac-filter="STANDBY">📦 新签客户预备/热备机柜</button>
         </div>
         <span class="cell-sub">💡 点击任意 Mac Pro 机柜卡可查看其资产编码、负载温度、机房定位及机内 50 槽位明细</span>
       </div>
@@ -435,7 +435,7 @@
           <table class="ledger-table">
             <thead><tr><th>窗口号</th><th>窗口名称</th><th>绑定家宽 & 延迟</th><th>窗口内挂载账号</th><th>状态</th></tr></thead>
             <tbody>
-              ${m.windows.length === 0 ? `<tr><td colspan="5">当前为满血空闲扩盘机（50/50 槽位可随时指派新窗口）</td></tr>` : m.windows.map((w) => `
+              ${m.windows.length === 0 ? `<tr><td colspan="5">当前为空闲受托预备机（50/50 槽位可随时指派新签约客户窗口）</td></tr>` : m.windows.map((w) => `
                 <tr>
                   <td class="mono"><strong>${esc(w.profile_code)}</strong> (#${esc(w.ads_serial_no)})</td>
                   <td>${esc(w.window_name)}</td>

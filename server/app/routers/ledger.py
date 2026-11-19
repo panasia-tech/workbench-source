@@ -33,7 +33,7 @@ def me(db: Session = Depends(get_db), user: Staff = Depends(get_current_user)):
     from app.models import LedgerCase, LedgerVault
 
     is_admin = user.role == StaffRole.ADMIN
-    # 台账一个法人都没有时，管理员一进来就先建第一条（only 管理员看得到，业务员照常只能填）
+    # 台账一个签约委托客户都没有时，管理员一进来就先建第一条（only 管理员看得到，业务员照常只能填）
     empty = is_admin and db.query(LedgerLegalPerson.id).first() is None
     # 第五步：审核人看「开店」页；派了开店单 / 给了账号的员工看「我的开店」「我的账号」
     my_cases = db.query(LedgerCase.id).filter(LedgerCase.assignee_id == user.id, LedgerCase.status == "open").count()
@@ -70,7 +70,7 @@ class SubmitIn(BaseModel):
     note: str | None = Field(default=None, max_length=2000)
 
 
-@router.post("/submit", summary="填报一条：法人 → 主体 → 支付宝 → 店铺（填完看不到）")
+@router.post("/submit", summary="填报一条：委托客户 → 受托主体 → 支付宝 → 托管店铺（填完脱敏不可反查）")
 def submit(body: SubmitIn, db: Session = Depends(get_db), user: Staff = Depends(get_current_user)):
     lg.submit(db, user, body.model_dump())
     db.commit()
@@ -111,7 +111,7 @@ def open_grant(grant_id: str, db: Session = Depends(get_db), user: Staff = Depen
 
 # ---------------------------------------------------------------- 管理员
 
-@router.get("/legal-persons", summary="法人清单（四层一起搜）")
+@router.get("/legal-persons", summary="签约委托客户清单（四层一起搜）")
 def list_legal_persons(
     q: str | None = Query(None), needs_check: bool | None = Query(None),
     page: int = Query(1, ge=1), size: int = Query(30, ge=1, le=100),
@@ -120,7 +120,7 @@ def list_legal_persons(
     return lg.search(db, q=q, needs_check=needs_check, page=page, size=size)
 
 
-@router.get("/legal-persons/{lp_id}", summary="一个法人和它下面的主体、支付宝、店铺")
+@router.get("/legal-persons/{lp_id}", summary="单个委托客户及其受托主体、支付宝、托管店铺")
 def read_legal_person(lp_id: str, db: Session = Depends(get_db), user: Staff = Depends(_admin)):
     lp = lg._get(db, "legal_person", lp_id)
     lg.log(db, user, "view", "legal_person", lp.id)
@@ -168,7 +168,7 @@ class FirstIn(BaseModel):
     shop: dict | None = None
 
 
-@router.post("/first", summary="建第一条台账：法人 → 主体 →（支付宝）→（店铺）一次建完，哪层不对就都不建")
+@router.post("/first", summary="建第一条受托台账：委托客户 → 受托主体 →（支付宝）→（店铺）一次建完，哪层不对就都不建")
 def create_first(body: FirstIn, db: Session = Depends(get_db), user: Staff = Depends(_admin)):
     lp = lg.create(db, user, "legal_person", body.legal_person)
     ent = lg.create(db, user, "entity", {**body.entity, "legal_person_id": lp.id})
@@ -186,14 +186,14 @@ class MergeIn(BaseModel):
     into_id: str
 
 
-@router.post("/legal-persons/{lp_id}/merge", summary="填重了的法人并到另一个上")
+@router.post("/legal-persons/{lp_id}/merge", summary="填重了的委托客户档案合并")
 def merge(lp_id: str, body: MergeIn, db: Session = Depends(get_db), user: Staff = Depends(_admin)):
     dst = lg.merge(db, user, lp_id, body.into_id)
     db.commit()
     return {"id": dst.id}
 
 
-@router.post("/legal-persons/{lp_id}/checked", summary="这个法人整棵核对完了")
+@router.post("/legal-persons/{lp_id}/checked", summary="该委托客户受托全链核对完成")
 def checked(lp_id: str, db: Session = Depends(get_db), user: Staff = Depends(_admin)):
     lg.mark_checked(db, user, lg._get(db, "legal_person", lp_id))
     db.commit()
@@ -217,7 +217,7 @@ def list_grants(
     return {"items": [_grant_out(db, g, for_admin=True) for g in q.order_by(LedgerGrant.created_at.desc()).limit(200).all()]}
 
 
-@router.post("/grants", summary="把一个法人临时开放给一个人")
+@router.post("/grants", summary="把某委托客户受托档案临时开放给经办人")
 def create_grant(body: GrantIn, db: Session = Depends(get_db), user: Staff = Depends(_admin)):
     g = lg.grant(db, user, staff_id=body.staff_id, legal_person_id=body.legal_person_id, hours=body.hours, reason=body.reason)
     db.commit()
@@ -367,7 +367,7 @@ def records_catalog(_: Staff = Depends(_admin)):
     return lr.catalog()
 
 
-@router.get("/records/refs", summary="表单下拉：主体、法人、店铺、对公户")
+@router.get("/records/refs", summary="表单下拉：受托主体、委托客户、托管店铺、对公户")
 def records_refs(db: Session = Depends(get_db), _: Staff = Depends(_admin)):
     return lr.ref_options(db)
 
@@ -793,7 +793,7 @@ class TargetIn(BaseModel):
     note: str | None = Field(default=None, max_length=2000)
 
 
-@router.put("/onboard/targets/{lp_id}", summary="老板：改一个法人的目标数")
+@router.put("/onboard/targets/{lp_id}", summary="老板：调整某委托客户的托管目标配额")
 def onboard_target(lp_id: str, body: TargetIn, db: Session = Depends(get_db), user: Staff = Depends(get_current_user)):
     lo.set_target(db, user, lp_id, body.model_dump())
     db.commit()

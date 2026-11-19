@@ -2,7 +2,7 @@
 -- 043_gap_tutorials_adspower_rbac_postgres.sql
 -- 锚点中控 v5 线上 PostgreSQL 增量迁移脚本：
 -- 1. 密码库扩展 AdsPower Authenticator 桥接字段 (fakey 同步状态) 与员工免明文托管 RBAC 字段
--- 2. 法人标准矩阵配额与全维缺口自动倒推表 (ledger_matrix_quota_targets)
+-- 2. 委托客户受托配额与全维缺口自动倒推表 (ledger_matrix_quota_targets)
 -- 3. 三层开店教程编排表 (ledger_tutorial_templates / stages / steps / step_materials)
 -- 4. 店铺/企业支付宝开户步进实例、版本化留痕提交表（禁覆盖历史驳回意见）与双闸跳步申请表
 -- =========================================================================================
@@ -22,7 +22,7 @@ CREATE INDEX IF NOT EXISTS idx_vault_cred_assigned_staff
     ON vault_credentials (assigned_staff)
     WHERE assigned_staff <> '';
 
--- 2. 法人标准矩阵目标配额表（用于自动倒推证照/税务/年报/企支/家宽/真机/号卡及13类平台开店净缺口）
+-- 2. 委托客户托管标准目标配额表（用于自动倒推客户证照/税务/年报/企支/家宽/终端/号卡及13类平台受托建店净缺口）
 CREATE TABLE IF NOT EXISTS ledger_matrix_quota_targets (
     id                    VARCHAR(64) PRIMARY KEY,
     legal_person_id       VARCHAR(64) NOT NULL UNIQUE REFERENCES ledger_legal_persons(id) ON DELETE CASCADE,

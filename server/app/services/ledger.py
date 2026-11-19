@@ -5,11 +5,11 @@
   - 一个主体最多一个主资金号；只有收款号能挂店铺（主资金号、采购号不收卖货的钱）；
   - 采购号开因公付，从同一主体的主资金号扣，主体还没有主资金号就开不了；
   - 店铺走支付宝结算就挂在本主体的一个收款号上，别的结算方式直接挂主体、填商户号；
-  - 提醒只提醒、不替人做决定：年报没报、本季度卖货额快到小规模 30 万免税线。
+  - 提醒只提醒、不替人做决定：年报未报、本季度销售额接近小规模按季 30 万法定申报阈值（提示客户提前准备申报）。
 
 第二步（手机卡、代理 IP、设备）：
-  - 一证五号：法人名下主卡 + 副卡 + 原有个人卡，同一家运营商最多 5 张，满了只能用外部合约卡；
-  - 副卡挂在同一法人、同一运营商的主卡下，一张主卡最多 4 张副卡；外部合约卡要填实名人和合约到期日；
+  - 一证五号：委托客户法人名下主卡 + 副卡 + 原有个人卡，同一家运营商最多 5 张，满了只能用外部合约卡；
+  - 副卡挂在同一委托客户、同一运营商的主卡下，一张主卡最多 4 张副卡；外部合约卡要填实名人和合约到期日；
   - 同一平台的两个店不能共用一条代理（不同平台可以）；还有设备在用的代理停不掉、删不掉；
   - 一张卡只能插在一台手机里；设备的用途要和挂在上面的账号一致（第三步起不止销售店）；
   - 提醒：外部卡合约 30 天内到期、话费不够下个月月租、代理 7 天内到期。
@@ -19,17 +19,17 @@
     从同主体主资金号扣）或外币卡；引流号不收不付，只记往哪家销售店引流；
   - 支付宝挂的账号要和它的用途对得上（收款号挂销售店、采购号挂采购号）；设备的用途也要和账号一致；
   - 单店月度损益按 ERP 出库算（和经营账单同一口径）：卖了多少 − 成本 − 服务费 − 退货回冲的毛利；
-  - 提醒：代持协议 30 天内到期。
+  - 提醒：托管运营合同 30 天内到期。
 
 第四步（审计报告另外 12 个模块，条目和规矩在 services/ledger_records.py）：
-  - 员工实名卡（员工用自己身份证办给公司用的卡）：要写在谁名下，一直标红，人离职了标得更红，要尽快换成法人卡；
+  - 员工实名卡（员工用自己身份证办给公司用的卡）：要写在谁名下，一直标红，人离职了标得更红，须尽快换绑为客户实名或合规授权卡；
   - 支付宝记无密转账证书到期日（30 天内提醒）和报备的转账场景；主体记数电票每月授信额度；店铺记币种；
   - 台账里的东西删了，「谁知道它的密码」也一起删。
 
 审计报告第一部分补的三条（11-15）：
   - 一张执照（个体户、公司）最多挂 3 家闲鱼店（采购号不算）；没执照的个人闲鱼号挂在类型是「个人」的主体下，不算数；
-  - 只提醒：个体户名下单店一个月到 8 万该切流量；个体户一个月 10 万免税线；小规模连续 12 个月 450 万预警、500 万要转一般纳税人；
-  - 「个人」主体没有年报和免税线这些提醒。
+  - 只提醒：单店月营业额达 8 万触发受托接待均衡提醒；个体户月 10 万按月法定阈值预警；小规模连续 12 个月 450 万预警、500 万提示客户转一般纳税人（各客户主体严禁跨主体拆单）；
+  - 「个人」受托账号无年报与主体申报阈值提醒。
 """
 
 from __future__ import annotations
@@ -88,14 +88,14 @@ ROLE_CHANNELS = {
     "purchase": ("corporate_pay", "overseas"),
     "marketing": ("none",),
 }
-INVOICE_MODES = {"exempt": "个体普票（季度 30 万免税）", "vat": "公司 6% 查账", "purchase": "采购索票", "none": "不涉税"}
+INVOICE_MODES = {"exempt": "个体普票（按季 30 万阈值监测）", "vat": "公司 6% 查账", "purchase": "采购索票", "none": "不涉税"}
 AGREEMENT_WARN_DAYS = 30
 # 小规模纳税人每季度 30 万以内免增值税（开普票），到 80% 提醒
 QUARTER_FREE = Decimal("300000")
 QUARTER_WARN = Decimal("0.8")
 XIANYU_PER_LICENSE = 3  # 闲鱼一张执照最多挂 3 家企业店；个人闲鱼号不算
-SHOP_MONTH_CAP = Decimal("80000")  # 个体户名下单店一个月 8 万就该切流量到别家
-MONTH_FREE = Decimal("100000")  # 个体户月 10 万（增值税和附加税的月免税线）
+SHOP_MONTH_CAP = Decimal("80000")  # 单店月营业额达 8 万触发受托接待均衡提醒
+MONTH_FREE = Decimal("100000")  # 个体户月 10 万（按月法定阈值提醒）
 YEAR_WARN = Decimal("4500000")  # 连续 12 个月 450 万预警
 YEAR_GENERAL = Decimal("5000000")  # 500 万要登记成一般纳税人
 
@@ -248,7 +248,7 @@ def _xianyu_count(db: Session, entity_id: str, but: str | None = None) -> int:
 
 
 def shop_alerts(s: LedgerShop, e: LedgerEntity | None, month_gmv: Decimal | None) -> list[dict]:
-    """个体户名下的销售店一个月到 8 万就该切流量到别家，免得把主体顶过月 10 万。"""
+    """单店月营业额接近 8 万阈值时触发受托运营接待均衡提醒，同时监测委托客户主体按月法定申报阈值。"""
     if not e or e.entity_type != "individual" or s.role != "sales" or s.status != "active" or not month_gmv:
         return []
     if month_gmv >= SHOP_MONTH_CAP:
@@ -276,14 +276,14 @@ def entity_alerts(e: LedgerEntity, sold: Decimal | None, today: date, *, month: 
     if e.tax_payer == "small" and sold:
         pct = sold / QUARTER_FREE
         if pct >= 1:
-            out.append({"level": "danger", "text": f"本季度卖了 ¥{sold:,.0f}，过了 30 万免税线"})
+            out.append({"level": "danger", "text": f"本季度卖了 ¥{sold:,.0f}，已达 30 万法定申报阈值，请提醒委托客户按规定申报"})
         elif pct >= QUARTER_WARN:
-            out.append({"level": "warn", "text": f"本季度卖了 ¥{sold:,.0f}，快到 30 万免税线（{pct:.0%}）"})
+            out.append({"level": "warn", "text": f"本季度卖了 ¥{sold:,.0f}，接近 30 万法定阈值（{pct:.0%}），请提前提示委托客户"})
     if e.tax_payer == "small" and e.entity_type == "individual" and month:
         if month >= MONTH_FREE:
-            out.append({"level": "danger", "text": f"本月卖了 ¥{month:,.0f}，过了个体户月 10 万免税线"})
+            out.append({"level": "danger", "text": f"本月卖了 ¥{month:,.0f}，已达个体户月 10 万阈值，请提醒客户依法申报"})
         elif month >= MONTH_FREE * QUARTER_WARN:
-            out.append({"level": "warn", "text": f"本月卖了 ¥{month:,.0f}，快到个体户月 10 万免税线（{month / MONTH_FREE:.0%}）"})
+            out.append({"level": "warn", "text": f"本月卖了 ¥{month:,.0f}，接近个体户月 10 万阈值（{month / MONTH_FREE:.0%}）"})
     if e.tax_payer == "small" and year:
         if year >= YEAR_GENERAL:
             out.append({"level": "danger", "text": f"连续 12 个月卖了 ¥{year:,.0f}，过了 500 万，要登记成一般纳税人（13% 增值税）"})
@@ -367,9 +367,9 @@ def lp_alerts(lp: LedgerLegalPerson, today: date) -> list[dict]:
         return []
     left = (lp.agreement_end - today).days
     if left < 0:
-        return [{"level": "danger", "text": f"代持协议 {_days(lp.agreement_end)}到期了，要续签"}]
+        return [{"level": "danger", "text": f"托管运营合同 {_days(lp.agreement_end)}到期了，要续签"}]
     if left <= AGREEMENT_WARN_DAYS:
-        return [{"level": "warn", "text": f"代持协议还有 {left} 天到期，要续签"}]
+        return [{"level": "warn", "text": f"托管运营合同还有 {left} 天到期，要续签"}]
     return []
 
 
@@ -693,7 +693,7 @@ _MONEY = {"fee_rate": "服务费率", "deposit": "保证金", "monthly_rent": "�
           "daily_limit": "日累计限额", "single_limit": "单笔限额", "frozen_reserve": "冻结的钱", "frozen": "冻结 / 在途的钱",
           "invoice_quota": "每月开票额度"}
 _DAYS = {"registered_on": "成立日期", "report_filed_on": "年报报送日期", "balance_on": "查余额的日期",
-         "contract_end": "合约到期日", "expires_on": "到期日", "agreement_end": "代持协议到期日",
+         "contract_end": "合约到期日", "expires_on": "到期日", "agreement_end": "托管运营合同到期日",
          "cert_expires_on": "证书到期日"}
 _REF_LABEL = {"sim": "这张卡", "device": "这个设备", "proxy": "这条代理"}
 
@@ -798,7 +798,7 @@ def _master(db: Session, entity_id: str, but: str | None = None) -> LedgerAlipay
 
 
 def _own_cards(db: Session, lp_id: str, carrier: str, but: str | None = None) -> int:
-    """法人本人名下、这家运营商、公司开的在用卡（主卡 + 副卡）有几张。"""
+    """委托客户法人本人名下、这家运营商、受托专用在用卡（主卡 + 副卡）有几张。"""
     q = db.query(LedgerSim).filter(LedgerSim.legal_person_id == lp_id, LedgerSim.carrier == carrier,
                                    LedgerSim.category.in_(("master", "sub")), LedgerSim.status != "closed")
     if but:
@@ -1145,7 +1145,7 @@ def submit(db: Session, staff: Staff, data: dict) -> None:
     """
     d = {k: _clean(v) for k, v in data.items()}
     if not d.get("legal_person_name"):
-        raise HTTPException(status_code=400, detail="法人姓名要填")
+        raise HTTPException(status_code=400, detail="委托客户/法人姓名要填")
     if d.get("alipay_account") and not d.get("entity_name"):
         raise HTTPException(status_code=400, detail="填了支付宝就要填它属于哪个主体")
     if d.get("shop_name") and not d.get("alipay_account"):

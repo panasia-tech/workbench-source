@@ -399,13 +399,13 @@ def validate_before_write(conn: sqlite3.Connection, table: str, data: dict, reco
                 max_open = max(0, int(q_row["statutory_limit"]) - int(q_row["existing_personal_cards"]))
                 if opened >= max_open:
                     raise BusinessRuleError(
-                        f"运营商一主4副限额阻断：{holder} 在【{carrier}】原有个人卡 {q_row['existing_personal_cards']} 张，"
-                        f"本公司最多只能开 {max_open} 张（当前已开 {opened} 张）。剩余缺口请改用【外部补缺合约卡 (external_contract)】录入！"
+                        f"运营商一主4副限额阻断：委托客户 {holder} 在【{carrier}】原有个人卡 {q_row['existing_personal_cards']} 张，"
+                        f"受托专用最多可新办 {max_open} 张（当前已开 {opened} 张）。超额请改用【第三方授权合约卡 (external_contract)】录入！"
                     )
         elif cat == "external_contract":
             data["is_external"] = 1
             if not data.get("contract_end_date"):
-                raise BusinessRuleError("外部卡必填项阻断：录入【外部补缺合约卡】必须填写合约到期时间 (contract_end_date)，以便提前换绑预警！")
+                raise BusinessRuleError("授权卡必填项阻断：录入【第三方授权合约卡】必须填写合约到期时间 (contract_end_date)，以便提前换绑预警！")
 
     elif table == "adspower_profiles":
         host_id = data.get("host_device_id")
@@ -830,9 +830,9 @@ def build_bootstrap_payload(
         },
         {
             "code": "RULE_SIM_QUOTA_AND_CONTRACT",
-            "title": "一主4副动态配额（扣除存量卡）与外部补缺卡合约到期换绑追踪",
+            "title": "一主4副动态配额（扣客户存量卡）与第三方授权合约卡到期换绑追踪",
             "passed": len(quota_overruns) == 0,
-            "summary": f"实名运营商配额超限 {len(quota_overruns)} 项；30天内合约到期的外部补缺卡 {len(expiring_external_sims)} 张，话费余额不足预警卡 {len(low_balance_sims)} 张。",
+            "summary": f"实名运营商配额超限 {len(quota_overruns)} 项；30天内合约到期的第三方授权卡 {len(expiring_external_sims)} 张，话费余额不足预警卡 {len(low_balance_sims)} 张。",
             "violations": quota_overruns,
         },
         {
@@ -903,7 +903,7 @@ def build_bootstrap_payload(
         "summary": (
             f"在册 {cluster_health['summary']['mac_host_count']} 台 64GB Mac Pro（总内存 {cluster_health['summary']['total_cluster_ram_gb']}GB · "
             f"总槽位 {cluster_health['summary']['total_account_quota']} 号）：当前已挂载 {cluster_health['summary']['total_mounted_accounts']} 号，"
-            f"剩余可扩盘 {cluster_health['summary']['total_remaining_slots']} 槽，超50号上限宿主机 {len(over_quota_hosts)} 台。"
+            f"剩余可托管入驻 {cluster_health['summary']['total_remaining_slots']} 槽，超50号上限宿主机 {len(over_quota_hosts)} 台。"
         ),
         "violations": over_quota_hosts,
     })
@@ -1853,7 +1853,7 @@ class LedgerHTTPHandler(BaseHTTPRequestHandler):
                 now_s = dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 today_s = dt.date.today().isoformat()
 
-                # 查找绑定的 AdsPower 专窗与归属法人
+                # 查找绑定的 AdsPower 专窗与所属委托客户
                 lp_id = "lp-ljg"
                 ads_pid = ""
                 title = str(body.get("title") or login_acc).strip()
@@ -2796,7 +2796,7 @@ class LedgerHTTPHandler(BaseHTTPRequestHandler):
                         """UPDATE device_asset_and_compliance
                            SET geo_fence_state = 'in_company', distance_from_office_km = 0.0,
                                net_conn_kind = ?, connected_ssid_or_nic = ?,
-                               gateway_egress_note = '已通过MDM策略强制重连公司受控网，恢复软路由独享家宽分流',
+                               gateway_egress_note = '已通过MDM策略强制重连公司受控网，恢复软路由独享家宽路由',
                                compliance_note = '✓ 已强制切回公司受控业务网络，在司连网合规',
                                last_located_at = ?, updated_at = ?
                            WHERE device_id = ?""",

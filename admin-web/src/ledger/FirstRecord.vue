@@ -32,7 +32,7 @@ onMounted(async () => {
 
 function next() {
   if (step.value === 0 && (!lp.value.name.trim() || !lp.value.phone.trim())) {
-    return ElMessage.warning('法人姓名和手机号都要填')
+    return ElMessage.warning('委托客户/法人姓名和手机号都要填')
   }
   if (step.value === 1 && !ent.value.name.trim()) return ElMessage.warning('主体名称要填')
   if (step.value === 2 && pay.value === 'alipay' && !alipay.value.account.trim()) return ElMessage.warning('支付宝账号要填')
@@ -76,7 +76,7 @@ const startAuth = () => authDlg.value.open(made.value.alipay_id, alipay.value.ac
 
     <el-form label-position="top" class="fr-form" @submit.prevent>
       <template v-if="step === 0">
-        <el-form-item label="法人姓名"><el-input v-model="lp.name" /></el-form-item>
+        <el-form-item label="委托客户/法人姓名"><el-input v-model="lp.name" /></el-form-item>
         <el-form-item label="法人手机号"><el-input v-model="lp.phone" placeholder="姓名和手机号一起才认得出是同一个人" /></el-form-item>
       </template>
 
