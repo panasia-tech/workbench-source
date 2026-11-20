@@ -1,0 +1,4 @@
+<resources>
+    <!-- 内部运维工具,强制亮色:DayNight 在深色模式下卡片变黑、深色文字不可读 -->
+    <style name="Theme.GroupControl" parent="Theme.Material3.Light.NoActionBar" />
+</resources>

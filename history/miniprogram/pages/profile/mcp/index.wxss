@@ -1,0 +1,50 @@
+.mcp-page .mcp-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-top: 20rpx;
+  padding: 16rpx 20rpx;
+  background: var(--bg-neutral);
+  border-radius: var(--radius-ctrl);
+}
+
+.mcp-page .mcp-label {
+  font-size: 24rpx;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.mcp-page .mcp-value {
+  flex: 1;
+  min-width: 0;
+  font-size: 24rpx;
+  color: var(--text-title);
+  word-break: break-all;
+  font-family: monospace;
+}
+
+.mcp-page .mcp-copy {
+  flex-shrink: 0;
+  font-size: 24rpx;
+  color: var(--color-primary);
+}
+
+.mcp-page .mcp-inline {
+  font-family: monospace;
+  font-size: 24rpx;
+  color: var(--color-primary);
+}
+
+.mcp-page .doc-h {
+  margin-top: 28rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--text-title);
+}
+
+.mcp-page .doc-p {
+  margin-top: 10rpx;
+  font-size: 26rpx;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}

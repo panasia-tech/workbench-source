@@ -1,0 +1,149 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<!-- 议价定价（电脑版）：左边填议价（金额、证据、备注），右边对照商品信息和验货素材；提交在底部操作条 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view class="dk-media">
+      <media-thumb
+        wx:if="{{detail.cover_thumb_url || detail.cover_url}}"
+        url="{{detail.cover_thumb_url || detail.cover_url}}"
+        preview-url="{{detail.cover_url}}"
+        size="small"
+      />
+      <view>
+        <view class="dk-title">{{detail.product_name || '议价定价'}}</view>
+        <view class="dk-sub">{{skuCode}}{{detail.spec ? ' · ' + detail.spec : ''}}</view>
+      </view>
+    </view>
+    <view class="dk-row">
+      <text class="dk-tag tag-warning">待议价</text>
+    </view>
+  </view>
+
+  <view wx:if="{{detail.condition_warning}}" class="nf-dk-warn">
+    ⚠ 实拍图含「{{detail.condition_warning_text || '全新'}}」字样，请重点核对货况与议价
+  </view>
+
+  <view class="dk-split">
+    <view class="dk-card">
+      <view class="dk-card__head">议价</view>
+      <view class="dk-card__body">
+        <view class="dk-form">
+          <view class="dk-field">
+            <text class="dk-label dk-label--req">实收金额</text>
+            <input
+              class="dk-input"
+              type="digit"
+              placeholder="填写议价后的实收金额"
+              value="{{form.suggest_price}}"
+              bindinput="onPriceInput"
+            />
+            <text class="dk-help">与卖家议定后的实际成交价（实际成本）</text>
+          </view>
+          <view class="dk-field">
+            <text class="dk-label">原采购成本</text>
+            <view class="nf-dk-static">¥{{fmt.money(detail.cost_price)}}</view>
+            <text class="dk-help">实收金额默认带出采购成本，按议定结果改</text>
+          </view>
+
+          <view class="dk-field dk-field--full">
+            <text class="dk-label dk-label--req">议价证据（图片 / 视频）</text>
+            <view class="dk-gallery">
+              <view wx:for="{{form.evidence}}" wx:key="*this" class="nf-dk-cell">
+                <media-thumb
+                  url="{{evidenceDisplayUrls[index] || item}}"
+                  preview-url="{{evidenceDisplayUrls[index] || item}}"
+                  size="fill"
+                  preview="{{true}}"
+                />
+                <view class="nf-dk-del" catchtap="removeEvidence" data-index="{{index}}" title="删除">×</view>
+              </view>
+              <view class="nf-dk-add" bindtap="addEvidence">
+                <text class="nf-dk-add__plus">+</text>
+                <text>图片 / 视频</text>
+              </view>
+            </view>
+            <text class="dk-help">截图聊天记录、议价凭证或瑕疵视频，便于后续核对</text>
+          </view>
+
+          <view class="dk-field dk-field--full">
+            <text class="dk-label dk-label--req">备注</text>
+            <textarea
+              class="dk-input nf-dk-ta"
+              placeholder="议价说明（必填）"
+              value="{{form.remark}}"
+              bindinput="onRemarkInput"
+              maxlength="200"
+            />
+          </view>
+
+          <!-- 转账功能暂未实现，开关先放着但隐藏（showTransferSwitch 为 true 时显示） -->
+          <view class="dk-field dk-field--full" wx:if="{{showTransferSwitch}}">
+            <text class="dk-label">议价后跳转转账</text>
+            <switch checked="{{form.need_transfer}}" bindchange="onTransferChange" />
+          </view>
+        </view>
+        <view class="dk-help nf-dk-gap">提交后商品进入待填表 / 建品流程，群控中心可见。</view>
+      </view>
+    </view>
+
+    <view class="nf-dk-col">
+      <view class="dk-card">
+        <view class="dk-card__head">商品信息</view>
+        <view class="dk-card__body">
+          <view class="dk-desc dk-desc--2">
+            <view class="dk-desc__item dk-desc__item--full">
+              <view class="dk-desc__k">商品</view>
+              <view class="dk-desc__v">{{detail.product_name || '—'}}</view>
+            </view>
+            <view class="dk-desc__item">
+              <view class="dk-desc__k">货号</view>
+              <view class="dk-desc__v">{{detail.sku_code || skuCode || '—'}}</view>
+            </view>
+            <view class="dk-desc__item">
+              <view class="dk-desc__k">采购成本</view>
+              <view class="dk-desc__v">¥{{fmt.money(detail.cost_price)}}</view>
+            </view>
+            <view class="dk-desc__item">
+              <view class="dk-desc__k">成色</view>
+              <view class="dk-desc__v">{{detail.condition_grade || '—'}}</view>
+            </view>
+            <view class="dk-desc__item">
+              <view class="dk-desc__k">库位</view>
+              <view class="dk-desc__v">{{detail.location_code || '—'}}</view>
+            </view>
+            <view class="dk-desc__item">
+              <view class="dk-desc__k">品牌 / 型号</view>
+              <view class="dk-desc__v">{{detail.brand || '—'}}{{detail.model ? ' / ' + detail.model : ''}}</view>
+            </view>
+            <view class="dk-desc__item">
+              <view class="dk-desc__k">入库时间</view>
+              <view class="dk-desc__v">{{fmt.datetime(detail.inbound_at)}}</view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="dk-card" wx:if="{{detail.inspection_media.length}}">
+        <view class="dk-card__head">
+          <text>验货素材</text>
+          <text class="dk-sub">{{detail.inspection_media.length}} 个</text>
+        </view>
+        <view class="dk-card__body">
+          <view class="dk-gallery nf-dk-gallery-s">
+            <view wx:for="{{detail.inspection_media}}" wx:key="*this" class="nf-dk-cell">
+              <media-thumb url="{{item}}" preview-url="{{item}}" size="fill" group-urls="{{detail.inspection_media}}" />
+            </view>
+          </view>
+          <view class="dk-help nf-dk-gap">验货环节上传的入库图、瑕疵照片与视频，供核对货况</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="dk-actionbar">
+    <text class="dk-sub">实收金额</text>
+    <text class="nf-dk-sum {{form.suggest_price ? '' : 'dk-muted'}}">{{form.suggest_price ? '¥' + form.suggest_price : '待填写'}}</text>
+    <view class="dk-btn dk-btn--primary {{submitting ? 'dk-btn--disabled' : ''}}" bindtap="onSubmit">{{submitting ? '提交中…' : '提交议价'}}</view>
+  </view>
+</view>

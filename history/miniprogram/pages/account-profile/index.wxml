@@ -1,0 +1,67 @@
+<view class="page-wrap page-wrap--no-tab">
+  <view class="search-bar">
+    <view class="search-input-wrap">
+      <input
+        class="search-input"
+        placeholder="昵称 / 会员名 / 手机号 / SN / IMEI…"
+        value="{{q}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+        bindconfirm="onSearch"
+      />
+    </view>
+  </view>
+
+  <view class="ap-filter">
+    <view class="ap-filter-item {{status === '' ? 'ap-filter-item--on' : ''}}" data-status="" bindtap="onStatusFilter">全部</view>
+    <view class="ap-filter-item {{status === 'PENDING' ? 'ap-filter-item--on' : ''}}" data-status="PENDING" bindtap="onStatusFilter">
+      待完善<view wx:if="{{pendingCount}}" class="ap-badge">{{pendingCount}}</view>
+    </view>
+    <view class="ap-filter-item {{status === 'COMPLETE' ? 'ap-filter-item--on' : ''}}" data-status="COMPLETE" bindtap="onStatusFilter">已初始化</view>
+    <view class="ap-sync {{syncing ? 'ap-sync--disabled' : ''}}" bindtap="onSync">{{syncing ? '同步中…' : '同步'}}</view>
+  </view>
+
+  <view class="card">
+    <view class="card-head card-head--split">
+      <view class="card-head-main">
+        账号档案
+        <view class="tag tag-info head-extra">{{total}} 个</view>
+      </view>
+    </view>
+
+    <view wx:if="{{!list.length && !loading}}" class="empty">
+      <view class="e-icon">—</view>
+      <view class="e-text">暂无档案,点右上角「同步」从群控拉取</view>
+    </view>
+
+    <view
+      wx:for="{{list}}"
+      wx:key="id"
+      class="list-item list-item--stacked"
+      data-id="{{item.id}}"
+      bindtap="openForm"
+    >
+      <view class="list-item__main">
+        <view class="li-icon li-icon--ap">{{item.nick[0] || '档'}}</view>
+        <view class="li-info">
+          <view class="li-title">
+            {{item.nick}}
+            <view class="tag {{item.status === 'COMPLETE' ? 'tag-success' : 'tag-warning'}} ap-status-tag">
+              {{item.status === 'COMPLETE' ? '已初始化' : '待完善'}}
+            </view>
+          </view>
+          <view class="li-sub">{{item.member_name || '会员名未采集'}}{{item.phone_number ? ' · ' + item.phone_number : ''}}</view>
+          <view class="li-sub">
+            SN: {{item.device_serial || '未采集'}}
+            <text wx:if="{{item.asset_no}}"> · 资产 {{item.asset_no}}</text>
+            <text wx:if="{{item.missingCollect}}" class="ap-warn"> · 采集不全</text>
+          </view>
+          <view wx:if="{{item.strategyText}}" class="li-sub li-sub--strategy">异常策略: {{item.strategyText}}</view>
+        </view>
+        <view class="li-meta li-arrow">→</view>
+      </view>
+    </view>
+
+    <view wx:if="{{loading}}" class="ap-loading">加载中…</view>
+  </view>
+</view>

@@ -1,0 +1,211 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<!-- 店铺上架（电脑版）：第一步左边店铺表格勾选、右边汇总和按钮；第二步左边店铺列表、右边给当前店铺挑图（图不能跨店重复） -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">店铺上架 · {{skuCode}}</view>
+      <view class="dk-sub">
+        <text wx:if="{{step === 'images'}}">第 2 步：给每个店铺选图，店铺之间不能用同一张</text>
+        <text wx:else>第 1 步：勾选要上架的店铺{{imgOptions.length ? '，下一步给每个店铺选图' : ''}}</text>
+      </view>
+    </view>
+    <view class="dk-row">
+      <view class="dk-btn" bindtap="manualRefresh">刷新状态</view>
+    </view>
+  </view>
+
+  <!-- AI 按型号生成的主图，等人确认 -->
+  <view wx:if="{{aiConfirm}}" class="dk-card lp-dk-ai">
+    <image class="lp-dk-ai__img" src="{{aiImage}}" mode="aspectFit" bindtap="previewAiImage" />
+    <view class="dk-grow lp-dk-ai__body">
+      <view class="lp-dk-ai__title">AI 按型号生成了主图，确认是这个货再上架</view>
+      <view class="dk-sub">这个货没拍照，库里也没有同款实拍图，AI 可能画错品类</view>
+      <input class="dk-input lp-dk-ai__input" placeholder="不对的话写一句品类再重新生成，比如：显示器" value="{{aiHint}}" maxlength="20" bindinput="onAiHintInput" />
+      <view class="dk-row">
+        <view class="dk-btn dk-btn--primary {{aiBusy ? 'dk-btn--disabled' : ''}}" bindtap="confirmAiImage">图是对的，上架</view>
+        <view class="dk-btn {{aiBusy ? 'dk-btn--disabled' : ''}}" bindtap="regenerateAiImage">重新生成</view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{loading && !shops.length}}" class="dk-card dk-empty">加载中…</view>
+  <view wx:elif="{{!loading && !shops.length}}" class="dk-card dk-empty">暂无启用的销售店铺</view>
+
+  <!-- ============================================================ 第 2 步：选图 -->
+  <block wx:elif="{{step === 'images'}}">
+    <view class="lp-dk-pick">
+      <view class="dk-card lp-dk-shops">
+        <view class="dk-card__head">
+          <text>{{pickRows.length}} 个店铺</text>
+          <view class="dk-btn dk-btn--sm" bindtap="autoAssign">自动分配</view>
+        </view>
+        <view
+          wx:for="{{pickRows}}"
+          wx:for-item="row"
+          wx:key="shop_id"
+          class="lp-dk-shop {{row.open ? 'lp-dk-shop--on' : ''}}"
+          data-id="{{row.shop_id}}"
+          bindtap="dkOpenPickShop"
+        >
+          <view class="dk-row lp-dk-shop__top">
+            <text class="dk-cell-main dk-grow dk-ellipsis">{{row.label}}</text>
+            <text class="dk-tag {{row.count ? 'tag-success' : 'tag-danger'}}">{{row.count ? '已选 ' + row.count + ' 张' : '未选图'}}</text>
+          </view>
+          <view wx:if="{{row.thumbs.length}}" class="lp-dk-shop__thumbs">
+            <image wx:for="{{row.thumbs}}" wx:for-item="t" wx:key="url" class="lp-dk-mini"
+              src="{{t.thumb}}" data-preview="{{t.preview}}" data-url="{{t.url}}" mode="aspectFill"
+              catchtap="previewImageOnly" />
+          </view>
+        </view>
+      </view>
+
+      <view class="dk-card">
+        <block wx:for="{{pickRows}}" wx:for-item="row" wx:key="shop_id">
+          <block wx:if="{{row.open}}">
+            <view class="dk-card__head">
+              <text>给「{{row.label}}」选图 <text class="dk-sub">已选 {{row.count}} 张，最多 9 张，第 1 张是主图</text></text>
+              <text class="dk-sub">可选 {{imgOptions.length}} 张：实拍 {{imgPhotoCount}}、同款 {{imgCrawledCount}}</text>
+            </view>
+            <view class="dk-card__body">
+              <view wx:if="{{imgNotEnough}}" class="lp-dk-warn">图只有 {{imgOptions.length}} 张，不够 {{pickRows.length}} 个店铺分，请点「改店铺」少勾几个店铺</view>
+              <view wx:if="{{crawlStatus === '爬取中'}}" class="dk-help lp-dk-gap">同款图还在爬取，过几分钟再打开能多些图可选</view>
+              <view class="lp-dk-grid">
+                <view
+                  wx:for="{{row.grid}}"
+                  wx:for-item="g"
+                  wx:key="url"
+                  class="lp-dk-cell {{g.order ? 'lp-dk-cell--on' : ''}} {{g.takenBy ? 'lp-dk-cell--taken' : ''}}"
+                  data-shop="{{row.shop_id}}"
+                  data-url="{{g.url}}"
+                  data-taken="{{g.takenBy}}"
+                  bindtap="togglePickImage"
+                >
+                  <image class="lp-dk-cell__img" src="{{g.thumb}}" mode="aspectFill" lazy-load />
+                  <view class="lp-dk-select">
+                    <text wx:if="{{g.order}}" class="lp-dk-select__mark">{{g.order}}</text>
+                  </view>
+                  <text class="lp-dk-kind {{g.review ? 'lp-dk-kind--bad' : ''}}">{{g.kind}}</text>
+                  <text wx:if="{{g.takenBy}}" class="lp-dk-taken">{{g.takenBy}}</text>
+                  <view class="lp-dk-cell__ops">
+                    <text class="lp-dk-op" data-preview="{{g.preview || g.url}}" catchtap="dkPreviewPick">大图</text>
+                    <text class="lp-dk-op lp-dk-op--bad" data-url="{{g.url}}" catchtap="dkRejectPick">淘汰</text>
+                  </view>
+                </view>
+              </view>
+              <view class="dk-help lp-dk-gap">点图选中 / 取消；灰掉的已经给别的店铺用了。鼠标移到图上可看大图，或把不能用的淘汰掉（以后挑图都不出现）</view>
+            </view>
+          </block>
+        </block>
+        <view wx:if="{{!pickShopId}}" class="dk-empty">左边点一个店铺，给它选图</view>
+      </view>
+    </view>
+
+    <view class="dk-actionbar lp-dk-bar">
+      <text wx:if="{{!imgAllPicked}}" class="dk-sub lp-dk-bar-tip">每个店铺至少选 1 张图才能上架</text>
+      <view class="dk-btn" bindtap="backToShops">改店铺</view>
+      <view class="dk-btn dk-btn--primary {{submitting || !imgAllPicked ? 'dk-btn--disabled' : ''}}" bindtap="dkSubmit">{{submitting ? '提交中…' : '上架 ' + pickRows.length + ' 个店铺'}}</view>
+    </view>
+  </block>
+
+  <!-- ============================================================ 第 1 步：选店铺 -->
+  <block wx:else>
+    <view class="dk-split">
+      <view class="dk-card">
+        <view class="dk-toolbar">
+          <view class="dk-tabs">
+            <view class="dk-tab {{kindTab === 'all' ? 'dk-tab--on' : ''}}" data-kind="all" bindtap="setKindTab">全部 <text class="dk-tab__n">{{tabCounts.all}}</text></view>
+            <view class="dk-tab {{kindTab === 'android' ? 'dk-tab--on' : ''}}" data-kind="android" bindtap="setKindTab">手机 <text class="dk-tab__n">{{tabCounts.android}}</text></view>
+            <view class="dk-tab {{kindTab === 'browser' ? 'dk-tab--on' : ''}}" data-kind="browser" bindtap="setKindTab">浏览器 <text class="dk-tab__n">{{tabCounts.browser}}</text></view>
+          </view>
+          <view wx:if="{{publishableCount}}" class="dk-row lp-dk-picks">
+            <text class="dk-label">勾选</text>
+            <view class="lp-dk-pickall" data-kind="all" bindtap="selectGroup">
+              <view class="lp-dk-check {{checks.all.state === 'on' ? 'lp-dk-check--on' : ''}} {{checks.all.state === 'partial' ? 'lp-dk-check--part' : ''}} {{checks.all.state === 'none' ? 'lp-dk-check--off' : ''}}">{{checks.all.state === 'on' ? '✓' : (checks.all.state === 'partial' ? '–' : '')}}</view>
+              <text>全部</text>
+            </view>
+            <view class="lp-dk-pickall" data-kind="android" bindtap="selectGroup">
+              <view class="lp-dk-check {{checks.android.state === 'on' ? 'lp-dk-check--on' : ''}} {{checks.android.state === 'partial' ? 'lp-dk-check--part' : ''}} {{checks.android.state === 'none' ? 'lp-dk-check--off' : ''}}">{{checks.android.state === 'on' ? '✓' : (checks.android.state === 'partial' ? '–' : '')}}</view>
+              <text>手机</text>
+            </view>
+            <view class="lp-dk-pickall" data-kind="browser" bindtap="selectGroup">
+              <view class="lp-dk-check {{checks.browser.state === 'on' ? 'lp-dk-check--on' : ''}} {{checks.browser.state === 'partial' ? 'lp-dk-check--part' : ''}} {{checks.browser.state === 'none' ? 'lp-dk-check--off' : ''}}">{{checks.browser.state === 'on' ? '✓' : (checks.browser.state === 'partial' ? '–' : '')}}</view>
+              <text>浏览器</text>
+            </view>
+          </view>
+          <view class="dk-grow"></view>
+          <text wx:if="{{hasTransient && !pollExhausted}}" class="lp-dk-poll"><text class="lp-dk-poll__dot"></text>真机处理中，自动刷新状态…</text>
+          <text wx:if="{{pollExhausted}}" class="dk-link" bindtap="manualRefresh">仍在处理中，点此刷新</text>
+        </view>
+
+        <view class="dk-table-wrap">
+          <table class="dk-table">
+            <thead>
+              <tr>
+                <th class="lp-dk-th-check"></th>
+                <th>店铺</th>
+                <th>设备</th>
+                <th>店铺编码</th>
+                <th>状态</th>
+                <th>说明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                wx:for="{{visibleShops}}"
+                wx:key="shop_id"
+                class="{{item.canPublish ? 'dk-tr--click' : 'lp-dk-tr--off'}} {{item.selected ? 'dk-tr--on' : ''}}"
+                data-id="{{item.shop_id}}"
+                bindtap="toggleShop"
+              >
+                <td>
+                  <view class="lp-dk-check {{item.selected ? 'lp-dk-check--on' : ''}} {{item.canPublish ? '' : 'lp-dk-check--off'}}">{{item.selected ? '✓' : ''}}</view>
+                </td>
+                <td class="dk-nowrap"><text class="dk-cell-main">{{item.shop_label}}</text></td>
+                <td class="dk-nowrap">
+                  <text wx:if="{{item.device_kind}}" class="dk-tag {{item.device_kind === 'browser' ? 'dk-tag--purple' : 'dk-tag--blue'}}">{{item.device_kind === 'browser' ? '浏览器' : '手机'}}</text>
+                  <text wx:else class="dk-muted">未绑设备</text>
+                </td>
+                <td class="dk-nowrap">{{item.shop_code || '—'}}</td>
+                <td class="dk-nowrap">
+                  <text class="dk-tag {{fmt.shopStateTag(item.publish_status, item.gc_pending)}}">{{item.ai_image_awaiting_confirm ? '待确认主图' : (item.ai_image_pending ? '生成主图中' : fmt.shopStateLabel(item.publish_status, item.gc_pending))}}</text>
+                </td>
+                <td>
+                  <text wx:if="{{item.last_error}}" class="lp-dk-err">{{item.last_error}}</text>
+                  <text wx:elif="{{item.transient}}" class="dk-muted">处理中，不能再操作</text>
+                  <text wx:elif="{{!item.canPublish}}" class="dk-muted">在架 / 已售出，不用再上</text>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </view>
+        <view wx:if="{{!visibleShops.length}}" class="dk-empty">没有{{kindTab === 'browser' ? '浏览器' : '手机'}}店铺</view>
+      </view>
+
+      <view class="dk-card">
+        <view class="dk-card__head">上架</view>
+        <view class="dk-card__body lp-dk-side">
+          <view class="dk-desc dk-desc--2">
+            <view class="dk-desc__item">
+              <text class="dk-desc__k">已选店铺</text>
+              <text class="dk-desc__v lp-dk-big">{{selectedCount}} <text class="dk-sub">/ {{publishableCount}} 个可上架</text></text>
+            </view>
+            <view class="dk-desc__item">
+              <text class="dk-desc__k">可选图</text>
+              <text class="dk-desc__v lp-dk-big">{{imgOptions.length}} <text class="dk-sub">实拍 {{imgPhotoCount}} · 同款 {{imgCrawledCount}}</text></text>
+            </view>
+          </view>
+          <view wx:if="{{crawlStatus === '爬取中'}}" class="dk-help">同款图还在爬取，过几分钟再打开能多些图可选</view>
+          <block wx:if="{{publishableCount && imgOptions.length}}">
+            <view class="dk-btn dk-btn--primary lp-dk-go {{selectedCount ? '' : 'dk-btn--disabled'}}" bindtap="nextStep">下一步：给 {{selectedCount}} 个店铺选图</view>
+          </block>
+          <block wx:elif="{{publishableCount}}">
+            <view class="dk-help">这件货没有可挑的图，直接上架（没商品图的会先用 AI 生成主图，再自动上架）</view>
+            <view class="dk-btn dk-btn--primary lp-dk-go {{submitting || !selectedCount ? 'dk-btn--disabled' : ''}}" bindtap="dkSubmit">{{submitting ? '提交中…' : (selectedCount === publishableCount ? '一键上架全部 ' + publishableCount + ' 个店铺' : '上架所选 ' + selectedCount + ' 个店铺')}}</view>
+          </block>
+          <view wx:else class="dk-help">当前无可上架店铺（均在架 / 处理中 / 已售出）</view>
+        </view>
+      </view>
+    </view>
+  </block>
+</view>

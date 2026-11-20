@@ -1,0 +1,60 @@
+<view class="page-wrap mcp-page">
+
+  <!-- MCP 接入 -->
+  <view class="card">
+    <view class="card-head">MCP 接入（AI 工具只读查 ERP 数据）</view>
+    <view class="form-hint">
+      把下面的配置粘进 AI 工具（Kimi Code / Claude / Cursor 等）的 MCP 设置里，就能用自然语言查 ERP 数据。只读账号，查不了也改不了业务数据以外的东西。
+    </view>
+
+    <view wx:if="{{loading}}" class="gc-empty">加载中…</view>
+    <view wx:elif="{{error}}" class="gc-empty gc-empty--err">{{error}}</view>
+
+    <block wx:elif="{{enabled}}">
+      <view class="mcp-row">
+        <text class="mcp-label">接入地址</text>
+        <text class="mcp-value" bindtap="copy" data-text="{{url}}">{{url}}</text>
+        <text class="mcp-copy" bindtap="copy" data-text="{{url}}">复制</text>
+      </view>
+      <view class="mcp-row">
+        <text class="mcp-label">密钥</text>
+        <text class="mcp-value">{{key}}</text>
+        <text class="mcp-copy" bindtap="copy" data-text="{{key}}">复制</text>
+      </view>
+      <button class="btn-primary btn-block" style="margin-top: 24rpx;" bindtap="copyConfig">复制完整配置（mcpServers JSON）</button>
+      <view class="form-hint" style="margin-top: 16rpx;">
+        配置位置：Kimi Code 在项目根目录 <text class="mcp-inline">.mcp.json</text>；Claude Code 在 <text class="mcp-inline">~/.claude.json</text>；Cursor 在设置 → MCP。粘进去重启工具即生效。
+      </view>
+    </block>
+
+    <view wx:else class="gc-empty">MCP 服务未启用，请联系管理员</view>
+  </view>
+
+  <!-- 使用说明：群控守护 + AdsPower -->
+  <view class="card">
+    <view class="card-head">群控守护 + AdsPower 使用说明</view>
+
+    <view class="doc-h">一、装上群控守护（Windows 电脑，只需一次）</view>
+    <view class="doc-p">打开 <text class="mcp-inline">http://127.0.0.1:8000</text>，下载「群控守护端」安装包装好。之后它有新版会自己提示更新，点「下载更新 → 重启生效」即可。</view>
+
+    <view class="doc-h">二、安卓手机（真机执行）</view>
+    <view class="doc-p">手机数据线连电脑 → 守护端「设备」页认出来后点「初始化」（装 App、补权限、统一闲鱼版本全自动）→ 手机保持亮屏插着电即可，任务由服务端自动下发。</view>
+
+    <view class="doc-h">三、AdsPower 浏览器环境（浏览器执行）</view>
+    <view class="doc-p">1. 装好 AdsPower 客户端并启动（设置里开启 Local API）。</view>
+    <view class="doc-p">2. 守护端左侧「浏览器」页 → gc-ads 卡片点「一键安装」（自动下载、解压、写好线上配置，不用装 Python）。</view>
+    <view class="doc-p">3. 唯一手工步骤：打开安装目录里的 <text class="mcp-inline">config.yaml</text>，把 AdsPower 环境 ID 填进 environments（AdsPower 环境列表每行的 ID 列）。</view>
+    <view class="doc-p">4. 回守护端点「启动全部」，再点「启动看门狗」——看门狗常开后，浏览器被误关会自动重开、程序崩了自动拉起。</view>
+    <view class="doc-p">5. 在 AdsPower 环境里登录一次闲鱼网页版，约 1 分钟内系统自动完成：注册账号 → 绑定设备 → ERP 建店，小程序里立即可用。</view>
+
+    <view class="doc-h">四、小程序上架（按设备类型分组）</view>
+    <view class="doc-p">发布页店铺名旁有「手机 / 浏览器」标签；顶部「全选 / 手机全选 / 浏览器全选」按执行方式分组勾选。已全选时再点一次该按钮 = 取消该组。</view>
+
+    <view class="doc-h">五、常见问题</view>
+    <view class="doc-p">· 浏览器页显示「API 离线」→ AdsPower 客户端没启动或没开 Local API。</view>
+    <view class="doc-p">· 环境列表空的 → config.yaml 的 environments 没填环境 ID。</view>
+    <view class="doc-p">· 设备显示「未就绪」→ 那个 AdsPower 环境里没登录闲鱼，登录一次即可。</view>
+    <view class="doc-p">· 浏览器被关了没自动开 → 看门狗没启动，到「浏览器」页点「启动看门狗」。</view>
+  </view>
+
+</view>

@@ -1,0 +1,18 @@
+/* 数据统计（电脑版模板用） */
+.st-dk-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.st-dk-grid .dk-stat {
+  background: #f8fafc;
+}
+
+.st-dk-wide {
+  grid-column: 1 / -1;
+}
+
+.st-dk-profit {
+  color: #047857;
+}

@@ -1,0 +1,54 @@
+.ck-page .card { margin-bottom: 20rpx; }
+.ck-title { font-size: 32rpx; font-weight: 700; color: #111827; }
+.ck-sub { margin-top: 6rpx; font-size: 24rpx; color: #6B7280; }
+.ck-state { display: inline-block; margin-top: 14rpx; padding: 6rpx 16rpx; border-radius: 999rpx; font-size: 24rpx; font-weight: 700; background: #F3F4F6; color: #374151; }
+.ck-state--ok { background: #D1FAE5; color: #047857; }
+.ck-state--warn { background: #FEF3C7; color: #B45309; }
+.ck-state--bad { background: #FEE2E2; color: #B91C1C; }
+.ck-row { display: flex; align-items: center; justify-content: space-between; gap: 16rpx; }
+.ck-h { font-size: 30rpx; font-weight: 700; color: #111827; margin-bottom: 10rpx; }
+.ck-tip { margin-top: 8rpx; font-size: 24rpx; color: #6B7280; line-height: 1.5; }
+.ck-muted { font-size: 24rpx; color: #9CA3AF; }
+.ck-empty { padding: 16rpx 0; font-size: 26rpx; color: #9CA3AF; }
+.ck-gap { margin-top: 16rpx; }
+.ck-mini { margin: 0; padding: 0 24rpx; height: 60rpx; line-height: 60rpx; font-size: 24rpx; }
+.ck-danger { color: #B91C1C; border-color: #FCA5A5; }
+.ck-link { color: #2563EB; font-size: 24rpx; margin-left: auto; }
+.ck-ev { display: flex; align-items: center; gap: 12rpx; padding: 12rpx 0; border-bottom: 1rpx solid #F3F4F6; }
+.ck-ev__by { font-size: 24rpx; color: #6B7280; }
+.ck-preview { font-size: 26rpx; color: #374151; line-height: 1.7; }
+.ck-item { padding: 18rpx 0; border-bottom: 1rpx solid #F3F4F6; }
+.ck-item--on { background: #F9FAFB; margin: 0 -24rpx; padding: 18rpx 24rpx; }
+.ck-item__title { flex: 1; font-size: 28rpx; color: #111827; }
+.ck-hint { margin-top: 6rpx; font-size: 24rpx; color: #B45309; }
+.ck-edit { margin-top: 12rpx; }
+.ck-guide { font-size: 24rpx; color: #374151; background: #EFF6FF; padding: 12rpx 16rpx; border-radius: 10rpx; line-height: 1.5; margin-bottom: 12rpx; }
+.ck-results { display: flex; gap: 12rpx; margin: 12rpx 0; }
+.ck-result { flex: 1; text-align: center; padding: 16rpx 0; border: 2rpx solid #D1D5DB; border-radius: 12rpx; font-size: 26rpx; color: #374151; background: #fff; }
+.ck-result--on { border-color: #2563EB; background: #EFF6FF; color: #1D4ED8; font-weight: 700; }
+.ck-photos { display: flex; flex-wrap: wrap; gap: 12rpx; margin-top: 12rpx; }
+.ck-photo { position: relative; width: 140rpx; height: 140rpx; border-radius: 10rpx; overflow: visible; }
+.ck-photo__img { width: 140rpx; height: 140rpx; border-radius: 10rpx; background: #F3F4F6; }
+.ck-photo__x { position: absolute; top: -10rpx; right: -10rpx; width: 36rpx; height: 36rpx; line-height: 34rpx; text-align: center; border-radius: 50%; background: rgba(17, 24, 39, 0.72); color: #fff; font-size: 26rpx; }
+.ck-photo--add { display: flex; align-items: center; justify-content: center; border: 2rpx dashed #D1D5DB; color: #6B7280; font-size: 24rpx; background: #fff; }
+.ck-half { flex: 1; margin: 0; }
+.ck-done { margin-top: 20rpx; padding: 16rpx; border-radius: 12rpx; background: #ECFDF5; color: #047857; font-size: 26rpx; }
+.ck-exc { border-left: 8rpx solid #F59E0B; }
+.ck-exc--late { border-left-color: #EF4444; }
+.ck-exc__head { font-size: 28rpx; font-weight: 700; color: #111827; }
+.ck-exc__sub { margin-top: 6rpx; font-size: 24rpx; color: #6B7280; }
+.ck-hist { line-height: 1.7; }
+.ck-mask { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(17, 24, 39, 0.5); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 40rpx; }
+.ck-dialog { background: #fff; border-radius: 20rpx; padding: 32rpx; width: 100%; max-width: 560px; }
+.ck-std { font-size: 24rpx; color: #374151; background: #F9FAFB; padding: 10rpx 16rpx; border-radius: 10rpx; line-height: 1.5; margin-bottom: 10rpx; }
+.ck-video { font-size: 26rpx; color: #2563EB; padding: 12rpx 0; }
+.ck-gapline { margin-bottom: 12rpx; }
+.ck-piece { margin-right: 10rpx; padding: 2rpx 12rpx; border-radius: 8rpx; background: #DBEAFE; color: #1D4ED8; font-size: 24rpx; font-weight: 700; }
+
+/* W11 卖家原话对照 */
+.ck-claim__line { font-size: 26rpx; margin-top: 8rpx; word-break: break-all; }
+.ck-claim__k { display: inline-block; min-width: 72rpx; margin-right: 12rpx; color: #6b7280; }
+.ck-claim__desc { max-height: 240rpx; overflow-y: auto; }
+.ck-risk { background: #fff7ed; color: #b45309; font-size: 26rpx; }
+.ck-dim { display: inline-block; margin-right: 10rpx; padding: 0 10rpx; border-radius: 6rpx; background: #eef2ff; color: #4338ca; font-size: 22rpx; }
+.ck-newp { margin-top: 16rpx; padding: 16rpx; border-radius: 12rpx; background: #fef2f2; color: #b91c1c; font-size: 26rpx; }

@@ -1,0 +1,135 @@
+<!-- 设备账号对账（电脑版）：数字卡片 + 店铺表格；「手动指定设备」换成居中对话框 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">设备账号对账</view>
+      <view class="dk-sub">真机开机自检会自动上报「本机登录的闲鱼」并绑定。这里看每个店铺是否有一台在线、就绪、且登录了正确闲鱼的设备；异常的点「手动指定」兜底</view>
+    </view>
+  </view>
+
+  <view wx:if="{{!loading && !error}}" class="dk-stats">
+    <view class="dk-stat">
+      <view class="dk-stat__label">启用店铺</view>
+      <view class="dk-stat__value">{{total}}</view>
+    </view>
+    <view class="dk-stat">
+      <view class="dk-stat__label">就绪</view>
+      <view class="dk-stat__value gb-dk-ok">{{readyCount}}</view>
+    </view>
+    <view class="dk-stat">
+      <view class="dk-stat__label">待处理</view>
+      <view class="dk-stat__value {{issueCount ? 'gb-dk-warn' : ''}}">{{issueCount}}</view>
+      <view class="dk-stat__hint">已配置账号、但不是就绪的店铺</view>
+    </view>
+  </view>
+
+  <view class="dk-card">
+    <view wx:if="{{loading}}" class="dk-empty">加载中…</view>
+    <view wx:elif="{{error}}" class="dk-empty">
+      <view class="gb-dk-err">{{error}}</view>
+      <view class="dk-btn gb-dk-retry" bindtap="load">重试</view>
+    </view>
+    <view wx:elif="{{!shops.length}}" class="dk-empty">暂无启用的销售店铺</view>
+    <view wx:else class="dk-table-wrap">
+      <table class="dk-table">
+        <thead>
+          <tr>
+            <th>店铺</th>
+            <th>期望闲鱼</th>
+            <th>状态</th>
+            <th>设备</th>
+            <th>说明</th>
+            <th class="dk-ops">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            wx:for="{{shops}}"
+            wx:key="shop_id"
+            class="dk-tr--click"
+            data-nick="{{item.nick}}"
+            data-label="{{item.shop_label}}"
+            data-device-id="{{item.device_id}}"
+            bindtap="openSheet"
+          >
+            <td class="dk-nowrap"><text class="dk-cell-main">{{item.shop_label}}</text></td>
+            <td class="dk-nowrap">
+              <text wx:if="{{item.nick}}">{{item.nick}}</text>
+              <text wx:else class="dk-muted">未配置</text>
+            </td>
+            <td class="dk-nowrap"><text class="dk-tag {{item._st.tag}}">{{item._st.label}}</text></td>
+            <td class="dk-nowrap">
+              <block wx:if="{{item.bound}}">
+                <text>{{item.device_name || '设备'}}</text>
+                <text class="dk-tag gb-dk-kind {{item.device_kind === 'browser' ? 'dk-tag--purple' : 'dk-tag--blue'}}">{{item.device_kind === 'browser' ? '浏览器' : '手机'}}</text>
+              </block>
+              <text wx:else class="dk-muted">未绑定</text>
+            </td>
+            <td class="gb-dk-hint">{{item._st.hint}}</td>
+            <td class="dk-ops">
+              <text
+                class="dk-link"
+                data-nick="{{item.nick}}"
+                data-label="{{item.shop_label}}"
+                data-device-id="{{item.device_id}}"
+                catchtap="openSheet"
+              >手动指定</text>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </view>
+  </view>
+
+  <!-- 手动指定设备 -->
+  <view wx:if="{{sheetVisible}}" class="gb-dk-mask" bindtap="closeSheet">
+    <view class="gb-dk-dialog" catchtap="noop">
+      <view class="dk-card__head">
+        <text>{{activeLabel}} · 手动指定设备 <text class="dk-sub">期望闲鱼：{{activeNick}}</text></text>
+        <text class="gb-dk-x" bindtap="closeSheet">×</text>
+      </view>
+      <view class="gb-dk-body">
+        <view wx:if="{{devLoading}}" class="dk-empty">设备加载中…</view>
+        <view wx:elif="{{!devices.length}}" class="dk-empty">群控暂无设备，请先注册真机或启动 AdsPower 执行端</view>
+        <table wx:else class="dk-table">
+          <thead>
+            <tr>
+              <th>设备</th>
+              <th>类型</th>
+              <th>状态</th>
+              <th class="dk-ops"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              wx:for="{{devices}}"
+              wx:key="id"
+              class="dk-tr--click {{item.id === activeDeviceId ? 'dk-tr--on' : ''}}"
+              data-id="{{item.id}}"
+              bindtap="pickDevice"
+            >
+              <td class="dk-nowrap">
+                <text class="gb-dk-dot {{item.online ? 'gb-dk-dot--on' : ''}}"></text>
+                <text class="dk-cell-main">{{item.name}}</text>
+              </td>
+              <td>{{item.kind === 'browser' ? '浏览器环境 · AdsPower' : (item.brand || '') + ' ' + (item.model || '')}}</td>
+              <td class="dk-nowrap">{{item.online ? '在线' : '离线'}}</td>
+              <td class="dk-ops">
+                <text wx:if="{{item.id === activeDeviceId}}" class="gb-dk-cur">✓ 当前</text>
+                <text wx:else class="dk-link">指定这台</text>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </view>
+      <view class="gb-dk-foot">
+        <view
+          wx:if="{{activeDeviceId}}"
+          class="dk-btn dk-btn--danger gb-dk-unbind {{binding ? 'dk-btn--disabled' : ''}}"
+          bindtap="unbind"
+        >{{binding ? '处理中…' : '解绑设备'}}</view>
+        <view class="dk-btn" bindtap="closeSheet">取消</view>
+      </view>
+    </view>
+  </view>
+</view>

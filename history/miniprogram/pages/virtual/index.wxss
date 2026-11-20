@@ -1,0 +1,56 @@
+/* 虚拟商品：浅色，红 = 现在动手，黄 = 注意 */
+.vg-page .vg-card { margin-top: 20rpx; padding: 24rpx; border-radius: 24rpx; background: #FFFFFF; box-shadow: 0 2rpx 12rpx rgba(15, 23, 42, 0.06); }
+.vg-page .vg-head { display: flex; align-items: center; justify-content: space-between; gap: 16rpx; }
+.vg-page .vg-head__l { display: flex; align-items: center; gap: 12rpx; }
+.vg-page .vg-title { font-size: 38rpx; font-weight: 800; color: #111827; }
+.vg-page .vg-q { width: 40rpx; height: 40rpx; line-height: 40rpx; text-align: center; border-radius: 50%; border: 1rpx solid #D1D5DB; color: #6B7280; font-size: 22rpx; }
+.vg-page .vg-help { margin-top: 14rpx; padding: 16rpx 20rpx; border-radius: 14rpx; background: #F9FAFB; font-size: 24rpx; color: #4B5563; line-height: 1.6; }
+.vg-page .vg-btn { padding: 14rpx 26rpx; border-radius: 14rpx; background: #2563EB; color: #FFFFFF; font-size: 26rpx; font-weight: 700; text-align: center; }
+.vg-page .vg-btn--wide { margin-top: 18rpx; }
+.vg-page .vg-btn--off { background: #D1D5DB; color: #6B7280; }
+.vg-page .vg-new__t { font-size: 30rpx; font-weight: 800; color: #111827; margin-bottom: 10rpx; }
+.vg-page .vg-in { margin-top: 12rpx; padding: 16rpx 20rpx; border-radius: 14rpx; border: 1rpx solid #E5E7EB; background: #F9FAFB; font-size: 26rpx; min-height: 40rpx; }
+.vg-page .vg-row2 { display: flex; gap: 12rpx; }
+.vg-page .vg-row2 .vg-in { flex: 1; min-width: 0; }
+.vg-page .vg-pick { color: #374151; }
+.vg-page .vg-hints { display: flex; flex-wrap: wrap; gap: 10rpx; margin-top: 10rpx; }
+.vg-page .vg-hint { padding: 4rpx 14rpx; border-radius: 999rpx; background: #EFF6FF; color: #1D4ED8; font-size: 22rpx; }
+.vg-page .vg-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 12rpx; }
+.vg-page .vg-lv, .vg-page .vg-chip { padding: 6rpx 18rpx; border-radius: 999rpx; font-size: 24rpx; font-weight: 700; background: #F3F4F6; color: #374151; border: 2rpx solid transparent; }
+.vg-page .vg-lv--red { color: #B91C1C; background: #FEF2F2; }
+.vg-page .vg-lv--yellow { color: #92400E; background: #FFFBEB; }
+.vg-page .vg-lv--green { color: #065F46; background: #ECFDF5; }
+.vg-page .is-on { border-color: currentColor; }
+.vg-page .vg-chip.is-on { border-color: #2563EB; color: #1D4ED8; }
+.vg-page .vg-search { flex: 1; min-width: 240rpx; padding: 10rpx 18rpx; border-radius: 999rpx; background: #F3F4F6; font-size: 24rpx; }
+.vg-page .vg-tree { display: flex; flex-wrap: wrap; gap: 12rpx; margin-top: 18rpx; }
+.vg-page .vg-tree--2 { margin-top: 12rpx; padding-top: 12rpx; border-top: 1rpx dashed #E5E7EB; }
+.vg-page .vg-node { padding: 10rpx 20rpx; border-radius: 14rpx; background: #F9FAFB; border: 2rpx solid #E5E7EB; font-size: 25rpx; font-weight: 700; color: #111827; }
+.vg-page .vg-node--2 { font-weight: 600; font-size: 24rpx; }
+.vg-page .vg-node.is-on { border-color: #2563EB; background: #EFF6FF; color: #1D4ED8; }
+.vg-page .vg-n { margin-left: 8rpx; color: #9CA3AF; font-weight: 600; }
+.vg-page .vg-auto { display: flex; justify-content: space-between; align-items: center; gap: 12rpx; margin-top: 18rpx; padding-top: 16rpx; border-top: 1rpx solid #F3F4F6; font-size: 24rpx; color: #4B5563; }
+.vg-page .vg-on { color: #059669; font-weight: 800; }
+.vg-page .vg-off { color: #6B7280; font-weight: 800; }
+.vg-page .vg-link { color: #2563EB; font-weight: 700; }
+.vg-page .vg-empty { margin-top: 60rpx; text-align: center; color: #9CA3AF; font-size: 26rpx; }
+.vg-page .vg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(520rpx, 1fr)); gap: 20rpx; margin-top: 20rpx; }
+.vg-page .vg-item { padding: 24rpx; border-radius: 24rpx; background: #FFFFFF; box-shadow: 0 2rpx 12rpx rgba(15, 23, 42, 0.06); border-left: 10rpx solid #059669; }
+.vg-page .vg-item--red { border-left-color: #DC2626; }
+.vg-page .vg-item--yellow { border-left-color: #F59E0B; }
+.vg-page .vg-item__h { display: flex; flex-wrap: wrap; gap: 10rpx; align-items: center; }
+.vg-page .vg-badge { padding: 4rpx 16rpx; border-radius: 999rpx; font-size: 22rpx; font-weight: 800; color: #FFFFFF; }
+.vg-page .vg-badge--red { background: #DC2626; }
+.vg-page .vg-badge--yellow { background: #F59E0B; color: #3B2600; }
+.vg-page .vg-badge--green { background: #059669; }
+.vg-page .vg-tag { padding: 2rpx 12rpx; border-radius: 10rpx; font-size: 22rpx; font-weight: 600; background: #F3F4F6; color: #374151; }
+.vg-page .vg-item__n { margin-top: 12rpx; font-size: 30rpx; font-weight: 800; color: #111827; line-height: 1.35; }
+.vg-page .vg-item__s { margin-top: 6rpx; font-size: 22rpx; color: #6B7280; }
+.vg-page .vg-item__f { display: flex; gap: 12rpx; margin-top: 14rpx; }
+.vg-page .vg-item__f > view { flex: 1; padding: 12rpx 14rpx; border-radius: 14rpx; background: #F9FAFB; }
+.vg-page .vg-k { display: block; font-size: 20rpx; color: #6B7280; }
+.vg-page .vg-v { display: block; margin-top: 4rpx; font-size: 28rpx; font-weight: 800; color: #111827; }
+.vg-page .vg-iss { display: flex; align-items: center; gap: 10rpx; margin-top: 10rpx; font-size: 23rpx; color: #1F2937; line-height: 1.45; }
+.vg-page .vg-dot { flex: none; width: 12rpx; height: 12rpx; border-radius: 50%; }
+.vg-page .vg-dot--red { background: #DC2626; }
+.vg-page .vg-dot--yellow { background: #F59E0B; }

@@ -1,0 +1,189 @@
+.gc-bind-page .gc-summary {
+  margin-top: 16rpx;
+  font-size: 26rpx;
+  color: var(--text-secondary);
+}
+
+.gc-bind-page .gc-summary-ok {
+  color: var(--color-success);
+}
+
+.gc-bind-page .gc-summary-warn {
+  color: var(--color-danger);
+}
+
+.gc-bind-page .gc-empty {
+  padding: 48rpx 0;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 26rpx;
+}
+
+.gc-bind-page .gc-empty--err {
+  color: var(--color-danger);
+}
+
+/* 店铺行 */
+.gc-bind-page .gc-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid var(--border);
+}
+
+.gc-bind-page .gc-row:last-child {
+  border-bottom: none;
+}
+
+.gc-bind-page .gc-row-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.gc-bind-page .gc-row-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--text-title);
+}
+
+.gc-bind-page .gc-row-sub {
+  margin-top: 6rpx;
+  font-size: 24rpx;
+  color: var(--text-secondary);
+}
+
+.gc-bind-page .gc-row-dev {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: var(--text-primary);
+}
+
+.gc-bind-page .gc-row-hint {
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.gc-bind-page .gc-off-hint {
+  color: var(--text-muted);
+}
+
+.gc-bind-page .gc-row-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8rpx;
+  flex-shrink: 0;
+  margin-left: 16rpx;
+}
+
+.gc-bind-page .gc-row-act {
+  font-size: 24rpx;
+  color: var(--color-primary);
+}
+
+.gc-dot {
+  display: inline-block;
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+  margin-right: 8rpx;
+  vertical-align: middle;
+}
+
+.gc-dot--on {
+  background: var(--color-success);
+}
+
+.gc-dot--off {
+  background: var(--text-muted);
+}
+
+/* bottom-sheet */
+.gc-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+}
+
+.gc-sheet {
+  width: 100%;
+  max-height: 78vh;
+  background: var(--bg-card);
+  border-radius: 24rpx 24rpx 0 0;
+  padding: 24rpx 32rpx calc(32rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+}
+
+.gc-sheet-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 16rpx;
+  border-bottom: 1rpx solid var(--border);
+}
+
+.gc-sheet-cancel {
+  font-size: 28rpx;
+  color: var(--text-secondary);
+}
+
+.gc-sheet-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--text-title);
+}
+
+.gc-sheet-nick {
+  font-size: 24rpx;
+  color: var(--text-muted);
+  max-width: 200rpx;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.gc-sheet-body {
+  max-height: 52vh;
+  overflow-y: auto;
+  padding: 8rpx 0;
+}
+
+.gc-dev {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid var(--border);
+}
+
+.gc-dev--on {
+  color: var(--color-primary);
+}
+
+.gc-dev-name {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: var(--text-title);
+}
+
+.gc-dev-sub {
+  margin-top: 6rpx;
+  font-size: 24rpx;
+  color: var(--text-secondary);
+}
+
+.gc-dev-check {
+  font-size: 26rpx;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.gc-unbind {
+  margin-top: 24rpx;
+  color: var(--color-danger);
+  border-color: var(--color-danger);
+}

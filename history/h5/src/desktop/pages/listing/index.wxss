@@ -1,0 +1,30 @@
+/* 群控中心（电脑版模板用的补充；通用样式在 src/styles/desktop.css） */
+.lc-dk-thumb-wrap {
+  position: relative;
+  flex: none;
+}
+
+.lc-dk-loc-badge {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  padding: 0 4px;
+  border-radius: 0 4px 0 4px;
+  background: rgba(17, 24, 39, 0.7);
+  color: #fff;
+  font-size: 10px;
+  line-height: 16px;
+}
+
+.lc-dk-thumb-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+/* 设备 / 任务面板是手机组件（自带卡片），限一下宽度，别拉成一整条 */
+.lc-dk-panel {
+  max-width: 960px;
+}

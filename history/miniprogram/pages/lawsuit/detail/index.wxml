@@ -1,0 +1,135 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<!-- 三类材料模块通用模板 -->
+<template name="media-module">
+  <view class="card">
+    <view class="card-head"><view class="card-head-main">{{title}}</view></view>
+    <view class="evidence-grid">
+      <view wx:for="{{items}}" wx:key="*this" class="evidence-item">
+        <media-thumb url="{{item}}" preview-url="{{item}}" size="fill" preview="{{true}}" />
+        <view
+          class="evidence-del"
+          catchtap="removeMedia"
+          data-field="{{field}}"
+          data-display="{{display}}"
+          data-index="{{index}}"
+        >×</view>
+      </view>
+      <view
+        class="evidence-add"
+        catchtap="addMedia"
+        data-field="{{field}}"
+        data-display="{{display}}"
+        data-dir="{{dir}}"
+      >
+        <view class="evidence-add-plus">+</view>
+        <view class="evidence-add-text">图片 / 视频</view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<view class="page-wrap page-wrap--no-tab law-detail-page">
+  <!-- 创建模式：未绑定采购单时显示搜索 -->
+  <block wx:if="{{!isEdit && !boundOrder}}">
+    <view class="card filter-card">
+      <view class="search-bar">
+        <input
+          class="search-input"
+          placeholder="采购单号 / 商品名 / 闲鱼单号…"
+          value="{{q}}"
+          bindinput="onQInput"
+          confirm-type="search"
+          bindconfirm="onSearchPO"
+        />
+      </view>
+      <button class="btn search-btn" bindtap="onSearchPO" loading="{{searching}}">搜索采购单</button>
+      <view class="form-note">搜索并选择一条采购单进行绑定。</view>
+    </view>
+
+    <view class="card po-result-card" wx:if="{{searched}}">
+      <view class="po-result-head">{{isSearchResult ? '搜索结果' : '最近采购单'}}</view>
+      <view wx:if="{{!poList.length && !searching}}" class="empty">
+        <view class="e-icon">—</view>
+        <view class="e-text">{{isSearchResult ? '未找到采购单' : '暂无采购单'}}</view>
+      </view>
+      <scroll-view wx:else scroll-y class="po-scroll">
+        <view
+          wx:for="{{poList}}"
+          wx:key="id"
+          class="list-item"
+          data-id="{{item.id}}"
+          bindtap="bindPO"
+        >
+          <view class="li-thumb-wrap">
+            <media-thumb
+              wx:if="{{item.product_image_thumb}}"
+              url="{{item.product_image_thumb}}"
+              preview-url="{{item.product_image}}"
+              size="small"
+            />
+            <view wx:else class="li-icon">{{item.product_name[0] || '采'}}</view>
+          </view>
+          <view class="li-info">
+            <view class="li-title">{{item.product_name}}</view>
+            <view class="li-sub">{{item.order_no}}{{item.spec ? ' · ' + item.spec : ''}}</view>
+          </view>
+          <view class="li-meta">
+            <view class="li-price">¥{{fmt.money(item.unit_price)}}</view>
+            <view class="tag tag-info li-tag">选择</view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+  </block>
+
+  <!-- 已绑定采购单 / 编辑模式：显示采购单一行 -->
+  <view class="card" wx:if="{{boundOrder}}">
+    <view class="card-head card-head--split">
+      <view class="card-head-main">
+        采购单
+        <view wx:if="{{isEdit}}" class="tag {{statusCls}} head-extra">{{statusText}}</view>
+      </view>
+      <view wx:if="{{!isEdit}}" class="po-unbind" bindtap="unbindPO">重新选择</view>
+    </view>
+    <view wx:if="{{isEdit && lawsuitNo}}" class="law-no">起诉单号：{{lawsuitNo}}</view>
+    <view class="list-item law-po-row" bindtap="openBoundPO">
+      <view class="li-thumb-wrap">
+        <media-thumb
+          wx:if="{{boundOrder.product_image_thumb}}"
+          url="{{boundOrder.product_image_thumb}}"
+          preview-url="{{boundOrder.product_image}}"
+          size="small"
+        />
+        <view wx:else class="li-icon">{{boundOrder.product_name[0] || '采'}}</view>
+      </view>
+      <view class="li-info">
+        <view class="li-title">{{boundOrder.product_name}}</view>
+        <view class="li-sub">{{boundOrder.order_no}}{{boundOrder.spec ? ' · ' + boundOrder.spec : ''}}</view>
+        <view class="li-sub li-sub--link">查看采购单详情 ›</view>
+      </view>
+      <view class="li-meta">
+        <view class="li-price">¥{{fmt.money(boundOrder.unit_price)}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 材料模块：先提交证据，再补律师回复/法院材料/判决结果 -->
+  <block wx:if="{{boundOrder}}">
+    <template is="media-module" data="{{title:'提交证据材料', field:'evidenceMedia', display:'evidenceDisplay', dir:'lawsuit/evidence/', items:evidenceDisplay}}" />
+    <template is="media-module" data="{{title:'提交律师回复', field:'lawyerMedia', display:'lawyerDisplay', dir:'lawsuit/lawyer/', items:lawyerDisplay}}" />
+    <view wx:if="{{!isEdit}}" class="form-note law-create-note">新建起诉单需先上传证据材料；员工整理后可补充律师回复，法院材料 / 判决结果可创建后再编辑补传。</view>
+    <block wx:if="{{isEdit}}">
+      <template is="media-module" data="{{title:'提交法院材料', field:'courtMedia', display:'courtDisplay', dir:'lawsuit/court/', items:courtDisplay}}" />
+      <template is="media-module" data="{{title:'提交判决结果', field:'judgmentMedia', display:'judgmentDisplay', dir:'lawsuit/judgment/', items:judgmentDisplay}}" />
+    </block>
+
+    <view class="law-submit-bar">
+      <view wx:if="{{isEdit}}" class="law-btn-row">
+        <button class="law-delete-btn law-btn-del" bindtap="onDelete">删除起诉单</button>
+        <button class="btn-primary law-btn-save" loading="{{submitting}}" bindtap="onSubmit">保存</button>
+      </view>
+      <button wx:else class="btn-primary btn-block" loading="{{submitting}}" bindtap="onSubmit">创建起诉单</button>
+    </view>
+  </block>
+</view>

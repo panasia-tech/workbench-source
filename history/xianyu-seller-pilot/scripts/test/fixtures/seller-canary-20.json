@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "kind": "canary20",
+  "frozenAt": "2026-08-23T02:30:00.000+08:00",
+  "count": 20,
+  "source": {
+    "file": "resources/seller-index/canonical-sellers.manifest.json",
+    "count": 9977,
+    "sha256": "70fe11bb0e77d78b9af857e506df84d285f277ef4a48b26fa5aec86c76dfe20f"
+  },
+  "hashAlgorithm": "sha256(sortedSellerIdsJoinedByNewline)",
+  "manifestHash": "10e30787d45c9a0db17d9d948e1b8ffdee223542a31a454f48d8408aa4915fb5",
+  "sellers": [
+    {
+      "id": "100191158",
+      "url": "https://www.goofish.com/personal?userId=100191158"
+    },
+    {
+      "id": "100205781",
+      "url": "https://www.goofish.com/personal?userId=100205781"
+    },
+    {
+      "id": "100294447",
+      "url": "https://www.goofish.com/personal?userId=100294447"
+    },
+    {
+      "id": "100315412",
+      "url": "https://www.goofish.com/personal?userId=100315412"
+    },
+    {
+      "id": "100428440",
+      "url": "https://www.goofish.com/personal?userId=100428440"
+    },
+    {
+      "id": "1007551670",
+      "url": "https://www.goofish.com/personal?userId=1007551670"
+    },
+    {
+      "id": "100992524",
+      "url": "https://www.goofish.com/personal?userId=100992524"
+    },
+    {
+      "id": "1012144693",
+      "url": "https://www.goofish.com/personal?userId=1012144693"
+    },
+    {
+      "id": "1013023235",
+      "url": "https://www.goofish.com/personal?userId=1013023235"
+    },
+    {
+      "id": "10132439",
+      "url": "https://www.goofish.com/personal?userId=10132439"
+    },
+    {
+      "id": "1013668925",
+      "url": "https://www.goofish.com/personal?userId=1013668925"
+    },
+    {
+      "id": "101375995",
+      "url": "https://www.goofish.com/personal?userId=101375995"
+    },
+    {
+      "id": "1013894930",
+      "url": "https://www.goofish.com/personal?userId=1013894930"
+    },
+    {
+      "id": "1013953882",
+      "url": "https://www.goofish.com/personal?userId=1013953882"
+    },
+    {
+      "id": "1014596528",
+      "url": "https://www.goofish.com/personal?userId=1014596528"
+    },
+    {
+      "id": "1015223835",
+      "url": "https://www.goofish.com/personal?userId=1015223835"
+    },
+    {
+      "id": "1015226375",
+      "url": "https://www.goofish.com/personal?userId=1015226375"
+    },
+    {
+      "id": "1015581040",
+      "url": "https://www.goofish.com/personal?userId=1015581040"
+    },
+    {
+      "id": "1016035150",
+      "url": "https://www.goofish.com/personal?userId=1016035150"
+    },
+    {
+      "id": "1016149126",
+      "url": "https://www.goofish.com/personal?userId=1016149126"
+    }
+  ]
+}

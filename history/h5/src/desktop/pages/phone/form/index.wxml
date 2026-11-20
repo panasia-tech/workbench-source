@@ -1,0 +1,62 @@
+<!-- 手机号信息（电脑版）：字段两栏，套餐详情、备注占满一行；提交放底部操作条。数据、方法和手机版是同一套 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view class="dk-title">{{isEdit ? '编辑手机号' : '新建手机号'}}</view>
+  </view>
+
+  <view class="dk-card">
+    <view class="dk-card__body dk-form">
+      <view class="dk-field">
+        <text class="dk-label dk-label--req">姓名</text>
+        <input class="dk-input" placeholder="姓名" value="{{form.name}}" data-field="name" bindinput="onInput" />
+      </view>
+      <view class="dk-field">
+        <text class="dk-label dk-label--req">号码</text>
+        <input class="dk-input" type="number" placeholder="手机号" value="{{form.phone_number}}" data-field="phone_number" bindinput="onInput" />
+      </view>
+      <view class="dk-field">
+        <text class="dk-label dk-label--req">ICCID</text>
+        <view class="dk-row phf-dk-nowrap">
+          <input class="dk-input dk-grow" placeholder="扫条形码或手动输入" value="{{form.iccid}}" data-field="iccid" bindinput="onInput" maxlength="50" />
+          <view class="dk-btn" catchtap="onScanIccid">扫码</view>
+        </view>
+      </view>
+      <view class="dk-field">
+        <text class="dk-label">运营商</text>
+        <view class="dk-tabs phf-dk-seg">
+          <view
+            wx:for="{{carrierOptions}}"
+            wx:key="*this"
+            class="dk-tab {{form.carrier === item ? 'dk-tab--on' : ''}}"
+            data-index="{{index}}"
+            bindtap="dkPickCarrier"
+          >{{item}}</view>
+        </view>
+      </view>
+      <view class="dk-field">
+        <text class="dk-label">开通时间</text>
+        <picker mode="date" value="{{form.activation_date}}" bindchange="onDateChange">
+          <view class="dk-select">{{form.activation_date || '请选择'}}</view>
+        </picker>
+      </view>
+      <view class="dk-field">
+        <text class="dk-label">闲鱼会员名</text>
+        <input class="dk-input" placeholder="闲鱼会员名" value="{{form.xianyu_member_name}}" data-field="xianyu_member_name" bindinput="onInput" />
+      </view>
+      <view class="dk-field dk-field--full">
+        <text class="dk-label">套餐详情</text>
+        <textarea class="dk-input phf-dk-textarea" placeholder="套餐内容、月租等" value="{{form.plan_details}}" data-field="plan_details" bindinput="onInput" maxlength="500" />
+      </view>
+      <view class="dk-field dk-field--full">
+        <text class="dk-label">备注</text>
+        <textarea class="dk-input phf-dk-textarea" placeholder="备注（选填）" value="{{form.remark}}" data-field="remark" bindinput="onInput" maxlength="500" />
+      </view>
+    </view>
+  </view>
+
+  <view class="dk-actionbar phf-dk-bar">
+    <button class="dk-btn dk-btn--primary phf-dk-btn" bindtap="onSubmit" disabled="{{submitting}}" loading="{{submitting}}">
+      {{submitting ? '提交中…' : (isEdit ? '保存修改' : '创建')}}
+    </button>
+  </view>
+</view>

@@ -1,0 +1,58 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<view class="page-wrap page-wrap--no-tab stats-page">
+  <view class="card">
+    <view class="card-head">数据统计</view>
+    <view class="pill-group stats-periods">
+      <text
+        wx:for="{{periods}}"
+        wx:key="key"
+        class="pill {{period === item.key ? 'active' : ''}}"
+        data-period="{{item.key}}"
+        bindtap="pickPeriod"
+      >{{item.label}}</text>
+    </view>
+  </view>
+
+  <view class="card stats-section">
+    <view class="card-head">采购</view>
+    <view class="stats-grid">
+      <view class="stat-card">
+        <view class="st-num {{fmt.numScale(stats.purchase_count)}}">{{stats.purchase_count || 0}}</view>
+        <view class="st-label">采购单数</view>
+      </view>
+      <view class="stat-card stat-card--money">
+        <view class="st-num {{fmt.numScale('¥' + fmt.statMoney(stats.purchase_amount))}}">¥{{fmt.statMoney(stats.purchase_amount)}}</view>
+        <view class="st-label">采购金额</view>
+      </view>
+      <view class="stat-card">
+        <view class="st-num {{fmt.numScale(stats.inspection_count)}}">{{stats.inspection_count || 0}}</view>
+        <view class="st-label">验货完成</view>
+      </view>
+      <view class="stat-card">
+        <view class="st-num {{fmt.numScale(stats.inbound_count)}}">{{stats.inbound_count || 0}}</view>
+        <view class="st-label">入库数量</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card stats-section">
+    <view class="card-head">销售</view>
+    <view class="stats-grid">
+      <view class="stat-card">
+        <view class="st-num {{fmt.numScale(stats.outbound_count)}}">{{stats.outbound_count || 0}}</view>
+        <view class="st-label">出库数量</view>
+      </view>
+      <view class="stat-card stat-card--money">
+        <view class="st-num {{fmt.numScale('¥' + fmt.statMoney(stats.sales_amount))}}">¥{{fmt.statMoney(stats.sales_amount)}}</view>
+        <view class="st-label">销售额</view>
+      </view>
+      <view class="stat-card stat-card--money stat-card--wide">
+        <view class="st-num {{fmt.numScale('¥' + fmt.statMoney(stats.gross_profit))}}">¥{{fmt.statMoney(stats.gross_profit)}}</view>
+        <view class="st-label">毛利</view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="stats-loading">加载中...</view>
+</view>

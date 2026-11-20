@@ -1,0 +1,31 @@
+/* 出库记录选单：选中高亮、已退置灰 */
+/* 列表限高（复用 profile feed-scroll 范式）：翻页在 scroll-view 内触发，
+   不占满页面，选中后表单始终在一屏可达范围内 */
+.ret-pick-scroll {
+  max-height: 720rpx;
+}
+
+.ret-pick-item--selected {
+  background: #EFF6FF;
+  border-radius: 16rpx;
+}
+
+.ret-pick-item--disabled {
+  opacity: 0.5;
+}
+
+.ret-pick-check {
+  width: 44rpx;
+  height: 44rpx;
+  line-height: 44rpx;
+  text-align: center;
+  border-radius: 50%;
+  background: #2563EB;
+  color: #fff;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.ret-submit-card {
+  margin-bottom: 40rpx;
+}

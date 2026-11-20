@@ -1,0 +1,7 @@
+.switch-list-page .more-card {
+  margin-top: 24rpx;
+}
+
+.switch-list-page .more-card .btn {
+  margin: 0;
+}

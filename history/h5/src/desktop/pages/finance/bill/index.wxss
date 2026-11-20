@@ -1,0 +1,59 @@
+/* 经营账单（电脑版模板用；类名 bill-dk-*） */
+.bill-dk-top {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr;
+  gap: 12px;
+}
+
+.bill-dk-profit {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  border-color: #047857;
+  color: #fff;
+}
+
+.bill-dk-profit .dk-stat__label,
+.bill-dk-profit .dk-muted,
+.bill-dk-profit .dk-stat__hint {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.bill-dk-profit .dk-stat__value {
+  font-size: 28px;
+}
+
+.bill-dk-net .dk-stat__value {
+  color: #047857;
+}
+
+.bill-dk-neg,
+.bill-dk-net .bill-dk-neg {
+  color: #dc2626;
+}
+
+.bill-dk-parts {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.bill-dk-part {
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: #f8fafc;
+}
+
+.bill-dk-part__v {
+  margin-top: 2px;
+  font-size: 16px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.bill-dk-out {
+  color: #b91c1c;
+}
+
+.bill-dk-in {
+  color: #047857;
+  font-weight: 600;
+}

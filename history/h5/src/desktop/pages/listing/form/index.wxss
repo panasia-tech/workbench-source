@@ -1,0 +1,170 @@
+/* 填写上架信息（电脑版模板用的补充；通用样式在 src/styles/desktop.css） */
+.lf-dk-split {
+  grid-template-columns: minmax(0, 1fr) 380px;
+}
+
+.lf-dk-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.lf-dk-ta {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.lf-dk-desc {
+  min-height: 120px;
+}
+
+.lf-dk-img {
+  position: relative;
+}
+
+.lf-dk-img__pic {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.lf-dk-img__first {
+  position: absolute;
+  left: 6px;
+  top: 6px;
+  padding: 0 6px;
+  border-radius: 4px;
+  background: rgba(37, 99, 235, 0.9);
+  color: #fff;
+  font-size: 11px;
+  line-height: 18px;
+}
+
+.lf-dk-img__x {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(17, 24, 39, 0.6);
+  color: #fff;
+  font-size: 15px;
+  line-height: 22px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.lf-dk-img__x:hover {
+  background: #dc2626;
+}
+
+.lf-dk-add {
+  aspect-ratio: 1;
+  border: 1px dashed #cbd5e1;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  color: #6b7280;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.lf-dk-add:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+.lf-dk-add__plus {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.lf-dk-ai {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.lf-dk-slots {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.lf-dk-slot {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lf-dk-slot__pic {
+  display: block;
+  width: 100%;
+  height: 128px;
+  border-radius: 6px;
+  background: #f3f4f6;
+  cursor: zoom-in;
+}
+
+.lf-dk-slot__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  font-size: 13px;
+  cursor: default;
+}
+
+.lf-dk-jobs {
+  max-height: 520px;
+  overflow-y: auto;
+}
+
+.lf-dk-job {
+  display: flex;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0f1f3;
+}
+
+.lf-dk-job:last-child {
+  border-bottom: 0;
+}
+
+.lf-dk-job__pic {
+  cursor: zoom-in;
+}
+
+.lf-dk-job__ph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1d4ed8;
+  font-size: 12px;
+  background: #eff6ff;
+}
+
+.lf-dk-job__ph--bad {
+  color: #b91c1c;
+  background: #fef2f2;
+}
+
+.lf-dk-job__ops {
+  margin-top: 6px;
+}
+
+.lf-dk-err {
+  margin-top: 2px;
+  font-size: 12px;
+  color: #dc2626;
+}
+
+/* 内容不满一屏时操作条也贴在底部 */
+.lf-dk-bar {
+  margin-top: auto;
+}

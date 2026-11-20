@@ -1,0 +1,70 @@
+<!-- 虚拟商品：分类一层层点，每张产品卡红黄绿；照销售工作台交付包「虚拟选品」，浅色 -->
+<view class="page-wrap page-wrap--no-tab vg-page">
+  <view class="vg-head">
+    <view class="vg-head__l">
+      <text class="vg-title">虚拟商品</text>
+      <text class="vg-q" bindtap="toggleHelp">?</text>
+    </view>
+    <view class="vg-btn" bindtap="toggleNew">{{showNew ? '收起' : '＋ 新建产品卡'}}</view>
+  </view>
+  <view wx:if="{{showHelp}}" class="vg-help">卡券、会员这类不发快递的货。一张产品卡从研究走到在售要 8 步，每步交证据；主管批了才算在售。在售的卡填上闲鱼链接，买家一付款就会出现在卡上和「今天」里，点「发码」把码发进聊天。红的是现在要动手的：付款超过 1 分钟没发、卡券用完。</view>
+
+  <view wx:if="{{showNew}}" class="vg-card vg-new">
+    <view class="vg-new__t">新建产品卡</view>
+    <input class="vg-in" placeholder="商品名，如：麦当劳 鸡牛双堡双人餐电子券" value="{{form.name}}" data-k="name" bindinput="onForm" />
+    <view class="vg-row2">
+      <input class="vg-in" placeholder="品牌（可不填）" value="{{form.brand}}" data-k="brand" bindinput="onForm" />
+      <input class="vg-in" placeholder="规格一句话（可不填）" value="{{form.face}}" data-k="face" bindinput="onForm" />
+    </view>
+    <input class="vg-in" placeholder="分类：A 码券类 › A1 餐饮券 › 麦当劳" value="{{form.path}}" data-k="path" bindinput="onForm" />
+    <view class="vg-hints">
+      <text wx:for="{{pathHints}}" wx:key="*this" class="vg-hint" data-p="{{item}}" bindtap="pickHint">{{item}}</text>
+    </view>
+    <picker mode="selector" range="{{deliveryLabels}}" value="{{form.delivery}}" data-k="delivery" bindchange="onForm">
+      <view class="vg-in vg-pick">怎么交付：{{deliveryLabels[form.delivery]}} ›</view>
+    </picker>
+    <view class="vg-btn vg-btn--wide {{busy ? 'vg-btn--off' : ''}}" bindtap="create">建好，从第 1 步开始</view>
+  </view>
+
+  <view class="vg-card">
+    <view class="vg-bar">
+      <text class="vg-lv vg-lv--red {{level === 'red' ? 'is-on' : ''}}" data-lv="red" bindtap="pickLevel">红 {{counts.red}}</text>
+      <text class="vg-lv vg-lv--yellow {{level === 'yellow' ? 'is-on' : ''}}" data-lv="yellow" bindtap="pickLevel">黄 {{counts.yellow}}</text>
+      <text class="vg-lv vg-lv--green {{level === 'green' ? 'is-on' : ''}}" data-lv="green" bindtap="pickLevel">绿 {{counts.green}}</text>
+      <text class="vg-chip {{mine ? 'is-on' : ''}}" bindtap="toggleMine">只看我负责的</text>
+      <input class="vg-search" placeholder="搜名字 / 编号 / 品牌" value="{{q}}" bindinput="onSearch" />
+    </view>
+    <view class="vg-tree">
+      <text wx:for="{{tree}}" wx:key="name" class="vg-node {{l1 === item.name ? 'is-on' : ''}}" data-name="{{item.name}}" bindtap="pickL1">{{item.name}}<text class="vg-n">{{item.n}}</text></text>
+    </view>
+    <view wx:if="{{l2s.length}}" class="vg-tree vg-tree--2">
+      <text wx:for="{{l2s}}" wx:key="name" class="vg-node vg-node--2 {{l2 === item.name ? 'is-on' : ''}}" data-name="{{item.name}}" bindtap="pickL2">{{item.name}}<text class="vg-n">{{item.n}}</text></text>
+    </view>
+    <view wx:if="{{isAdmin}}" class="vg-auto">
+      <text>自动发货总开关：<text class="{{auto ? 'vg-on' : 'vg-off'}}">{{auto ? '开着' : '关着'}}</text>（产品卡上也要开）</text>
+      <text class="vg-link" bindtap="toggleAuto">{{auto ? '关掉' : '打开'}}</text>
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="list-footer">加载中…</view>
+  <view wx:elif="{{!shown.length}}" class="vg-empty">{{items.length ? '这一类现在没有产品卡' : '还没有产品卡：点右上角「新建产品卡」，从领线索开始'}}</view>
+
+  <view class="vg-grid">
+    <view wx:for="{{shown}}" wx:key="id" class="vg-item vg-item--{{item.level}}" data-id="{{item.id}}" bindtap="open">
+      <view class="vg-item__h">
+        <text class="vg-badge vg-badge--{{item.level}}">{{item.badge}}</text>
+        <text class="vg-tag">{{item.state_label}}</text>
+        <text class="vg-tag">{{item.listing_type === 'follow' ? '跟卖' : '路测'}}</text>
+      </view>
+      <view class="vg-item__n">{{item.name}}</view>
+      <view class="vg-item__s">{{item.code}} · {{item.pathText}}</view>
+      <view class="vg-item__s">{{item.stepText}} · {{item.owner}}</view>
+      <view class="vg-item__f">
+        <view><text class="vg-k">售价</text><text class="vg-v">{{item.price ? '¥' + item.price : '待定'}}</text></view>
+        <view><text class="vg-k">单笔毛利</text><text class="vg-v">{{item.profit !== null ? '¥' + item.profit : '—'}}</text></view>
+        <view><text class="vg-k">{{item.stock ? '库存' : '交付'}}</text><text class="vg-v">{{item.stock ? item.stock.avail + ' 张' : '不囤码'}}</text></view>
+      </view>
+      <view wx:for="{{item.issues}}" wx:for-item="it" wx:key="text" class="vg-iss"><text class="vg-dot vg-dot--{{it.level}}"></text>{{it.text}}</view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,92 @@
+<view class="page-wrap page-wrap--no-tab sku-migration-page lap-page">
+  <view wx:if="{{settings}}" class="lap-banner {{settings.required ? 'lap-banner--on' : ''}}" bindtap="openSetting">
+    <text>{{settings.required ? '审批已打开' : '审批没打开，照旧发布'}} · 最低价 = 成本 × {{settings.min_cost_ratio}}<text wx:if="{{settings.auto_publish}}"> · 提交即发布</text></text>
+    <text wx:if="{{isAdmin}}" class="lap-banner__link">设置 ›</text>
+  </view>
+
+  <view class="search-bar">
+    <view class="search-input-wrap">
+      <input
+        class="search-input search-input--with-scan"
+        placeholder="货号 / 商品名"
+        value="{{q}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+      />
+      <view class="search-scan-icon" catchtap="onScanSearch" aria-role="button">
+        <view class="scan-frame"></view>
+        <view class="scan-line"></view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card filter-card">
+    <scroll-view class="lap-tab-scroll" scroll-x enable-flex>
+      <view class="status-segment">
+        <text
+          wx:for="{{tabs}}"
+          wx:key="key"
+          class="status-seg {{tab === item.key ? 'active' : ''}}"
+          data-key="{{item.key}}"
+          bindtap="switchTab"
+        >{{item.label}} {{counts[item.key] === undefined ? '' : counts[item.key]}}</text>
+      </view>
+    </scroll-view>
+    <view class="filter-meta"><text>共 {{total}} 件</text></view>
+  </view>
+
+  <view class="card list-card">
+    <view wx:if="{{!list.length && !loading}}" class="empty">
+      <view class="e-icon">—</view>
+      <view class="e-text">没有要处理的货</view>
+    </view>
+
+    <view wx:for="{{list}}" wx:key="sku_code" class="sku-item lap-item" data-code="{{item.sku_code}}" bindtap="openSku">
+      <view class="lap-item__row">
+        <image wx:if="{{item.thumb}}" class="lap-thumb" src="{{item.thumb}}" mode="aspectFill" />
+        <view wx:else class="lap-thumb lap-thumb--none">无图</view>
+        <view class="lap-item__body">
+          <view class="sku-item__head">
+            <view class="sku-item__code">{{item.sku_code}}</view>
+            <text class="lap-arrow">›</text>
+          </view>
+          <view class="sku-item__name">{{item.product_name}}</view>
+          <view wx:if="{{!costHidden}}" class="sku-item__sub">成本 {{item.cost_price ? '¥' + item.cost_price : '没有'}}</view>
+        </view>
+      </view>
+      <view class="lap-cells">
+        <view wx:for="{{item.shopCells}}" wx:for-item="c" wx:key="id" class="lap-cell {{c.cls}}">
+          <text class="lap-cell__name">{{c.label}}</text>
+          <text>{{c.state}}</text>
+          <text wx:if="{{c.fix}}" class="lap-cell__fix">在架</text>
+        </view>
+      </view>
+    </view>
+    <view wx:if="{{loading}}" class="list-footer">加载中…</view>
+    <view wx:elif="{{noMore && list.length}}" class="list-footer">没有更多了</view>
+  </view>
+
+  <view wx:if="{{settingOpen}}" class="editor-mask" bindtap="closeSetting" catchtouchmove="noop">
+    <view class="editor-sheet" catchtap="noop">
+      <view class="editor-sheet__head">
+        <text class="editor-sheet__cancel" bindtap="closeSetting">关闭</text>
+        <text class="editor-sheet__title">上架审批设置</text>
+        <text class="editor-sheet__confirm" bindtap="saveRatio">保存比例</text>
+      </view>
+      <view class="editor-sheet__body">
+        <view class="lap-set-row">
+          <text>{{settings.required ? '已打开：只发批过的价和图' : '没打开：照旧发布'}}</text>
+          <button class="btn btn-sm {{settings.required ? 'btn-outline' : 'btn-primary'}}" bindtap="toggleRequired">{{settings.required ? '关掉' : '打开'}}</button>
+        </view>
+        <view class="lap-set-row">
+          <text>提交即发布（不用再点通过）</text>
+          <button class="btn btn-sm {{settings.auto_publish ? 'btn-primary' : 'btn-outline'}}" bindtap="toggleAutoPublish">{{settings.auto_publish ? '已开' : '没开'}}</button>
+        </view>
+        <view class="lap-set-row">
+          <text>最低价 = 成本 ×</text>
+          <input class="lap-ratio" type="digit" value="{{ratioInput}}" bindinput="onRatioInput" />
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

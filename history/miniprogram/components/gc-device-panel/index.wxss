@@ -1,0 +1,136 @@
+.gc-device-page .gc-summary {
+  margin-top: 16rpx;
+  font-size: 26rpx;
+  color: var(--text-secondary);
+}
+
+.gc-device-page .gc-summary-ok {
+  color: var(--color-success);
+}
+
+.gc-device-page .gc-empty {
+  padding: 48rpx 0;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 26rpx;
+}
+
+.gc-device-page .gc-empty--err {
+  color: var(--color-danger);
+}
+
+/* 设备行 */
+.gc-device-page .gc-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid var(--border);
+}
+
+.gc-device-page .gc-row:last-child {
+  border-bottom: none;
+}
+
+.gc-device-page .gc-row-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.gc-device-page .gc-row-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--text-title);
+}
+
+.gc-device-page .gc-row-sub {
+  margin-top: 6rpx;
+  font-size: 24rpx;
+  color: var(--text-secondary);
+}
+
+.gc-device-page .gc-row-hint {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.gc-device-page .gc-row-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8rpx;
+  flex-shrink: 0;
+  margin-left: 16rpx;
+}
+
+.gc-device-page .gc-row-act {
+  font-size: 24rpx;
+  color: var(--color-primary);
+}
+
+.gc-device-page .gc-dot {
+  display: inline-block;
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+  margin-right: 8rpx;
+  vertical-align: middle;
+}
+
+.gc-device-page .gc-dot--on {
+  background: var(--color-success);
+}
+
+.gc-device-page .gc-dot--off {
+  background: var(--text-muted);
+}
+
+.gc-device-page .gc-dot--err {
+  background: var(--color-danger);
+}
+
+/* 分类 tab(全部/手机/浏览器) */
+.gc-device-page .gc-kind-tabs {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 20rpx;
+}
+
+.gc-device-page .gc-kind-tab {
+  padding: 8rpx 24rpx;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  color: var(--text-secondary);
+  background: var(--bg-neutral);
+  border: 1rpx solid var(--border);
+}
+
+.gc-device-page .gc-kind-tab--on {
+  color: #fff;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* 设备类型标签(浏览器/手机) */
+.gc-device-page .gc-kind {
+  margin-left: 12rpx;
+  padding: 2rpx 12rpx;
+  border-radius: 8rpx;
+  font-size: 20rpx;
+  font-weight: 500;
+  vertical-align: middle;
+}
+
+.gc-device-page .gc-kind--browser {
+  color: var(--color-primary);
+  background: var(--color-primary-bg);
+}
+
+.gc-device-page .gc-kind--android {
+  color: var(--color-success);
+  background: rgba(7, 193, 96, 0.1);
+}
+.gc-row-link { color: #1565C0; margin-left: 12rpx; }

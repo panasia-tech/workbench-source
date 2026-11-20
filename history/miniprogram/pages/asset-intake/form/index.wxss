@@ -1,0 +1,28 @@
+@import "../../warehouse/edit/index.wxss";
+
+.intake-form-page .card-head .req {
+  font-size: 20rpx;
+  color: #DC2626;
+  margin-left: 8rpx;
+}
+
+.intake-locked {
+  font-size: 24rpx;
+  color: #6B7280;
+}
+
+.intake-form-page .upload-zone--compact {
+  padding: 32rpx;
+  margin-bottom: 0;
+}
+
+.intake-form-page .uz-plus {
+  font-size: 48rpx;
+  line-height: 1;
+  color: #9CA3AF;
+  margin-bottom: 8rpx;
+}
+
+.intake-form-page .sku-edit-save {
+  margin-bottom: 48rpx;
+}

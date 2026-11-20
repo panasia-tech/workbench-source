@@ -1,0 +1,107 @@
+<view class="page-wrap page-wrap--no-tab">
+  <view class="card">
+    <view class="card-head">上架信息 · {{skuCode}}</view>
+    <view class="form-group">
+      <text class="form-label">标题</text>
+      <input class="input" data-key="title" value="{{form.title}}" bindinput="onInput" />
+    </view>
+    <view class="form-group">
+      <text class="form-label">描述</text>
+      <textarea class="input input--textarea" auto-height="{{true}}" data-key="desc" value="{{form.desc}}" bindinput="onInput" />
+    </view>
+    <view class="form-group">
+      <text class="form-label">闲鱼成色</text>
+      <picker mode="selector" range="{{stuffOptions}}" range-key="label" value="{{stuffIndex}}" bindchange="onStuffPick">
+        <view class="input picker-value">{{stuffLabel || '请选择成色'}}</view>
+      </picker>
+    </view>
+    <view class="form-row">
+      <view class="form-group">
+        <text class="form-label">售价 ¥</text>
+        <input class="input" type="digit" data-key="price" value="{{form.price}}" bindinput="onInput" />
+      </view>
+      <view class="form-group">
+        <text class="form-label">原价 ¥</text>
+        <input class="input" type="digit" data-key="original_price" value="{{form.original_price}}" bindinput="onInput" />
+      </view>
+    </view>
+    <view class="form-group">
+      <text class="form-label">快递费 ¥（选填）</text>
+      <input class="input" type="digit" data-key="express_fee" value="{{form.express_fee}}" bindinput="onInput" placeholder="不填按 0 元运费" />
+    </view>
+    <view class="form-group redraw-group" wx:if="{{productTypeOptions.length}}">
+      <text class="form-label">主图 AI 生图</text>
+      <view class="redraw-tag-row">
+        <text class="redraw-tag-prefix">种类类型</text>
+        <picker mode="selector" range="{{productTypeOptions}}" range-key="name" value="{{productTypeIndex}}" bindchange="onProductTypePick">
+          <view class="input picker-value redraw-tag-pick">{{productTypeLabel || '请选择'}}</view>
+        </picker>
+      </view>
+      <view class="redraw-t2i">
+        <text class="redraw-t2i-label">AI 提示词（按种类默认，可修改）</text>
+        <textarea
+          class="input input--textarea redraw-t2i-input"
+          auto-height="{{true}}"
+          placeholder="选择种类后自动带出提示词，也可手动修改"
+          value="{{t2iPrompt}}"
+          bindinput="onT2iPromptInput"
+        />
+      </view>
+      <view class="redraw-slots">
+        <view class="redraw-slot" wx:for="{{[0, 1]}}" wx:key="*this">
+          <view class="redraw-thumb">
+            <image wx:if="{{form.images[item]}}" class="redraw-thumb-img" src="{{imageDisplayUrls[item] || form.images[item]}}" mode="aspectFill" />
+            <view wx:else class="redraw-thumb-empty">主图 {{item + 1}}</view>
+          </view>
+          <button
+            class="btn btn-sm btn-outline redraw-btn"
+            data-slot="{{item}}"
+            bindtap="submitRedraw"
+            disabled="{{submittingRedraw || !form.images[item] || !t2iPrompt}}"
+          >{{form.images[item] ? '重绘主图 ' + (item + 1) : '请先上传主图'}}</button>
+        </view>
+      </view>
+      <button
+        class="btn btn-sm btn-outline redraw-btn redraw-t2i-btn"
+        bindtap="submitTextToImage"
+        disabled="{{submittingRedraw || !t2iPrompt}}"
+      >{{submittingRedraw ? '提交中…' : '文字生图（无需原图）'}}</button>
+      <view class="form-note">选种类自动带出提示词；有原图点「重绘主图」按原图改，无原图点「文字生图」直接生成。结果可在下方记录查看并应用。</view>
+
+      <view class="redraw-records" wx:if="{{redrawJobs.length}}">
+        <view class="redraw-records-head">重绘记录</view>
+        <view class="redraw-record" wx:for="{{redrawJobs}}" wx:key="id">
+          <view class="redraw-record-thumb">
+            <image
+              wx:if="{{item.status === 'SUCCEEDED' && item.result_url}}"
+              class="redraw-record-img"
+              src="{{item.result_url}}"
+              mode="aspectFill"
+              bindtap="previewRedraw"
+              data-url="{{item.result_url}}"
+            />
+            <view wx:elif="{{item.status === 'PENDING' || item.status === 'RUNNING'}}" class="redraw-record-loading">生成中…</view>
+            <view wx:else class="redraw-record-failed">失败</view>
+          </view>
+          <view class="redraw-record-info">
+            <view class="redraw-record-line"><text class="redraw-record-tag">{{item.tag_name || '—'}}</text><text class="redraw-record-status redraw-record-status--{{item.status}}">{{item.status}}</text></view>
+            <view class="redraw-record-line redraw-record-line--sub">{{item.created_at}}</view>
+            <view class="redraw-record-line redraw-record-line--err" wx:if="{{item.error_message}}">{{item.error_message}}</view>
+          </view>
+          <view class="redraw-record-actions" wx:if="{{item.status === 'SUCCEEDED'}}">
+            <button class="btn btn-sm btn-outline" data-id="{{item.id}}" data-slot="0" bindtap="applyJobToSlot">应用主图1</button>
+            <button class="btn btn-sm btn-outline" data-id="{{item.id}}" data-slot="1" bindtap="applyJobToSlot">应用主图2</button>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">商品图 ({{form.images.length}})</text>
+      <button class="btn btn-sm btn-block" bindtap="addImage">添加图片</button>
+      <media-gallery wx:if="{{form.images.length}}" urls="{{form.images}}" display-urls="{{imageDisplayUrls}}" thumb-size="medium" removable bind:remove="removeImage" />
+    </view>
+    <button class="btn btn-block" style="margin-top: 24rpx;" bindtap="saveOnly">保存</button>
+    <button class="btn-primary btn-block" style="margin-top: 16rpx;" bindtap="submit">保存并去上架</button>
+  </view>
+</view>

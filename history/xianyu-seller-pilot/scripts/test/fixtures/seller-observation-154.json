@@ -1,0 +1,631 @@
+{
+  "schemaVersion": 1,
+  "kind": "observation154",
+  "frozenAt": "2026-08-23T02:30:00.000+08:00",
+  "count": 154,
+  "source": {
+    "file": "resources/seller-index/canonical-sellers.manifest.json",
+    "count": 9977,
+    "sha256": "70fe11bb0e77d78b9af857e506df84d285f277ef4a48b26fa5aec86c76dfe20f"
+  },
+  "hashAlgorithm": "sha256(sortedSellerIdsJoinedByNewline)",
+  "manifestHash": "c44dc5c7bf91234ad122ab756ac54abc61926139920a24bffab5f050a0fe0ee4",
+  "sellers": [
+    {
+      "id": "100191158",
+      "url": "https://www.goofish.com/personal?userId=100191158"
+    },
+    {
+      "id": "100205781",
+      "url": "https://www.goofish.com/personal?userId=100205781"
+    },
+    {
+      "id": "100294447",
+      "url": "https://www.goofish.com/personal?userId=100294447"
+    },
+    {
+      "id": "100315412",
+      "url": "https://www.goofish.com/personal?userId=100315412"
+    },
+    {
+      "id": "100428440",
+      "url": "https://www.goofish.com/personal?userId=100428440"
+    },
+    {
+      "id": "1007551670",
+      "url": "https://www.goofish.com/personal?userId=1007551670"
+    },
+    {
+      "id": "100992524",
+      "url": "https://www.goofish.com/personal?userId=100992524"
+    },
+    {
+      "id": "1012144693",
+      "url": "https://www.goofish.com/personal?userId=1012144693"
+    },
+    {
+      "id": "1013023235",
+      "url": "https://www.goofish.com/personal?userId=1013023235"
+    },
+    {
+      "id": "10132439",
+      "url": "https://www.goofish.com/personal?userId=10132439"
+    },
+    {
+      "id": "1013668925",
+      "url": "https://www.goofish.com/personal?userId=1013668925"
+    },
+    {
+      "id": "101375995",
+      "url": "https://www.goofish.com/personal?userId=101375995"
+    },
+    {
+      "id": "1013894930",
+      "url": "https://www.goofish.com/personal?userId=1013894930"
+    },
+    {
+      "id": "1013953882",
+      "url": "https://www.goofish.com/personal?userId=1013953882"
+    },
+    {
+      "id": "1014596528",
+      "url": "https://www.goofish.com/personal?userId=1014596528"
+    },
+    {
+      "id": "1015223835",
+      "url": "https://www.goofish.com/personal?userId=1015223835"
+    },
+    {
+      "id": "1015226375",
+      "url": "https://www.goofish.com/personal?userId=1015226375"
+    },
+    {
+      "id": "1015581040",
+      "url": "https://www.goofish.com/personal?userId=1015581040"
+    },
+    {
+      "id": "1016035150",
+      "url": "https://www.goofish.com/personal?userId=1016035150"
+    },
+    {
+      "id": "1016149126",
+      "url": "https://www.goofish.com/personal?userId=1016149126"
+    },
+    {
+      "id": "1016562244",
+      "url": "https://www.goofish.com/personal?userId=1016562244"
+    },
+    {
+      "id": "1017290604",
+      "url": "https://www.goofish.com/personal?userId=1017290604"
+    },
+    {
+      "id": "1017537008",
+      "url": "https://www.goofish.com/personal?userId=1017537008"
+    },
+    {
+      "id": "1018018386",
+      "url": "https://www.goofish.com/personal?userId=1018018386"
+    },
+    {
+      "id": "1018052450",
+      "url": "https://www.goofish.com/personal?userId=1018052450"
+    },
+    {
+      "id": "1018226906",
+      "url": "https://www.goofish.com/personal?userId=1018226906"
+    },
+    {
+      "id": "1018749807",
+      "url": "https://www.goofish.com/personal?userId=1018749807"
+    },
+    {
+      "id": "1018784966",
+      "url": "https://www.goofish.com/personal?userId=1018784966"
+    },
+    {
+      "id": "1019690650",
+      "url": "https://www.goofish.com/personal?userId=1019690650"
+    },
+    {
+      "id": "1019897185",
+      "url": "https://www.goofish.com/personal?userId=1019897185"
+    },
+    {
+      "id": "1020685731",
+      "url": "https://www.goofish.com/personal?userId=1020685731"
+    },
+    {
+      "id": "1020858059",
+      "url": "https://www.goofish.com/personal?userId=1020858059"
+    },
+    {
+      "id": "10209036",
+      "url": "https://www.goofish.com/personal?userId=10209036"
+    },
+    {
+      "id": "1021237407",
+      "url": "https://www.goofish.com/personal?userId=1021237407"
+    },
+    {
+      "id": "1022429547",
+      "url": "https://www.goofish.com/personal?userId=1022429547"
+    },
+    {
+      "id": "1023573721",
+      "url": "https://www.goofish.com/personal?userId=1023573721"
+    },
+    {
+      "id": "1024241210",
+      "url": "https://www.goofish.com/personal?userId=1024241210"
+    },
+    {
+      "id": "1024270985",
+      "url": "https://www.goofish.com/personal?userId=1024270985"
+    },
+    {
+      "id": "1024298103",
+      "url": "https://www.goofish.com/personal?userId=1024298103"
+    },
+    {
+      "id": "1024492258",
+      "url": "https://www.goofish.com/personal?userId=1024492258"
+    },
+    {
+      "id": "1025089964",
+      "url": "https://www.goofish.com/personal?userId=1025089964"
+    },
+    {
+      "id": "1025121818",
+      "url": "https://www.goofish.com/personal?userId=1025121818"
+    },
+    {
+      "id": "1025451539",
+      "url": "https://www.goofish.com/personal?userId=1025451539"
+    },
+    {
+      "id": "1026624949",
+      "url": "https://www.goofish.com/personal?userId=1026624949"
+    },
+    {
+      "id": "1026807184",
+      "url": "https://www.goofish.com/personal?userId=1026807184"
+    },
+    {
+      "id": "1027531055",
+      "url": "https://www.goofish.com/personal?userId=1027531055"
+    },
+    {
+      "id": "1027799651",
+      "url": "https://www.goofish.com/personal?userId=1027799651"
+    },
+    {
+      "id": "1027882758",
+      "url": "https://www.goofish.com/personal?userId=1027882758"
+    },
+    {
+      "id": "1028090751",
+      "url": "https://www.goofish.com/personal?userId=1028090751"
+    },
+    {
+      "id": "1028218018",
+      "url": "https://www.goofish.com/personal?userId=1028218018"
+    },
+    {
+      "id": "1028428479",
+      "url": "https://www.goofish.com/personal?userId=1028428479"
+    },
+    {
+      "id": "1028733539",
+      "url": "https://www.goofish.com/personal?userId=1028733539"
+    },
+    {
+      "id": "1029214422",
+      "url": "https://www.goofish.com/personal?userId=1029214422"
+    },
+    {
+      "id": "1030229922",
+      "url": "https://www.goofish.com/personal?userId=1030229922"
+    },
+    {
+      "id": "1031021415",
+      "url": "https://www.goofish.com/personal?userId=1031021415"
+    },
+    {
+      "id": "1031204873",
+      "url": "https://www.goofish.com/personal?userId=1031204873"
+    },
+    {
+      "id": "103138018",
+      "url": "https://www.goofish.com/personal?userId=103138018"
+    },
+    {
+      "id": "1031773169",
+      "url": "https://www.goofish.com/personal?userId=1031773169"
+    },
+    {
+      "id": "103199035",
+      "url": "https://www.goofish.com/personal?userId=103199035"
+    },
+    {
+      "id": "103282656",
+      "url": "https://www.goofish.com/personal?userId=103282656"
+    },
+    {
+      "id": "1033376043",
+      "url": "https://www.goofish.com/personal?userId=1033376043"
+    },
+    {
+      "id": "1035500302",
+      "url": "https://www.goofish.com/personal?userId=1035500302"
+    },
+    {
+      "id": "1035651829",
+      "url": "https://www.goofish.com/personal?userId=1035651829"
+    },
+    {
+      "id": "1035885558",
+      "url": "https://www.goofish.com/personal?userId=1035885558"
+    },
+    {
+      "id": "1036002566",
+      "url": "https://www.goofish.com/personal?userId=1036002566"
+    },
+    {
+      "id": "1036013585",
+      "url": "https://www.goofish.com/personal?userId=1036013585"
+    },
+    {
+      "id": "103601425",
+      "url": "https://www.goofish.com/personal?userId=103601425"
+    },
+    {
+      "id": "1036593383",
+      "url": "https://www.goofish.com/personal?userId=1036593383"
+    },
+    {
+      "id": "1036929539",
+      "url": "https://www.goofish.com/personal?userId=1036929539"
+    },
+    {
+      "id": "1038206853",
+      "url": "https://www.goofish.com/personal?userId=1038206853"
+    },
+    {
+      "id": "1038289972",
+      "url": "https://www.goofish.com/personal?userId=1038289972"
+    },
+    {
+      "id": "1038295610",
+      "url": "https://www.goofish.com/personal?userId=1038295610"
+    },
+    {
+      "id": "1038715370",
+      "url": "https://www.goofish.com/personal?userId=1038715370"
+    },
+    {
+      "id": "1039163566",
+      "url": "https://www.goofish.com/personal?userId=1039163566"
+    },
+    {
+      "id": "103926220",
+      "url": "https://www.goofish.com/personal?userId=103926220"
+    },
+    {
+      "id": "1039491463",
+      "url": "https://www.goofish.com/personal?userId=1039491463"
+    },
+    {
+      "id": "1039895656",
+      "url": "https://www.goofish.com/personal?userId=1039895656"
+    },
+    {
+      "id": "1040001173",
+      "url": "https://www.goofish.com/personal?userId=1040001173"
+    },
+    {
+      "id": "1040174707",
+      "url": "https://www.goofish.com/personal?userId=1040174707"
+    },
+    {
+      "id": "10403484",
+      "url": "https://www.goofish.com/personal?userId=10403484"
+    },
+    {
+      "id": "1040635533",
+      "url": "https://www.goofish.com/personal?userId=1040635533"
+    },
+    {
+      "id": "1040647525",
+      "url": "https://www.goofish.com/personal?userId=1040647525"
+    },
+    {
+      "id": "1040671219",
+      "url": "https://www.goofish.com/personal?userId=1040671219"
+    },
+    {
+      "id": "10407078",
+      "url": "https://www.goofish.com/personal?userId=10407078"
+    },
+    {
+      "id": "1041093856",
+      "url": "https://www.goofish.com/personal?userId=1041093856"
+    },
+    {
+      "id": "1041125884",
+      "url": "https://www.goofish.com/personal?userId=1041125884"
+    },
+    {
+      "id": "1041280277",
+      "url": "https://www.goofish.com/personal?userId=1041280277"
+    },
+    {
+      "id": "1042270787",
+      "url": "https://www.goofish.com/personal?userId=1042270787"
+    },
+    {
+      "id": "1044085245",
+      "url": "https://www.goofish.com/personal?userId=1044085245"
+    },
+    {
+      "id": "1044515359",
+      "url": "https://www.goofish.com/personal?userId=1044515359"
+    },
+    {
+      "id": "10445580",
+      "url": "https://www.goofish.com/personal?userId=10445580"
+    },
+    {
+      "id": "1046452651",
+      "url": "https://www.goofish.com/personal?userId=1046452651"
+    },
+    {
+      "id": "1046709651",
+      "url": "https://www.goofish.com/personal?userId=1046709651"
+    },
+    {
+      "id": "10474096",
+      "url": "https://www.goofish.com/personal?userId=10474096"
+    },
+    {
+      "id": "1047611017",
+      "url": "https://www.goofish.com/personal?userId=1047611017"
+    },
+    {
+      "id": "1047619461",
+      "url": "https://www.goofish.com/personal?userId=1047619461"
+    },
+    {
+      "id": "1048383684",
+      "url": "https://www.goofish.com/personal?userId=1048383684"
+    },
+    {
+      "id": "1048691955",
+      "url": "https://www.goofish.com/personal?userId=1048691955"
+    },
+    {
+      "id": "1049173510",
+      "url": "https://www.goofish.com/personal?userId=1049173510"
+    },
+    {
+      "id": "1049452222",
+      "url": "https://www.goofish.com/personal?userId=1049452222"
+    },
+    {
+      "id": "1049537358",
+      "url": "https://www.goofish.com/personal?userId=1049537358"
+    },
+    {
+      "id": "104989851",
+      "url": "https://www.goofish.com/personal?userId=104989851"
+    },
+    {
+      "id": "1051632706",
+      "url": "https://www.goofish.com/personal?userId=1051632706"
+    },
+    {
+      "id": "1051938917",
+      "url": "https://www.goofish.com/personal?userId=1051938917"
+    },
+    {
+      "id": "105195054",
+      "url": "https://www.goofish.com/personal?userId=105195054"
+    },
+    {
+      "id": "1052535062",
+      "url": "https://www.goofish.com/personal?userId=1052535062"
+    },
+    {
+      "id": "1052993236",
+      "url": "https://www.goofish.com/personal?userId=1052993236"
+    },
+    {
+      "id": "1053504096",
+      "url": "https://www.goofish.com/personal?userId=1053504096"
+    },
+    {
+      "id": "1053722425",
+      "url": "https://www.goofish.com/personal?userId=1053722425"
+    },
+    {
+      "id": "1053754506",
+      "url": "https://www.goofish.com/personal?userId=1053754506"
+    },
+    {
+      "id": "1054006711",
+      "url": "https://www.goofish.com/personal?userId=1054006711"
+    },
+    {
+      "id": "1054074788",
+      "url": "https://www.goofish.com/personal?userId=1054074788"
+    },
+    {
+      "id": "1054140148",
+      "url": "https://www.goofish.com/personal?userId=1054140148"
+    },
+    {
+      "id": "1054186342",
+      "url": "https://www.goofish.com/personal?userId=1054186342"
+    },
+    {
+      "id": "1054197145",
+      "url": "https://www.goofish.com/personal?userId=1054197145"
+    },
+    {
+      "id": "1056034661",
+      "url": "https://www.goofish.com/personal?userId=1056034661"
+    },
+    {
+      "id": "1056768671",
+      "url": "https://www.goofish.com/personal?userId=1056768671"
+    },
+    {
+      "id": "1056869270",
+      "url": "https://www.goofish.com/personal?userId=1056869270"
+    },
+    {
+      "id": "1056973701",
+      "url": "https://www.goofish.com/personal?userId=1056973701"
+    },
+    {
+      "id": "1057227652",
+      "url": "https://www.goofish.com/personal?userId=1057227652"
+    },
+    {
+      "id": "105754333",
+      "url": "https://www.goofish.com/personal?userId=105754333"
+    },
+    {
+      "id": "1057607320",
+      "url": "https://www.goofish.com/personal?userId=1057607320"
+    },
+    {
+      "id": "10577709",
+      "url": "https://www.goofish.com/personal?userId=10577709"
+    },
+    {
+      "id": "1058665366",
+      "url": "https://www.goofish.com/personal?userId=1058665366"
+    },
+    {
+      "id": "105870915",
+      "url": "https://www.goofish.com/personal?userId=105870915"
+    },
+    {
+      "id": "1058879419",
+      "url": "https://www.goofish.com/personal?userId=1058879419"
+    },
+    {
+      "id": "1060268158",
+      "url": "https://www.goofish.com/personal?userId=1060268158"
+    },
+    {
+      "id": "1060327190",
+      "url": "https://www.goofish.com/personal?userId=1060327190"
+    },
+    {
+      "id": "106070820",
+      "url": "https://www.goofish.com/personal?userId=106070820"
+    },
+    {
+      "id": "1061241651",
+      "url": "https://www.goofish.com/personal?userId=1061241651"
+    },
+    {
+      "id": "1061301048",
+      "url": "https://www.goofish.com/personal?userId=1061301048"
+    },
+    {
+      "id": "1061934499",
+      "url": "https://www.goofish.com/personal?userId=1061934499"
+    },
+    {
+      "id": "1062511637",
+      "url": "https://www.goofish.com/personal?userId=1062511637"
+    },
+    {
+      "id": "1063178566",
+      "url": "https://www.goofish.com/personal?userId=1063178566"
+    },
+    {
+      "id": "1063300572",
+      "url": "https://www.goofish.com/personal?userId=1063300572"
+    },
+    {
+      "id": "106418592",
+      "url": "https://www.goofish.com/personal?userId=106418592"
+    },
+    {
+      "id": "1064696738",
+      "url": "https://www.goofish.com/personal?userId=1064696738"
+    },
+    {
+      "id": "1064739751",
+      "url": "https://www.goofish.com/personal?userId=1064739751"
+    },
+    {
+      "id": "1065589296",
+      "url": "https://www.goofish.com/personal?userId=1065589296"
+    },
+    {
+      "id": "1065838808",
+      "url": "https://www.goofish.com/personal?userId=1065838808"
+    },
+    {
+      "id": "1066205390",
+      "url": "https://www.goofish.com/personal?userId=1066205390"
+    },
+    {
+      "id": "10663654",
+      "url": "https://www.goofish.com/personal?userId=10663654"
+    },
+    {
+      "id": "1067118822",
+      "url": "https://www.goofish.com/personal?userId=1067118822"
+    },
+    {
+      "id": "1067363712",
+      "url": "https://www.goofish.com/personal?userId=1067363712"
+    },
+    {
+      "id": "1067446166",
+      "url": "https://www.goofish.com/personal?userId=1067446166"
+    },
+    {
+      "id": "1067575580",
+      "url": "https://www.goofish.com/personal?userId=1067575580"
+    },
+    {
+      "id": "1068293601",
+      "url": "https://www.goofish.com/personal?userId=1068293601"
+    },
+    {
+      "id": "1068312989",
+      "url": "https://www.goofish.com/personal?userId=1068312989"
+    },
+    {
+      "id": "1068617456",
+      "url": "https://www.goofish.com/personal?userId=1068617456"
+    },
+    {
+      "id": "1068782321",
+      "url": "https://www.goofish.com/personal?userId=1068782321"
+    },
+    {
+      "id": "1069852163",
+      "url": "https://www.goofish.com/personal?userId=1069852163"
+    },
+    {
+      "id": "1069958156",
+      "url": "https://www.goofish.com/personal?userId=1069958156"
+    },
+    {
+      "id": "1070273179",
+      "url": "https://www.goofish.com/personal?userId=1070273179"
+    },
+    {
+      "id": "1070499102",
+      "url": "https://www.goofish.com/personal?userId=1070499102"
+    }
+  ]
+}

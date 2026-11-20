@@ -1,0 +1,9 @@
+/* 手机号管理（电脑版模板用；类名 ph-dk-*） */
+.ph-dk-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+}
+
+.ph-dk-short {
+  max-width: 200px;
+}

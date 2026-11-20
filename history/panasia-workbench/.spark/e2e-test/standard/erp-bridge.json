@@ -1,0 +1,6 @@
+{"cases":[
+  {"id":1,"priority":"p0","description":"打开「我的」页，「ERP 账号绑定」卡可见；填写 ERP 账号 ID e2e-erp-user 和用户名 E2E测试，点绑定按钮，保存成功后卡片显示绑定信息（账号 ID：e2e-erp-user、用户名 E2E测试）"},
+  {"id":2,"priority":"p0","description":"「工作」页出现「ERP 工作台」入口卡，点击「进入」跳到 /work/erp，页面标题「ERP 工作台」可见且 iframe 元素挂载、其 src 含 entry_token= 参数（免登入口 URL 生成成功）"},
+  {"id":3,"priority":"p1","description":"回到「我的」页 ERP 账号绑定卡，点「解绑」按钮，操作完成后绑定信息消失、卡片回到绑定表单（ERP 账号 ID 输入框出现）"},
+  {"id":4,"priority":"p1","description":"解绑后再次进入 /work/erp（从「工作」页点进入），页面显示「尚未绑定 ERP 账号」引导文案与「前往我的绑定」按钮（unbound 引导态）"}
+]}

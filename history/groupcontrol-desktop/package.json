@@ -1,0 +1,38 @@
+{
+  "name": "groupcontrol-desktop",
+  "version": "0.2.0",
+  "description": "群控桌面端:ADB 设备检测 + 保活 + scrcpy 独立屏幕监控弹窗",
+  "main": "loader.js",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win"
+  },
+  "devDependencies": {
+    "electron": "^31.7.7",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.erp.groupcontrol.desktop",
+    "productName": "群控守护",
+    "directories": { "output": "release" },
+    "electronDownload": { "mirror": "https://npmmirror.com/mirrors/electron/" },
+    "files": ["loader.js", "main.js", "preload.js", "code-version.json", "renderer/**/*"],
+    "extraResources": [
+      { "from": "vendor/scrcpy", "to": "scrcpy" },
+      { "from": "vendor/app", "to": "app" }
+    ],
+    "win": {
+      "target": ["nsis"],
+      "artifactName": "群控守护安装包.${ext}"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "群控守护"
+    }
+  }
+}

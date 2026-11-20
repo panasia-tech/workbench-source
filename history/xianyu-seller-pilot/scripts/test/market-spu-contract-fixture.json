@@ -1,0 +1,49 @@
+{
+  "phase": "01.2-api-spu",
+  "contract_version": 1,
+  "status": "CONFIRMED",
+  "confirmed_by": "business-owner",
+  "confirmed_at": "2026-08-25T12:00:00Z",
+  "ordinary_success_policy": "DIRECT_SUCCESS",
+  "schedule": {
+    "startup_trigger": "electron-ready",
+    "interval": "6h",
+    "timezone": "Asia/Shanghai",
+    "expiry_rule": "24h",
+    "mechanism": "polling"
+  },
+  "concurrency_limit": 4,
+  "retry_policy": {
+    "max_attempts": 3,
+    "backoff": "15m"
+  },
+  "risk_pause_resume": "pause on risk and resume after an explicit operator confirmation",
+  "out_of_stock_policy": "PAUSED",
+  "multi_sku_writeback_scope": "all matching SKUs for the stable SPU",
+  "writeback_roles": ["WAREHOUSE", "ADMIN"],
+  "expected_version_field": "updated_at",
+  "idempotency_key_formula": "spu_code:configuration_version:crawl_window",
+  "evidence_backup_policy": "versioned JSONL manifest with SHA-256 before migration and restore readback",
+  "price_writeback_policy": {
+    "mode": "MEDIAN_VALID_MARKET_WITH_COST_FLOOR",
+    "policy_version": "price-policy-v1",
+    "target_field": "SkuListingInfo.price",
+    "candidate_ratio_basis": "COST_PRICE",
+    "candidate_source": "MARKET_OBSERVATION",
+    "candidate_freshness": "24h",
+    "minimum_sample_count": 3,
+    "cost_floor_ratio": 1.0,
+    "max_spread_ratio": 0.25,
+    "spread_formula": "RANGE_OVER_MEDIAN",
+    "rounding_increment": 10,
+    "rounding_mode": "NEAREST",
+    "multi_sku_aggregation": "PER_SKU",
+    "recommendation_formula": "MAX_MEDIAN_OR_COST_FLOOR_THEN_ROUND",
+    "operator_selection": "CANDIDATE_OR_RECOMMENDATION_OR_CUSTOM_ABOVE_FLOOR",
+    "ambiguous_or_missing_behavior": "REVIEW_ONLY",
+    "selection_requires_explicit_confirm": true,
+    "expected_version_field": "SkuListingInfo.updated_at",
+    "idempotency_key_formula": "spu_code:sku_code:preview_id:policy_version:selected_price"
+  },
+  "rollback_policy": "NO_DOWNGRADE_AFTER_EVIDENCE"
+}

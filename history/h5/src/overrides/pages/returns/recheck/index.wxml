@@ -1,0 +1,79 @@
+<view class="page-wrap page-wrap--no-tab rc-page" wx:if="{{loaded}}">
+  <view class="card">
+    <view class="rc-title">{{d.sku.product_name}}</view>
+    <view class="rc-sub">{{d.return.return_no}} · {{d.sku.sku_code}}<text wx:if="{{d.sku.serial_number}}"> · 序列号 {{d.sku.serial_number}}</text></view>
+    <view wx:if="{{d.return.reason}}" class="rc-warn">客户退回原因：{{d.return.reason}}</view>
+    <view wx:if="{{d.finished_at}}" class="rc-state {{d.result === 'OK' ? 'rc-state--ok' : 'rc-state--bad'}}">
+      {{d.result === 'OK' ? '和入库时一致' : '发现问题'}} · {{d.finished_by_name}} · {{d.finished_at}}
+    </view>
+    <view wx:elif="{{d.required}}" class="rc-muted rc-gap-s">退回的货要先复验完才能入库</view>
+  </view>
+
+  <view class="card">
+    <view class="rc-h">逐项复验<text class="rc-muted" wx:if="{{d.started && !d.finished_at}}">（还剩 {{left}} 项）</text></view>
+    <view class="rc-muted rc-gap-s">右边是入库时的结果。入库时通过、这次不通过的，就是退回期间新出的问题。</view>
+    <view wx:for="{{items}}" wx:key="key" class="rc-item {{editingKey === item.key ? 'rc-item--on' : ''}}" data-key="{{item.key}}" bindtap="openItem">
+      <view class="rc-item__head">
+        <text class="rc-item__title">{{index + 1}}. {{item.title}}</text>
+        <text wx:if="{{item.result}}" class="tag {{item.resultClass}}">{{item.resultLabel}}</text>
+        <text wx:if="{{item.changed}}" class="tag tag-danger">新问题</text>
+        <text wx:if="{{item.beforeLabel}}" class="rc-before">入库：{{item.beforeLabel}}</text>
+      </view>
+      <view wx:if="{{item.before_note}}" class="rc-muted">入库时：{{item.before_note}}</view>
+      <view wx:if="{{item.note}}" class="rc-muted">这次：{{item.note}}</view>
+      <block wx:if="{{editingKey === item.key}}">
+        <view wx:if="{{item.guide}}" class="rc-guide">{{item.guide}}</view>
+        <view wx:if="{{item.standard}}" class="rc-guide">判定标准：{{item.standard}}</view>
+        <view class="rc-results">
+          <view wx:for="{{results}}" wx:for-item="r" wx:key="key" class="rc-result {{editing.result === r.key ? 'rc-result--on' : ''}}" data-key="{{r.key}}" catchtap="pickItemResult">{{r.label}}</view>
+        </view>
+        <textarea class="input input--textarea" auto-height="{{true}}" maxlength="300" value="{{editing.note}}" bindinput="onItemNote" catchtap="noop"
+          placeholder="{{editing.result === 'UNTESTABLE' ? '为什么测不了（必填）' : (editing.result === 'FAIL' ? '哪里不行、在什么部位' : '说明（选填）')}}" />
+        <view class="rc-photos">
+          <view wx:for="{{editing.evidence}}" wx:for-item="m" wx:key="raw" class="rc-photo-wrap" data-index="{{index}}" catchtap="removeItemPhoto">
+            <image src="{{m.url}}" mode="aspectFill" class="rc-photo" />
+            <view class="rc-photo-x">×</view>
+          </view>
+          <view class="rc-photo rc-photo--add" catchtap="addItemPhoto">+ 拍照{{item.need_photo ? '（必拍）' : ''}}</view>
+        </view>
+        <button class="btn-primary btn-block rc-gap" loading="{{busy}}" catchtap="saveItem">保存这一项</button>
+      </block>
+    </view>
+    <button wx:if="{{!d.started}}" class="btn-primary btn-block rc-gap" loading="{{busy}}" bindtap="start">开始复验</button>
+  </view>
+
+  <view class="card" wx:if="{{d.started && !d.finished_at}}">
+    <view class="rc-h">复验结论</view>
+    <view class="rc-results">
+      <view class="rc-result {{conclusion === 'OK' ? 'rc-result--ok' : ''}}" data-key="OK" bindtap="pickConclusion">和入库时一致</view>
+      <view class="rc-result {{conclusion === 'PROBLEM' ? 'rc-result--bad' : ''}}" data-key="PROBLEM" bindtap="pickConclusion">发现问题</view>
+    </view>
+    <textarea class="input input--textarea" auto-height="{{true}}" maxlength="300" value="{{note}}" bindinput="onNote"
+      placeholder="{{conclusion === 'PROBLEM' ? '什么问题、在哪个部位（必填）' : '说明（选填）'}}" />
+    <view class="rc-photos">
+      <view wx:for="{{media}}" wx:key="raw" class="rc-photo-wrap" data-index="{{index}}" bindtap="removePhoto">
+        <image src="{{item.url}}" mode="aspectFill" class="rc-photo" />
+        <view class="rc-photo-x">×</view>
+      </view>
+      <view class="rc-photo rc-photo--add" bindtap="addPhoto">+ 拍当前货况</view>
+    </view>
+    <button class="btn-primary btn-block rc-gap" loading="{{busy}}" bindtap="finish">提交复验</button>
+  </view>
+  <view class="card" wx:if="{{d.finished_at && d.note}}">
+    <view class="rc-h">复验说明</view>
+    <view class="rc-line">{{d.note}}</view>
+  </view>
+
+  <view class="card">
+    <view class="rc-h">这件货的历次影像</view>
+    <view wx:if="{{!history.length}}" class="rc-muted">没有照片视频（老货可能没有入库凭证）</view>
+    <view wx:for="{{history}}" wx:key="index" class="rc-hist" data-index="{{index}}" bindtap="preview">
+      <image wx:if="{{!item.is_video}}" src="{{item.url}}" mode="aspectFill" class="rc-hist__img" />
+      <view wx:else class="rc-hist__img rc-hist__video">▶</view>
+      <view class="rc-hist__text">
+        <view><text class="tag tag-info">{{item.stage}}</text> {{item.label || ''}}</view>
+        <view class="rc-muted">{{item.time}}<text wx:if="{{item.note}}"> · {{item.note}}</text></view>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,50 @@
+/* 上手练习：照销售工作台的白卡片；红 = 现在不能过，黄 = 提醒 */
+.pr-page .pr-item__head { display: flex; align-items: center; justify-content: space-between; gap: 16rpx; }
+.pr-page .pr-item__name { font-size: 30rpx; font-weight: 700; color: #111827; }
+.pr-page .pr-facts { display: flex; gap: 16rpx; margin-top: 20rpx; }
+.pr-page .pr-fact { flex: 1; padding: 16rpx; border-radius: 16rpx; background: #F9FAFB; }
+.pr-page .pr-fact__k { font-size: 22rpx; color: #6B7280; }
+.pr-page .pr-fact__v { margin-top: 6rpx; font-size: 28rpx; font-weight: 700; color: #111827; word-break: break-all; }
+.pr-page .pr-fact__sub { font-size: 20rpx; color: #9CA3AF; }
+.pr-page .pr-strong { color: #2563EB; }
+
+.pr-page .pr-steps { display: flex; gap: 12rpx; margin: 24rpx 0; }
+.pr-page .pr-step { flex: 1; display: flex; align-items: center; gap: 10rpx; padding: 16rpx; border-radius: 16rpx; background: #F3F4F6; color: #6B7280; font-size: 24rpx; font-weight: 600; }
+.pr-page .pr-step__no { width: 36rpx; height: 36rpx; line-height: 36rpx; text-align: center; border-radius: 50%; background: #E5E7EB; font-size: 22rpx; flex: none; }
+.pr-page .pr-step--cur { background: #EFF6FF; color: #2563EB; }
+.pr-page .pr-step--cur .pr-step__no { background: #2563EB; color: #FFFFFF; }
+.pr-page .pr-step--done { background: #ECFDF5; color: #047857; }
+.pr-page .pr-step--done .pr-step__no { background: #10B981; color: #FFFFFF; }
+
+.pr-page .pr-q { width: 40rpx; height: 40rpx; line-height: 40rpx; text-align: center; border-radius: 50%; border: 1rpx solid #D1D5DB; color: #6B7280; font-size: 24rpx; }
+.pr-page .pr-learn { font-size: 26rpx; color: #374151; line-height: 1.6; }
+.pr-page .pr-guard { margin-top: 12rpx; padding: 14rpx 18rpx; border-radius: 12rpx; background: #FFFBEB; color: #92400E; font-size: 24rpx; line-height: 1.6; }
+.pr-page .pr-row { display: flex; align-items: center; gap: 16rpx; margin-top: 24rpx; }
+.pr-page .pr-label { font-size: 26rpx; color: #374151; flex: none; }
+.pr-page .pr-price { width: 200rpx; }
+.pr-page .pr-grow { flex: 1; }
+.pr-page .pr-gap { margin-top: 20rpx; }
+.pr-page .pr-reason { margin-top: 12rpx; border-color: #FCA5A5; background: #FEF2F2; }
+.pr-page .pr-err { margin-top: 12rpx; font-size: 24rpx; color: #DC2626; }
+.pr-page .pr-warn { margin-top: 12rpx; font-size: 24rpx; color: #B45309; }
+.pr-page .pr-imgs { display: flex; gap: 16rpx; margin-top: 12rpx; }
+.pr-page .pr-img { flex: 1; height: 140rpx; line-height: 140rpx; text-align: center; border-radius: 16rpx; border: 2rpx dashed #D1D5DB; color: #6B7280; font-size: 26rpx; }
+.pr-page .pr-img--on { border: 2rpx solid #2563EB; background: #EFF6FF; color: #2563EB; font-weight: 700; }
+.pr-page .pr-question { margin-top: 20rpx; font-size: 28rpx; font-weight: 600; color: #111827; line-height: 1.6; }
+.pr-page .pr-opt { margin-top: 16rpx; padding: 20rpx 24rpx; border-radius: 16rpx; border: 1rpx solid #E5E7EB; font-size: 26rpx; color: #374151; }
+.pr-page .pr-opt--on { border-color: #2563EB; background: #EFF6FF; color: #1D4ED8; font-weight: 600; }
+.pr-page .pr-order { margin-top: 20rpx; padding: 16rpx 20rpx; border-radius: 12rpx; background: #F9FAFB; font-size: 26rpx; color: #374151; }
+.pr-page .pr-head { margin-bottom: 20rpx; }
+.pr-page .pr-chip { display: inline-block; padding: 4rpx 16rpx; border-radius: 999rpx; background: #EFF6FF; color: #1D4ED8; font-size: 22rpx; font-weight: 700; }
+.pr-page .pr-h1 { margin-top: 10rpx; font-size: 40rpx; font-weight: 800; color: #111827; }
+.pr-page .pr-iso { margin-top: 12rpx; padding: 14rpx 18rpx; border-radius: 14rpx; background: #F0FDF4; color: #065F46; font-size: 24rpx; line-height: 1.6; }
+.pr-page .pr-done { text-align: center; padding-top: 40rpx; padding-bottom: 40rpx; }
+.pr-page .pr-done__ok { width: 88rpx; height: 88rpx; line-height: 88rpx; margin: 0 auto 16rpx; border-radius: 50%; background: #10B981; color: #FFFFFF; font-size: 44rpx; font-weight: 800; }
+.pr-page .pr-done__btn { margin-top: 24rpx; display: inline-block; width: auto; padding: 0 48rpx; }
+.pr-page .pr-done__t { font-size: 32rpx; font-weight: 800; color: #047857; }
+.pr-page .pr-done__s { margin-top: 8rpx; font-size: 26rpx; color: #374151; }
+.pr-page .pr-staff { display: flex; justify-content: space-between; padding: 16rpx 0; border-top: 1rpx solid #F3F4F6; font-size: 26rpx; }
+.pr-page .pr-ok { color: #047857; font-weight: 600; }
+.pr-page .pr-muted { color: #9CA3AF; font-size: 24rpx; }
+.pr-page .pr-retour { margin-top: 20rpx; }
+.pr-page .pr-link { font-size: 24rpx; color: #2563EB; }

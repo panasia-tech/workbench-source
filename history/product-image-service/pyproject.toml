@@ -1,0 +1,52 @@
+[project]
+name = "product-image-service"
+version = "0.2.0"
+description = "Provider-pluggable product image retrieval API with validation and local storage."
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "beautifulsoup4==4.13.4",
+  "cryptography==45.0.6",
+  "fastapi==0.116.1",
+  "httpx==0.28.1",
+  "imagehash==4.3.2",
+  "pillow==11.3.0",
+  "pydantic-settings==2.10.1",
+  "uvicorn[standard]==0.35.0",
+]
+
+[project.optional-dependencies]
+browser = ["playwright==1.54.0"]
+# 上架用图质量检查(app/quality.py)。rapidocr 要用 --no-deps 装,免得拉进带 GUI 的 opencv-python,见 deploy/jdcloud/Dockerfile
+quality = [
+  "rapidocr-onnxruntime==1.4.4",
+  "onnxruntime>=1.17",
+  "opencv-python-headless>=4.8,<5",
+  "numpy",
+  "pyclipper",
+  "shapely",
+  "six",
+  "PyYAML",
+]
+dev = [
+  "pytest==8.4.1",
+  "pytest-asyncio==1.1.0",
+  "ruff==0.12.8",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[tool.setuptools.package-data]
+app = ["models_data/*.onnx"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["E501", "B008", "UP017"]

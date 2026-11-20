@@ -1,0 +1,72 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<view class="page-wrap page-wrap--no-tab record-page neg-history-page">
+  <view class="card filter-card">
+    <view class="search-bar">
+      <view class="search-input-wrap">
+        <input class="search-input search-input--with-scan" placeholder="货号/商品名/品牌型号/采购单号/库位" value="{{q}}" bindinput="onSearchInput" confirm-type="search" bindconfirm="onSearch" />
+        <view class="search-scan-icon" catchtap="onScanSearch" aria-role="button">
+          <view class="scan-frame"></view>
+          <view class="scan-line"></view>
+        </view>
+      </view>
+    </view>
+    <view class="date-row">
+      <picker mode="date" value="{{dateFrom}}" end="{{dateTo || ''}}" bindchange="onDateFromChange">
+        <view class="date-pill {{dateFrom ? 'date-pill--filled' : ''}}">{{dateFrom || '议价开始日'}}</view>
+      </picker>
+      <text class="date-sep">至</text>
+      <picker mode="date" value="{{dateTo}}" start="{{dateFrom || ''}}" bindchange="onDateToChange">
+        <view class="date-pill {{dateTo ? 'date-pill--filled' : ''}}">{{dateTo || '议价结束日'}}</view>
+      </picker>
+    </view>
+    <view class="status-segment">
+      <text class="status-seg {{status === '' ? 'active' : ''}}" data-status="" bindtap="pickStatus">全部</text>
+      <text class="status-seg {{status === 'IN_STOCK' ? 'active' : ''}}" data-status="IN_STOCK" bindtap="pickStatus">在库</text>
+      <text class="status-seg {{status === 'SHIPPED' ? 'active' : ''}}" data-status="SHIPPED" bindtap="pickStatus">已出库</text>
+    </view>
+    <button class="btn search-btn" bindtap="onSearch">搜索</button>
+    <view class="filter-meta">共 {{total}} 条议价记录</view>
+  </view>
+
+  <view class="card list-card">
+    <view wx:if="{{!list.length && !loading}}" class="empty">
+      <view class="e-icon">—</view>
+      <view class="e-text">暂无议价记录</view>
+    </view>
+    <view
+      wx:for="{{list}}"
+      wx:key="sku_id"
+      class="list-item"
+      data-code="{{item.sku_code}}"
+      bindtap="openDetail"
+    >
+      <view class="li-thumb-wrap">
+        <media-thumb
+          wx:if="{{item.cover_thumb_url || item.cover_url}}"
+          url="{{item.cover_thumb_url || item.cover_url}}"
+          preview-url="{{item.cover_url}}"
+          size="small"
+        />
+        <!-- 没有产品图时,退而显示仓库定位图(找货用),角标区分 -->
+        <block wx:elif="{{item.location_images[0]}}">
+          <media-thumb url="{{item.location_images[0]}}" preview-url="{{item.location_images[0]}}" size="small" />
+          <view class="media-loc-badge">定位</view>
+        </block>
+        <view wx:else class="li-icon">{{item.product_name[0] || '议'}}</view>
+      </view>
+      <view class="li-info">
+        <view class="li-title">{{item.product_name}}</view>
+        <view class="li-sub">{{item.sku_code}}{{item.spec ? ' · ' + item.spec : ''}}</view>
+        <view class="li-sub li-sub--time">议价时间 {{fmt.datetime(item.negotiated_at)}}{{item.negotiator_name ? ' · ' + item.negotiator_name : ''}}</view>
+      </view>
+      <view class="li-meta">
+        <view class="li-price">实收 ¥{{fmt.money(item.final_price)}}</view>
+        <view wx:if="{{item.old_cost}}" class="li-sub li-old-cost">原价 ¥{{fmt.money(item.old_cost)}}</view>
+        <view class="tag {{fmt.statusTag(item.status)}} li-tag">{{fmt.statusLabel(item.status)}}</view>
+      </view>
+    </view>
+    <view wx:if="{{loading}}" class="list-footer">加载中...</view>
+    <view wx:elif="{{noMore && list.length}}" class="list-footer">没有更多了</view>
+  </view>
+</view>

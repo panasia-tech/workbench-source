@@ -1,0 +1,32 @@
+.neg-page .head-extra {
+  margin-left: 12rpx;
+}
+
+.neg-page .card-head .card-head-main {
+  flex: 1;
+}
+
+.neg-page .neg-history-link {
+  font-size: 26rpx;
+  font-weight: 400;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+/* 日期区间右侧的「清除」 */
+.neg-page .date-clear {
+  margin-left: 16rpx;
+  font-size: 26rpx;
+  color: var(--color-text-secondary, #6B7280);
+}
+
+/* 待召回快递列表顶部说明 */
+.neg-page .recall-hint {
+  margin: 8rpx 0 16rpx;
+  padding: 16rpx 20rpx;
+  font-size: 24rpx;
+  line-height: 1.5;
+  color: var(--color-text-secondary, #6B7280);
+  background: var(--color-fill-light, #F5F6F8);
+  border-radius: 12rpx;
+}

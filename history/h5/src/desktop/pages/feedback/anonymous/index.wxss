@@ -1,0 +1,107 @@
+/* 匿名反馈（电脑版模板用；类名 fb-dk-*） */
+.fb-dk-split {
+  grid-template-columns: minmax(0, 1fr) 400px;
+}
+
+.fb-dk-textarea {
+  width: 100%;
+  min-height: 180px;
+}
+
+.fb-dk-gallery {
+  grid-template-columns: repeat(auto-fill, 112px);
+}
+
+.fb-dk-item {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #f3f4f6;
+}
+
+.fb-dk-item media-thumb,
+.fb-dk-item :deep(.media-thumb) {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+}
+
+.fb-dk-del {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(17, 24, 39, 0.65);
+  color: #fff;
+  font-size: 14px;
+  line-height: 22px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.fb-dk-add {
+  aspect-ratio: 1;
+  border: 1px dashed #cbd5e1;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  cursor: pointer;
+  background: #fff;
+}
+
+.fb-dk-add:hover {
+  border-color: #2563eb;
+}
+
+.fb-dk-add__plus {
+  font-size: 26px;
+  line-height: 1;
+  color: #9ca3af;
+}
+
+.fb-dk-foot {
+  border-top: 1px solid #f0f1f3;
+}
+
+.fb-dk-tip {
+  font-weight: 400;
+}
+
+.fb-dk-sample {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0f1f3;
+  cursor: pointer;
+}
+
+.fb-dk-sample:last-child {
+  border-bottom: 0;
+}
+
+.fb-dk-sample:hover {
+  background: #f8fafc;
+}
+
+.fb-dk-sample__text {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #4b5563;
+}
+
+button.fb-dk-btn {
+  margin: 0;
+  line-height: normal;
+  font-size: 13px;
+  border-radius: 6px;
+}
+
+button.fb-dk-btn::after {
+  display: none;
+}

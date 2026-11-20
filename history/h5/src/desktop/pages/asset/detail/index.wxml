@@ -1,0 +1,116 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<!-- 资产详情（电脑版）：左边信息分组，右边图片和时间；编辑、删除放标题右边 -->
+<view class="dk-page" wx:if="{{device}}">
+  <view class="dk-head">
+    <view>
+      <view class="dk-row">
+        <text class="dk-title">{{device.device_name}}</text>
+        <text class="dk-tag {{statusCls}}">{{statusText}}</text>
+      </view>
+      <view class="dk-sub">资产编号 {{device.asset_no}}</view>
+    </view>
+    <view class="dk-row">
+      <view class="dk-btn dk-btn--danger" bindtap="onDelete">删除资产</view>
+      <view class="dk-btn dk-btn--primary" bindtap="goEdit">编辑</view>
+    </view>
+  </view>
+
+  <view class="dk-split">
+    <view class="ad-dk-col">
+      <view class="dk-card">
+        <view class="dk-card__head">基本信息</view>
+        <view class="dk-card__body dk-desc">
+          <view class="dk-desc__item">
+            <text class="dk-desc__k">资产编号</text>
+            <text class="dk-desc__v">{{device.asset_no}}</text>
+          </view>
+          <view class="dk-desc__item" wx:if="{{device.device_sn}}">
+            <text class="dk-desc__k">设备 SN</text>
+            <text class="dk-desc__v ad-dk-mono">{{device.device_sn}}</text>
+          </view>
+          <view class="dk-desc__item" wx:if="{{device.device_type}}">
+            <text class="dk-desc__k">设备类型</text>
+            <text class="dk-desc__v">{{device.device_type}}</text>
+          </view>
+          <view class="dk-desc__item" wx:if="{{device.brand || device.model}}">
+            <text class="dk-desc__k">品牌型号</text>
+            <text class="dk-desc__v">{{device.brand || ''}}{{device.model ? ' ' + device.model : ''}}{{device.spec ? ' · ' + device.spec : ''}}</text>
+          </view>
+          <view class="dk-desc__item">
+            <text class="dk-desc__k">单价</text>
+            <text class="dk-desc__v">¥{{fmt.money(device.unit_price || 0)}}</text>
+          </view>
+          <view class="dk-desc__item">
+            <text class="dk-desc__k">成本</text>
+            <text class="dk-desc__v">¥{{fmt.money(device.cost || 0)}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="dk-card">
+        <view class="dk-card__head">归属信息</view>
+        <view class="dk-card__body dk-desc">
+          <view class="dk-desc__item" wx:if="{{device.owner_name}}">
+            <text class="dk-desc__k">使用人</text>
+            <text class="dk-desc__v">{{device.owner_name}}</text>
+          </view>
+          <view class="dk-desc__item" wx:if="{{device.office_site}}">
+            <text class="dk-desc__k">办公地点</text>
+            <text class="dk-desc__v">{{device.office_site}}</text>
+          </view>
+          <view class="dk-desc__item" wx:if="{{device.purpose}}">
+            <text class="dk-desc__k">用途</text>
+            <text class="dk-desc__v">{{device.purpose}}</text>
+          </view>
+          <view class="dk-desc__item" wx:if="{{device.purchase_date}}">
+            <text class="dk-desc__k">购入日期</text>
+            <text class="dk-desc__v">{{device.purchase_date}}</text>
+          </view>
+          <view class="dk-desc__item" wx:if="{{device.purchase_order_no}}">
+            <text class="dk-desc__k">采购单来源</text>
+            <text class="dk-desc__v ad-dk-link">{{device.purchase_order_no}}</text>
+          </view>
+          <view class="dk-desc__item dk-desc__item--full" wx:if="{{device.remark}}">
+            <text class="dk-desc__k">备注</text>
+            <text class="dk-desc__v">{{device.remark}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="ad-dk-col">
+      <view class="dk-card">
+        <view class="dk-card__head">设备图片</view>
+        <view class="dk-card__body">
+          <view wx:if="{{device.image_files.length}}" class="dk-gallery">
+            <view
+              wx:for="{{device.image_files}}"
+              wx:key="index"
+              class="dk-gallery__item"
+              data-url="{{item}}"
+              bindtap="previewImage"
+            >
+              <image src="{{item}}" mode="aspectFill" class="ad-dk-img" />
+            </view>
+          </view>
+          <view wx:else class="dk-empty ad-dk-noimg">没有图片</view>
+        </view>
+      </view>
+
+      <view class="dk-card">
+        <view class="dk-card__head">时间</view>
+        <view class="dk-card__body dk-desc dk-desc--2">
+          <view class="dk-desc__item">
+            <text class="dk-desc__k">创建时间</text>
+            <text class="dk-desc__v">{{fmt.datetime(device.created_at)}}</text>
+          </view>
+          <view class="dk-desc__item">
+            <text class="dk-desc__k">更新时间</text>
+            <text class="dk-desc__v">{{fmt.datetime(device.updated_at)}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

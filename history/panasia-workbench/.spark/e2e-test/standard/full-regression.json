@@ -1,0 +1,79 @@
+{
+  "cases": [
+    {
+      "id": 1,
+      "priority": "p0",
+      "description": "打开任务页 /：断言①顶部薄横条 KPI 含「今日完成」与「本月钱包」字样；断言②列表至少 2 张任务卡右上角显示 ¥ 金额（大号红字）；断言③列表含 2 张教程任务卡（卡内出现「教程任务」标识文字）；断言④network /api/tasks 响应 200"
+    },
+    {
+      "id": 2,
+      "priority": "p1",
+      "description": "任务页点列表标题旁「已完成 N」切换入口；断言：标题变为「已完成 · N」样式、出现绿色「✓」开头行（已完成卡，金额灰化），network /api/tasks 200；再点「返回今日任务」；断言：标题回到「今日任务 · N」、列表重新出现大号红字金额任务卡"
+    },
+    {
+      "id": 3,
+      "priority": "p1",
+      "description": "任务页点击第一张非教程任务卡（严重堵塞红标置顶那张「商品图片抽检」）；断言：URL 变为 /tasks/<id> 形式、详情页标题与列表一致、页面出现任务时间线区块、network /api/tasks/<id> 响应 200；点击「返回任务」链接；断言：回到任务列表 URL 为 /"
+    },
+    {
+      "id": 4,
+      "priority": "p1",
+      "description": "从任务页找到「周四送公司商务车去途虎清洗 09:30前」任务卡（列表中 IN_PROGRESS 定时任务，找不到就访问 /tasks/2529e04e-a81b-42ff-b136-ff2562adeec9?projectId=45fe3411-2de5-40eb-b751-ef1200c7c5cc）进详情；断言「提交阻塞」与「申请协助」按钮可见；点「提交阻塞」打开弹窗；不填任何字段直接点弹窗提交按钮；断言：弹窗仍打开、network 无 POST /block 请求（前端校验拦截）；填三项：阻塞原因「回归测试阻塞原因」、等待对象「回归测试方」、下一步动作「回归测试动作」；点提交；断言：network POST block 201、弹窗关闭、详情页出现「解除阻塞，继续执行」按钮；点「解除阻塞，继续执行」；断言：network POST status 201、详情回到执行中（「提交验收」按钮重新出现）"
+    },
+    {
+      "id": 5,
+      "priority": "p1",
+      "description": "仍在「周四送车」任务详情（执行中状态）：点「提交验收」打开弹窗；断言：弹窗出现「点击或拖拽上传凭证」上传区文案；不填说明直接点提交；断言：弹窗仍在、无 network POST（校验拦截「请填写完成情况说明」）；点弹窗取消关闭；点「申请协助」打开弹窗；留空直接提交；断言弹窗仍在（校验拦截）；填「回归测试协助请求」；点提交；断言：network POST assist 201、弹窗关闭"
+    },
+    {
+      "id": 6,
+      "priority": "p1",
+      "description": "底部 Dock 点「我的」；断言：我的页加载、network /api/my 200；找到绑定设置区（显示成员演示业务负责人）；点开成员选择下拉；断言：出现「Plane」与「演示业务负责人」选项；选「Plane」再选回「演示业务负责人」（不中途保存）；点「保存绑定」；断言：network PUT /api/my/binding 200、页面绑定区仍显示演示业务负责人"
+    },
+    {
+      "id": 7,
+      "priority": "p1",
+      "description": "我的页点「任务记录」卡；断言：URL 变 /my/history、页面加载、network /api/tasks/history 200；切到「本月」范围；断言：列表出现至少 1 行已完成任务；在搜索框输入「快照」；断言：列表所有行标题均含「快照」、network history 请求 200；清空搜索框；断言：恢复完整本月列表"
+    },
+    {
+      "id": 8,
+      "priority": "p1",
+      "description": "我的页点「预计薪资」入口；断言：/my/salary 页显示本月薪资合计 ¥7750 与「绩效奖金」1250 行、network /api/my/salary 200；点返回回我的页；点「合同」入口；断言：/my/contract 显示「在职」状态与合同期 2026-01-05 至 2027-01-04、network /api/my/contract 200；返回我的页"
+    },
+    {
+      "id": 9,
+      "priority": "p1",
+      "description": "我的页点「考勤」入口；断言：/my/attendance 显示「出勤天数」「迟到」等指标、network /api/my/attendance 200；返回；点「工资单」入口；断言：/my/salary-slips 空态不白屏（显示暂无类文案）、network /api/my/salary-slips 200；返回；点「请假」入口；断言：/my/leave 空态不白屏、network /api/my/leave-applications 200；返回我的页"
+    },
+    {
+      "id": 10,
+      "priority": "p0",
+      "description": "我的页点「学习中心」入口；断言：/my/learning 出现教程案例卡、network /api/my/learning 200；点「杭州演示电商」案例卡；断言：详情页显示进度 45%、奖励金额 ¥100、阶段列表（资料收集与执照办理等）；点击当前 active 步骤「注册两个个人账号」展开；断言：材料表单出现（含「个人账号1手机号」字样）且「跳过本步」按钮可见"
+    },
+    {
+      "id": 11,
+      "priority": "p1",
+      "description": "在学习详情页（active 步骤展开态）点「跳过本步」；断言：出现「确认跳过这一步？」弹窗，内含「无法再补充材料」警告文案；点弹窗取消/关闭；断言：弹窗关闭、步骤仍展开且「跳过本步」按钮仍在（未跳过）"
+    },
+    {
+      "id": 12,
+      "priority": "p0",
+      "description": "底部 Dock 依次点击「项目」「工作」「绩效」「我的」「任务」5 个导航；每点一个断言：页面主体变化（项目列表卡/工作台入口网格/绩效周期卡/我的页绑定卡/任务列表）、对应 network 接口 200（/api/projects、/api/work、/api/performance、/api/my、/api/tasks）、console 无新增错误"
+    },
+    {
+      "id": 13,
+      "priority": "p1",
+      "description": "项目页点「员工采购工作台 V2」项目卡；断言：URL 变 /projects/<id>、详情页显示进度 72%、模块列表含「行情价接入」与「员工端」、周期与风险区块可见、network /api/projects/<id> 200；点返回回项目列表"
+    },
+    {
+      "id": 14,
+      "priority": "p1",
+      "description": "绩效页（Dock 点「绩效」）；断言：出现 4 个考核周期卡（含 92 优秀与 86 进行中评分）、KRA 目标列表、事件溯源时间线含奖惩金额条目（+500 或 -150 或 -400 之一可见）、预计奖金 ¥1250 字样、network /api/performance 200"
+    },
+    {
+      "id": 15,
+      "priority": "p2",
+      "description": "Dock 点「工作」；断言：工作台入口网格至少 5 个入口卡（含计数数字）、network /api/work 200、页面不白屏；浏览器直接访问 /xyz-不存在路径；断言：显示 404/NotFound 兜底页而非白屏"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-08-24T00:00:00.000Z",
+  "source": "installed-pilot task-store profile before 01.1-01 repair",
+  "resultPayloadBytes": 12574406,
+  "fixtureSizes": [
+    16,
+    167,
+    334
+  ],
+  "baseline": {
+    "16": {
+      "readCount": 32,
+      "p95Ms": 10,
+      "maxMs": 20,
+      "rowCount": 16,
+      "note": "pre-repair evidence is intentionally not an acceptance threshold"
+    },
+    "167": {
+      "readCount": 334,
+      "p95Ms": 180,
+      "maxMs": 410,
+      "rowCount": 167,
+      "note": "pre-repair evidence is intentionally not an acceptance threshold"
+    },
+    "334": {
+      "readCount": 668,
+      "p95Ms": 360,
+      "maxMs": 820,
+      "rowCount": 334,
+      "note": "pre-repair evidence is intentionally not an acceptance threshold"
+    }
+  }
+}

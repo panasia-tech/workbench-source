@@ -1,0 +1,63 @@
+<view class="page-wrap">
+  <!-- 自动采集区(只读):App/PC 上报,不可手改 -->
+  <view class="card" wx:if="{{info}}">
+    <view class="card-head">设备与账号(自动采集)</view>
+    <view class="ap-info-grid">
+      <view class="ap-info-row"><text class="ap-info-label">闲鱼昵称</text><text class="ap-info-value">{{info.nick}}</text></view>
+      <view class="ap-info-row"><text class="ap-info-label">设备序列号</text><text class="ap-info-value">{{info.device_serial || '未采集'}}</text></view>
+      <view class="ap-info-row"><text class="ap-info-label">IMEI 1</text><text class="ap-info-value">{{info.imei1 || '未采集'}}</text></view>
+      <view class="ap-info-row"><text class="ap-info-label">IMEI 2</text><text class="ap-info-value">{{info.imei2 || '未采集'}}</text></view>
+      <view class="ap-info-row"><text class="ap-info-label">电话号码</text><text class="ap-info-value">{{info.phone_number || '未采集'}}</text></view>
+      <view class="ap-info-row" wx:if="{{info.asset_no}}"><text class="ap-info-label">关联资产</text><text class="ap-info-value">{{info.asset_no}}</text></view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-head">账号资料(员工填写)</view>
+
+    <view class="form-field">
+      <view class="form-label">闲鱼会员名(tb 开头)</view>
+      <input class="form-input" placeholder="自动采集,缺了请手动填写" value="{{form.member_name}}" data-field="member_name" bindinput="onInput" />
+    </view>
+    <view class="form-field">
+      <view class="form-label">运营商 <text class="form-required">*</text></view>
+      <picker mode="selector" range="{{carrierOptions}}" value="{{carrierIndex < 0 ? 0 : carrierIndex}}" bindchange="onCarrierChange">
+        <view class="form-picker">{{form.carrier || '请选择运营商'}}</view>
+      </picker>
+    </view>
+    <view class="form-field">
+      <view class="form-label">套餐资费 <text class="form-required">*</text></view>
+      <textarea class="form-textarea" placeholder="如:39元/月 100G 通用流量" value="{{form.plan_details}}" data-field="plan_details" bindinput="onInput" maxlength="500" />
+    </view>
+    <view class="form-field">
+      <view class="form-label">法人名称 <text class="form-required">*</text></view>
+      <input class="form-input" placeholder="办卡/注册主体的法人姓名" value="{{form.legal_person}}" data-field="legal_person" bindinput="onInput" />
+    </view>
+    <view class="form-field">
+      <view class="form-label">账号种类 <text class="form-required">*</text></view>
+      <picker mode="selector" range="{{typeOptions}}" value="{{typeIndex < 0 ? 0 : typeIndex}}" bindchange="onTypeChange">
+        <view class="form-picker">{{form.account_type || '请选择(个人1/个人2/企业1~6)'}}</view>
+      </picker>
+    </view>
+    <view class="form-field">
+      <view class="form-label">异常处理策略(多选)</view>
+      <view class="ap-strategy-list">
+        <view
+          wx:for="{{strategies}}"
+          wx:key="key"
+          class="ap-strategy {{item.checked ? 'ap-strategy--on' : ''}}"
+          data-index="{{index}}"
+          bindtap="onStrategyToggle"
+        >{{item.label}}</view>
+      </view>
+    </view>
+    <view class="form-field">
+      <view class="form-label">备注</view>
+      <textarea class="form-textarea" placeholder="备注(选填)" value="{{form.remark}}" data-field="remark" bindinput="onInput" maxlength="500" />
+    </view>
+
+    <button class="btn btn-primary btn-block" bindtap="onSubmit" disabled="{{submitting}}" loading="{{submitting}}">
+      {{submitting ? '提交中…' : '保存'}}
+    </button>
+  </view>
+</view>

@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "群控中心",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "gc-device-panel": "/components/gc-device-panel/index",
+    "gc-task-panel": "/components/gc-task-panel/index"
+  }
+}

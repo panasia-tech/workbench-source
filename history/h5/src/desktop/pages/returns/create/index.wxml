@@ -1,0 +1,129 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<!-- 创建退货单（电脑版）：左边出库记录表格点选那一单，右边填退回原因并创建 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">创建退货单</view>
+      <view class="dk-sub">{{q ? '搜索结果（已出库商品）' : '最近出库的商品，点选要退回的那单'}}</view>
+    </view>
+  </view>
+
+  <view class="dk-split rc-dk-split">
+    <view class="dk-card">
+      <view class="dk-toolbar">
+        <input
+          class="dk-input dk-search rc-dk-search"
+          placeholder="货号 / 买家 / 出库单号 / 商品名"
+          value="{{q}}"
+          bindinput="onQInput"
+          confirm-type="search"
+          bindconfirm="onSearch"
+        />
+        <view class="dk-btn" bindtap="onScanSearch">扫码搜</view>
+        <view class="dk-btn dk-btn--primary" bindtap="onSearch">搜索</view>
+      </view>
+      <view class="dk-table-wrap">
+        <table class="dk-table">
+          <thead>
+            <tr>
+              <th class="rc-dk-radio-th"></th>
+              <th>商品</th>
+              <th>买家</th>
+              <th>出库单号 / 时间</th>
+              <th class="dk-num">售价</th>
+              <th>退货</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              wx:for="{{list}}"
+              wx:key="id"
+              class="{{item.has_return ? 'rc-dk-tr--off' : 'dk-tr--click'}} {{selectedCode === item.sku_code ? 'dk-tr--on' : ''}}"
+              data-code="{{item.sku_code}}"
+              data-returned="{{item.has_return}}"
+              bindtap="selectSku"
+            >
+              <td class="rc-dk-radio-td">
+                <view class="rc-dk-radio {{selectedCode === item.sku_code ? 'rc-dk-radio--on' : ''}} {{item.has_return ? 'rc-dk-radio--off' : ''}}"></view>
+              </td>
+              <td>
+                <view class="dk-media">
+                  <image
+                    wx:if="{{item.cover_thumb_url || item.cover_url}}"
+                    class="dk-thumb"
+                    src="{{item.cover_thumb_url || item.cover_url}}"
+                    mode="aspectFill"
+                    data-url="{{item.cover_url || item.cover_thumb_url}}"
+                    catchtap="dkPreview"
+                  />
+                  <view wx:else class="dk-thumb rc-dk-thumb-empty">{{fmt.iconChar(item.product_name || item.buyer_name)}}</view>
+                  <view class="dk-grow">
+                    <view class="dk-cell-main dk-ellipsis rc-dk-name" title="{{item.product_name}}">{{item.product_name || item.outbound_no}}</view>
+                    <view class="dk-cell-sub dk-ellipsis rc-dk-name">{{item.sku_code}}{{item.product_spec ? ' · ' + item.product_spec : ''}}</view>
+                  </view>
+                </view>
+              </td>
+              <td class="dk-nowrap">{{item.buyer_name || '—'}}</td>
+              <td class="dk-nowrap">
+                <view>{{item.outbound_no}}</view>
+                <view class="dk-cell-sub">{{fmt.datetime(item.created_at)}}</view>
+              </td>
+              <td class="dk-num">¥{{fmt.money(item.sale_price)}}</td>
+              <td class="dk-nowrap">
+                <text wx:if="{{item.has_return}}" class="dk-tag tag-pending">已退/退货中</text>
+                <text wx:elif="{{selectedCode === item.sku_code}}" class="dk-tag tag-info">已选</text>
+                <text wx:else class="dk-muted">可退</text>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </view>
+      <view wx:if="{{!list.length && !loading}}" class="dk-empty">没有找到出库记录</view>
+      <view wx:if="{{loading && !list.length}}" class="dk-empty">加载中…</view>
+      <view wx:if="{{total > dkPageSize}}" class="dk-pager">
+        <text>共 {{total}} 条，每页 {{dkPageSize}} 条</text>
+        <view class="dk-row">
+          <view class="dk-btn dk-btn--sm {{dkPage <= 1 ? 'dk-btn--disabled' : ''}}" bindtap="dkPrev">上一页</view>
+          <text>第 {{dkPage}} / {{dkPages}} 页</text>
+          <view class="dk-btn dk-btn--sm {{dkPage >= dkPages ? 'dk-btn--disabled' : ''}}" bindtap="dkNext">下一页</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="dk-card rc-dk-side ret-submit-card">
+      <view class="dk-card__head">退货信息</view>
+      <view class="dk-card__body">
+        <view wx:if="{{!selectedCode}}" class="dk-empty rc-dk-hint">在左边表格点选要退回的那一单</view>
+        <view wx:else class="dk-form rc-dk-form">
+          <view class="dk-field dk-field--full">
+            <text class="dk-label">货号</text>
+            <view class="dk-row">
+              <text class="rc-dk-code">{{selectedCode}}</text>
+              <text class="dk-link" bindtap="dkUnselect">取消选择</text>
+            </view>
+          </view>
+          <view class="dk-field dk-field--full">
+            <text class="dk-label dk-label--req">退回原因</text>
+            <picker range="{{reasonOptions}}" range-key="label" value="{{reasonIndex}}" bindchange="onReasonChange">
+              <view class="dk-select {{reasonIndex >= 0 ? '' : 'dk-muted'}}">{{reasonIndex >= 0 ? reasonOptions[reasonIndex].label : '请选择退回原因'}}</view>
+            </picker>
+          </view>
+          <view class="dk-field dk-field--full">
+            <text class="dk-label {{reasonOptions[reasonIndex].key === 'OTHER' ? 'dk-label--req' : ''}}">补充说明</text>
+            <textarea
+              class="dk-input rc-dk-ta"
+              placeholder="{{reasonOptions[reasonIndex].key === 'OTHER' ? '选择「其他」时必填' : '选填'}}"
+              value="{{reason}}"
+              bindinput="onReasonInput"
+              maxlength="200"
+            />
+          </view>
+          <view class="dk-field dk-field--full">
+            <view class="dk-btn dk-btn--primary {{submitting ? 'dk-btn--disabled' : ''}}" bindtap="onSubmit">{{submitting ? '创建中…' : '创建退货单'}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

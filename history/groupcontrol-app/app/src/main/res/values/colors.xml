@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 旧色板(部分逻辑仍引用) -->
+    <color name="gc_primary">#2E7D32</color>
+    <color name="gc_danger">#C62828</color>
+    <color name="gc_warn">#F9A825</color>
+    <color name="gc_text">#212121</color>
+    <color name="gc_text_sub">#757575</color>
+    <color name="gc_state_off">#9E9E9E</color>
+    <color name="gc_log_bg">#111111</color>
+    <color name="gc_log_text">#00FF00</color>
+
+    <!-- 设计稿「鱼鱼小助手」tokens -->
+    <color name="yy_bg">#F4F4EF</color>
+    <color name="yy_card">#FFFFFF</color>
+    <color name="yy_ink">#17181A</color>
+    <color name="yy_ink2">#6E7278</color>
+    <color name="yy_ink3">#A8ACB2</color>
+    <color name="yy_line">#ECECE6</color>
+    <color name="yy_yellow">#FFDE00</color>
+    <color name="yy_yellow_d">#F5CE00</color>
+    <color name="yy_yellow_l">#FFE866</color>
+    <color name="yy_green">#22B573</color>
+    <color name="yy_green_bg">#E5F7EE</color>
+    <color name="yy_green_text">#147A4E</color>
+    <color name="yy_red">#F04452</color>
+    <color name="yy_red_bg">#FDECEE</color>
+    <color name="yy_red_text">#C62F42</color>
+    <color name="yy_orange">#FF8A00</color>
+    <color name="yy_orange_bg">#FFF3E2</color>
+    <color name="yy_orange_text">#B25E00</color>
+    <color name="yy_blue_run">#3B6FE0</color>
+    <color name="yy_blue_run_bg">#EEF3FF</color>
+    <color name="yy_vchip_bg">#FFFBDB</color>
+    <color name="yy_vchip_text">#8A6D00</color>
+    <color name="yy_vchip_line">#F0DFA0</color>
+    <color name="yy_off_bg">#F0F0EB</color>
+    <color name="yy_btn_disabled">#E8E8E2</color>
+    <color name="yy_log_bg">#17181A</color>
+    <color name="yy_log_text">#9BA3AF</color>
+    <color name="yy_avatar_empty_line">#D8DAD2</color>
+</resources>

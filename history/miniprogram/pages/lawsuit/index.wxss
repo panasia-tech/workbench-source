@@ -1,0 +1,91 @@
+.law-page .law-tab-scroll {
+  margin: 0 0 20rpx;
+  white-space: nowrap;
+}
+
+.law-page .status-segment {
+  display: inline-flex;
+  gap: 12rpx;
+  padding: 6rpx;
+  background: #F9FAFB;
+  border-radius: 40rpx;
+  min-width: max-content;
+}
+
+.law-page .status-seg {
+  flex: 0 0 auto;
+  min-width: 120rpx;
+  padding: 16rpx 20rpx;
+  text-align: center;
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #6B7280;
+  border-radius: 16rpx;
+}
+
+.law-page .status-seg.active {
+  background: #EFF6FF;
+  color: #2563EB;
+}
+
+.law-page .tag-muted {
+  background: #F3F4F6;
+  color: #6B7280;
+  border-color: #E5E7EB;
+}
+
+.law-page .law-loading {
+  padding: 24rpx 0;
+  text-align: center;
+  font-size: 24rpx;
+  color: #9CA3AF;
+}
+
+/* .list-item .li-tag 把 .tag 的 inline-flex 覆盖成 inline-block，导致文字在 min-height 里靠顶不居中。改回 flex 居中。 */
+.law-page .list-item .li-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.law-page .law-del-btn {
+  margin-top: 12rpx;
+  padding: 8rpx 20rpx;
+  font-size: 22rpx;
+  color: #DC2626;
+  background: #FEF2F2;
+  border: 1rpx solid #FECACA;
+  border-radius: 8rpx;
+  line-height: 1.4;
+}
+
+.law-page .law-del-btn:active {
+  opacity: 0.7;
+}
+
+/* 右下角固定新建按钮 */
+.law-fab {
+  position: fixed;
+  right: 40rpx;
+  bottom: 64rpx;
+  width: 104rpx;
+  height: 104rpx;
+  border-radius: 50%;
+  background: #2563EB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 24rpx rgba(37, 99, 235, 0.4);
+  z-index: 50;
+}
+
+.law-fab:active {
+  opacity: 0.85;
+}
+
+.law-fab-plus {
+  color: #FFFFFF;
+  font-size: 60rpx;
+  line-height: 1;
+  font-weight: 300;
+}

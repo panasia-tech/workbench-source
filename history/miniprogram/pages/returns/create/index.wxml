@@ -1,0 +1,94 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<view class="page-wrap page-wrap--no-tab record-page ret-create-page">
+  <view class="card filter-card">
+    <view class="search-bar">
+      <view class="search-input-wrap">
+        <input
+          class="search-input search-input--with-scan"
+          placeholder="货号 / 买家 / 出库单号 / 商品名"
+          value="{{q}}"
+          bindinput="onQInput"
+          confirm-type="search"
+          bindconfirm="onSearch"
+        />
+        <view class="search-scan-icon" catchtap="onScanSearch" aria-role="button">
+          <view class="scan-frame"></view>
+          <view class="scan-line"></view>
+        </view>
+      </view>
+    </view>
+    <view class="form-note">{{q ? '搜索结果（已出库商品）' : '最近出库的商品，点选要退回的那单'}}</view>
+  </view>
+
+  <view class="card list-card">
+    <view wx:if="{{!list.length && !loading}}" class="empty">
+      <view class="e-icon">—</view>
+      <view class="e-text">没有找到出库记录</view>
+    </view>
+    <scroll-view
+      wx:else
+      scroll-y
+      class="ret-pick-scroll"
+      scroll-top="{{listScrollTop}}"
+      bindscrolltolower="onListLower"
+      lower-threshold="60"
+    >
+    <view
+      wx:for="{{list}}"
+      wx:key="id"
+      class="list-item ret-pick-item {{selectedCode === item.sku_code ? 'ret-pick-item--selected' : ''}} {{item.has_return ? 'ret-pick-item--disabled' : ''}}"
+      data-code="{{item.sku_code}}"
+      data-returned="{{item.has_return}}"
+      bindtap="selectSku"
+    >
+      <view class="li-thumb-wrap">
+        <media-thumb
+          wx:if="{{item.cover_thumb_url || item.cover_url}}"
+          url="{{item.cover_thumb_url || item.cover_url}}"
+          preview-url="{{item.cover_url}}"
+          size="small"
+        />
+        <view wx:else class="li-icon">{{fmt.iconChar(item.product_name || item.buyer_name)}}</view>
+      </view>
+      <view class="li-info">
+        <view class="li-title">{{fmt.productLine(item.product_name, item.product_spec) || item.outbound_no}}</view>
+        <view class="li-sub">{{item.sku_code}} · 买家 {{item.buyer_name || '—'}}</view>
+        <view class="li-sub li-sub--time">出库 {{fmt.datetime(item.created_at)}} · ¥{{fmt.money(item.sale_price)}}</view>
+      </view>
+      <view class="li-meta">
+        <view wx:if="{{item.has_return}}" class="tag tag-pending li-tag">已退/退货中</view>
+        <view wx:elif="{{selectedCode === item.sku_code}}" class="ret-pick-check">✓</view>
+      </view>
+    </view>
+    <view class="list-footer" wx:if="{{loading}}">加载中…</view>
+    <view class="list-footer" wx:elif="{{noMore && list.length}}">没有更多了</view>
+    </scroll-view>
+  </view>
+
+  <view class="card ret-submit-card" wx:if="{{selectedCode}}">
+    <view class="card-head"><view class="card-head-main">退货信息</view></view>
+    <view class="form-group">
+      <text class="form-label">货号</text>
+      <view class="picker-field">{{selectedCode}}</view>
+    </view>
+    <view class="form-group">
+      <text class="form-label">退回原因 <text class="form-required">*</text></text>
+      <picker range="{{reasonOptions}}" range-key="label" value="{{reasonIndex}}" bindchange="onReasonChange">
+        <view class="picker-field">{{reasonIndex >= 0 ? reasonOptions[reasonIndex].label : '请选择退回原因'}}</view>
+      </picker>
+    </view>
+    <view class="form-group">
+      <text class="form-label">补充说明{{reasonOptions[reasonIndex].key === 'OTHER' ? ' *' : ''}}</text>
+      <textarea
+        class="input input--textarea"
+        auto-height="{{true}}"
+        placeholder="{{reasonOptions[reasonIndex].key === 'OTHER' ? '选择「其他」时必填' : '选填'}}"
+        value="{{reason}}"
+        bindinput="onReasonInput"
+        maxlength="200"
+      />
+    </view>
+    <button class="btn-primary btn-block" loading="{{submitting}}" bindtap="onSubmit">创建退货单</button>
+  </view>
+</view>

@@ -1,0 +1,84 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<!-- 切单详情（电脑版）：左边切单信息，右边按状态收定金 / 收尾款 / 截单 / 取消。
+     miniprogram 里这页没有 index.wxss，src/desktop/ 下的 index.wxss 不会被编译进来，补充样式写成行内 style -->
+<view class="dk-page" wx:if="{{order}}">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">{{order.switch_no}}</view>
+      <view class="dk-sub">{{order.product_name}} · 货号 {{order.sku_code}}</view>
+    </view>
+    <view class="dk-row">
+      <text class="dk-tag tag-warning">{{order.status}}</text>
+    </view>
+  </view>
+
+  <view class="dk-split">
+    <view class="dk-card">
+      <view class="dk-card__head">切单信息</view>
+      <view class="dk-card__body">
+        <view class="dk-desc">
+          <view class="dk-desc__item">
+            <text class="dk-desc__k">货号</text>
+            <text class="dk-desc__v">{{order.sku_code}}</text>
+          </view>
+          <view class="dk-desc__item" style="grid-column: span 2;">
+            <text class="dk-desc__k">商品</text>
+            <text class="dk-desc__v">{{order.product_name}}</text>
+          </view>
+          <view class="dk-desc__item">
+            <text class="dk-desc__k">单价</text>
+            <text class="dk-desc__v">¥{{fmt.money(order.unit_price)}}</text>
+          </view>
+          <view class="dk-desc__item">
+            <text class="dk-desc__k">状态</text>
+            <text class="dk-desc__v">{{order.status}}</text>
+          </view>
+          <view class="dk-desc__item">
+            <text class="dk-desc__k">截单</text>
+            <text class="dk-desc__v">{{order.cutoff_status}}</text>
+          </view>
+          <view class="dk-desc__item">
+            <text class="dk-desc__k">定金</text>
+            <text class="dk-desc__v">{{order.deposit_paid_at ? '已收 ¥' + fmt.money(order.deposit_amount) : '未收'}}</text>
+          </view>
+          <view class="dk-desc__item">
+            <text class="dk-desc__k">尾款</text>
+            <text class="dk-desc__v">{{order.final_paid_at ? '已收 ¥' + fmt.money(order.final_amount) : '未收'}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view style="display: flex; flex-direction: column; gap: 16px;">
+      <view class="dk-card" wx:if="{{order.status === 'ACTIVE'}}">
+        <view class="dk-card__head">收定金</view>
+        <view class="dk-card__body">
+          <view wx:if="{{order.deposit_paid_at}}" style="color: #047857; font-weight: 500;">已收定金 ¥{{fmt.money(order.deposit_amount)}}</view>
+          <view wx:else class="dk-row" style="flex-wrap: nowrap;">
+            <input class="dk-input dk-grow" type="digit" value="{{depositAmount}}" bindinput="onDepositInput" placeholder="定金金额" />
+            <view class="dk-btn dk-btn--primary" bindtap="payDeposit">确认收定金</view>
+          </view>
+        </view>
+      </view>
+
+      <view class="dk-card" wx:if="{{order.status === 'ACTIVE' && order.deposit_paid_at}}">
+        <view class="dk-card__head">收尾款</view>
+        <view class="dk-card__body">
+          <view wx:if="{{order.final_paid_at}}" style="color: #047857; font-weight: 500;">已收尾款 ¥{{fmt.money(order.final_amount)}}</view>
+          <view wx:else class="dk-row" style="flex-wrap: nowrap;">
+            <input class="dk-input dk-grow" type="digit" value="{{finalAmount}}" bindinput="onFinalInput" placeholder="尾款金额" />
+            <view class="dk-btn dk-btn--primary" bindtap="payFinal">确认收尾款</view>
+          </view>
+        </view>
+      </view>
+
+      <view class="dk-card" wx:if="{{order.status === 'ACTIVE' && ((order.final_paid_at && order.cutoff_status !== 'PENDING') || order.cutoff_status !== 'APPROVED')}}">
+        <view class="dk-card__body" style="display: flex; flex-direction: column; gap: 8px;">
+          <view wx:if="{{order.final_paid_at && order.cutoff_status !== 'PENDING'}}" class="dk-btn dk-btn--primary" bindtap="applyCutoff">申请截单</view>
+          <view wx:if="{{order.cutoff_status !== 'APPROVED'}}" class="dk-btn dk-btn--danger" bindtap="cancelOrder">取消切单</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

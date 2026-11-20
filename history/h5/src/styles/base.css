@@ -1,0 +1,507 @@
+/*
+ * 小程序内置组件在 H5 里的默认样式：对齐基础库里 wx-* 元素的默认值。
+ * app.wxss 和各页面样式在它之后加载，照常覆盖。
+ * 宽度：页面铺满可用宽度（手机、平板、电脑、工作台 iframe 都是），靠 WXSS 里的百分比 / flex 铺开。
+ * rpx：750 设计宽，但换算基准最多按 480 宽算——宽屏上字号、间距保持手机上的大小，不跟着屏宽
+ * 放大（不封顶的话 1280 宽的屏上 28rpx 的字有 48px）；≥1024 的电脑上按 420 算。JS 里的 rpxToPx 用同一个基准。
+ */
+:root {
+  --rpx-base-w: min(100vw, 480px);
+  --rpx: calc(var(--rpx-base-w) / 750);
+}
+
+/* 电脑（≥1024，页面收成居中一列，见 shell.css）：基准按 420 算，字号、间距比手机最大档略收，
+ * 更像电脑上的密度（28rpx ≈ 15.7px）。手机最宽 430，碰不到这一档。JS 的 rpxToPx 同步 */
+@media (min-width: 1024px) {
+  :root {
+    --rpx-base-w: 420px;
+  }
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  color: #1f2937;
+  background: #e5e7eb;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+wx-page {
+  display: block;
+  flex: 1 0 auto;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+wx-view {
+  display: block;
+}
+
+wx-text {
+  display: inline;
+  /* 文本里的 \n 换行，但是否自动折行继承外层（外层 nowrap 时照样不折） */
+  white-space-collapse: preserve-breaks;
+}
+
+wx-text.wx-text--selectable {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* ---------------------------------------------------------------- image */
+wx-image {
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  width: 320px;
+  height: 240px;
+}
+
+wx-image > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+wx-image > img.wx-image--menu {
+  -webkit-touch-callout: default;
+}
+
+wx-image > img.wx-image--broken {
+  visibility: hidden;
+}
+
+/* ---------------------------------------------------------------- button */
+wx-button {
+  position: relative;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 14px;
+  padding-right: 14px;
+  box-sizing: border-box;
+  font-size: 18px;
+  text-align: center;
+  text-decoration: none;
+  line-height: 2.55555556;
+  border-radius: 5px;
+  overflow: hidden;
+  color: #000;
+  background-color: #f8f8f8;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  outline: none;
+}
+
+wx-button::after {
+  content: " ";
+  width: 200%;
+  height: 200%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  transform: scale(0.5);
+  transform-origin: 0 0;
+  box-sizing: border-box;
+  border-radius: 10px;
+  pointer-events: none;
+}
+
+wx-button[size="mini"] {
+  display: inline-block;
+  line-height: 2.3;
+  font-size: 13px;
+  padding: 0 1.34em;
+}
+
+wx-button[type="primary"] {
+  color: #fff;
+  background-color: #07c160;
+}
+
+wx-button[type="warn"] {
+  color: #fff;
+  background-color: #e64340;
+}
+
+wx-button[plain] {
+  color: #353535;
+  border: 1px solid #353535;
+  background-color: transparent;
+}
+
+wx-button[disabled] {
+  pointer-events: none;
+  color: rgba(0, 0, 0, 0.3);
+  background-color: #f7f7f7;
+}
+
+wx-button[disabled][type="primary"] {
+  color: rgba(255, 255, 255, 0.6);
+  background-color: #9ed99d;
+}
+
+wx-button.button-hover {
+  background-color: #dedede;
+}
+
+wx-button[type="primary"].button-hover {
+  background-color: #06ad56;
+}
+
+wx-button:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+.wx-button__loading {
+  display: inline-block;
+  flex: none;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.4em;
+  vertical-align: -0.15em;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  box-sizing: border-box;
+  animation: wx-spin 0.8s linear infinite;
+}
+
+/* ---------------------------------------------------------------- input / textarea */
+.wx-input,
+.wx-textarea {
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  outline: 0;
+  background: transparent;
+  box-sizing: border-box;
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+  letter-spacing: inherit;
+  -webkit-appearance: none;
+  appearance: none;
+  -webkit-user-select: text;
+  user-select: text;
+  -webkit-touch-callout: default;
+}
+
+.wx-input {
+  width: 100%;
+  min-width: 0;
+  height: 1.4rem;
+  min-height: 1.4rem;
+  text-overflow: clip;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.wx-textarea {
+  width: 300px;
+  height: 150px;
+  resize: none;
+  overflow: auto;
+  line-height: inherit;
+}
+
+.wx-textarea.wx-textarea--auto {
+  height: auto;
+  min-height: 1.5em;
+  overflow: hidden;
+}
+
+.wx-input::placeholder,
+.wx-textarea::placeholder {
+  color: #808080;
+  opacity: 1;
+}
+
+.wx-input:disabled,
+.wx-textarea:disabled {
+  opacity: 1;
+  -webkit-text-fill-color: currentColor;
+}
+
+/* ---------------------------------------------------------------- picker */
+wx-picker {
+  display: block;
+  position: relative;
+  cursor: pointer;
+}
+
+.wx-picker__native {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  font-size: 16px;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.wx-picker--disabled {
+  cursor: default;
+}
+
+/* ---------------------------------------------------------------- switch */
+wx-switch {
+  display: inline-block;
+  vertical-align: middle;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+
+.wx-switch__track {
+  position: relative;
+  display: block;
+  width: 52px;
+  height: 32px;
+  border: 1px solid #dfdfdf;
+  border-radius: 16px;
+  background-color: #dfdfdf;
+  box-sizing: border-box;
+  transition: background-color 0.1s, border-color 0.1s;
+}
+
+.wx-switch__track::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50px;
+  height: 30px;
+  border-radius: 15px;
+  background-color: #fdfdfd;
+  transition: transform 0.3s;
+}
+
+.wx-switch__knob {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s;
+}
+
+.wx-switch--on .wx-switch__track::before {
+  transform: scale(0);
+}
+
+.wx-switch--on .wx-switch__knob {
+  transform: translateX(20px);
+}
+
+.wx-switch--checkbox .wx-switch__track {
+  width: 24px;
+  height: 24px;
+  border-radius: 3px;
+  background: #fff;
+}
+
+.wx-switch--checkbox .wx-switch__track::before,
+.wx-switch--checkbox .wx-switch__knob {
+  display: none;
+}
+
+.wx-switch--checkbox.wx-switch--on .wx-switch__track::after {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 2px;
+  width: 6px;
+  height: 12px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.wx-switch--disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
+/* ---------------------------------------------------------------- scroll-view */
+wx-scroll-view {
+  display: block;
+  position: relative;
+  -webkit-overflow-scrolling: touch;
+}
+
+wx-scroll-view.wx-scroll-none {
+  overflow: hidden;
+}
+
+wx-scroll-view.wx-scroll-x {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+wx-scroll-view.wx-scroll-y {
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+wx-scroll-view.wx-scroll-x.wx-scroll-y {
+  overflow: auto;
+}
+
+wx-scroll-view.wx-no-scrollbar {
+  scrollbar-width: none;
+}
+
+wx-scroll-view.wx-no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ---------------------------------------------------------------- video */
+wx-video {
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  width: 300px;
+  height: 225px;
+  background-color: #000;
+}
+
+wx-video > video {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.wx-video__play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 40px;
+  height: 40px;
+  margin: -20px 0 0 -20px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+}
+
+.wx-video__play::after {
+  content: "";
+  position: absolute;
+  left: 16px;
+  top: 12px;
+  border-style: solid;
+  border-width: 8px 0 8px 12px;
+  border-color: transparent transparent transparent #fff;
+}
+
+/* ---------------------------------------------------------------- picker-view */
+wx-picker-view {
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+wx-picker-view-column {
+  display: block;
+  flex: 1;
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+
+.wx-pvc__scroll {
+  height: 100%;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
+  padding: var(--pv-pad, 0) 0;
+  box-sizing: border-box;
+  overscroll-behavior: contain;
+}
+
+.wx-pvc__scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.wx-pvc__scroll > * {
+  height: var(--pv-item-h, 34px) !important;
+  scroll-snap-align: center;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.wx-pv__mask {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 2;
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.6)), linear-gradient(0deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.6));
+  background-position: top, bottom;
+  background-repeat: no-repeat;
+}
+
+.wx-pv__indicator {
+  position: absolute;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+  z-index: 3;
+  border-top: 1px solid #e5e5e5;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+/* ---------------------------------------------------------------- navigator */
+wx-navigator {
+  display: block;
+  cursor: pointer;
+}
+
+.navigator-hover {
+  background-color: rgba(0, 0, 0, 0.1);
+  opacity: 0.7;
+}
+
+@keyframes wx-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

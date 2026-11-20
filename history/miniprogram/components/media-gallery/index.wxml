@@ -1,0 +1,15 @@
+<view class="media-gallery" wx:if="{{items.length}}">
+  <view
+    wx:for="{{items}}"
+    wx:key="url"
+    class="media-gallery__item"
+  >
+    <media-thumb url="{{item.url}}" size="{{thumbSize}}" preview="{{false}}" data-index="{{index}}" bind:tap="onThumbTap" />
+    <view
+      wx:if="{{removable}}"
+      class="media-gallery__remove"
+      data-index="{{index}}"
+      catch:tap="onRemoveTap"
+    >×</view>
+  </view>
+</view>

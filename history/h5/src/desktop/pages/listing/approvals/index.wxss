@@ -1,0 +1,84 @@
+/* 上架审批（电脑版模板用的补充） */
+.lap-dk .lap-dk-st { background: #f3f4f6; color: #6b7280; }
+.lap-dk .lap-st--draft { background: #eff6ff; color: #1d4ed8; }
+.lap-dk .lap-st--wait { background: #fef3c7; color: #b45309; }
+.lap-dk .lap-st--ok { background: #dcfce7; color: #15803d; }
+.lap-dk .lap-st--bad { background: #fee2e2; color: #b91c1c; }
+
+.lap-dk-shop-th {
+  min-width: 72px;
+}
+
+.lap-dk-fix {
+  margin-left: 4px;
+  padding: 0 5px;
+  border-radius: 3px;
+  background: #dc2626;
+  color: #fff;
+  font-size: 11px;
+  line-height: 18px;
+}
+
+.lap-dk-noimg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  font-size: 12px;
+}
+
+.lap-dk-name {
+  max-width: 240px;
+}
+
+.lap-dk-warn {
+  color: #c2410c;
+}
+
+/* 居中对话框（手机上是底部弹层） */
+.lap-dk-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.45);
+}
+
+.lap-dk-dialog {
+  width: 480px;
+  max-width: calc(100vw - 48px);
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.25);
+}
+
+.lap-dk-x {
+  font-size: 20px;
+  font-weight: 400;
+  color: #9ca3af;
+  cursor: pointer;
+}
+
+.lap-dk-x:hover {
+  color: #1f2937;
+}
+
+.lap-dk-set__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid #f0f1f3;
+}
+
+.lap-dk-set__row:last-child {
+  border-bottom: 0;
+}
+
+.lap-dk-ratio {
+  width: 80px;
+  text-align: right;
+}

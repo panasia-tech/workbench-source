@@ -1,0 +1,33 @@
+<view class="page-wrap page-wrap--no-tab">
+  <view class="bind-logo">
+    <view class="logo-icon">泛</view>
+    <view class="logo-title">泛亚货运社</view>
+    <view class="logo-sub">{{pageSub}}</view>
+  </view>
+
+  <view class="card">
+    <view class="card-head">{{pageTitle}}</view>
+    <view class="form-group">
+      <text class="form-label">账号</text>
+      <input class="input" placeholder="请输入账号" placeholder-class="input-ph" data-key="username" value="{{username}}" bindinput="onInput" />
+    </view>
+    <view class="form-group">
+      <text class="form-label">密码</text>
+      <view class="input-wrap">
+        <input
+          class="input input--with-suffix"
+          password="DEMO_ONLY_REDACTED"
+          placeholder="请输入密码"
+          placeholder-class="input-ph"
+          data-key="password"
+          value="{{password}}"
+          bindinput="onInput"
+        />
+        <view class="pwd-toggle" bindtap="togglePassword">
+          <view class="pwd-eye {{showPassword ? 'pwd-eye--visible' : 'pwd-eye--hidden'}}"></view>
+        </view>
+      </view>
+    </view>
+    <button class="btn btn-primary btn-block" bindtap="onSubmit">{{submitText}}</button>
+  </view>
+</view>

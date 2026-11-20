@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com">
+<title>群控守护</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- 标题栏(frameless,自绘窗口控制) -->
+  <header class="titlebar">
+    <div class="brand">
+      <span class="led"></span>
+      <h1>群控守护</h1>
+      <span class="ver" id="brand-ver"></span>
+    </div>
+    <div class="sep"></div>
+    <div class="switches">
+      <div class="sw" id="sw-autoperm" title="权限不足时自动用 adb 补齐(无障碍/悬浮窗/白名单/appops/输入法,含防息屏)"><span class="track"></span><span class="label">自动补权限</span></div>
+      <div class="sw" id="sw-autotile" title="启动后探到设备时自动矩阵平铺一次"><span class="track"></span><span class="label">启动自动平铺</span></div>
+    </div>
+    <div class="title-actions">
+      <button class="btn" id="btn-reconnect" title="手机识别异常时点这里:重启 adb server">重启连接</button>
+      <button class="btn warn-act" id="btn-fixperm" title="立即对所有设备检测并补齐:无障碍/悬浮窗/电池白名单/appops/输入法">一键补权限</button>
+      <button class="btn primary" id="btn-matrix" title="把所有设备投屏窗口平铺成矩阵">矩阵投屏</button>
+      <button class="btn" id="btn-theme" title="切换亮色/暗色主题">◐ 浅色</button>
+    </div>
+    <div class="win-controls">
+      <button class="wc" id="win-min" title="最小化">—</button>
+      <button class="wc" id="win-max" title="最大化">▢</button>
+      <button class="wc close" id="win-close" title="关闭">✕</button>
+    </div>
+  </header>
+
+  <div class="body">
+    <!-- 左侧图标栏 -->
+    <nav class="rail">
+      <button class="rail-btn" data-page="overview">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="3.5" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="3.5" width="7.5" height="7.5" rx="1.6"/><rect x="3" y="13.5" width="7.5" height="7" rx="1.6"/><rect x="13.5" y="13.5" width="7.5" height="7" rx="1.6"/></svg>
+        <span class="rl">总览</span>
+      </button>
+      <button class="rail-btn active" data-page="units">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="2.5" y="6" width="12" height="14.5" rx="2"/><path d="M8 6V4.6a1.6 1.6 0 011.6-1.6h10.3A1.6 1.6 0 0121.5 4.6v9.2a1.6 1.6 0 01-1.6 1.6H14.5"/></svg>
+        <span class="rl">执行单元</span>
+        <span class="r-badge" id="units-badge" style="display:none">0</span>
+      </button>
+      <button class="rail-btn" data-page="queue">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="4" y1="6.5" x2="20" y2="6.5"/><line x1="4" y1="12" x2="16" y2="12"/><line x1="4" y1="17.5" x2="12" y2="17.5"/></svg>
+        <span class="rl">任务</span>
+        <span class="r-badge" id="q-fail-badge" style="display:none">0</span>
+      </button>
+      <button class="rail-btn" data-page="logs">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3.6l9 15.8H3l9-15.8z"/><path d="M12 9.6v4.2M12 16.6v.6"/></svg>
+        <span class="rl">告警</span>
+        <span class="r-badge" id="alert-badge" style="display:none">0</span>
+      </button>
+      <button class="rail-btn" data-page="packages">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg>
+        <span class="rl">装机</span>
+        <span class="r-badge" id="pkg-badge" style="display:none;background:var(--warn)">0</span>
+      </button>
+    </nav>
+
+    <div class="pages">
+
+      <!-- ===== 总览 ===== -->
+      <section class="page" id="page-overview">
+        <div class="stage">
+          <div class="stage-head">
+            <h2 id="ov-node">执行节点</h2>
+            <span class="node-pill" id="ov-pill"><span class="mini-dot"></span>检测中</span>
+            <div class="meta" id="ov-meta"></div>
+          </div>
+
+          <section class="kpis">
+            <div class="kpi">
+              <div class="kpi-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="2.5" y="6" width="12" height="14.5" rx="2"/><path d="M8 6V4.6a1.6 1.6 0 011.6-1.6h10.3A1.6 1.6 0 0121.5 4.6v9.2a1.6 1.6 0 01-1.6 1.6H14.5"/></svg>执行单元</div>
+              <div class="kpi-val"><b id="ov-online">—</b><span id="ov-online-sub"></span></div>
+              <div class="stack" id="ov-stack"></div>
+              <div class="legend" id="ov-legend"></div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10.2 8.5l6 3.5-6 3.5z"/></svg>任务执行中</div>
+              <div class="kpi-val"><b id="ov-running">—</b></div>
+              <div class="kpi-note" id="ov-task-note">加载中…</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 3.6l9 15.8H3l9-15.8z"/><path d="M12 9.6v4.2M12 16.6v.6"/></svg>需要处理</div>
+              <div class="kpi-val"><b id="ov-attn">—</b></div>
+              <div class="kpi-note" id="ov-attn-note"></div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9.5 3v3M14.5 3v3M9.5 18v3M14.5 18v3M3 9.5h3M3 14.5h3M18 9.5h3M18 14.5h3"/></svg>本机资源</div>
+              <div class="gauge"><span>CPU</span><span class="track"><i id="ov-cpu-bar" style="width:0%"></i></span><b id="ov-cpu">—</b></div>
+              <div class="gauge"><span>内存</span><span class="track"><i class="g" id="ov-mem-bar" style="width:0%"></i></span><b id="ov-mem">—</b></div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 3l9 4.2-9 4.2L3 7.2 12 3z"/><path d="M3 12l9 4.2 9-4.2M3 16.8l9 4.2 9-4.2"/></svg>核心服务</div>
+              <div class="kpi-svc" id="ov-svc"></div>
+              <div class="kpi-note" id="ov-sync"></div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="p-head">
+              <h3>执行单元</h3><span class="cnt" id="ov-card-cnt">0</span>
+              <div class="chips" id="ov-chips" role="group" aria-label="按执行端类型筛选">
+                <button class="chip-btn" data-cardfilter="all" aria-pressed="true">全部 <span class="n">0</span></button>
+                <button class="chip-btn k-p" data-cardfilter="phone" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="7" y="2.6" width="10" height="18.8" rx="2.4"/><path d="M10.6 18.6h2.8"/></svg>真机 <span class="n">0</span></button>
+                <button class="chip-btn k-b" data-cardfilter="browser" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2.6" y="4.6" width="18.8" height="14.8" rx="2.2"/><path d="M2.6 9.2h18.8"/></svg>浏览器 <span class="n">0</span></button>
+                <button class="chip-btn attn" data-cardfilter="attn" aria-pressed="false">需处理 <span class="n">0</span></button>
+              </div>
+              <button class="more" id="ov-goto-units">查看全部 →</button>
+            </div>
+            <div class="grid" id="ov-grid"><div class="empty-hint">加载中…</div></div>
+          </section>
+        </div>
+      </section>
+
+      <!-- ===== 执行单元管理 ===== -->
+      <section class="page show" id="page-units">
+        <div class="stage">
+          <div class="stage-head">
+            <h2>执行单元管理</h2>
+            <span class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="11" cy="11" r="6.6"/><path d="M16 16l4.5 4.5"/></svg><input id="u-search" placeholder="搜索账号 / 执行端 / 序列号 / 环境 ID…" autocomplete="off"><span class="kbd">Ctrl K</span></span>
+            <p class="lede">一个闲鱼账号 = 一台执行端。真机(ADB / 群控 App)与浏览器(AdsPower 环境 / Worker)在同一张表里管理,类型只是执行端的一个属性。</p>
+          </div>
+
+          <section class="kpis">
+            <div class="kpi">
+              <div class="kpi-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="2.5" y="6" width="12" height="14.5" rx="2"/><path d="M8 6V4.6a1.6 1.6 0 011.6-1.6h10.3A1.6 1.6 0 0121.5 4.6v9.2a1.6 1.6 0 01-1.6 1.6H14.5"/></svg>执行单元总数</div>
+              <div class="kpi-val"><b id="u-total">—</b><span id="u-total-sub"></span></div>
+              <div class="stack" id="u-stack"></div>
+              <div class="legend" id="u-legend"></div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.4l2.8 2.8L16 9.6"/></svg>在线</div>
+              <div class="kpi-val"><b id="u-online">—</b><span id="u-online-rate"></span></div>
+              <div class="kpi-note" id="u-online-note"></div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 3.6l9 15.8H3l9-15.8z"/><path d="M12 9.6v4.2M12 16.6v.6"/></svg>需要处理</div>
+              <div class="kpi-val"><b id="u-attn">—</b></div>
+              <div class="kpi-note" id="u-attn-note"></div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M4 12a8 8 0 1116 0"/><path d="M12 12l4.5-3"/><path d="M4 12v4.5h4M20 12v4.5h-4"/></svg>链路健康</div>
+              <div class="gauge"><span>真机</span><span class="track"><i id="u-h-p-bar" style="width:0%"></i></span><b id="u-h-p">—</b></div>
+              <div class="gauge"><span>浏览器</span><span class="track"><i class="v" id="u-h-b-bar" style="width:0%"></i></span><b id="u-h-b">—</b></div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M4 19V9M9.5 19V4.5M15 19v-7M20.5 19v-11"/></svg>今日配额消耗</div>
+              <div class="kpi-val"><b id="u-quota-used">—</b><span id="u-quota-total"></span></div>
+              <div class="gauge"><span class="track"><i class="g" id="u-quota-bar" style="width:0%"></i></span><b id="u-quota-pct">—</b></div>
+            </div>
+          </section>
+
+          <div class="mgr">
+            <section class="panel">
+              <div class="toolbar">
+                <div class="chips" id="u-chips" role="group" aria-label="按执行端类型筛选">
+                  <button class="chip-btn" data-tblfilter="all" aria-pressed="true">全部 <span class="n">0</span></button>
+                  <button class="chip-btn k-p" data-tblfilter="phone" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="7" y="2.6" width="10" height="18.8" rx="2.4"/><path d="M10.6 18.6h2.8"/></svg>真机 <span class="n">0</span></button>
+                  <button class="chip-btn k-b" data-tblfilter="browser" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2.6" y="4.6" width="18.8" height="14.8" rx="2.2"/><path d="M2.6 9.2h18.8"/></svg>浏览器 <span class="n">0</span></button>
+                  <button class="chip-btn attn" data-tblfilter="attn" aria-pressed="false">需处理 <span class="n">0</span></button>
+                </div>
+                <span class="tb-gap"></span>
+                <span class="sel"><select id="u-risk"><option value="">全部风控</option><option value="NORMAL">正常</option><option value="WARN">预警</option><option value="FROZEN">冻结</option></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9.5l6 6 6-6"/></svg></span>
+                <button class="act" id="u-refresh">刷新</button>
+              </div>
+              <div class="toolbar row2">
+                <span class="ck" id="u-ck-all" title="全选当前筛选结果"></span>
+                <span class="selinfo">已选 <b id="u-sel-n">0</b><span id="u-sel-kind"></span></span>
+                <span class="scope-hint" id="u-scope-hint" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16v.5"/></svg>混选了两类执行端,只有两类都支持的操作可用</span>
+                <span class="tb-gap"></span>
+                <button class="act" id="u-act-screen" hidden>批量投屏</button>
+                <button class="act primary" id="u-act-init" hidden>批量初始化</button>
+                <button class="act violet" id="u-act-start" hidden>批量启动</button>
+                <button class="act" id="u-act-stop" hidden>批量停止</button>
+              </div>
+              <div class="tbl-wrap">
+                <table class="tbl-units">
+                  <thead>
+                    <tr>
+                      <th style="width:34px"></th>
+                      <th>闲鱼账号</th>
+                      <th>类型</th>
+                      <th>执行端</th>
+                      <th>链路状态</th>
+                      <th>今日配额</th>
+                      <th>当前任务</th>
+                      <th>最后心跳</th>
+                      <th style="text-align:right">操作</th>
+                    </tr>
+                  </thead>
+                  <tbody id="u-rows"><tr><td colspan="9"><div class="empty-hint">加载中…</div></td></tr></tbody>
+                </table>
+              </div>
+              <div class="pager">共 <b id="u-count">0</b> 个执行单元<span id="u-stale" style="color:var(--warn)"></span></div>
+            </section>
+
+            <aside class="drawer" id="u-drawer" hidden>
+              <div class="dw-head">
+                <div class="t"><h4 id="dw-title">—</h4><span class="sub" id="dw-sub"></span></div>
+                <button class="dw-x" id="dw-close" title="关闭">✕</button>
+              </div>
+              <div class="dw-tabs" id="dw-tabs"></div>
+              <div class="dw-body" id="dw-body"></div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 任务中心 ===== -->
+      <section class="page" id="page-queue">
+        <div class="page-head">
+          <span class="t">任务中心</span>
+          <span class="spacer"></span>
+          <div class="q-summary" id="q-summary"></div>
+        </div>
+        <div class="q-sections" id="q-sections"><div class="q-empty">加载中…</div></div>
+      </section>
+
+      <!-- ===== 告警与日志 ===== -->
+      <section class="page" id="page-logs">
+        <div class="stage">
+          <div class="stage-head">
+            <h2>告警与日志</h2>
+            <span class="tb-gap"></span>
+            <button class="act" id="log-clear">清空</button>
+          </div>
+          <section class="panel" style="flex:1;min-height:0">
+            <div class="toolbar">
+              <div class="chips" id="log-chips" role="group" aria-label="按级别筛选">
+                <button class="chip-btn" data-logfilter="all" aria-pressed="true">全部 <span class="n">0</span></button>
+                <button class="chip-btn attn" data-logfilter="attn" aria-pressed="false">告警 <span class="n">0</span></button>
+                <button class="chip-btn" data-logfilter="info" aria-pressed="false">运行日志 <span class="n">0</span></button>
+              </div>
+            </div>
+            <div class="feed-list" id="log-feed"><div class="empty-hint">暂无告警,全部执行单元状态正常</div></div>
+          </section>
+        </div>
+      </section>
+
+<!-- ===== 装机页 ===== -->
+      <section class="page" id="page-packages">
+        <div class="page-head">
+          <span class="t">装机包管理</span>
+          <span class="spacer"></span>
+          <button class="pause-btn" id="btn-recheck" title="重新检查三项的版本/更新状态">重新检查</button>
+        </div>
+        <div class="pkg-page">
+          <div class="pkg-card" id="pkg-gp">
+            <div class="pc-head">
+              <span class="pc-name">群控 App</span>
+              <span class="tag" id="pkg-gp-tag">尚未检查</span>
+            </div>
+            <div class="pc-body">
+              <div class="pkg-meta" id="pkg-gp-meta"><span>等待检查…</span></div>
+              <div class="pc-desc">执行机上运行的群控服务客户端。新设备初始化、补装时推送本地装机包;版本落后时无法使用最新任务指令。</div>
+              <div class="pc-foot">
+                <button class="mini-btn" id="btn-dl-gp" style="display:none">下载新版</button>
+                <div class="dl-prog" id="gp-prog"><i></i></div>
+              </div>
+            </div>
+          </div>
+          <div class="pkg-card" id="pkg-xy">
+            <div class="pc-head">
+              <span class="pc-name">闲鱼锁定版</span>
+              <span class="tag" id="pkg-xy-tag">尚未检查</span>
+            </div>
+            <div class="pc-body">
+              <div class="pkg-meta" id="pkg-xy-meta"><span>等待检查…</span></div>
+              <div class="pc-desc">所有执行机统一运行的闲鱼版本,与群控脚本严格匹配。版本不符的设备无法执行自动化任务,须降级/升级至锁定版。</div>
+              <div class="pc-foot">
+                <button class="mini-btn amber" id="btn-dl-xy" style="display:none">预下载</button>
+                <div class="dl-prog" id="xy-prog"><i></i></div>
+              </div>
+            </div>
+          </div>
+          <div class="pkg-card" id="pkg-code">
+            <div class="pc-head">
+              <span class="pc-name">桌面端本体</span>
+              <span class="tag" id="pkg-code-tag">尚未检查</span>
+            </div>
+            <div class="pc-body">
+              <div class="pkg-meta" id="pkg-code-meta"><span>等待检查…</span></div>
+              <div class="pc-desc">本程序的代码热更新(逐文件下载 + MD5 校验)。下载落位后重启生效,无需重新安装;重启时投屏窗口会随之关闭。</div>
+              <div class="pc-foot">
+                <button class="mini-btn" id="btn-dl-code" style="display:none">下载更新</button>
+                <button class="mini-btn amber" id="btn-relaunch" style="display:none">重启生效</button>
+                <div class="dl-prog" id="code-prog"><i></i></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pkg-card" id="ads-card-api">
+            <div class="pc-head">
+              <span class="pc-name">AdsPower 客户端</span>
+              <span class="tag" id="ads-api-tag">检测中…</span>
+            </div>
+            <div class="pc-body">
+              <div class="pkg-meta" id="ads-api-meta"><span>检测中…</span></div>
+              <div class="pc-desc">指纹浏览器客户端,须已启动并开启 Local API。一个 AdsPower 环境 = 一台浏览器「设备」= 绑定一个闲鱼账号。</div>
+            </div>
+          </div>
+          <div class="pkg-card" id="ads-card-cli">
+            <div class="pc-head">
+              <span class="pc-name">gc-ads 执行端</span>
+              <span class="tag" id="ads-cli-tag">检测中…</span>
+            </div>
+            <div class="pc-body">
+              <div class="pkg-meta" id="ads-cli-meta"><span>检测中…</span></div>
+              <div class="pc-desc">本机的浏览器形态群控执行端,自带运行环境、一键安装。起停/体检都由守护端代为调用,不用懂命令行。</div>
+              <div class="pc-foot">
+                <button class="mini-btn" id="ads-install" style="display:none">一键安装</button>
+                <button class="mini-btn" id="ads-setdir">设置目录</button>
+              </div>
+              <div class="dl-prog" id="ads-dl-prog"><i></i></div>
+              <div class="pkg-meta" id="ads-dl-text" style="display:none"></div>
+            </div>
+          </div>
+          <div class="pkg-card" id="ads-card-act">
+            <div class="pc-head">
+              <span class="pc-name">批量操作</span>
+              <span class="tag" id="ads-act-tag">看门狗 检测中…</span>
+            </div>
+            <div class="pc-body">
+              <div class="pkg-meta" id="ads-act-meta"><span>看门狗 = 常驻守护:executor 崩溃自动拉起、浏览器被关了自动重开,建议常开</span></div>
+              <div class="pc-foot">
+                <button class="mini-btn" id="ads-start-all">启动全部</button>
+                <button class="mini-btn amber" id="ads-stop-all" title="停 executor,浏览器保持开着">停止全部</button>
+                <button class="mini-btn" id="ads-doctor" title="安装/运行环境全面体检(只读)">体检</button>
+                <button class="mini-btn" id="ads-watchdog">启动看门狗</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ads-pre-wrap" id="ads-pre-wrap" style="display:none">
+          <div class="ads-pre-head">
+            <span id="ads-pre-title">输出</span>
+            <span class="spacer"></span>
+            <button class="mini-btn" id="ads-pre-close">收起</button>
+          </div>
+          <pre class="ads-pre" id="ads-pre"></pre>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <footer class="statusbar" id="statusbar">
+    <span class="s" id="sb-adb"><span class="mini-dot"></span>ADB</span>
+    <span class="s" id="sb-ads"><span class="mini-dot"></span>AdsPower API</span>
+    <span class="s" id="sb-server"><span class="mini-dot"></span>调度中心</span>
+    <span class="s" id="sb-wd"><span class="mini-dot"></span>看门狗</span>
+    <span class="s s-login off" id="sb-login" title="登录 / 退出"><span class="mini-dot"></span><span id="sb-login-text">未登录</span></span>
+    <span class="s">最后同步 <span class="mono" id="sb-sync">—</span></span>
+    <span class="right" id="sb-right"><span class="mini-dot"></span>节点运行正常</span>
+  </footer>
+</div>
+
+<!-- 员工登录。不放服务器地址;记得住账号密码。保活、投屏这些本机功能不登录也照常,
+     所以能先关掉——只有执行单元、任务这些要读群控的页面才需要登录。 -->
+<div class="login-mask" id="login-mask" hidden>
+  <div class="login-card">
+    <h2>登录群控守护</h2>
+    <p class="login-sub" id="login-sub">用员工账号登录</p>
+    <form id="login-form" autocomplete="off">
+      <label>账号<input id="login-user" type="text" placeholder="你的员工账号" spellcheck="false"></label>
+      <label>密码<input id="login-pass" type="password"></label>
+      <label class="login-remember"><input id="login-remember" type="checkbox" checked>记住账号密码</label>
+      <div class="login-err" id="login-err"></div>
+      <button class="btn primary" id="login-submit" type="submit">登 录</button>
+      <button class="btn" id="login-later" type="button">先不登录</button>
+    </form>
+    <div class="login-in" id="login-in" hidden>
+      <p>已登录:<b id="login-who"></b></p>
+      <button class="btn" id="login-out" type="button">退出登录</button>
+      <button class="btn primary" id="login-close" type="button">关闭</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="renderer.js"></script>
+</body>
+</html>

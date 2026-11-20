@@ -1,0 +1,78 @@
+.lap-detail { padding-bottom: calc(150rpx + env(safe-area-inset-bottom)); }
+
+.lap-detail .lap-sku__name { font-size: 32rpx; font-weight: 800; color: #111827; }
+.lap-detail .lap-sku__code { margin-top: 6rpx; font-size: 24rpx; color: #6B7280; }
+.lap-detail .lap-facts { display: flex; gap: 16rpx; margin-top: 20rpx; }
+.lap-detail .lap-fact { flex: 1; min-width: 0; padding: 14rpx 16rpx; border-radius: 14rpx; background: #F9FAFB; }
+.lap-detail .lap-fact__k { font-size: 22rpx; color: #6B7280; }
+.lap-detail .lap-fact__v { margin-top: 4rpx; font-size: 28rpx; font-weight: 700; color: #111827; }
+.lap-detail .lap-fact__v--strong { color: #2563EB; }
+.lap-detail .lap-fact__sub { margin-top: 2rpx; font-size: 20rpx; color: #9CA3AF; }
+.lap-detail .lap-warn { margin-top: 16rpx; padding: 14rpx 18rpx; border-radius: 12rpx; background: #FEF3C7; color: #92400E; font-size: 24rpx; }
+
+.lap-detail .lap-shop { border: 2rpx solid transparent; }
+.lap-detail .lap-shop--picked { border-color: #2563EB; }
+.lap-detail .lap-shop__head { display: flex; align-items: center; flex-wrap: wrap; gap: 12rpx; }
+.lap-detail .lap-shop__name { font-size: 30rpx; font-weight: 800; color: #111827; }
+.lap-detail .lap-ver { margin-left: auto; }
+.lap-detail .lap-box { flex: none; width: 40rpx; height: 40rpx; line-height: 40rpx; text-align: center; border: 2rpx solid #D1D5DB; border-radius: 8rpx; font-size: 26rpx; font-weight: 800; color: #FFFFFF; }
+.lap-detail .lap-box--on { background: #2563EB; border-color: #2563EB; }
+.lap-detail .lap-st { padding: 2rpx 12rpx; border-radius: 8rpx; background: #F3F4F6; color: #6B7280; font-size: 22rpx; }
+.lap-detail .lap-st--draft { background: #EFF6FF; color: #1D4ED8; }
+.lap-detail .lap-st--wait { background: #FEF3C7; color: #B45309; }
+.lap-detail .lap-st--ok { background: #DCFCE7; color: #15803D; }
+.lap-detail .lap-st--bad { background: #FEE2E2; color: #B91C1C; }
+.lap-detail .lap-muted { font-size: 22rpx; color: #9CA3AF; }
+.lap-detail .lap-err { margin-top: 10rpx; font-size: 24rpx; color: #DC2626; }
+.lap-detail .lap-link { font-size: 24rpx; color: #2563EB; }
+.lap-detail .lap-warn { margin-top: 10rpx; font-size: 24rpx; color: #B45309; }
+.lap-detail .lap-reason { margin-top: 12rpx; }
+.lap-detail .lap-reason__input { height: 64rpx; padding: 0 16rpx; border: 1rpx solid #FCA5A5; border-radius: 10rpx; font-size: 26rpx; background: #FEF2F2; }
+.lap-detail .lap-reason__text { font-size: 24rpx; color: #B42318; }
+.lap-detail .lap-hint { margin-bottom: 16rpx; font-size: 24rpx; color: #6B7280; line-height: 1.5; }
+
+.lap-detail .lap-back { margin-top: 12rpx; padding: 14rpx 18rpx; border-radius: 12rpx; background: #FEF2F2; color: #374151; font-size: 24rpx; line-height: 1.5; }
+.lap-detail .lap-back__k { font-weight: 700; }
+
+.lap-detail .lap-price { display: flex; align-items: center; gap: 12rpx; margin-top: 18rpx; }
+.lap-detail .lap-price__k { font-size: 26rpx; color: #374151; }
+.lap-detail .lap-price__input { width: 220rpx; padding: 12rpx 18rpx; border: 2rpx solid #D1D5DB; border-radius: 12rpx; font-size: 30rpx; font-weight: 700; }
+.lap-detail .lap-price__low { margin-top: 0; }
+
+.lap-detail .lap-strip { display: flex; flex-wrap: wrap; gap: 12rpx; margin-top: 16rpx; align-items: center; }
+.lap-detail .lap-pick { position: relative; }
+.lap-detail .lap-mini { display: block; width: 120rpx; height: 120rpx; border-radius: 12rpx; background: #F3F4F6; }
+.lap-detail .lap-first { position: absolute; left: 0; bottom: 0; padding: 0 8rpx; border-radius: 0 10rpx 0 12rpx; background: #2563EB; color: #FFFFFF; font-size: 20rpx; }
+.lap-detail .lap-x { position: absolute; right: 0; top: 0; width: 36rpx; height: 36rpx; line-height: 36rpx; text-align: center; border-radius: 0 12rpx 0 12rpx; background: rgba(0, 0, 0, 0.55); color: #FFFFFF; font-size: 24rpx; }
+.lap-detail .lap-add { display: flex; align-items: center; justify-content: center; width: 120rpx; height: 120rpx; border: 2rpx dashed #D1D5DB; border-radius: 12rpx; color: #2563EB; font-size: 24rpx; box-sizing: border-box; }
+.lap-detail .lap-add--wide { width: 260rpx; color: #6B7280; }
+
+.lap-detail .lap-shop__foot { display: flex; align-items: center; justify-content: space-between; gap: 16rpx; margin-top: 18rpx; }
+
+.lap-detail .lap-bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; display: flex; align-items: center; gap: 14rpx; padding: 18rpx 24rpx calc(18rpx + env(safe-area-inset-bottom)); background: #FFFFFF; box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.06); }
+.lap-detail .lap-bar__all { display: flex; align-items: center; gap: 10rpx; margin-right: auto; font-size: 26rpx; color: #374151; }
+.lap-detail .lap-bar__btn { padding: 18rpx 26rpx; border-radius: 14rpx; background: #F3F4F6; color: #374151; font-size: 26rpx; font-weight: 700; text-align: center; }
+.lap-detail .lap-bar__btn--pri { background: #2563EB; color: #FFFFFF; }
+.lap-detail .lap-bar__btn--ok { background: #16A34A; color: #FFFFFF; }
+.lap-detail .lap-bar__btn--bad { background: #FEE2E2; color: #B91C1C; }
+.lap-detail .lap-bar__btn.is-off { opacity: 0.4; }
+
+.lap-detail .lap-mask { position: fixed; left: 0; right: 0; top: 0; bottom: 0; z-index: 50; background: rgba(0, 0, 0, 0.45); display: flex; align-items: flex-end; }
+.lap-detail .lap-sheet { width: 100%; max-height: 85vh; display: flex; flex-direction: column; padding: 28rpx 24rpx calc(24rpx + env(safe-area-inset-bottom)); border-radius: 28rpx 28rpx 0 0; background: #FFFFFF; box-sizing: border-box; }
+.lap-detail .lap-sheet__title { margin-bottom: 12rpx; font-size: 30rpx; font-weight: 800; color: #111827; }
+.lap-detail .lap-sheet__body { flex: 1; min-height: 0; max-height: 60vh; }
+.lap-detail .lap-sheet__actions { display: flex; gap: 16rpx; margin-top: 20rpx; }
+.lap-detail .lap-sheet__actions .lap-bar__btn { flex: 1; }
+.lap-detail .lap-textarea { width: 100%; height: 200rpx; padding: 16rpx; border: 2rpx solid #D1D5DB; border-radius: 12rpx; font-size: 28rpx; box-sizing: border-box; }
+
+.lap-detail .lap-grid { display: flex; flex-wrap: wrap; gap: 14rpx; }
+.lap-detail .lap-cell { position: relative; width: calc((100% - 28rpx) / 3); height: 200rpx; border: 4rpx solid transparent; border-radius: 16rpx; overflow: hidden; background: #F3F4F6; box-sizing: border-box; }
+.lap-detail .lap-cell--on { border-color: #2563EB; }
+.lap-detail .lap-cell--taken { opacity: 0.4; }
+.lap-detail .lap-cell--upload { display: flex; align-items: center; justify-content: center; border: 2rpx dashed #D1D5DB; background: #FFFFFF; color: #2563EB; font-size: 26rpx; }
+.lap-detail .lap-img { display: block; width: 100%; height: 100%; }
+.lap-detail .lap-badge { position: absolute; left: 0; top: 0; max-width: 100%; padding: 2rpx 10rpx; border-radius: 0 0 10rpx 0; background: rgba(0, 0, 0, 0.55); color: #FFFFFF; font-size: 20rpx; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; box-sizing: border-box; }
+.lap-detail .lap-badge--bad { background: #DC2626; }
+.lap-detail .lap-no { position: absolute; right: 8rpx; top: 8rpx; width: 40rpx; height: 40rpx; line-height: 40rpx; text-align: center; border-radius: 20rpx; background: #2563EB; color: #FFFFFF; font-size: 24rpx; font-weight: 800; }
+.lap-detail .lap-used { position: absolute; left: 0; right: 0; bottom: 0; padding: 2rpx 8rpx; background: rgba(17, 24, 39, 0.7); color: #FFFFFF; font-size: 20rpx; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.lap-detail .lap-used--live { background: rgba(180, 83, 9, 0.8); }

@@ -1,0 +1,125 @@
+<!-- 录入资产 / 录入详情（电脑版）：左边字段三栏，右边实拍图；保存放底部操作条。已上架等不能改时整页只读 -->
+<view class="dk-page {{editable ? '' : 'aif-dk-readonly'}}">
+  <view class="dk-head">
+    <view>
+      <view class="dk-row">
+        <text class="dk-title">{{code ? '录入详情' : '录入资产'}}</text>
+        <text wx:if="{{code}}" class="dk-sub">货号 {{code}}</text>
+        <text wx:if="{{statusLabel}}" class="dk-tag {{editable ? 'tag-warning' : 'tag-info'}}">{{statusLabel}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{lockedTip}}" class="aif-dk-locked">{{lockedTip}}</view>
+
+  <view class="dk-split aif-dk-split">
+    <view class="aif-dk-col">
+      <view class="dk-card">
+        <view class="dk-card__head">商品信息</view>
+        <view class="dk-card__body dk-form dk-form--3">
+          <view class="dk-field">
+            <text class="dk-label dk-label--req">商品类型</text>
+            <picker mode="selector" range="{{productTypes}}" value="{{productTypeIndex}}" bindchange="pickProductType" disabled="{{!editable}}">
+              <view class="dk-select {{editable ? '' : 'aif-dk-ro'}}">{{form.product_type || '选择商品类型'}}</view>
+            </picker>
+          </view>
+          <view class="dk-field">
+            <text class="dk-label dk-label--req">品牌</text>
+            <input class="dk-input" value="{{form.brand}}" data-field="brand" bindinput="onInput" placeholder="如 戴尔" disabled="{{!editable}}" />
+          </view>
+          <view class="dk-field">
+            <text class="dk-label dk-label--req">型号</text>
+            <input class="dk-input" value="{{form.model}}" data-field="model" bindinput="onInput" placeholder="如 U2720Q" disabled="{{!editable}}" />
+          </view>
+          <view class="dk-field">
+            <text class="dk-label dk-label--req">序列号</text>
+            <view class="dk-row aif-dk-nowrap">
+              <input class="dk-input dk-grow" value="{{form.serial_number}}" data-field="serial_number" bindinput="onInput" placeholder="扫码或手填" disabled="{{!editable}}" />
+              <view wx:if="{{editable}}" class="dk-btn" catchtap="scanSerial">扫码</view>
+            </view>
+          </view>
+          <view class="dk-field aif-dk-span2">
+            <text class="dk-label">配置</text>
+            <input class="dk-input" value="{{form.spec}}" data-field="spec" bindinput="onInput" placeholder="如 i5 / 16G / 512G，27寸 4K" disabled="{{!editable}}" />
+          </view>
+          <view class="dk-field">
+            <text class="dk-label dk-label--req">成色</text>
+            <view class="dk-tabs aif-dk-seg {{editable ? '' : 'aif-dk-seg--ro'}}">
+              <view
+                wx:for="{{grades}}"
+                wx:key="*this"
+                class="dk-tab {{gradeIndex === index ? 'dk-tab--on' : ''}}"
+                data-index="{{index}}"
+                bindtap="dkPickGrade"
+              >{{item}}</view>
+            </view>
+          </view>
+          <view class="dk-field aif-dk-span2">
+            <text class="dk-label">来源资产编号</text>
+            <view class="dk-row aif-dk-nowrap">
+              <input class="dk-input dk-grow" value="{{form.source_asset_no}}" data-field="source_asset_no" bindinput="onInput" placeholder="原系统里的编号，选填" disabled="{{!editable}}" />
+              <view wx:if="{{editable}}" class="dk-btn" catchtap="scanSourceNo">扫码</view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="dk-card">
+        <view class="dk-card__head">价格与其他</view>
+        <view class="dk-card__body dk-form dk-form--3">
+          <view class="dk-field">
+            <text class="dk-label dk-label--req">售价 ¥</text>
+            <input class="dk-input" type="digit" value="{{form.price}}" data-field="price" bindinput="onMoneyInput" disabled="{{!editable}}" />
+          </view>
+          <view class="dk-field">
+            <text class="dk-label">运费 ¥</text>
+            <input class="dk-input" type="digit" value="{{form.express_fee}}" data-field="express_fee" bindinput="onMoneyInput" placeholder="不填按 0 元运费" disabled="{{!editable}}" />
+          </view>
+          <view class="dk-field">
+            <text class="dk-label">成本价 ¥</text>
+            <input class="dk-input" type="digit" value="{{form.cost_price}}" data-field="cost_price" bindinput="onMoneyInput" placeholder="不知道就不填，按 0 算" disabled="{{!editable}}" />
+          </view>
+          <view class="dk-field">
+            <text class="dk-label">库位</text>
+            <picker mode="selector" range="{{locations}}" range-key="label" value="{{locationIndex}}" bindchange="pickLocation" disabled="{{!editable}}">
+              <view class="dk-select {{editable ? '' : 'aif-dk-ro'}}">{{form.location_code || '不知道就不选'}}</view>
+            </picker>
+          </view>
+          <view class="dk-field aif-dk-span2">
+            <text class="dk-label">备注</text>
+            <input class="dk-input" value="{{form.remark}}" data-field="remark" bindinput="onInput" placeholder="只给内部看" disabled="{{!editable}}" />
+          </view>
+          <view class="dk-field dk-field--full">
+            <text class="dk-label">瑕疵 / 配件说明</text>
+            <textarea class="dk-input aif-dk-textarea" value="{{form.desc}}" data-field="desc" bindinput="onInput" placeholder="如：右下角轻微划痕，带原装电源" disabled="{{!editable}}" />
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="dk-card">
+      <view class="dk-card__head">
+        <text class="dk-label--req">商品实拍图</text>
+        <text class="dk-sub aif-dk-note">第一张做封面 · {{form.images.length}} / 9</text>
+      </view>
+      <view class="dk-card__body">
+        <view class="dk-gallery aif-dk-gallery">
+          <view class="aif-dk-item" wx:for="{{form.images}}" wx:key="*this">
+            <media-thumb url="{{imageDisplay[index] || item}}" size="fill" preview="{{true}}" />
+            <text wx:if="{{index === 0}}" class="aif-dk-cover">封面</text>
+            <view wx:if="{{editable}}" class="aif-dk-del" data-index="{{index}}" catchtap="removeImage">×</view>
+          </view>
+          <view wx:if="{{editable && form.images.length < 9}}" class="aif-dk-add" bindtap="addImage">
+            <text class="aif-dk-add__plus">+</text>
+            <text class="dk-help">添加照片</text>
+          </view>
+        </view>
+        <view wx:if="{{!form.images.length && !editable}}" class="dk-empty">没有照片</view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{editable}}" class="dk-actionbar aif-dk-bar">
+    <button class="dk-btn dk-btn--primary aif-dk-btn" loading="{{submitting}}" bindtap="submit">{{code ? '保存修改' : '确认录入'}}</button>
+  </view>
+</view>

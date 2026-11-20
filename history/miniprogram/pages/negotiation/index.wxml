@@ -1,0 +1,133 @@
+<wxs module="fmt" src="../../utils/format.wxs" />
+
+<view class="page-wrap page-wrap--no-tab neg-page">
+  <!-- 主 Tab：待议价 / 待召回快递 -->
+  <view class="card neg-tab-card">
+    <view class="status-segment">
+      <text class="status-seg {{tab === 'pending' ? 'active' : ''}}" data-tab="pending" bindtap="switchTab">待议价</text>
+      <text class="status-seg {{tab === 'recall' ? 'active' : ''}}" data-tab="recall" bindtap="switchTab">待召回快递{{recallTotal ? ' · ' + recallTotal : ''}}</text>
+    </view>
+  </view>
+
+  <view class="card filter-card">
+    <view class="search-bar">
+      <view class="search-input-wrap">
+        <input class="search-input search-input--with-scan" placeholder="货号/商品名/品牌型号/采购单号/库位" value="{{q}}" bindinput="onSearchInput" confirm-type="search" bindconfirm="onSearch" />
+        <view class="search-scan-icon" catchtap="onScanSearch" aria-role="button">
+          <view class="scan-frame"></view>
+          <view class="scan-line"></view>
+        </view>
+      </view>
+    </view>
+    <view class="status-segment">
+      <text class="status-seg {{preset === 'today' ? 'active' : ''}}" data-preset="today" bindtap="pickPreset">今天</text>
+      <text class="status-seg {{preset === 'yesterday' ? 'active' : ''}}" data-preset="yesterday" bindtap="pickPreset">昨天</text>
+      <text class="status-seg {{preset === '7d' ? 'active' : ''}}" data-preset="7d" bindtap="pickPreset">近7天</text>
+    </view>
+    <view class="date-row">
+      <picker mode="date" value="{{dateFrom}}" end="{{dateTo || ''}}" bindchange="onDateFromChange">
+        <view class="date-pill {{dateFrom ? 'date-pill--filled' : ''}}">{{dateFrom || (tab === 'recall' ? '议价开始日' : '入库开始日')}}</view>
+      </picker>
+      <text class="date-sep">至</text>
+      <picker mode="date" value="{{dateTo}}" start="{{dateFrom || ''}}" bindchange="onDateToChange">
+        <view class="date-pill {{dateTo ? 'date-pill--filled' : ''}}">{{dateTo || (tab === 'recall' ? '议价结束日' : '入库结束日')}}</view>
+      </picker>
+      <text wx:if="{{dateFrom || dateTo}}" class="date-clear" bindtap="clearDate">清除</text>
+    </view>
+  </view>
+
+  <!-- 待议价列表 -->
+  <view wx:if="{{tab === 'pending'}}" class="card">
+    <view class="card-head">
+      <view class="card-head-main">
+        待议价
+        <view class="tag tag-warning head-extra">{{total}} 件</view>
+      </view>
+      <view class="neg-history-link" bindtap="openHistory">议价记录 ›</view>
+    </view>
+    <view wx:if="{{!list.length && !loading}}" class="empty">
+      <view class="e-icon">—</view>
+      <view class="e-text">暂无待议价商品</view>
+    </view>
+    <view
+      wx:for="{{list}}"
+      wx:key="sku_id"
+      class="list-item"
+      data-code="{{item.sku_code}}"
+      bindtap="openForm"
+    >
+      <view class="li-thumb-wrap">
+        <media-thumb
+          wx:if="{{item.cover_thumb_url || item.cover_url}}"
+          url="{{item.cover_thumb_url || item.cover_url}}"
+          preview-url="{{item.cover_url}}"
+          size="small"
+        />
+        <!-- 没有产品图时,退而显示仓库定位图(找货用),角标区分 -->
+        <block wx:elif="{{item.location_images[0]}}">
+          <media-thumb url="{{item.location_images[0]}}" preview-url="{{item.location_images[0]}}" size="small" />
+          <view class="media-loc-badge">定位</view>
+        </block>
+        <view wx:else class="li-icon">{{item.product_name[0] || '议'}}</view>
+      </view>
+      <view class="li-info">
+        <view class="li-title">{{item.product_name}}</view>
+        <view class="li-sub">{{item.sku_code}}{{item.spec ? ' · ' + item.spec : ''}}</view>
+        <view class="li-sub li-sub--time">入库时间 {{fmt.datetime(item.inbound_at)}}</view>
+      </view>
+      <view class="li-meta">
+        <view class="li-price">成本 ¥{{fmt.money(item.cost_price)}}</view>
+        <view wx:if="{{item.condition_warning}}" class="condition-warn-tag li-tag">⚠{{item.condition_warning_text || '全新'}}</view>
+        <view class="tag tag-warning li-tag">待议价</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 待召回快递列表 -->
+  <view wx:else class="card">
+    <view class="card-head">
+      <view class="card-head-main">
+        待召回快递
+        <view class="tag tag-warning head-extra">{{recallTotal}} 件</view>
+      </view>
+      <view class="neg-history-link" bindtap="openHistory">议价记录 ›</view>
+    </view>
+    <view class="recall-hint">议价已提交，请补传顺丰改派/再次派件截图完成召回，凭证补齐后归入议价记录。</view>
+    <view wx:if="{{!recallList.length && !loading}}" class="empty">
+      <view class="e-icon">—</view>
+      <view class="e-text">暂无待召回快递</view>
+    </view>
+    <view
+      wx:for="{{recallList}}"
+      wx:key="sku_id"
+      class="list-item"
+      data-code="{{item.sku_code}}"
+      bindtap="openRecall"
+    >
+      <view class="li-thumb-wrap">
+        <media-thumb
+          wx:if="{{item.cover_thumb_url || item.cover_url}}"
+          url="{{item.cover_thumb_url || item.cover_url}}"
+          preview-url="{{item.cover_url}}"
+          size="small"
+        />
+        <block wx:elif="{{item.location_images[0]}}">
+          <media-thumb url="{{item.location_images[0]}}" preview-url="{{item.location_images[0]}}" size="small" />
+          <view class="media-loc-badge">定位</view>
+        </block>
+        <view wx:else class="li-icon">{{item.product_name[0] || '召'}}</view>
+      </view>
+      <view class="li-info">
+        <view class="li-title">{{item.product_name}}</view>
+        <view class="li-sub">{{item.sku_code}}{{item.spec ? ' · ' + item.spec : ''}}</view>
+        <view class="li-sub li-sub--time">议价时间 {{fmt.datetime(item.negotiated_at)}}{{item.negotiator_name ? ' · ' + item.negotiator_name : ''}}</view>
+      </view>
+      <view class="li-meta">
+        <view class="li-price">实收 ¥{{fmt.money(item.final_price)}}</view>
+        <view class="tag tag-warning li-tag">待召回</view>
+      </view>
+    </view>
+    <view wx:if="{{loading}}" class="list-footer">加载中...</view>
+    <view wx:elif="{{recallNoMore && recallList.length}}" class="list-footer">没有更多了</view>
+  </view>
+</view>

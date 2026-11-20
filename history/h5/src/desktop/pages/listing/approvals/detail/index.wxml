@@ -1,0 +1,197 @@
+<!-- 上架审批 · 一件货（电脑版）：上面成本 / 最低价 / 行情价，中间一个号一行（勾选、价、图、审批意见、存草稿），
+     底部操作条提交 / 通过 / 退回；挑图和退回原因换成居中对话框。各号的图一张都不能重复，规则在原页面里 -->
+<view class="dk-page lad-dk">
+  <view wx:if="{{loading}}" class="dk-card dk-empty">加载中…</view>
+  <block wx:elif="{{res}}">
+    <view class="dk-head">
+      <view>
+        <view class="dk-title">{{res.sku.product_name}}</view>
+        <view class="dk-sub">{{res.sku.sku_code}}<text wx:if="{{res.sku.condition_grade}}"> · 成色 {{res.sku.condition_grade}}</text> · {{cards.length}} 个号</view>
+      </view>
+    </view>
+
+    <view class="dk-stats">
+      <view wx:if="{{!res.cost_hidden}}" class="dk-stat">
+        <view class="dk-stat__label">成本</view>
+        <view class="dk-stat__value">{{res.sku.cost_price ? '¥' + res.sku.cost_price : '没有'}}</view>
+      </view>
+      <view class="dk-stat">
+        <view class="dk-stat__label">最低价</view>
+        <view class="dk-stat__value lad-dk-strong">{{res.floor_price ? '¥' + res.floor_price : '—'}}</view>
+        <view class="dk-stat__hint">成本 × {{res.min_cost_ratio}}</view>
+      </view>
+      <view class="dk-stat">
+        <view class="dk-stat__label">行情价</view>
+        <view class="dk-stat__value">{{res.market.price ? '¥' + res.market.price : '没有'}}</view>
+        <view wx:if="{{res.market.basis}}" class="dk-stat__hint">{{res.market.basis}}</view>
+        <view wx:if="{{res.clean_price}}" class="dk-stat__hint">清洗价 ¥{{res.clean_price.price}}（v{{res.clean_price.version}}）</view>
+      </view>
+    </view>
+
+    <view wx:if="{{!res.sku.has_cost}}" class="lad-dk-warn">这件货没有成本，补了成本才能提交</view>
+    <view wx:if="{{readonly}}" class="lad-dk-warn">{{readonly}}</view>
+    <view wx:if="{{res.auto_publish}}" class="dk-sub">当前设置：提交后直接发布，不用再点「通过」。</view>
+
+    <view class="dk-card">
+      <view class="dk-card__head">
+        <text>各号的价和图 <text class="dk-sub">勾几个号一起提交 / 通过 / 退回；图一张都不能跨号重复</text></text>
+      </view>
+      <view class="dk-table-wrap">
+        <table class="dk-table lad-dk-table">
+          <thead>
+            <tr>
+              <th class="lad-dk-th-box">
+                <view class="lad-dk-box {{allPicked ? 'lad-dk-box--on' : ''}}" bindtap="toggleAll">{{allPicked ? '✓' : ''}}</view>
+              </th>
+              <th>号</th>
+              <th>售价（元）</th>
+              <th>图（第 1 张是首图）</th>
+              <th>审批意见</th>
+              <th class="dk-ops">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr wx:for="{{cards}}" wx:key="id" class="{{item.picked ? 'dk-tr--on' : ''}}">
+              <td class="lad-dk-top">
+                <view class="lad-dk-box {{item.picked ? 'lad-dk-box--on' : ''}}" data-id="{{item.id}}" bindtap="togglePick">{{item.picked ? '✓' : ''}}</view>
+              </td>
+              <td class="lad-dk-top lad-dk-shop">
+                <view class="lad-dk-name" data-id="{{item.id}}" bindtap="togglePick">{{item.label}}</view>
+                <view class="dk-row lad-dk-tags">
+                  <text class="dk-tag lad-dk-st {{item.stateClass}}">{{item.stateLabel}}</text>
+                  <text wx:if="{{item.needsFix}}" class="dk-tag lad-dk-st lap-st--bad">在架待整改</text>
+                  <text wx:elif="{{item.listed}}" class="dk-muted">在架</text>
+                  <text wx:if="{{item.version}}" class="dk-muted">第 {{item.version}} 版</text>
+                </view>
+                <view wx:if="{{item.problem}}" class="lad-dk-err">{{item.problem}}</view>
+                <view wx:if="{{item.who}}" class="dk-cell-sub">{{item.who}}</view>
+              </td>
+              <td class="lad-dk-top">
+                <input class="dk-input lad-dk-price {{item.low ? 'lad-dk-price--low' : ''}}" type="number" placeholder="整数元" value="{{item.price}}" disabled="{{!item.editable}}" data-id="{{item.id}}" bindinput="onPrice" />
+                <view wx:if="{{item.low}}" class="lad-dk-err">低于最低价</view>
+                <view wx:elif="{{item.high}}" class="lad-dk-warn">高于成本 5 倍</view>
+                <view wx:elif="{{item.editable && item.price}}" class="dk-link lad-dk-fill" data-id="{{item.id}}" bindtap="fillPrice">填到没填的号</view>
+                <block wx:if="{{item.low}}">
+                  <input wx:if="{{item.editable}}" class="dk-input lad-dk-reason" placeholder="为什么要低价（管理员看了才批）" maxlength="200" value="{{item.note}}" data-id="{{item.id}}" bindinput="onNote" />
+                  <view wx:else class="lad-dk-err">低价理由：{{item.note || '没写'}}</view>
+                </block>
+              </td>
+              <td class="lad-dk-top">
+                <view class="lad-dk-strip">
+                  <view wx:for="{{item.images}}" wx:for-item="img" wx:for-index="ii" wx:key="raw" class="lad-dk-pic">
+                    <image class="lad-dk-pic__img" src="{{img.thumb}}" mode="aspectFill" data-id="{{item.id}}" data-index="{{ii}}" data-act="看大图" bindtap="dkPickedAct" />
+                    <text wx:if="{{ii === 0}}" class="lad-dk-first">首图</text>
+                    <view wx:if="{{item.editable}}" class="lad-dk-pic__ops">
+                      <text wx:if="{{ii > 0}}" class="lad-dk-op" data-id="{{item.id}}" data-index="{{ii}}" data-act="设为首图" catchtap="dkPickedAct">设首图</text>
+                      <text wx:if="{{dkDewmOk}}" class="lad-dk-op" data-id="{{item.id}}" data-index="{{ii}}" data-act="去水印" catchtap="dkPickedAct">去水印</text>
+                      <text class="lad-dk-op lad-dk-op--bad" data-id="{{item.id}}" data-index="{{ii}}" data-act="拿掉" catchtap="dkPickedAct">拿掉</text>
+                    </view>
+                  </view>
+                  <view wx:if="{{item.editable}}" class="lad-dk-add" data-id="{{item.id}}" bindtap="openSheet">{{item.images.length ? '改图' : '+ 选图'}}</view>
+                  <text wx:if="{{!item.images.length && !item.editable}}" class="dk-muted">没选图</text>
+                </view>
+              </td>
+              <td class="lad-dk-top lad-dk-review">
+                <block wx:if="{{item.reviewNote}}">
+                  <view><text class="lad-dk-review__k {{item.rejected ? 'lad-dk-review__k--bad' : ''}}">{{item.rejected ? '退回原因' : '审批意见'}}：</text>{{item.reviewNote}}</view>
+                  <view wx:if="{{item.reviewMedia.length}}" class="lad-dk-strip lad-dk-strip--sm">
+                    <image wx:for="{{item.reviewMedia}}" wx:for-item="m" wx:for-index="mi" wx:key="raw" class="lad-dk-mini" src="{{m.thumb || m.url}}" mode="aspectFill" data-id="{{item.id}}" data-index="{{mi}}" bindtap="previewReview" />
+                  </view>
+                </block>
+                <text wx:else class="dk-muted">—</text>
+              </td>
+              <td class="lad-dk-top dk-ops">
+                <view
+                  wx:if="{{item.editable}}"
+                  class="dk-btn dk-btn--sm {{item.dirty ? 'dk-btn--primary' : ''}} {{saving ? 'dk-btn--disabled' : ''}}"
+                  data-id="{{item.id}}"
+                  bindtap="saveShop"
+                >{{item.dirty ? '存草稿 · 没存' : '存草稿'}}</view>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </view>
+    </view>
+  </block>
+
+  <view wx:if="{{res && cards.length}}" class="dk-actionbar lad-dk-bar">
+    <view class="lad-dk-bar__all" bindtap="toggleAll">
+      <view class="lad-dk-box {{allPicked ? 'lad-dk-box--on' : ''}}">{{allPicked ? '✓' : ''}}</view>
+      <text>全选 · 已勾 {{pickedCount}} 个号</text>
+    </view>
+    <view class="dk-btn dk-btn--primary {{canSubmit && !saving ? '' : 'dk-btn--disabled'}}" bindtap="submitPicked">{{res.auto_publish ? '提交并发布' : '提交审批'}}</view>
+    <block wx:if="{{res.can_review}}">
+      <view class="dk-btn lad-dk-ok {{canReview && !saving ? '' : 'dk-btn--disabled'}}" bindtap="approvePicked">通过</view>
+      <view class="dk-btn dk-btn--danger {{canReview && !saving ? '' : 'dk-btn--disabled'}}" bindtap="openReject">退回</view>
+    </block>
+  </view>
+
+  <!-- 挑图 -->
+  <view wx:if="{{sheet}}" class="lad-dk-mask" bindtap="closeSheet">
+    <view class="lad-dk-dialog lad-dk-dialog--wide" catchtap="noop">
+      <view class="dk-card__head">
+        <text>给「{{sheet.label}}」选图 <text class="dk-sub">{{sheet.sel.length}} / {{sheet.max}}</text></text>
+        <text class="lad-dk-x" bindtap="closeSheet">×</text>
+      </view>
+      <view class="lad-dk-dialog__body">
+        <view class="dk-help lad-dk-gap">按顺序点，第 1 张是首图。灰掉的是别的号占用的（含在架、已提交审批）；选不中只能上传新图，已经选中的冲突图点一下可以去掉。新图排在最后，要换首图先点掉旧首图。鼠标移到图上点「大图」看清楚。</view>
+        <view class="lad-dk-grid">
+          <view
+            wx:for="{{sheet.items}}"
+            wx:key="raw"
+            class="lad-dk-cell {{item.no ? 'lad-dk-cell--on' : ''}} {{item.takenBy ? 'lad-dk-cell--taken' : ''}}"
+            data-index="{{index}}"
+            bindtap="tapSheetItem"
+          >
+            <image class="lad-dk-cell__img" src="{{item.thumb}}" mode="aspectFill" />
+            <text class="lad-dk-badge {{item.bad ? 'lad-dk-badge--bad' : ''}}">{{item.source}}</text>
+            <text wx:if="{{item.no}}" class="lad-dk-no">{{item.no}}</text>
+            <text wx:if="{{item.takenBy}}" class="lad-dk-used">{{item.takenBy}}</text>
+            <text wx:elif="{{item.live}}" class="lad-dk-used lad-dk-used--live">{{item.live}}在架</text>
+            <text class="lad-dk-cell__big" data-index="{{index}}" catchtap="previewSheetItem">大图</text>
+          </view>
+          <view class="lad-dk-cell lad-dk-cell--upload" bindtap="uploadInSheet">
+            <text class="lad-dk-plus">+</text>
+            <text>上传</text>
+          </view>
+        </view>
+        <view wx:if="{{sheet.crawlStatus === '爬取中'}}" class="dk-help">同款图还在搜，过会儿再打开有更多图。</view>
+      </view>
+      <view class="lad-dk-dialog__foot">
+        <view class="dk-btn" bindtap="closeSheet">取消</view>
+        <view class="dk-btn dk-btn--primary" bindtap="confirmSheet">用这 {{sheet.sel.length}} 张</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 退回 -->
+  <view wx:if="{{reject}}" class="lad-dk-mask" bindtap="closeReject">
+    <view class="lad-dk-dialog" catchtap="noop">
+      <view class="dk-card__head">
+        <text>退回 {{pickedCount}} 个号</text>
+        <text class="lad-dk-x" bindtap="closeReject">×</text>
+      </view>
+      <view class="lad-dk-dialog__body">
+        <view class="dk-field">
+          <text class="dk-label dk-label--req">退回原因</text>
+          <textarea class="dk-input lad-dk-textarea" placeholder="员工会看到：哪里不对、要补什么" maxlength="500" value="{{reject.note}}" bindinput="onRejectNote" />
+        </view>
+        <view class="dk-field lad-dk-gap-top">
+          <text class="dk-label">标注截图（选填，最多 9 张）</text>
+          <view class="lad-dk-strip">
+            <view wx:for="{{reject.media}}" wx:key="*this" class="lad-dk-pic">
+              <image class="lad-dk-pic__img" src="{{item}}" mode="aspectFill" data-url="{{item}}" data-urls="{{reject.media}}" bindtap="dkPreview" />
+              <text class="lad-dk-x-badge" data-index="{{index}}" catchtap="removeRejectMedia">×</text>
+            </view>
+            <view wx:if="{{reject.media.length < 9}}" class="lad-dk-add lad-dk-add--wide" bindtap="addRejectMedia">{{reject.uploading ? '上传中…' : '+ 加截图'}}</view>
+          </view>
+        </view>
+      </view>
+      <view class="lad-dk-dialog__foot">
+        <view class="dk-btn" bindtap="closeReject">取消</view>
+        <view class="dk-btn dk-btn--danger {{reject.uploading || saving ? 'dk-btn--disabled' : ''}}" bindtap="confirmReject">退回</view>
+      </view>
+    </view>
+  </view>
+</view>

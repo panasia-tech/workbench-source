@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>泛亚货运社 · 管理后台</title>
+  </head>
+  <body style="margin:0">
+    <div id="app"></div>
+    <!--
+      备案号的静态兜底。页面上那份是 Vue 渲染的（BeianFooter.vue），管局抽查如果
+      只抓原始 HTML、不跑 JS，就只会看到一个空的 #app——备案号必须在首页底部可见，
+      看不到等于没挂。放在 noscript 里：原始 HTML 里有它，真用户一眼都看不到，
+      渲染式抽查看到的则是 Vue 那份。三种抽查方式都盖住了。
+      改号的时候这里和 BeianFooter.vue 要一起改。
+    -->
+    <noscript>
+      <div style="text-align:center;font-size:12px;color:#8c8c8c;padding:16px">
+        <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer"
+           style="color:#8c8c8c">浙ICP备2026010391号-2</a>
+      </div>
+    </noscript>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

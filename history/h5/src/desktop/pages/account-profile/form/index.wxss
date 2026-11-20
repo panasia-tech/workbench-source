@@ -1,0 +1,74 @@
+/* 账号档案（电脑版模板用；类名 apf-dk-*） */
+.apf-dk-split {
+  grid-template-columns: minmax(0, 1fr) 380px;
+}
+
+.apf-dk-seg {
+  align-self: flex-start;
+  flex-wrap: wrap;
+}
+
+.apf-dk-textarea {
+  width: 100%;
+}
+
+.apf-dk-chip {
+  height: 30px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.apf-dk-chip:hover {
+  border-color: #2563eb;
+}
+
+.apf-dk-chip--on {
+  border-color: #2563eb;
+  background: #eff4ff;
+  color: #1d4ed8;
+}
+
+.apf-dk-check {
+  width: 14px;
+  height: 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 3px;
+  font-size: 11px;
+  line-height: 13px;
+  text-align: center;
+  color: #fff;
+  box-sizing: border-box;
+}
+
+.apf-dk-chip--on .apf-dk-check {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+.apf-dk-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+}
+
+/* 内容不满一屏时操作条也贴在底部 */
+.apf-dk-bar {
+  margin-top: auto;
+}
+
+button.apf-dk-btn {
+  margin: 0;
+  line-height: normal;
+  font-size: 13px;
+  border-radius: 6px;
+}
+
+button.apf-dk-btn::after {
+  display: none;
+}

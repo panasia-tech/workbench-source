@@ -1,0 +1,85 @@
+/* 收货核对（电脑版模板 index.wxml 用的补充；通用样式在 src/styles/desktop.css） */
+.rr-dk-nowrap {
+  flex-wrap: nowrap;
+}
+
+.rr-dk-tabs {
+  align-self: flex-start;
+}
+
+.rr-dk-tab--bad,
+.rr-dk-tab--bad:hover {
+  color: #b91c1c;
+}
+
+.rr-dk-ta {
+  width: 100%;
+}
+
+.rr-dk-warn {
+  font-size: 12px;
+  color: #c2410c;
+}
+
+.rr-dk-grow {
+  flex: 1;
+}
+
+.rr-dk-cell {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #f3f4f6;
+}
+
+.rr-dk-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: zoom-in;
+}
+
+.rr-dk-del {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(17, 24, 39, 0.65);
+  color: #fff;
+  font-size: 14px;
+  line-height: 22px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.rr-dk-del:hover {
+  background: #dc2626;
+}
+
+.rr-dk-add {
+  aspect-ratio: 1;
+  border: 1px dashed #cbd5e1;
+  border-radius: 6px;
+  background: #f8fafc;
+  color: #6b7280;
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  cursor: pointer;
+}
+
+.rr-dk-add:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+.rr-dk-add__plus {
+  font-size: 24px;
+  line-height: 1;
+}

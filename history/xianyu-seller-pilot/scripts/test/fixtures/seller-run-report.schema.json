@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://erp.local/schemas/seller-run-report.schema.json",
+  "title": "Seller RPA technical smoke and optional operational evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "generatedAt", "delivery", "technicalSmoke", "optionalEvidence", "notes"],
+  "properties": {
+    "schemaVersion": { "const": 2 },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "delivery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "offlineVerification", "blockers"],
+      "properties": {
+        "status": { "enum": ["ready", "blocked"] },
+        "offlineVerification": { "enum": ["passed", "failed"] },
+        "blockers": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "technicalSmoke": { "$ref": "#/$defs/run" },
+    "optionalEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["twoAccount"],
+      "properties": {
+        "twoAccount": { "$ref": "#/$defs/run" }
+      }
+    },
+    "notes": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+  },
+  "$defs": {
+    "run": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "status", "manifestFile", "manifestHash", "maxSellers", "trigger", "startedAt", "endedAt", "durationMs", "accountRefs", "summary"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$" },
+        "status": { "enum": ["not-run", "passed", "failed", "aborted"] },
+        "manifestFile": { "type": ["string", "null"] },
+        "manifestHash": { "type": ["string", "null"], "pattern": "^[a-f0-9]{64}$" },
+        "maxSellers": { "type": "integer", "minimum": 1 },
+        "trigger": { "type": "string", "minLength": 1 },
+        "startedAt": { "type": ["string", "null"], "format": "date-time" },
+        "endedAt": { "type": ["string", "null"], "format": "date-time" },
+        "durationMs": { "type": ["integer", "null"], "minimum": 0 },
+        "accountRefs": { "type": "array", "items": { "type": "string", "pattern": "^acct_[a-f0-9]{12}$" }, "uniqueItems": true },
+        "summary": { "type": "object" }
+      }
+    }
+  }
+}

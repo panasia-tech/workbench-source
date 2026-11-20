@@ -1,0 +1,178 @@
+<!-- 退回复验（电脑版）：左边检查项表格（入库时 / 这次对照），右边正在验的那一项和复验结论；下面是这件货的历次影像 -->
+<view class="dk-page">
+  <view wx:if="{{!loaded}}" class="dk-card dk-empty">加载中…</view>
+  <block wx:else>
+    <view class="dk-head">
+      <view>
+        <view class="dk-title">{{d.sku.product_name}}</view>
+        <view class="dk-sub">{{d.return.return_no}} · {{d.sku.sku_code}}<text wx:if="{{d.sku.serial_number}}"> · 序列号 {{d.sku.serial_number}}</text></view>
+      </view>
+      <view class="dk-row">
+        <text wx:if="{{d.finished_at}}" class="dk-tag {{d.result === 'OK' ? 'tag-success' : 'tag-danger'}}">{{d.result === 'OK' ? '和入库时一致' : '发现问题'}} · {{d.finished_by_name}} · {{d.finished_at}}</text>
+        <text wx:elif="{{d.started}}" class="dk-tag tag-info">复验中，还剩 {{left}} 项</text>
+        <text wx:else class="dk-tag tag-pending">未开始复验</text>
+        <view wx:if="{{!d.started}}" class="dk-btn dk-btn--primary {{busy ? 'dk-btn--disabled' : ''}}" bindtap="start">{{busy ? '处理中…' : '开始复验'}}</view>
+      </view>
+    </view>
+
+    <view wx:if="{{d.return.reason}}" class="rk-dk-warn">客户退回原因：{{d.return.reason}}</view>
+    <view wx:if="{{!d.finished_at && d.required}}" class="dk-help">退回的货要先复验完才能入库</view>
+
+    <view class="dk-split rk-dk-split">
+      <view class="dk-card">
+        <view class="dk-card__head">
+          <text>逐项复验<text wx:if="{{d.started && !d.finished_at}}" class="dk-sub">（还剩 {{left}} 项）</text></text>
+          <text class="dk-sub">入库时通过、这次不通过的，就是退回期间新出的问题</text>
+        </view>
+        <view class="dk-table-wrap">
+          <table class="dk-table">
+            <thead>
+              <tr>
+                <th class="dk-num">#</th>
+                <th>检查项</th>
+                <th>入库时</th>
+                <th>这次</th>
+                <th class="dk-num">照片</th>
+                <th class="dk-ops">操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                wx:for="{{items}}"
+                wx:key="key"
+                class="{{d.started && !d.finished_at ? 'dk-tr--click' : ''}} {{editingKey === item.key ? 'dk-tr--on' : ''}}"
+                data-key="{{item.key}}"
+                bindtap="openItem"
+              >
+                <td class="dk-num">{{index + 1}}</td>
+                <td>
+                  <view class="dk-cell-main">{{item.title}}</view>
+                  <view wx:if="{{item.need_photo}}" class="dk-cell-sub">必拍</view>
+                </td>
+                <td>
+                  <text wx:if="{{item.beforeLabel}}" class="dk-tag {{item.beforeClass}}">{{item.beforeLabel}}</text>
+                  <text wx:else class="dk-muted">—</text>
+                  <view wx:if="{{item.before_note}}" class="dk-cell-sub rk-dk-note">{{item.before_note}}</view>
+                </td>
+                <td>
+                  <view class="dk-row">
+                    <text wx:if="{{item.result}}" class="dk-tag {{item.resultClass}}">{{item.resultLabel}}</text>
+                    <text wx:else class="dk-muted">未验</text>
+                    <text wx:if="{{item.changed}}" class="dk-tag tag-danger">新问题</text>
+                  </view>
+                  <view wx:if="{{item.note}}" class="dk-cell-sub rk-dk-note">{{item.note}}</view>
+                </td>
+                <td class="dk-num">{{item.evidence.length || '—'}}</td>
+                <td class="dk-ops">
+                  <text wx:if="{{d.started && !d.finished_at}}" class="dk-link" data-key="{{item.key}}" catchtap="openItem">{{editingKey === item.key ? '正在验' : (item.result ? '改' : '验这一项')}}</text>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </view>
+        <view wx:if="{{!items.length}}" class="dk-empty">没有检查项</view>
+      </view>
+
+      <view class="rk-dk-col">
+        <!-- 正在验的那一项（手机上是在列表里就地展开） -->
+        <block wx:for="{{items}}" wx:key="key">
+          <view wx:if="{{editingKey === item.key}}" class="dk-card">
+            <view class="dk-card__head">
+              <text>{{index + 1}}. {{item.title}}</text>
+              <text wx:if="{{item.beforeLabel}}" class="dk-tag {{item.beforeClass}}">入库：{{item.beforeLabel}}</text>
+            </view>
+            <view class="dk-card__body rk-dk-stack">
+              <view wx:if="{{item.before_note}}" class="dk-help">入库时：{{item.before_note}}</view>
+              <view wx:if="{{item.guide}}" class="rk-dk-guide">{{item.guide}}</view>
+              <view wx:if="{{item.standard}}" class="rk-dk-guide">判定标准：{{item.standard}}</view>
+              <view class="dk-tabs rk-dk-tabs">
+                <view
+                  wx:for="{{results}}"
+                  wx:for-item="r"
+                  wx:key="key"
+                  class="dk-tab {{editing.result === r.key ? 'dk-tab--on' : ''}}"
+                  data-key="{{r.key}}"
+                  bindtap="pickItemResult"
+                >{{r.label}}</view>
+              </view>
+              <textarea
+                class="dk-input rk-dk-ta"
+                maxlength="300"
+                value="{{editing.note}}"
+                bindinput="onItemNote"
+                placeholder="{{editing.result === 'UNTESTABLE' ? '为什么测不了（必填）' : (editing.result === 'FAIL' ? '哪里不行、在什么部位' : '说明（选填）')}}"
+              />
+              <view class="dk-gallery rk-dk-gallery">
+                <view wx:for="{{editing.evidence}}" wx:for-item="m" wx:key="raw" class="rk-dk-cell">
+                  <image src="{{m.url}}" mode="aspectFill" class="rk-dk-img" data-url="{{m.url}}" bindtap="dkPreview" />
+                  <view class="rk-dk-del" data-index="{{index}}" catchtap="removeItemPhoto" title="删除">×</view>
+                </view>
+                <view class="rk-dk-add" bindtap="addItemPhoto">
+                  <text class="rk-dk-add__plus">+</text>
+                  <text>拍照{{item.need_photo ? '（必拍）' : ''}}</text>
+                </view>
+              </view>
+              <view class="dk-btn dk-btn--primary {{busy ? 'dk-btn--disabled' : ''}}" bindtap="saveItem">{{busy ? '保存中…' : '保存这一项'}}</view>
+            </view>
+          </view>
+        </block>
+        <view wx:if="{{d.started && !d.finished_at && !editingKey}}" class="dk-card dk-empty">点左边表格里的一项开始验</view>
+        <view wx:if="{{!d.started}}" class="dk-card dk-empty">点右上角「开始复验」后逐项验</view>
+
+        <view class="dk-card" wx:if="{{d.started && !d.finished_at}}">
+          <view class="dk-card__head">复验结论</view>
+          <view class="dk-card__body rk-dk-stack">
+            <view class="dk-tabs rk-dk-tabs">
+              <view class="dk-tab {{conclusion === 'OK' ? 'dk-tab--on rk-dk-ok' : ''}}" data-key="OK" bindtap="pickConclusion">和入库时一致</view>
+              <view class="dk-tab {{conclusion === 'PROBLEM' ? 'dk-tab--on rk-dk-bad' : ''}}" data-key="PROBLEM" bindtap="pickConclusion">发现问题</view>
+            </view>
+            <textarea
+              class="dk-input rk-dk-ta"
+              maxlength="300"
+              value="{{note}}"
+              bindinput="onNote"
+              placeholder="{{conclusion === 'PROBLEM' ? '什么问题、在哪个部位（必填）' : '说明（选填）'}}"
+            />
+            <view class="dk-gallery rk-dk-gallery">
+              <view wx:for="{{media}}" wx:key="raw" class="rk-dk-cell">
+                <image src="{{item.url}}" mode="aspectFill" class="rk-dk-img" data-url="{{item.url}}" bindtap="dkPreview" />
+                <view class="rk-dk-del" data-index="{{index}}" catchtap="removePhoto" title="删除">×</view>
+              </view>
+              <view class="rk-dk-add" bindtap="addPhoto">
+                <text class="rk-dk-add__plus">+</text>
+                <text>拍当前货况</text>
+              </view>
+            </view>
+            <view class="dk-btn dk-btn--primary {{busy ? 'dk-btn--disabled' : ''}}" bindtap="finish">{{busy ? '提交中…' : '提交复验'}}</view>
+          </view>
+        </view>
+
+        <view class="dk-card" wx:if="{{d.finished_at && d.note}}">
+          <view class="dk-card__head">复验说明</view>
+          <view class="dk-card__body">{{d.note}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="dk-card">
+      <view class="dk-card__head">
+        <text>这件货的历次影像</text>
+        <text class="dk-sub">入库、发货前复核、出库、退回收货、复验，按时间排</text>
+      </view>
+      <view class="dk-card__body">
+        <view wx:if="{{!history.length}}" class="dk-muted">没有照片视频（老货可能没有入库凭证）</view>
+        <view wx:else class="rk-dk-hist">
+          <view wx:for="{{history}}" wx:key="index" class="rk-dk-hist__item" data-index="{{index}}" bindtap="preview">
+            <image wx:if="{{!item.is_video}}" src="{{item.url}}" mode="aspectFill" class="rk-dk-hist__img" />
+            <view wx:else class="rk-dk-hist__img rk-dk-hist__video">▶</view>
+            <view class="rk-dk-hist__text">
+              <view class="dk-row"><text class="dk-tag tag-info">{{item.stage}}</text><text class="dk-ellipsis rk-dk-hist__label">{{item.label || ''}}</text></view>
+              <view class="dk-cell-sub">{{item.time}}</view>
+              <view wx:if="{{item.note}}" class="dk-cell-sub dk-ellipsis" title="{{item.note}}">{{item.note}}</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </block>
+</view>

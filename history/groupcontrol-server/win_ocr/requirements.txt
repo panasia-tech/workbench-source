@@ -1,0 +1,52 @@
+﻿# 家用 Windows GPU OCR 微服务依赖(Python 3.12 建议,3.11/3.13 也可)。
+#
+# ⚠️ 注意这里**故意没有列 rapidocr-onnxruntime**:它的依赖里写着 `onnxruntime`(CPU 版),
+#    而 CPU 版 onnxruntime 和 onnxruntime-gpu **装进同一个 site-packages\onnxruntime\ 目录**,
+#    两个都装再卸掉一个,pip 会把共用文件一起删掉 → 剩一个空目录被当成命名空间包,
+#    `import onnxruntime` 能过但没有任何属性(报 has no attribute '__version__')。
+#    所以 setup.ps1 里用 `pip install --no-deps rapidocr-onnxruntime==1.2.3` 单独装,
+#    它的依赖(除 onnxruntime 外)手工列在下面。
+#
+# ⚠️ rapidocr 版本钉死 1.2.3(= PP-OCRv3 det/cls/rec):find() 的锚点匹配行为是按 v3 的
+#    检测框切分与分词调出来的。别升 1.4+ / rapidocr 2.x(包改名、API 变、默认模型换 v4/v5)——
+#    换模型 = 全流程锚点重验,是独立一件事,不要和 GPU 改造混在一起做。
+
+fastapi>=0.115
+uvicorn[standard]>=0.32
+
+# ---- rapidocr-onnxruntime 1.2.3 的依赖(手工展开,去掉 onnxruntime,opencv 换 headless)----
+opencv-python-headless>=4.9
+numpy>=2.0
+pyclipper>=1.2.1
+Shapely>=1.7.1
+PyYAML
+Pillow
+six>=1.15.0
+
+# ---- GPU(CUDA EP)----
+# ⚠️⚠️ 版本钉死,而且下面两组**必须同一个 CUDA 大版本**。
+# ORT 的 Windows 轮子是按某个具体 CUDA 大版本编的,ORT 1.28.0 要的是 **CUDA 13**
+# (它的 onnxruntime_providers_cuda.dll 依赖 cublasLt64_13.dll)。
+# 2026-08-17 实测踩过:配成 -cu12 轮子(装出来是 cublasLt64_12.dll)会报
+#   Error loading "...onnxruntime_providers_cuda.dll" which depends on
+#   "cublasLt64_13.dll" which is missing. (Error 126)
+#   Failed to create CUDAExecutionProvider. Require cuDNN 9.* and CUDA 13.*
+# 然后 **静默回落 CPU**(不看 /healthy 的 providers 根本发现不了)。
+# 所以升 onnxruntime-gpu 前必须先确认新版本要哪个 CUDA 大版本,同步换下面的 -cuXX。
+onnxruntime-gpu==1.28.0
+
+# CUDA / cuDNN 运行时走 pip 轮子,免装完整 CUDA Toolkit。
+# DLL 落在 site-packages/nvidia/*/bin,由 ocr_server._add_cuda_dll_dirs() 登记进 DLL 搜索路径。
+#
+# ⚠️ 命名规则变过(2026-08-17 踩过):**CUDA 13 起 NVIDIA 去掉了 `-cuXX` 后缀**。
+#    `nvidia-cublas-cu13` 之类现在是故意构建失败的废弃占位包,装时报
+#    "THIS PROJECT ... IS DEPRECATED. Please use 'nvidia-...' instead" 并让整个 pip 事务失败。
+#    但 **cuDNN 保留后缀**(它的版本号独立于 CUDA,后缀用来标它是给哪个 CUDA 编的)。
+#    验收标准:装完 site-packages\nvidia\cublas\bin 里应是 `cublasLt64_13.dll`(带 13,不是 12)。
+nvidia-cuda-runtime
+nvidia-cublas
+nvidia-cufft
+nvidia-curand
+nvidia-nvjitlink
+nvidia-cuda-nvrtc
+nvidia-cudnn-cu13

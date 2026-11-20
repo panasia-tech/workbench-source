@@ -1,0 +1,42 @@
+/* 个人信息（电脑版模板用；类名 mi-dk-*） */
+.mi-dk-no {
+  width: 64px;
+  color: #6b7280;
+}
+
+.mi-dk-input {
+  width: 100%;
+}
+
+.mi-dk-scanrow {
+  flex-wrap: nowrap;
+}
+
+.mi-dk-foot {
+  border-top: 1px solid #f0f1f3;
+}
+
+.mi-dk-gh {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mi-dk-ghstatus {
+  align-self: flex-start;
+  height: auto;
+  min-height: 22px;
+  white-space: normal;
+}
+
+/* <button> 套 dk-btn：去掉小程序按钮自带的外边距、行高和描边 */
+button.mi-dk-btn {
+  margin: 0;
+  line-height: normal;
+  font-size: 13px;
+  border-radius: 6px;
+}
+
+button.mi-dk-btn::after {
+  display: none;
+}

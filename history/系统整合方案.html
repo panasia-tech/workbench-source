@@ -1,0 +1,466 @@
+<title>泛亚系统整合方案</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+  /* layout: single reading column (~920px), card sections, before/after diagram, ownership table */
+  :root {
+    --bg: #f3f4f1;
+    --surface: #ffffff;
+    --surface-2: #eceef0;
+    --fg: #1a1f26;
+    --muted: #596573;
+    --faint: #8b95a1;
+    --border: #d8dce1;
+    --border-strong: #c3c9d0;
+    --accent: #1f5fd6;
+    --accent-ink: #1a4fb0;
+    --accent-soft: #e4ecfb;
+    --good: #1a7f52;
+    --good-soft: #dcefe4;
+    --warn: #8a5d00;
+    --warn-soft: #f4e9cf;
+    --crit: #bb3322;
+    --crit-soft: #f6e0dc;
+    --sans: 'IBM Plex Sans', 'PingFang SC', 'Microsoft YaHei', 'Source Han Sans SC', system-ui, sans-serif;
+    --mono: 'IBM Plex Mono', 'PingFang SC', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0f141a;
+      --surface: #171e26;
+      --surface-2: #1f2832;
+      --fg: #e7eaee;
+      --muted: #9aa5b1;
+      --faint: #6a7682;
+      --border: #2a333d;
+      --border-strong: #3a4552;
+      --accent: #6aa0ff;
+      --accent-ink: #8bb6ff;
+      --accent-soft: #16263d;
+      --good: #4cbd85;
+      --good-soft: #112619;
+      --warn: #d5a63c;
+      --warn-soft: #2a2110;
+      --crit: #e67a6c;
+      --crit-soft: #2d1411;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0f141a;
+    --surface: #171e26;
+    --surface-2: #1f2832;
+    --fg: #e7eaee;
+    --muted: #9aa5b1;
+    --faint: #6a7682;
+    --border: #2a333d;
+    --border-strong: #3a4552;
+    --accent: #6aa0ff;
+    --accent-ink: #8bb6ff;
+    --accent-soft: #16263d;
+    --good: #4cbd85;
+    --good-soft: #112619;
+    --warn: #d5a63c;
+    --warn-soft: #2a2110;
+    --crit: #e67a6c;
+    --crit-soft: #2d1411;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--fg); font-family: var(--sans); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+
+  .page {
+    max-width: 920px;
+    margin: 0 auto;
+    padding-left: max(18px, env(safe-area-inset-left, 0px));
+    padding-right: max(18px, env(safe-area-inset-right, 0px));
+    padding-block: 28px 56px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  /* masthead */
+  .masthead { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+  .eyebrow { font-family: var(--mono); font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--accent-ink); margin: 0 0 8px; }
+  h1 { font-size: clamp(1.7rem, 5vw, 2.5rem); font-weight: 700; line-height: 1.12; margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+  .masthead p { margin: 12px 0 0; color: var(--muted); max-width: 54ch; font-size: 1.02rem; }
+  .theme-btn {
+    flex: none; font-family: var(--mono); font-size: .72rem; letter-spacing: .06em;
+    background: var(--surface); color: var(--muted); border: 1px solid var(--border);
+    border-radius: 999px; padding: 7px 13px; cursor: pointer; white-space: nowrap;
+  }
+  .theme-btn:hover { border-color: var(--border-strong); color: var(--fg); }
+
+  /* thesis callout */
+  .thesis {
+    background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent);
+    border-radius: 12px; padding: 20px 22px;
+  }
+  .thesis strong { color: var(--accent-ink); font-weight: 600; }
+  .thesis p { margin: 0; font-size: 1.1rem; line-height: 1.55; }
+  .thesis p + p { margin-top: 10px; color: var(--muted); font-size: 1rem; }
+
+  section > h2 {
+    font-size: 1.28rem; font-weight: 700; margin: 0 0 4px; letter-spacing: -.01em;
+    display: flex; align-items: baseline; gap: 11px;
+  }
+  .sec-no { font-family: var(--mono); font-size: .85rem; color: var(--accent); font-weight: 500; }
+  .sec-sub { color: var(--muted); margin: 0 0 18px; font-size: .96rem; }
+
+  /* stat tiles */
+  .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .tile { background: var(--surface); border: 1px solid var(--border); border-radius: 11px; padding: 15px 16px; }
+  .tile .n { font-family: var(--mono); font-size: 1.75rem; font-weight: 600; line-height: 1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+  .tile .lbl { color: var(--muted); font-size: .82rem; margin-top: 8px; line-height: 1.35; }
+  .tile.alarm .n { color: var(--crit); }
+
+  /* "already connected" list */
+  .connected { margin-top: 18px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 11px; padding: 16px 18px; }
+  .connected h3 { margin: 0 0 10px; font-size: .95rem; font-weight: 600; }
+  .connected ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .connected li { display: flex; gap: 10px; font-size: .92rem; color: var(--muted); }
+  .connected li::before { content: "→"; color: var(--accent); font-family: var(--mono); flex: none; }
+  .connected b { color: var(--fg); font-weight: 600; }
+
+  /* diagram */
+  .diagrams { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  figure { margin: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 16px 14px; display: flex; flex-direction: column; }
+  figure.good-frame { border-color: color-mix(in srgb, var(--good) 45%, var(--border)); }
+  .fig-head { font-family: var(--mono); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; margin: 0 0 12px; display: flex; align-items: center; gap: 8px; }
+  .fig-head.now { color: var(--crit); }
+  .fig-head.plan { color: var(--good); }
+  figure svg { width: 100%; height: auto; min-width: 0; }
+  figcaption { margin-top: 12px; font-size: .86rem; color: var(--muted); line-height: 1.45; }
+
+  /* diagram theming — classes, because var() does not resolve in SVG presentation attributes */
+  .dg text { fill: var(--fg); font-family: var(--sans); }
+  .dg .mut { fill: var(--muted); }
+  .dg .box { fill: var(--surface-2); stroke: var(--border-strong); }
+  .dg .box2 { fill: var(--surface); stroke: var(--border-strong); }
+  .dg .master { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.6; }
+  .dg .badge { fill: var(--accent); }
+  .dg .badge-t { fill: #fff; }
+  .dg .ln { stroke: var(--accent); stroke-width: 1.6; fill: none; }
+  .dg .ln-thin { stroke: var(--accent); stroke-width: 1.4; fill: none; }
+  .dg .crit-zone { fill: var(--crit-soft); stroke: var(--crit); stroke-dasharray: 4 4; }
+  .dg .crit-t { fill: var(--crit); }
+  .dg .ah { fill: var(--accent); }
+
+  /* ownership table */
+  .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; min-width: 620px; font-size: .9rem; }
+  th, td { text-align: left; padding: 12px 14px; vertical-align: top; border-bottom: 1px solid var(--border); }
+  thead th { font-size: .74rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 600; background: var(--surface-2); }
+  tbody tr:last-child td { border-bottom: none; }
+  td.type { font-weight: 600; white-space: nowrap; }
+  td.master { font-weight: 600; }
+  .scatter { color: var(--muted); font-size: .84rem; }
+  .pill { display: inline-block; font-family: var(--mono); font-size: .7rem; letter-spacing: .03em; padding: 2px 8px; border-radius: 999px; white-space: nowrap; border: 1px solid transparent; }
+  .pill.good { background: var(--good-soft); color: var(--good); border-color: color-mix(in srgb, var(--good) 30%, transparent); }
+  .pill.warn { background: var(--warn-soft); color: var(--warn); border-color: color-mix(in srgb, var(--warn) 30%, transparent); }
+  .pill.crit { background: var(--crit-soft); color: var(--crit); border-color: color-mix(in srgb, var(--crit) 30%, transparent); }
+  .pill.mute { background: var(--surface-2); color: var(--muted); border-color: var(--border); }
+
+  /* rules callout */
+  .rules { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .rule { background: var(--accent-soft); border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent); border-radius: 12px; padding: 16px 18px; }
+  .rule .k { font-family: var(--mono); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: var(--accent-ink); margin: 0 0 6px; }
+  .rule p { margin: 0; font-size: .98rem; font-weight: 500; }
+
+  /* phases */
+  .phases { display: flex; flex-direction: column; gap: 12px; }
+  .phase { display: grid; grid-template-columns: auto 1fr; gap: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; }
+  .phase .step { font-family: var(--mono); font-size: 1.3rem; font-weight: 600; color: var(--accent); line-height: 1; font-variant-numeric: tabular-nums; }
+  .phase h3 { margin: 0 0 5px; font-size: 1.04rem; display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px; }
+  .phase h3 .cost { font-family: var(--mono); font-size: .7rem; font-weight: 500; letter-spacing: .04em; color: var(--muted); border: 1px solid var(--border); border-radius: 999px; padding: 2px 8px; }
+  .phase p { margin: 0; color: var(--muted); font-size: .92rem; }
+  .phase.optional { border-style: dashed; }
+
+  /* decisions */
+  .decisions { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .decision { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; }
+  .decision .tag { font-family: var(--mono); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; color: var(--warn); background: var(--warn-soft); border-radius: 999px; padding: 3px 9px; }
+  .decision h3 { margin: 12px 0 14px; font-size: 1.05rem; }
+  .opt { border: 1px solid var(--border); border-radius: 9px; padding: 11px 13px; }
+  .opt + .opt { margin-top: 10px; }
+  .opt .name { font-weight: 600; font-size: .95rem; }
+  .opt .why { color: var(--muted); font-size: .86rem; margin-top: 3px; }
+
+  footer { color: var(--faint); font-size: .8rem; border-top: 1px solid var(--border); padding-top: 18px; line-height: 1.6; }
+  footer code { font-family: var(--mono); font-size: .92em; color: var(--muted); }
+
+  @media (max-width: 640px) {
+    .tiles { grid-template-columns: repeat(2, 1fr); }
+    .diagrams, .rules, .decisions { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .theme-btn, .tile { transition: border-color .15s ease, color .15s ease; }
+  }
+</style>
+
+<div class="page">
+
+  <header class="masthead">
+    <div>
+      <p class="eyebrow">腾讯 · 京东云 · 飞书　三处系统</p>
+      <h1>泛亚系统整合方案</h1>
+      <p>二十来套系统各记各的数据、对不上账。这份方案把它们收敛成一句话：<b>一类数据一个主系统,同步过一个中枢,走接口不直连数据库。</b></p>
+    </div>
+    <button class="theme-btn" id="theme" type="button" aria-label="切换深浅色">● 深/浅</button>
+  </header>
+
+  <section class="thesis">
+    <p>别想把二十套系统两两打通——那会变成谁也维护不了的网。</p>
+    <p>真正要流动的数据就几类:员工、设备店铺、采购库存销售财务。而且你已经有现成的骨架(ERP 往 OA 推数、飞书工作台替员工取数),不用从零搭,只要把规则定清、把散开的同步收拢。</p>
+  </section>
+
+  <section>
+    <h2><span class="sec-no">01</span>现在是什么样</h2>
+    <p class="sec-sub">系统不少,数据却是一座座孤岛——同一类东西在好几处各存一份,互相对不上。</p>
+    <div class="tiles">
+      <div class="tile"><div class="n">~20</div><div class="lbl">京东云上的开源系统,多数空着或没用起来</div></div>
+      <div class="tile"><div class="n">2</div><div class="lbl">统一登录里的真人账号(管理员 1、员工 1)</div></div>
+      <div class="tile alarm"><div class="n">4</div><div class="lbl">资产记在四处,手机序列号两边 0 重合</div></div>
+      <div class="tile alarm"><div class="n">5</div><div class="lbl">员工信息重复的地方(ERP·OA·Frappe·台账·工作台)</div></div>
+    </div>
+    <div class="connected">
+      <h3>但这些线已经连着了,整合从它们接着搭</h3>
+      <ul>
+        <li><span><b>ERP → 泛亚 OA</b>:每 5 分钟推一次员工、财务、销售、KPI。</span></li>
+        <li><span><b>飞书工作台后端</b>用服务账号读写 Plane、Frappe、NocoBase。</span></li>
+        <li><span><b>统一登录(Authentik)</b>已经覆盖大部分系统,只管"是谁能进"。</span></li>
+        <li><span><b>一个 OSS 桶</b>同时放 Plane 附件、工作台上传的文件、各系统备份。</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="sec-no">02</span>核心做法:定一个主,其他只读</h2>
+    <p class="sec-sub">拿"设备/手机"举例看前后差别——这正是现在手机号两边对不上的那类数据。</p>
+    <div class="diagrams">
+
+      <figure>
+        <p class="fig-head now">现在 · 各存一份</p>
+        <svg class="dg" viewBox="0 0 360 290" role="img" aria-label="现状:群控、Snipe-IT、NocoBase、工作台四处各有一张设备表,互不相连,手机号零重合">
+          <g font-size="13">
+            <rect class="box" x="14" y="20" width="150" height="56" rx="9"/>
+            <text x="89" y="43" text-anchor="middle" font-weight="600">群控</text>
+            <text class="mut" x="89" y="61" text-anchor="middle" font-size="11">设备表 · 5 台</text>
+
+            <rect class="box" x="196" y="20" width="150" height="56" rx="9"/>
+            <text x="271" y="43" text-anchor="middle" font-weight="600">Snipe-IT</text>
+            <text class="mut" x="271" y="61" text-anchor="middle" font-size="11">手机 20 部</text>
+
+            <rect class="box" x="14" y="214" width="150" height="56" rx="9"/>
+            <text x="89" y="237" text-anchor="middle" font-weight="600">NocoBase</text>
+            <text class="mut" x="89" y="255" text-anchor="middle" font-size="11">设备表 · 5 台</text>
+
+            <rect class="box" x="196" y="214" width="150" height="56" rx="9"/>
+            <text x="271" y="237" text-anchor="middle" font-weight="600">工作台</text>
+            <text class="mut" x="271" y="255" text-anchor="middle" font-size="11">又一份</text>
+
+            <circle class="crit-zone" cx="180" cy="145" r="40"/>
+            <text class="crit-t" x="180" y="141" text-anchor="middle" font-size="18" font-weight="600">✗</text>
+            <text class="crit-t" x="180" y="159" text-anchor="middle" font-size="10.5">对不上</text>
+          </g>
+        </svg>
+        <figcaption>四处都存设备,谁也不是准的,所以同一批手机的序列号两边一个都对不上。改一处,别处不知道。</figcaption>
+      </figure>
+
+      <figure class="good-frame">
+        <p class="fig-head plan">建议 · 一个主喂其他</p>
+        <svg class="dg" viewBox="0 0 360 290" role="img" aria-label="建议:新增改动只写群控,群控经同步中枢把只读副本发给 Snipe-IT、NocoBase、工作台">
+          <defs>
+            <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path class="ah" d="M0,0 L10,5 L0,10 z"/>
+            </marker>
+          </defs>
+          <g font-size="13">
+            <line class="ln" x1="180" y1="2" x2="180" y2="26" marker-end="url(#ah)"/>
+            <text class="mut" x="188" y="16" font-size="10.5">录入 / 改动</text>
+
+            <rect class="master" x="105" y="28" width="150" height="54" rx="9"/>
+            <rect class="badge" x="113" y="36" width="30" height="17" rx="5"/>
+            <text class="badge-t" x="128" y="48.5" text-anchor="middle" font-size="11" font-weight="600">主</text>
+            <text x="188" y="49" text-anchor="middle" font-weight="600">群控</text>
+            <text class="mut" x="180" y="72" text-anchor="middle" font-size="11">设备 · 店铺唯一来源</text>
+
+            <line class="ln" x1="180" y1="82" x2="180" y2="120" marker-end="url(#ah)"/>
+            <text class="mut" x="188" y="105" font-size="10.5">读</text>
+
+            <rect class="box" x="110" y="120" width="140" height="46" rx="9"/>
+            <text x="180" y="140" text-anchor="middle" font-weight="600">同步中枢</text>
+            <text class="mut" x="180" y="156" text-anchor="middle" font-size="10.5">n8n / 工作台</text>
+
+            <line class="ln-thin" x1="150" y1="166" x2="66" y2="212" marker-end="url(#ah)"/>
+            <line class="ln-thin" x1="180" y1="166" x2="180" y2="212" marker-end="url(#ah)"/>
+            <line class="ln-thin" x1="210" y1="166" x2="294" y2="212" marker-end="url(#ah)"/>
+            <text class="mut" x="180" y="196" text-anchor="middle" font-size="10.5">只读副本</text>
+
+            <rect class="box2" x="12" y="214" width="108" height="50" rx="8"/>
+            <text x="66" y="237" text-anchor="middle" font-size="12" font-weight="500">Snipe-IT</text>
+            <text class="mut" x="66" y="253" text-anchor="middle" font-size="10">台账展示</text>
+            <rect class="box2" x="126" y="214" width="108" height="50" rx="8"/>
+            <text x="180" y="237" text-anchor="middle" font-size="12" font-weight="500">NocoBase</text>
+            <text class="mut" x="180" y="253" text-anchor="middle" font-size="10">只读</text>
+            <rect class="box2" x="240" y="214" width="108" height="50" rx="8"/>
+            <text x="294" y="237" text-anchor="middle" font-size="12" font-weight="500">工作台</text>
+            <text class="mut" x="294" y="253" text-anchor="middle" font-size="10">只读</text>
+          </g>
+        </svg>
+        <figcaption>新增、修改只写群控;中枢定时把副本发给其他系统,它们只看不改。要换主系统,把"群控"换成那类数据的主即可。</figcaption>
+      </figure>
+
+    </div>
+
+    <div class="rules" style="margin-top:16px">
+      <div class="rule">
+        <p class="k">铁律一</p>
+        <p>写只写主系统。其他系统拿到的都是只读副本,不接受改动。</p>
+      </div>
+      <div class="rule">
+        <p class="k">铁律二</p>
+        <p>同步一律走接口、经中枢中转。系统之间绝不直连对方的数据库。</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="sec-no">03</span>每类数据,谁说了算</h2>
+    <p class="sec-sub">这张表定下来,"整合"就有了标准。带"待定"的两处需要你拍板(见下)。</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>数据</th><th>现在散在哪</th><th>建议主系统</th><th>其他系统怎么办</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="type">身份 / 登录</td>
+            <td class="scatter">Authentik</td>
+            <td class="master">Authentik <span class="pill good">已是主</span></td>
+            <td>各系统按它来认人,一处进出</td>
+          </tr>
+          <tr>
+            <td class="type">员工 / 人事</td>
+            <td class="scatter">ERP · OA · Frappe · NocoBase · 工作台(5 处)</td>
+            <td class="master">Frappe HR 或 ERP <span class="pill warn">待定</span></td>
+            <td>其余只读;离职在一处停用,自动回收账号</td>
+          </tr>
+          <tr>
+            <td class="type">采购·库存·销售·财务·提成</td>
+            <td class="scatter">ERP;另有 NocoBase 一套原型表(停更 10-01)</td>
+            <td class="master">ERP <span class="pill good">没悬念</span></td>
+            <td>NocoBase 那套 <span class="pill mute">不再用,以 ERP 为准</span></td>
+          </tr>
+          <tr>
+            <td class="type">设备·店铺·账号·SIM·支付宝</td>
+            <td class="scatter">群控 · NocoBase · 工作台 · Snipe-IT</td>
+            <td class="master">群控</td>
+            <td>Snipe-IT <span class="pill mute">别人在用,不动</span></td>
+          </tr>
+          <tr>
+            <td class="type">项目 / 任务</td>
+            <td class="scatter">Plane</td>
+            <td class="master">Plane</td>
+            <td><span class="pill mute">不变</span></td>
+          </tr>
+          <tr>
+            <td class="type">文档</td>
+            <td class="scatter">Paperless</td>
+            <td class="master">Paperless</td>
+            <td><span class="pill mute">不变</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="sec-no">04</span>分四步走</h2>
+    <p class="sec-sub">先把盘子变小、规则定死,再谈打通。一次只搬一条同步。</p>
+    <div class="phases">
+      <div class="phase">
+        <div class="step">1</div>
+        <div>
+          <h3>定主 + 砍重复 <span class="cost">拍板,不写代码</span></h3>
+          <p>把上面那张表的"主"定死。10-18 会上定了我们用的:Plane、Learning、HRM、Frappe CRM,另留 Paperless、NocoBase、LiteLLM;Homebox 别人在用,不动。不在名单的 8 套(Budibase、Baserow、Rundeck、Twenty、Snipe-IT、Capy、n8n、Donetick)是别人在用的,不停、不删、不改。NocoBase 那套原型表不再用,以 ERP 为准。</p>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="step">2</div>
+        <div>
+          <h3>收口子 + 自动开通账号 <span class="cost">约半天</span></h3>
+          <p>关掉 Plane 对公网开着的自助注册;Donetick 是别人的,提醒对方。那条关着的"员工开通 / 回收"流程跑在 n8n、开号到 Snipe-IT,都是别人的系统,不动;我们自己的系统要自动开号时另做。</p>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="step">3</div>
+        <div>
+          <h3>同步归到一个中枢 <span class="cost">一次搬一条</span></h3>
+          <p>把 ERP→OA 推送、工作台取数、员工开通这几条都搬进同一个中枢,走接口、不直连库。搬一条、验一条,不求一步到位。</p>
+        </div>
+      </div>
+      <div class="phase optional">
+        <div class="step">4</div>
+        <div>
+          <h3>只读报表层 <span class="cost">可选,想跨系统看数时再做</span></h3>
+          <p>把各主系统的数抽到一个地方统一展示,只读不回写。这跟上面的操作型同步分开,别混在一起。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="sec-no">05</span>需要你拍板的两件事</h2>
+    <p class="sec-sub">其余都有明确答案,只有这两处要你定,定完第一步就能动。</p>
+    <div class="decisions">
+      <div class="decision">
+        <span class="tag">待定 · 员工主系统</span>
+        <h3>员工信息以谁为准?</h3>
+        <div class="opt">
+          <div class="name">Frappe HR</div>
+          <div class="why">正经的人事系统,有入离职、假勤、课程。适合把 HR 档案当主。</div>
+        </div>
+        <div class="opt">
+          <div class="name">ERP</div>
+          <div class="why">员工已经和业务、提成绑在一起,且已在往 OA 推。少一次搬动。</div>
+        </div>
+      </div>
+      <div class="decision">
+        <span class="tag">待定 · 同步中枢</span>
+        <h3>同步用哪个中枢?</h3>
+        <div class="opt">
+          <div class="name">n8n(已装好)</div>
+          <div class="why">专门干这个的,有界面、自动重试和排期。但 10-18 起它算别人在用的系统,要用得先和对方说好。</div>
+        </div>
+        <div class="opt">
+          <div class="name">工作台后端</div>
+          <div class="why">和业务逻辑绑得紧时更顺手;工作台正在搬出妙搭(A1),搬完能自己跑定时。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    依据 2026-10-17 对京东云主机 <code>117.72.221.15</code> 的只读核查,以及腾讯 ERP / 泛亚 OA、飞书工作台的现有连线整理。数据量与账号数为当日实测。10-18 按会议决定改了第 03 节两行、第 04 节第 1、2 步和中枢选项,以 docs/需求整理-20261018.html 为准。
+  </footer>
+
+</div>
+
+<script>
+  (function () {
+    var root = document.documentElement, btn = document.getElementById('theme'), KEY = 'pa-integ-theme';
+    function sys() { return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; }
+    function cur() { return root.getAttribute('data-theme') || sys(); }
+    try { var s = localStorage.getItem(KEY); if (s === 'dark' || s === 'light') root.setAttribute('data-theme', s); } catch (e) {}
+    btn.addEventListener('click', function () {
+      var next = cur() === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem(KEY, next); } catch (e) {}
+    });
+  })();
+</script>

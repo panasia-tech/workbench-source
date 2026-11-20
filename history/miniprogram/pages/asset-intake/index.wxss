@@ -1,0 +1,50 @@
+.intake-loading {
+  padding: 24rpx 0;
+  text-align: center;
+  font-size: 24rpx;
+  color: #9CA3AF;
+}
+
+/* 品名两行时行高偏松，收紧（仅本页）*/
+.intake-list-page .li-title {
+  line-height: 1.25;
+}
+
+.intake-price {
+  margin-top: 12rpx;
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #111827;
+  text-align: right;
+}
+
+/* 底部留出浮钮的位置，最后一条不被挡住 */
+.intake-list-page {
+  padding-bottom: 200rpx;
+}
+
+.intake-fab {
+  position: fixed;
+  right: 40rpx;
+  bottom: 64rpx;
+  width: 104rpx;
+  height: 104rpx;
+  border-radius: 50%;
+  background: #2563EB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 24rpx rgba(37, 99, 235, 0.4);
+  z-index: 50;
+}
+
+.intake-fab:active {
+  opacity: 0.85;
+}
+
+.intake-fab-plus {
+  color: #FFFFFF;
+  font-size: 60rpx;
+  line-height: 1;
+  font-weight: 300;
+}

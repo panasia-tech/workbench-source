@@ -1,0 +1,46 @@
+{
+  "id": "panya_workbench_notification_1",
+  "pluginKey": "@official-plugins/send-feishu-message",
+  "pluginVersion": "1.0.33",
+  "name": "泛亚工作台通知",
+  "description": "用于泛亚员工工作台的工单/教程事件通知（工单指派、材料打回、待老板终审提醒、终审结果、教程审核打回）",
+  "icon": "",
+  "paramsSchema": {
+    "type": "object",
+    "properties": {
+      "receiverIds": {
+        "type": "array",
+        "description": "接收人用户ID列表",
+        "items": {
+          "type": "string",
+          "description": "用户ID"
+        }
+      },
+      "title": {
+        "description": "消息卡片标题",
+        "type": "string"
+      },
+      "content": {
+        "type": "string",
+        "description": "markdown格式正文内容"
+      }
+    },
+    "required": [
+      "receiverIds",
+      "title",
+      "content"
+    ]
+  },
+  "formValue": {
+    "sender": "bot",
+    "buttons": [],
+    "title": {
+      "title": "{{input.title}}"
+    },
+    "receiverUserList": "{{input.receiverIds}}",
+    "content": "{{input.content}}"
+  },
+  "createdAt": 1790950027256,
+  "updatedAt": 1790950027256,
+  "createdBy": 7524277620780171283
+}

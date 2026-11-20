@@ -1,0 +1,125 @@
+<wxs module="fmt" src="../../utils/format.wxs" />
+
+<view class="page-wrap page-wrap--no-tab record-page lc-page">
+  <!-- 群控中心顶部分区:商品上架 / 设备列表 / 任务队列 -->
+  <view class="gc-section-bar">
+    <text
+      wx:for="{{sectionTabs}}"
+      wx:key="key"
+      class="gc-section-tab {{section === item.key ? 'active' : ''}}"
+      data-section="{{item.key}}"
+      bindtap="switchSection"
+    >{{item.label}}</text>
+  </view>
+
+  <block wx:if="{{section === 'listing'}}">
+    <view class="card filter-card">
+      <view class="card-head card-head--split">
+        <view class="card-head-main">待上架商品</view>
+        <button
+          wx:if="{{allItems.length}}"
+          class="btn btn-outline btn-sm"
+          bindtap="processNext"
+        >处理下一件</button>
+      </view>
+      <view class="form-note">填写文案 → 店铺多选上架（含已下架重上）；售出后其他店铺自动下架</view>
+
+      <view class="search-bar">
+        <input
+          class="search-input"
+          placeholder="搜索货号 / 商品名称..."
+          value="{{q}}"
+          bindinput="onSearchInput"
+          confirm-type="search"
+          bindconfirm="onSearch"
+        />
+      </view>
+      <button class="btn search-btn" bindtap="onSearch">搜索</button>
+
+      <scroll-view class="lc-phase-scroll" scroll-x enable-flex>
+        <view class="status-segment">
+          <text
+            wx:for="{{filterTabs}}"
+            wx:key="key"
+            class="status-seg {{listTab === item.key ? 'active' : ''}}"
+            data-tab="{{item.key}}"
+            bindtap="switchTab"
+          >{{item.label}}</text>
+        </view>
+      </scroll-view>
+
+      <view class="filter-meta">共 {{list.length}} 条待处理</view>
+    </view>
+
+    <view class="card list-card">
+      <view wx:if="{{!list.length && !loading}}" class="empty">
+        <view class="e-icon">—</view>
+        <view class="e-text">{{emptyText}}</view>
+      </view>
+
+      <view wx:for="{{list}}" wx:key="sku_id" class="lc-item">
+        <view
+          class="lc-item__main"
+          data-code="{{item.sku_code}}"
+          data-page="{{item._actionPage}}"
+          bindtap="openItem"
+        >
+          <view class="lc-thumb-wrap">
+            <media-thumb
+              wx:if="{{item.cover_url}}"
+              url="{{item.cover_url}}"
+              preview-url="{{item.cover_url}}"
+              size="small"
+            />
+            <!-- 没有产品图时,退而显示仓库定位图(找货用),角标区分 -->
+            <block wx:elif="{{item.location_images[0]}}">
+              <media-thumb url="{{item.location_images[0]}}" preview-url="{{item.location_images[0]}}" size="small" />
+              <view class="media-loc-badge">定位</view>
+            </block>
+            <view wx:else class="lc-thumb">{{item.sku_code ? item.sku_code.slice(-2) : '?'}}</view>
+          </view>
+          <view class="lc-body">
+            <view class="lc-head">
+              <view class="lc-name">{{item.product_name || '—'}}</view>
+              <view class="tag lc-tag {{fmt.listingStatusTag(item.listing_status)}}">
+                {{fmt.listingStatusLabel(item.listing_status)}}
+              </view>
+            </view>
+            <view class="lc-sub">SKU: {{item.sku_code}} · 入库时间 {{fmt.datetime(item.inbound_at)}}</view>
+            <view class="lc-sub" wx:if="{{item.short_code}}">上架编码 #{{item.short_code}}（将作为标题前缀）</view>
+          </view>
+        </view>
+        <view class="lc-item__actions" style="display:flex; gap:16rpx; margin-top:16rpx;">
+          <!-- 待上架(非草稿)也能回去改标题/价/图:后端 save_listing 支持编辑(sku 在库即可),此前缺前端入口 -->
+          <button
+            wx:if="{{item.listing_status && item.listing_status !== 'DRAFT'}}"
+            class="btn btn-primary"
+            plain
+            style="flex:0 0 auto; min-width:150rpx; margin:0;"
+            data-code="{{item.sku_code}}"
+            data-page="form"
+            catchtap="openItem"
+          >编辑</button>
+          <button
+            class="btn btn-primary lc-item__action"
+            style="flex:1; margin:0;"
+            data-code="{{item.sku_code}}"
+            data-page="{{item._actionPage}}"
+            catchtap="openItem"
+          >{{item._actionLabel}}</button>
+        </view>
+      </view>
+
+      <view wx:if="{{loading}}" class="list-footer">加载中…</view>
+    </view>
+  </block>
+
+  <!-- 设备/任务面板:首次切到才挂载(挂载即自加载);之后用外层 view 的 hidden 保留状态
+       (hidden 直接挂在自定义组件上不可靠,必须包一层普通 view) -->
+  <view wx:if="{{visited.device}}" hidden="{{section !== 'device'}}">
+    <gc-device-panel id="gcDevicePanel" />
+  </view>
+  <view wx:if="{{visited.task}}" hidden="{{section !== 'task'}}">
+    <gc-task-panel id="gcTaskPanel" />
+  </view>
+</view>

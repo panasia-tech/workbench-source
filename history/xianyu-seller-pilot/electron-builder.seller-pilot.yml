@@ -1,0 +1,23 @@
+appId: com.erp.xianyu.sellerpilot
+productName: 闲鱼卖家巡航台
+directories:
+  output: release-seller-pilot
+files:
+  - out/**/*
+  # 安装包入口（package.json main）。这里刻意不带 code-version.json：
+  # 少了它 loader 就不启用热更新，巡航台走原来的整包分发。
+  - loader.js
+  - resources/templates/**/*
+  - resources/icon-seller-pilot.icns
+  - resources/seller-index/canonical-sellers.manifest.json
+extraMetadata:
+  productName: 闲鱼卖家巡航台
+  sellerPilotIdentity:
+    bundlePath: /Applications/闲鱼卖家巡航台.app
+    userDataPath: ~/Library/Application Support/闲鱼卖家巡航台
+    launchAgentLabel: com.erp.xianyu.sellerpilot.autostart
+mac:
+  category: public.app-category.business
+  icon: resources/icon-seller-pilot.icns
+  target:
+    - dir

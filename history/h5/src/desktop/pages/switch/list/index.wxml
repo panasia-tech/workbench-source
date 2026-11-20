@@ -1,0 +1,58 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<!-- 切单管理（电脑版）：表格 + 页码 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">切单管理</view>
+      <view class="dk-sub">共 {{total}} 条切单</view>
+    </view>
+    <view class="dk-row">
+      <view class="dk-btn" bindtap="goSwitchShip">切单快递发货出库</view>
+      <view class="dk-btn dk-btn--primary" bindtap="goCreate">新建切单</view>
+    </view>
+  </view>
+
+  <view class="dk-card">
+    <view class="dk-table-wrap">
+      <table class="dk-table">
+        <thead>
+          <tr>
+            <th>切单号</th>
+            <th>商品</th>
+            <th>货号</th>
+            <th class="dk-num">单价</th>
+            <th>状态</th>
+            <th>截单</th>
+            <th>创建时间</th>
+            <th class="dk-ops">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr wx:for="{{list}}" wx:key="id" class="dk-tr--click" data-id="{{item.id}}" bindtap="openDetail">
+            <td class="dk-nowrap"><text class="dk-cell-main">{{item.switch_no}}</text></td>
+            <td><view class="dk-ellipsis" title="{{item.product_name}}">{{item.product_name || '—'}}</view></td>
+            <td class="dk-nowrap">{{item.sku_code}}</td>
+            <td class="dk-num">¥{{fmt.money(item.unit_price)}}</td>
+            <td class="dk-nowrap"><text class="dk-tag tag-warning">{{item.status}}</text></td>
+            <td class="dk-nowrap">{{item.cutoff_status || '—'}}</td>
+            <td class="dk-nowrap">{{fmt.datetime(item.created_at)}}</td>
+            <td class="dk-ops"><text class="dk-link" data-id="{{item.id}}" catchtap="openDetail">详情</text></td>
+          </tr>
+        </tbody>
+      </table>
+    </view>
+
+    <view wx:if="{{!list.length && !loading}}" class="dk-empty">暂无切单</view>
+    <view wx:if="{{loading && !list.length}}" class="dk-empty">加载中…</view>
+
+    <view wx:if="{{total > dkPageSize}}" class="dk-pager">
+      <text>共 {{total}} 条，每页 {{dkPageSize}} 条</text>
+      <view class="dk-row">
+        <view class="dk-btn dk-btn--sm {{dkPage <= 1 ? 'dk-btn--disabled' : ''}}" bindtap="dkPrev">上一页</view>
+        <text>第 {{dkPage}} / {{dkPages}} 页</text>
+        <view class="dk-btn dk-btn--sm {{dkPage >= dkPages ? 'dk-btn--disabled' : ''}}" bindtap="dkNext">下一页</view>
+      </view>
+    </view>
+  </view>
+</view>

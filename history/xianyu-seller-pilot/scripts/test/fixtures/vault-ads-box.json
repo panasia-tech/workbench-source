@@ -1,0 +1,27 @@
+{
+ "note": "测试专用密钥，由 server/app/services/ledger_vault_ads.seal_for 生成，校验 Node 端解密和服务端同一套算法",
+ "priv_raw_b64": "AQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyA=",
+ "pub_b64": "B6N8vBQgk8i3VdwbEOhstCY3StFqqFPtC9/AsrhtHHw=",
+ "fingerprint": "AAA8 FFF7 03B5 0B22",
+ "station_id": "pc-1",
+ "item": {
+  "item_id": "item-1",
+  "ads_user_id": "kabc123",
+  "box": {
+   "v": 1,
+   "epk": "IHngW3aqZDUz94K0vs3Qb9w0EwbISZHZPxDz1VOWKB4=",
+   "nonce": "oAaPHH5YFhFPpNGS",
+   "ct": "NIjp3ZaBucVInWUoMvg8XbtW8m8FwA3oSAfvLtI9cBLl/JnoOge3e7uZG+SHcsAFpSUgTsP9cP3aED86To7uY1XpvsviMOwI8j5Z/l2LJW19qsQm545ORL/4Af+TXN6e3vCN9FK1geN32E7VHAd8SMsC71edpUDmCkiMTZzA1RSDAy4e04qS6wjnaqsewzXFQCAEnFfMTq56Ypy0oMRE5wuiUZzOg68ec4oNvd7Q9GtZPxeOCmxmwHG1nG+Gd/Cxqj3jX9M72wP5gqn912hT3/aGL2fHWzOIZA=="
+  }
+ },
+ "payload": {
+  "item_id": "item-1",
+  "ads_user_id": "kabc123",
+  "domain": "goofish.com",
+  "username": "tb_测试",
+  "password": "DEMO_ONLY_REDACTED",
+  "fakey": "JBSWY3DPEHPK3PXP",
+  "ack": "ack-xyz",
+  "issued_at": "2026-11-17T00:00:00"
+ }
+}

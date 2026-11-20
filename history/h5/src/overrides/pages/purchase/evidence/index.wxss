@@ -1,0 +1,32 @@
+.pe-page .card { margin-bottom: 20rpx; }
+.pe-title { font-size: 32rpx; font-weight: 700; color: #111827; }
+.pe-sub { margin-top: 6rpx; font-size: 24rpx; color: #6B7280; }
+.pe-state { display: inline-block; margin-top: 12rpx; padding: 6rpx 16rpx; border-radius: 999rpx; background: #F3F4F6; font-size: 24rpx; font-weight: 700; color: #374151; }
+.pe-warn { color: #B45309; font-size: 24rpx; }
+.pe-empty { padding: 12rpx 0; font-size: 26rpx; color: #9CA3AF; }
+.pe-h { font-size: 30rpx; font-weight: 700; color: #111827; margin-bottom: 12rpx; }
+.pe-item { padding: 14rpx 0; border-bottom: 1rpx solid #F3F4F6; font-size: 26rpx; color: #111827; }
+.pe-vs { margin-top: 6rpx; font-size: 24rpx; color: #374151; }
+.pe-k { display: inline-block; width: 80rpx; color: #9CA3AF; }
+.pe-muted { font-size: 24rpx; color: #6B7280; }
+.pe-photos { display: flex; flex-wrap: wrap; gap: 12rpx; margin-top: 10rpx; }
+.pe-photo { width: 150rpx; height: 150rpx; border-radius: 10rpx; background: #F3F4F6; }
+.pe-video { padding: 14rpx 0; font-size: 26rpx; color: #2563EB; border-bottom: 1rpx solid #F3F4F6; }
+.pe-pieces { display: flex; flex-wrap: wrap; gap: 12rpx; margin: 12rpx 0 4rpx; }
+.pe-piece { padding: 8rpx 18rpx; border-radius: 999rpx; border: 2rpx solid #D1D5DB; font-size: 24rpx; color: #374151; background: #fff; }
+.pe-piece--on { border-color: #2563EB; background: #EFF6FF; color: #1D4ED8; font-weight: 700; }
+.pe-as { margin-top: 10rpx; padding: 14rpx 16rpx; border-radius: 10rpx; background: #F9FAFB; font-size: 24rpx; color: #374151; }
+.pe-strong { font-weight: 700; color: #111827; }
+.pe-photo--sm { width: 110rpx; height: 110rpx; }
+.pe-offers { margin-top: 10rpx; }
+.pe-mini { margin-top: 12rpx; padding: 0 24rpx; height: 60rpx; line-height: 60rpx; font-size: 24rpx; }
+.pe-form { margin-top: 12rpx; padding: 16rpx; border: 2rpx solid #E5E7EB; border-radius: 12rpx; }
+.pe-k2 { margin-top: 14rpx; font-size: 24rpx; font-weight: 700; color: #374151; }
+.pe-chips { display: flex; flex-wrap: wrap; gap: 12rpx; margin-top: 10rpx; }
+.pe-chip { padding: 8rpx 18rpx; border-radius: 999rpx; border: 2rpx solid #D1D5DB; font-size: 24rpx; color: #374151; background: #fff; }
+.pe-chip--now { border-style: dashed; }
+.pe-chip--on { border-color: #2563EB; border-style: solid; background: #EFF6FF; color: #1D4ED8; font-weight: 700; }
+.pe-row { display: flex; gap: 12rpx; margin-top: 10rpx; }
+.pe-row picker { flex: 1; }
+.pe-pick { padding: 14rpx 18rpx; border: 2rpx solid #E5E7EB; border-radius: 10rpx; background: #fff; font-size: 26rpx; }
+.pe-gap { margin-top: 12rpx; }

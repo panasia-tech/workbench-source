@@ -1,0 +1,68 @@
+<wxs module="fmt" src="../../../../utils/format.wxs" />
+
+<view class="page-wrap page-wrap--no-tab neg-detail-page">
+  <view class="card">
+    <view class="card-head">
+      <view class="card-head-main">商品信息</view>
+      <view class="tag {{fmt.statusTag(detail.status)}}">{{fmt.statusLabel(detail.status)}}</view>
+    </view>
+    <view class="neg-product">
+      <media-thumb
+        wx:if="{{detail.cover_thumb_url || detail.cover_url}}"
+        url="{{detail.cover_thumb_url || detail.cover_url}}"
+        preview-url="{{detail.cover_url}}"
+        size="medium"
+      />
+      <view class="neg-product-info">
+        <view class="neg-title">{{detail.product_name}}</view>
+        <view class="neg-sub">{{detail.sku_code}}{{detail.spec ? ' · ' + detail.spec : ''}}</view>
+        <view class="neg-sub">成色 {{detail.condition_grade || '—'}} · 库位 {{detail.location_code || '—'}}</view>
+        <view class="neg-sub">入库时间 {{fmt.datetime(detail.inbound_at)}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-head"><view class="card-head-main">议价结果</view></view>
+    <view class="neg-price-board">
+      <view class="neg-price-main">
+        <text class="neg-price-label">议价实收</text>
+        <text class="neg-price-value">¥{{fmt.money(detail.final_price)}}</text>
+      </view>
+      <view class="neg-price-row">
+        <text class="neg-price-row-label">原始采购成本</text>
+        <text class="neg-price-row-value">{{detail.old_cost != null ? '¥' + fmt.money(detail.old_cost) : '—'}}</text>
+      </view>
+      <view class="neg-price-row" wx:if="{{priceDiff}}">
+        <text class="neg-price-row-label">议价幅度</text>
+        <text class="neg-price-row-value {{priceDiff.dir === 'down' ? 'is-down' : (priceDiff.dir === 'up' ? 'is-up' : '')}}">
+          {{priceDiff.dir === 'flat' ? '持平' : priceDiff.sign + '¥' + fmt.money(priceDiff.abs)}}
+        </text>
+      </view>
+    </view>
+    <view class="neg-meta-line">
+      议价人 {{detail.negotiator_name || '—'}} · {{fmt.datetime(detail.negotiated_at)}}
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{detail.negotiation_remark}}">
+    <view class="card-head"><view class="card-head-main">议价备注</view></view>
+    <view class="neg-remark">{{detail.negotiation_remark}}</view>
+  </view>
+
+  <view class="card" wx:if="{{detail.negotiation_media.length}}">
+    <view class="card-head"><view class="card-head-main">议价证据</view></view>
+    <view class="form-note">议价时上传的聊天截图、议价凭证或瑕疵视频</view>
+    <view class="pd-media-block">
+      <media-gallery urls="{{detail.negotiation_media}}" thumb-size="medium" />
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{detail.inspection_media.length}}">
+    <view class="card-head"><view class="card-head-main">验货素材</view></view>
+    <view class="form-note">验货环节上传的入库图、瑕疵照片与视频</view>
+    <view class="pd-media-block">
+      <media-gallery urls="{{detail.inspection_media}}" thumb-size="medium" />
+    </view>
+  </view>
+</view>

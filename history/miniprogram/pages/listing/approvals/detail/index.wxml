@@ -1,0 +1,131 @@
+<view class="page-wrap page-wrap--no-tab lap-detail">
+  <view wx:if="{{loading}}" class="empty"><view class="e-text">加载中…</view></view>
+  <block wx:elif="{{res}}">
+    <view class="card lap-sku">
+      <view class="lap-sku__name">{{res.sku.product_name}}</view>
+      <view class="lap-sku__code">{{res.sku.sku_code}}<text wx:if="{{res.sku.condition_grade}}"> · 成色 {{res.sku.condition_grade}}</text></view>
+      <view class="lap-facts">
+        <view wx:if="{{!res.cost_hidden}}" class="lap-fact">
+          <view class="lap-fact__k">成本</view>
+          <view class="lap-fact__v">{{res.sku.cost_price ? '¥' + res.sku.cost_price : '没有'}}</view>
+        </view>
+        <view class="lap-fact">
+          <view class="lap-fact__k">最低价</view>
+          <view class="lap-fact__v lap-fact__v--strong">{{res.floor_price ? '¥' + res.floor_price : '—'}}</view>
+          <view class="lap-fact__sub">成本 × {{res.min_cost_ratio}}</view>
+        </view>
+        <view class="lap-fact">
+          <view class="lap-fact__k">行情价</view>
+          <view class="lap-fact__v">{{res.market.price ? '¥' + res.market.price : '没有'}}</view>
+          <view wx:if="{{res.market.basis}}" class="lap-fact__sub">{{res.market.basis}}</view>
+          <view wx:if="{{res.clean_price}}" class="lap-fact__sub">清洗价 ¥{{res.clean_price.price}}（v{{res.clean_price.version}}）</view>
+        </view>
+      </view>
+      <view wx:if="{{!res.sku.has_cost}}" class="lap-warn">这件货没有成本，补了成本才能提交</view>
+      <view wx:if="{{readonly}}" class="lap-warn">{{readonly}}</view>
+      <view wx:if="{{res.auto_publish}}" class="lap-muted">当前设置：提交后直接发布，不用再点「通过」。</view>
+    </view>
+
+    <view wx:for="{{cards}}" wx:key="id" class="card lap-shop {{item.picked ? 'lap-shop--picked' : ''}}">
+      <view class="lap-shop__head">
+        <view class="lap-box {{item.picked ? 'lap-box--on' : ''}}" data-id="{{item.id}}" bindtap="togglePick">{{item.picked ? '✓' : ''}}</view>
+        <text class="lap-shop__name" data-id="{{item.id}}" bindtap="togglePick">{{item.label}}</text>
+        <text class="lap-st {{item.stateClass}}">{{item.stateLabel}}</text>
+        <text wx:if="{{item.needsFix}}" class="lap-st lap-st--bad">在架待整改</text>
+        <text wx:elif="{{item.listed}}" class="lap-muted">在架</text>
+        <text wx:if="{{item.version}}" class="lap-muted lap-ver">第 {{item.version}} 版</text>
+      </view>
+      <view wx:if="{{item.problem}}" class="lap-err">{{item.problem}}</view>
+
+      <view wx:if="{{item.reviewNote}}" class="lap-back">
+        <view><text class="lap-back__k">{{item.rejected ? '退回原因' : '审批意见'}}：</text>{{item.reviewNote}}</view>
+        <view wx:if="{{item.reviewMedia.length}}" class="lap-strip">
+          <image wx:for="{{item.reviewMedia}}" wx:for-item="m" wx:for-index="mi" wx:key="raw" class="lap-mini" src="{{m.thumb || m.url}}" mode="aspectFill" data-id="{{item.id}}" data-index="{{mi}}" bindtap="previewReview" />
+        </view>
+      </view>
+
+      <view class="lap-price">
+        <text class="lap-price__k">售价</text>
+        <input class="lap-price__input" type="number" placeholder="整数元" value="{{item.price}}" disabled="{{!item.editable}}" data-id="{{item.id}}" bindinput="onPrice" />
+        <text class="lap-price__k">元</text>
+        <text wx:if="{{item.low}}" class="lap-err lap-price__low">低于最低价</text>
+        <text wx:elif="{{item.high}}" class="lap-warn lap-price__low">高于成本 5 倍</text>
+        <text wx:elif="{{item.editable && item.price}}" class="lap-link" data-id="{{item.id}}" bindtap="fillPrice">填到没填的号</text>
+      </view>
+      <view wx:if="{{item.low}}" class="lap-reason">
+        <input wx:if="{{item.editable}}" class="lap-reason__input" placeholder="为什么要低价（管理员看了才批）" maxlength="200" value="{{item.note}}" data-id="{{item.id}}" bindinput="onNote" />
+        <text wx:else class="lap-reason__text">低价理由：{{item.note || '没写'}}</text>
+      </view>
+
+      <view class="lap-strip">
+        <view wx:for="{{item.images}}" wx:for-item="img" wx:for-index="ii" wx:key="raw" class="lap-pick" data-id="{{item.id}}" data-index="{{ii}}" bindtap="tapPicked">
+          <image class="lap-mini" src="{{img.thumb}}" mode="aspectFill" />
+          <text wx:if="{{ii === 0}}" class="lap-first">首图</text>
+        </view>
+        <view wx:if="{{item.editable}}" class="lap-add" data-id="{{item.id}}" bindtap="openSheet">{{item.images.length ? '改图' : '+ 选图'}}</view>
+        <text wx:if="{{!item.images.length && !item.editable}}" class="lap-muted">没选图</text>
+      </view>
+
+      <view class="lap-shop__foot">
+        <text class="lap-muted">{{item.who}}</text>
+        <button wx:if="{{item.editable}}" class="btn btn-sm {{item.dirty ? 'btn-primary' : 'btn-outline'}}" data-id="{{item.id}}" disabled="{{saving}}" bindtap="saveShop">{{item.dirty ? '存草稿 · 没存' : '存草稿'}}</button>
+      </view>
+    </view>
+  </block>
+
+  <view wx:if="{{res && cards.length}}" class="lap-bar">
+    <view class="lap-bar__all" bindtap="toggleAll">
+      <view class="lap-box {{allPicked ? 'lap-box--on' : ''}}">{{allPicked ? '✓' : ''}}</view>
+      <text>全选 {{pickedCount}}</text>
+    </view>
+    <view class="lap-bar__btn lap-bar__btn--pri {{canSubmit && !saving ? '' : 'is-off'}}" bindtap="submitPicked">{{res.auto_publish ? '提交并发布' : '提交审批'}}</view>
+    <block wx:if="{{res.can_review}}">
+      <view class="lap-bar__btn lap-bar__btn--ok {{canReview && !saving ? '' : 'is-off'}}" bindtap="approvePicked">通过</view>
+      <view class="lap-bar__btn lap-bar__btn--bad {{canReview && !saving ? '' : 'is-off'}}" bindtap="openReject">退回</view>
+    </block>
+  </view>
+
+  <!-- 挑图 -->
+  <view wx:if="{{sheet}}" class="lap-mask" bindtap="closeSheet" catchtouchmove="noop">
+    <view class="lap-sheet" catchtap="noop">
+      <view class="lap-sheet__title">给「{{sheet.label}}」选图 {{sheet.sel.length}}/{{sheet.max}}</view>
+      <view class="lap-hint">按顺序点，第 1 张是首图。灰掉的是别的号占用的（含在架、已提交审批）；选不中只能上传新图，已经选中的冲突图点一下可以去掉。新图排在最后，要换首图先点掉旧首图。长按看大图。</view>
+      <scroll-view scroll-y class="lap-sheet__body">
+        <view class="lap-grid">
+          <view wx:for="{{sheet.items}}" wx:key="raw" class="lap-cell {{item.no ? 'lap-cell--on' : ''}} {{item.takenBy ? 'lap-cell--taken' : ''}}" data-index="{{index}}" bindtap="tapSheetItem" bindlongpress="previewSheetItem">
+            <image class="lap-img" src="{{item.thumb}}" mode="aspectFill" />
+            <view class="lap-badge {{item.bad ? 'lap-badge--bad' : ''}}">{{item.source}}</view>
+            <view wx:if="{{item.no}}" class="lap-no">{{item.no}}</view>
+            <view wx:if="{{item.takenBy}}" class="lap-used">{{item.takenBy}}</view>
+            <view wx:elif="{{item.live}}" class="lap-used lap-used--live">{{item.live}}在架</view>
+          </view>
+          <view class="lap-cell lap-cell--upload" bindtap="uploadInSheet">+ 上传</view>
+        </view>
+        <view wx:if="{{sheet.crawlStatus === '爬取中'}}" class="lap-hint">同款图还在搜，过会儿再打开有更多图。</view>
+      </scroll-view>
+      <view class="lap-sheet__actions">
+        <view class="lap-bar__btn" bindtap="closeSheet">取消</view>
+        <view class="lap-bar__btn lap-bar__btn--pri" bindtap="confirmSheet">用这 {{sheet.sel.length}} 张</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 退回 -->
+  <view wx:if="{{reject}}" class="lap-mask" bindtap="closeReject" catchtouchmove="noop">
+    <view class="lap-sheet" catchtap="noop">
+      <view class="lap-sheet__title">退回 {{pickedCount}} 个号</view>
+      <textarea class="lap-textarea" placeholder="退回原因，员工会看到：哪里不对、要补什么" maxlength="500" value="{{reject.note}}" bindinput="onRejectNote" />
+      <view class="lap-strip">
+        <view wx:for="{{reject.media}}" wx:key="*this" class="lap-pick" data-index="{{index}}" bindtap="removeRejectMedia">
+          <image class="lap-mini" src="{{item}}" mode="aspectFill" />
+          <text class="lap-x">×</text>
+        </view>
+        <view wx:if="{{reject.media.length < 9}}" class="lap-add lap-add--wide" bindtap="addRejectMedia">{{reject.uploading ? '上传中…' : '+ 标注截图（选填）'}}</view>
+      </view>
+      <view class="lap-sheet__actions">
+        <view class="lap-bar__btn" bindtap="closeReject">取消</view>
+        <view class="lap-bar__btn lap-bar__btn--bad {{reject.uploading || saving ? 'is-off' : ''}}" bindtap="confirmReject">退回</view>
+      </view>
+    </view>
+  </view>
+</view>

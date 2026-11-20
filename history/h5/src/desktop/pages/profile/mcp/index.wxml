@@ -1,0 +1,73 @@
+<!-- MCP 与使用说明（电脑版）：左边接入信息（地址、密钥、复制配置），右边群控守护 + AdsPower 使用说明 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">MCP 与使用说明</view>
+      <view class="dk-sub">AI 工具只读接入 ERP 数据 · 群控/AdsPower 操作指南</view>
+    </view>
+  </view>
+
+  <view class="dk-split--even dk-split">
+    <view class="dk-card">
+      <view class="dk-card__head">MCP 接入（AI 工具只读查 ERP 数据）</view>
+      <view class="dk-card__body mcp-dk-body">
+        <view class="dk-help">把下面的配置粘进 AI 工具（Kimi Code / Claude / Cursor 等）的 MCP 设置里，就能用自然语言查 ERP 数据。只读账号，查不了也改不了业务数据以外的东西。</view>
+
+        <view wx:if="{{loading}}" class="dk-empty">加载中…</view>
+        <view wx:elif="{{error}}" class="dk-empty mcp-dk-err">{{error}}</view>
+
+        <block wx:elif="{{enabled}}">
+          <view class="dk-field">
+            <text class="dk-label">接入地址</text>
+            <view class="dk-row mcp-dk-line">
+              <text class="mcp-dk-code dk-grow" bindtap="copy" data-text="{{url}}">{{url}}</text>
+              <view class="dk-btn dk-btn--sm" bindtap="copy" data-text="{{url}}">复制</view>
+            </view>
+          </view>
+          <view class="dk-field">
+            <text class="dk-label">密钥</text>
+            <view class="dk-row mcp-dk-line">
+              <text class="mcp-dk-code dk-grow">{{key}}</text>
+              <view class="dk-btn dk-btn--sm" bindtap="copy" data-text="{{key}}">复制</view>
+            </view>
+          </view>
+          <view class="dk-row">
+            <view class="dk-btn dk-btn--primary" bindtap="copyConfig">复制完整配置（mcpServers JSON）</view>
+          </view>
+          <view class="dk-help">
+            配置位置：Kimi Code 在项目根目录 <text class="mcp-dk-inline">.mcp.json</text>；Claude Code 在 <text class="mcp-dk-inline">~/.claude.json</text>；Cursor 在设置 → MCP。粘进去重启工具即生效。
+          </view>
+        </block>
+
+        <view wx:else class="dk-empty">MCP 服务未启用，请联系管理员</view>
+      </view>
+    </view>
+
+    <view class="dk-card">
+      <view class="dk-card__head">群控守护 + AdsPower 使用说明</view>
+      <view class="dk-card__body mcp-dk-doc">
+        <view class="mcp-dk-h">一、装上群控守护（Windows 电脑，只需一次）</view>
+        <view class="mcp-dk-p">打开 <text class="mcp-dk-inline">http://127.0.0.1:8000</text>，下载「群控守护端」安装包装好。之后它有新版会自己提示更新，点「下载更新 → 重启生效」即可。</view>
+
+        <view class="mcp-dk-h">二、安卓手机（真机执行）</view>
+        <view class="mcp-dk-p">手机数据线连电脑 → 守护端「设备」页认出来后点「初始化」（装 App、补权限、统一闲鱼版本全自动）→ 手机保持亮屏插着电即可，任务由服务端自动下发。</view>
+
+        <view class="mcp-dk-h">三、AdsPower 浏览器环境（浏览器执行）</view>
+        <view class="mcp-dk-p">1. 装好 AdsPower 客户端并启动（设置里开启 Local API）。</view>
+        <view class="mcp-dk-p">2. 守护端左侧「浏览器」页 → gc-ads 卡片点「一键安装」（自动下载、解压、写好线上配置，不用装 Python）。</view>
+        <view class="mcp-dk-p">3. 唯一手工步骤：打开安装目录里的 <text class="mcp-dk-inline">config.yaml</text>，把 AdsPower 环境 ID 填进 environments（AdsPower 环境列表每行的 ID 列）。</view>
+        <view class="mcp-dk-p">4. 回守护端点「启动全部」，再点「启动看门狗」——看门狗常开后，浏览器被误关会自动重开、程序崩了自动拉起。</view>
+        <view class="mcp-dk-p">5. 在 AdsPower 环境里登录一次闲鱼网页版，约 1 分钟内系统自动完成：注册账号 → 绑定设备 → ERP 建店，小程序里立即可用。</view>
+
+        <view class="mcp-dk-h">四、小程序上架（按设备类型分组）</view>
+        <view class="mcp-dk-p">发布页店铺名旁有「手机 / 浏览器」标签；顶部「全选 / 手机全选 / 浏览器全选」按执行方式分组勾选。已全选时再点一次该按钮 = 取消该组。</view>
+
+        <view class="mcp-dk-h">五、常见问题</view>
+        <view class="mcp-dk-p">· 浏览器页显示「API 离线」→ AdsPower 客户端没启动或没开 Local API。</view>
+        <view class="mcp-dk-p">· 环境列表空的 → config.yaml 的 environments 没填环境 ID。</view>
+        <view class="mcp-dk-p">· 设备显示「未就绪」→ 那个 AdsPower 环境里没登录闲鱼，登录一次即可。</view>
+        <view class="mcp-dk-p">· 浏览器被关了没自动开 → 看门狗没启动，到「浏览器」页点「启动看门狗」。</view>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,34 @@
+@import '@lark-apaas/client-toolkit/lib/index.css';
+@import "tw-animate-css";
+@import "./tailwind-theme.css";
+@import "./typography.css";
+
+@config "../../tailwind.config.ts";
+
+/* 任务完成庆祝撒花：只动 transform / opacity，约 2s 后由组件卸载 */
+@keyframes task-confetti-fall {
+  0% {
+    transform: translate3d(0, -8vh, 0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(var(--confetti-x, 0px), 105vh, 0)
+      rotate(var(--confetti-r, 540deg));
+    opacity: 0;
+  }
+}
+
+.task-confetti-piece {
+  position: absolute;
+  top: 0;
+  border-radius: 2px;
+  animation-name: task-confetti-fall;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}

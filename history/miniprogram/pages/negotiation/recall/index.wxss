@@ -1,0 +1,158 @@
+.neg-recall-page .neg-product {
+  display: flex;
+  gap: 24rpx;
+}
+
+.neg-recall-page .neg-product-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.neg-recall-page .neg-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 8rpx;
+}
+
+.neg-recall-page .neg-sub {
+  font-size: 24rpx;
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+/* 给悬浮底栏留出空间，避免最后一张卡片被遮挡 */
+.neg-recall-page {
+  padding-bottom: calc(140rpx + env(safe-area-inset-bottom));
+}
+
+/* 议价结果：实收金额 */
+.neg-recall-page .recall-result {
+  display: flex;
+  align-items: baseline;
+  gap: 16rpx;
+  margin-bottom: 8rpx;
+}
+
+.neg-recall-page .recall-result-label {
+  font-size: 24rpx;
+  color: #9ca3af;
+}
+
+.neg-recall-page .recall-result-amount {
+  font-size: 40rpx;
+  font-weight: 800;
+  color: #dc2626;
+}
+
+/* ===== 改派凭证上传（沿用议价证据样式） ===== */
+.neg-recall-page .evidence-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  margin-top: 12rpx;
+}
+
+.neg-recall-page .evidence-item {
+  position: relative;
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 12rpx;
+  overflow: hidden;
+}
+
+.neg-recall-page .evidence-del {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 40rpx;
+  height: 40rpx;
+  line-height: 36rpx;
+  text-align: center;
+  font-size: 30rpx;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.5);
+  border-bottom-left-radius: 12rpx;
+}
+
+.neg-recall-page .evidence-add {
+  width: 160rpx;
+  height: 160rpx;
+  border: 2rpx dashed #cbd5e1;
+  border-radius: 12rpx;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+}
+
+.neg-recall-page .evidence-add-plus {
+  font-size: 48rpx;
+  line-height: 1;
+  color: #94a3b8;
+  font-weight: 300;
+}
+
+.neg-recall-page .evidence-add-text {
+  font-size: 22rpx;
+  color: #94a3b8;
+}
+
+/* ===== 悬浮提交底栏 ===== */
+.neg-form-footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 16rpx 28rpx calc(16rpx + env(safe-area-inset-bottom));
+  background: #fff;
+  border-top: 1rpx solid #eef0f3;
+  box-shadow: 0 -6rpx 20rpx rgba(15, 23, 42, 0.06);
+}
+
+.neg-form-footer-sum {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2rpx;
+}
+
+.neg-form-footer-label {
+  font-size: 22rpx;
+  color: #9ca3af;
+}
+
+.neg-form-footer-amount {
+  font-size: 40rpx;
+  font-weight: 800;
+  line-height: 1.1;
+  color: #16a34a;
+}
+
+.neg-form-footer-amount.is-empty {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #9ca3af;
+}
+
+.neg-form-footer .neg-form-submit {
+  flex-shrink: 0;
+  width: auto;
+  min-width: 240rpx;
+  height: 88rpx;
+  margin: 0;
+  padding: 0 56rpx;
+  font-size: 30rpx;
+  font-weight: 700;
+}
+
+.neg-form-footer .neg-form-submit::after {
+  border: none;
+}

@@ -1,0 +1,47 @@
+.ap-info-grid {
+  padding: 4rpx 0;
+}
+
+.ap-info-row {
+  display: flex;
+  padding: 12rpx 0;
+  font-size: 26rpx;
+  border-bottom: 1rpx solid #F3F4F6;
+}
+
+.ap-info-row:last-child {
+  border-bottom: none;
+}
+
+.ap-info-label {
+  width: 180rpx;
+  color: #6B7280;
+  flex-shrink: 0;
+}
+
+.ap-info-value {
+  color: #111827;
+  word-break: break-all;
+}
+
+.ap-strategy-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  padding: 8rpx 0;
+}
+
+.ap-strategy {
+  padding: 14rpx 24rpx;
+  font-size: 26rpx;
+  color: #6B7280;
+  background: #F3F4F6;
+  border: 2rpx solid transparent;
+  border-radius: 12rpx;
+}
+
+.ap-strategy--on {
+  color: #047857;
+  background: #D1FAE5;
+  border-color: #10B981;
+}

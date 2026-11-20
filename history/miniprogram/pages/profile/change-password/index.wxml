@@ -1,0 +1,64 @@
+<view class="page-wrap page-wrap--no-tab">
+  <view class="card">
+    <view class="card-head">修改登录密码</view>
+    <view class="tip">密码修改成功后将退出登录，需使用新密码重新绑定微信。</view>
+
+    <view class="form-group">
+      <text class="form-label">原密码</text>
+      <view class="input-wrap">
+        <input
+          class="input input--with-suffix"
+          password="DEMO_ONLY_REDACTED"
+          placeholder="请输入原密码"
+          placeholder-class="input-ph"
+          data-key="oldPassword"
+          value="{{oldPassword}}"
+          bindinput="onInput"
+        />
+        <view class="pwd-toggle" data-field="showOld" bindtap="togglePassword">
+          <view class="pwd-eye {{showOld ? 'pwd-eye--visible' : 'pwd-eye--hidden'}}"></view>
+        </view>
+      </view>
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">新密码</text>
+      <view class="input-wrap">
+        <input
+          class="input input--with-suffix"
+          password="DEMO_ONLY_REDACTED"
+          placeholder="至少 6 位"
+          placeholder-class="input-ph"
+          data-key="newPassword"
+          value="{{newPassword}}"
+          bindinput="onInput"
+        />
+        <view class="pwd-toggle" data-field="showNew" bindtap="togglePassword">
+          <view class="pwd-eye {{showNew ? 'pwd-eye--visible' : 'pwd-eye--hidden'}}"></view>
+        </view>
+      </view>
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">确认新密码</text>
+      <view class="input-wrap">
+        <input
+          class="input input--with-suffix"
+          password="DEMO_ONLY_REDACTED"
+          placeholder="请再次输入新密码"
+          placeholder-class="input-ph"
+          data-key="confirmPassword"
+          value="{{confirmPassword}}"
+          bindinput="onInput"
+        />
+        <view class="pwd-toggle" data-field="showConfirm" bindtap="togglePassword">
+          <view class="pwd-eye {{showConfirm ? 'pwd-eye--visible' : 'pwd-eye--hidden'}}"></view>
+        </view>
+      </view>
+    </view>
+
+    <button class="btn btn-primary btn-block" loading="{{submitting}}" disabled="{{submitting}}" bindtap="onSubmit">
+      确认修改
+    </button>
+  </view>
+</view>

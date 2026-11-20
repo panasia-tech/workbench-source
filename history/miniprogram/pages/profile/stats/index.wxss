@@ -1,0 +1,17 @@
+/* 数据统计页 — 周期 pill 间距 */
+
+.stats-page .stats-periods {
+  margin-bottom: 0;
+}
+
+.stats-page .stats-section {
+  margin-bottom: 20rpx;
+}
+
+.stats-page .stats-section .card-head {
+  margin-bottom: 20rpx;
+}
+
+.stats-page .stats-section .stats-grid {
+  margin-top: 0;
+}

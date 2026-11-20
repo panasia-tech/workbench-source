@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">鱼鱼小助手</string>
+    <string name="accessibility_label">群控闲鱼执行器</string>
+    <string name="accessibility_description">用于自动操作闲鱼完成商品上下架、发布、改价、消息回复与小铺数据抓取。仅作用于闲鱼 App。</string>
+</resources>

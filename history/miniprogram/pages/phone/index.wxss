@@ -1,0 +1,67 @@
+.phone-loading {
+  padding: 24rpx 0;
+  text-align: center;
+  font-size: 24rpx;
+  color: #9CA3AF;
+}
+
+.li-icon--phone-item {
+  background: linear-gradient(135deg, #F59E0B, #D97706);
+  color: #fff;
+  font-weight: 700;
+  font-size: 36rpx;
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.li-sub--xianyu {
+  color: #F59E0B;
+}
+
+.li-del-btn {
+  margin-top: 12rpx;
+  padding: 8rpx 20rpx;
+  font-size: 22rpx;
+  color: #DC2626;
+  background: #FEF2F2;
+  border: 1rpx solid #FECACA;
+  border-radius: 8rpx;
+  line-height: 1.4;
+}
+
+.li-del-btn:active {
+  opacity: 0.7;
+}
+
+/* FAB */
+.phone-fab {
+  position: fixed;
+  right: 40rpx;
+  bottom: 64rpx;
+  width: 104rpx;
+  height: 104rpx;
+  border-radius: 50%;
+  background: #F59E0B;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 24rpx rgba(245, 158, 11, 0.4);
+  z-index: 50;
+}
+
+.phone-fab:active {
+  opacity: 0.85;
+}
+
+.phone-fab-plus {
+  color: #FFFFFF;
+  font-size: 60rpx;
+  line-height: 1;
+  font-weight: 300;
+}

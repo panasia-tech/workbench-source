@@ -1,0 +1,35 @@
+import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
+
+const read = (file) => readFileSync(resolve(process.cwd(), file), 'utf8')
+const index = read('src/main/index.js')
+const preload = read('src/preload/index.js')
+const view = read('src/renderer/src/views/Wms.vue')
+const prices = read('src/renderer/src/views/Prices.vue')
+const history = read('src/renderer/src/views/PriceHistory.vue')
+const store = read('src/main/store.js')
+const service = read('src/main/wms-sync-service.js')
+
+assert.match(index, /wms:sync-state/)
+assert.match(index, /wmsService\.start\(\)/)
+assert.match(index, /getWmsSyncService\(\)\.stop\(\)/)
+assert.match(index, /ipcMain\.handle\('wms:projection'/)
+assert.match(index, /ipcMain\.handle\('market:price-preview'/)
+assert.match(index, /ipcMain\.handle\('market:price-select'/)
+assert.match(index, /ipcMain\.handle\('market:history'/)
+assert.match(preload, /onWmsSyncState/)
+assert.match(preload, /getWmsProjection/)
+assert.match(preload, /queryMarketHistory/)
+assert.match(view, /onWmsSyncState/)
+assert.doesNotMatch(view, /setInterval\(|setTimeout\(/)
+assert.doesNotMatch(preload, /wmsMcpKey|wmsRestPassword/)
+assert.match(store, /safeStorage\.encryptString/)
+assert.match(store, /safe_storage_unavailable/)
+assert.match(service, /WMS_MAX_RETRIES/)
+assert.match(service, /WMS_RETRY_DELAY_MS/)
+assert.match(service, /AbortController/)
+assert.match(prices, /全部|异常|待采集|成功|待复核/)
+assert.match(history, /queryMarketHistory/)
+
+console.log('wms IPC contract regression: passed (main-owned lifecycle/projection/sanitized preload/no renderer timer)')

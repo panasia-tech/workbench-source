@@ -1,0 +1,46 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.erp.rfid'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.erp.rfid"
+        minSdk 21                 // iData PDA 多为 Android 7~11，21 兼容性最稳
+        targetSdk 30
+        versionCode 1
+        versionName "1.0"
+        // RFID 模块为 32 位 ARM 原生库，只打包对应 ABI
+        ndk {
+            abiFilters 'armeabi', 'armeabi-v7a'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false    // SDK 为反射/JNI，关闭混淆避免误删
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    // 允许加载只有 armeabi 的旧 .so
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging true
+        }
+    }
+}
+
+dependencies {
+    implementation files('libs/uhf-sdk.jar')      // 从 EI.apk 提取的 iData UHF SDK
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+    implementation 'com.google.code.gson:gson:2.10.1'
+}

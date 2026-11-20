@@ -1,0 +1,66 @@
+<view class="page-wrap page-wrap--no-tab record-page ret-receive-page">
+  <view class="card">
+    <view class="card-head"><view class="card-head-main">退回商品</view></view>
+    <view class="rr-product">
+      <view class="rr-product-name">{{productName || '—'}}</view>
+      <view class="rr-product-sub">{{skuCode}}{{returnNo ? ' · ' + returnNo : ''}}</view>
+    </view>
+    <view class="form-note">请核对实物后填写，全部信息将写入退货记录，原出库记录不受影响。</view>
+  </view>
+
+  <view class="card">
+    <view class="card-head"><view class="card-head-main">收货核对</view></view>
+
+    <view class="form-group">
+      <text class="form-label">商品序列号 <text class="form-required">*</text></text>
+      <view class="form-input-scan">
+        <input class="input form-input--scan" placeholder="扫码或手动输入，需与出库商品一致" value="{{serialNumber}}" bindinput="onSerialInput" />
+        <view class="search-scan-icon" catchtap="onScanSerial">
+          <view class="scan-frame"></view>
+          <view class="scan-line"></view>
+        </view>
+      </view>
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">商品状态 <text class="form-required">*</text></text>
+      <picker range="{{conditionOptions}}" range-key="label" value="{{conditionIndex}}" bindchange="onConditionChange">
+        <view class="picker-field">{{conditionIndex >= 0 ? conditionOptions[conditionIndex].label : '请选择商品状态'}}</view>
+      </picker>
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">当前库位 <text class="form-required">*</text></text>
+      <picker range="{{locations}}" range-key="label" value="{{locationIndex}}" bindchange="onLocationChange">
+        <view class="picker-field">{{locationIndex >= 0 ? locations[locationIndex].label : '请选择退回后的存放库位'}}</view>
+      </picker>
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">退回照片 <text class="form-required">*</text></text>
+      <view class="image-grid">
+        <view wx:for="{{mediaDisplays}}" wx:key="index" class="image-item" data-index="{{index}}" bindtap="onRemoveImage">
+          <image src="{{item}}" mode="aspectFill" class="image-thumb" />
+          <view class="image-remove">×</view>
+        </view>
+        <view wx:if="{{media.length < 9}}" class="image-add" bindtap="onAddImages">
+          <view class="image-add-icon">+</view>
+          <view class="image-add-text">商品/包装/铭牌</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="form-group" wx:if="{{markAbnormal || (conditionIndex >= 0 && conditionOptions[conditionIndex].key === 'ABNORMAL')}}">
+      <text class="form-label">异常说明 <text class="form-required">*</text></text>
+      <textarea class="input input--textarea" auto-height="{{true}}" placeholder="损坏部位 / 缺失配件 / 序列号情况等" value="{{abnormalReason}}" bindinput="onAbnormalInput" maxlength="200" />
+      <view class="form-note form-note--warn">异常件将挂起等管理员裁决，暂不恢复库存。</view>
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">备注</text>
+      <textarea class="input input--textarea" auto-height="{{true}}" placeholder="选填" value="{{remark}}" bindinput="onRemarkInput" maxlength="200" />
+    </view>
+
+    <button class="btn-primary btn-block" loading="{{submitting}}" bindtap="onSubmit">确认收货</button>
+  </view>
+</view>

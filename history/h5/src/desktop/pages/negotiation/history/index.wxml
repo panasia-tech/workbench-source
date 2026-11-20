@@ -1,0 +1,118 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<!-- 议价记录（电脑版）：筛选平铺 + 表格（原价 / 实收 / 差额拆开对齐）+ 页码 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">议价记录</view>
+      <view class="dk-sub">共 {{total}} 条议价记录</view>
+    </view>
+  </view>
+
+  <view class="dk-card">
+    <view class="dk-toolbar">
+      <view class="dk-tabs">
+        <view class="dk-tab {{status === '' ? 'dk-tab--on' : ''}}" data-status="" bindtap="pickStatus">全部</view>
+        <view class="dk-tab {{status === 'IN_STOCK' ? 'dk-tab--on' : ''}}" data-status="IN_STOCK" bindtap="pickStatus">在库</view>
+        <view class="dk-tab {{status === 'SHIPPED' ? 'dk-tab--on' : ''}}" data-status="SHIPPED" bindtap="pickStatus">已出库</view>
+      </view>
+      <input
+        class="dk-input dk-search"
+        placeholder="货号 / 商品名 / 品牌型号 / 采购单号 / 库位"
+        value="{{q}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+        bindconfirm="onSearch"
+      />
+      <view class="dk-btn" bindtap="onScanSearch">扫码搜</view>
+      <view class="dk-btn dk-btn--primary" bindtap="onSearch">搜索</view>
+      <text class="dk-label nh-dk-gap">议价日期</text>
+      <picker mode="date" value="{{dateFrom}}" end="{{dateTo || ''}}" bindchange="onDateFromChange">
+        <view class="dk-select {{dateFrom ? '' : 'dk-muted'}}">{{dateFrom || '开始日'}}</view>
+      </picker>
+      <text class="dk-muted">至</text>
+      <picker mode="date" value="{{dateTo}}" start="{{dateFrom || ''}}" bindchange="onDateToChange">
+        <view class="dk-select {{dateTo ? '' : 'dk-muted'}}">{{dateTo || '结束日'}}</view>
+      </picker>
+      <text wx:if="{{dateFrom || dateTo}}" class="dk-link" bindtap="dkClearDate">清除日期</text>
+    </view>
+
+    <view class="dk-table-wrap">
+      <table class="dk-table">
+        <thead>
+          <tr>
+            <th>商品</th>
+            <th>成色 / 库位</th>
+            <th>议价时间</th>
+            <th class="dk-num">实收 / 原价</th>
+            <th class="dk-num">幅度</th>
+            <th>状态</th>
+            <th class="dk-ops">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr wx:for="{{list}}" wx:key="sku_id" class="dk-tr--click" data-code="{{item.sku_code}}" bindtap="openDetail">
+            <td>
+              <view class="dk-media">
+                <image
+                  wx:if="{{item.cover_thumb_url || item.cover_url}}"
+                  class="dk-thumb"
+                  src="{{item.cover_thumb_url || item.cover_url}}"
+                  mode="aspectFill"
+                  data-url="{{item.cover_url || item.cover_thumb_url}}"
+                  catchtap="dkPreview"
+                />
+                <view wx:elif="{{item.location_images[0]}}" class="nh-dk-thumb-wrap">
+                  <image class="dk-thumb" src="{{item.location_images[0]}}" mode="aspectFill" data-url="{{item.location_images[0]}}" catchtap="dkPreview" />
+                  <text class="nh-dk-loc-badge">定位</text>
+                </view>
+                <view wx:else class="dk-thumb nh-dk-thumb-empty">{{item.product_name[0] || '议'}}</view>
+                <view class="dk-grow">
+                  <view class="dk-cell-main dk-ellipsis nh-dk-name" title="{{item.product_name}}">{{item.product_name}}</view>
+                  <view class="dk-cell-sub dk-ellipsis nh-dk-name">{{item.sku_code}}{{item.spec ? ' · ' + item.spec : ''}}</view>
+                </view>
+              </view>
+            </td>
+            <td class="dk-nowrap">
+              <view>{{item.condition_grade || '—'}}</view>
+              <view class="dk-cell-sub">{{item.location_code || '未分配库位'}}</view>
+            </td>
+            <td class="dk-nowrap">
+              <view>{{fmt.datetime(item.negotiated_at)}}</view>
+              <view class="dk-cell-sub">{{item.negotiator_name || '—'}}</view>
+            </td>
+            <td class="dk-num">
+              <view class="nh-dk-strong">¥{{fmt.money(item.final_price)}}</view>
+              <view class="dk-cell-sub">{{item.old_cost != null ? '原 ¥' + fmt.money(item.old_cost) : '原价未记录'}}</view>
+            </td>
+            <td class="dk-num {{item.old_cost != null && item.final_price - item.old_cost < 0 ? 'nh-dk-down' : (item.old_cost != null && item.final_price - item.old_cost > 0 ? 'nh-dk-up' : '')}}">
+              {{item.old_cost == null ? '—' : (item.final_price - item.old_cost == 0 ? '持平' : (item.final_price - item.old_cost > 0 ? '+' : '-') + '¥' + fmt.money(item.final_price - item.old_cost > 0 ? item.final_price - item.old_cost : item.old_cost - item.final_price))}}
+            </td>
+            <td class="dk-nowrap">
+              <view class="dk-row nh-dk-tags">
+                <text class="dk-tag {{fmt.statusTag(item.status)}}">{{fmt.statusLabel(item.status)}}</text>
+                <text class="dk-tag {{item.recalled_at ? 'tag-success' : 'tag-warning'}}">{{item.recalled_at ? '已召回' : '待召回'}}</text>
+              </view>
+              <view wx:if="{{item.recalled_at}}" class="dk-cell-sub">召回 {{fmt.datetime(item.recalled_at)}}</view>
+            </td>
+            <td class="dk-ops">
+              <text class="dk-link" data-code="{{item.sku_code}}" catchtap="openDetail">详情</text>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </view>
+
+    <view wx:if="{{!list.length && !loading}}" class="dk-empty">暂无议价记录</view>
+    <view wx:if="{{loading && !list.length}}" class="dk-empty">加载中…</view>
+
+    <view wx:if="{{total > dkPageSize}}" class="dk-pager">
+      <text>共 {{total}} 条，每页 {{dkPageSize}} 条</text>
+      <view class="dk-row">
+        <view class="dk-btn dk-btn--sm {{dkPage <= 1 ? 'dk-btn--disabled' : ''}}" bindtap="dkPrev">上一页</view>
+        <text>第 {{dkPage}} / {{dkPages}} 页</text>
+        <view class="dk-btn dk-btn--sm {{dkPage >= dkPages ? 'dk-btn--disabled' : ''}}" bindtap="dkNext">下一页</view>
+      </view>
+    </view>
+  </view>
+</view>

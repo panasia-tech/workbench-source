@@ -1,0 +1,397 @@
+<wxs module="fmt" src="../../utils/format.wxs" />
+
+
+
+<view class="page-wrap profile-page">
+
+  <!-- 用户信息 -->
+
+  <view class="profile-hero" wx:if="{{user}}">
+
+    <view class="pf-row">
+
+      <view class="pf-avatar">{{user.name ? user.name[0] : (user.username ? user.username[0] : '?')}}</view>
+
+      <view class="pf-body">
+
+        <view class="pf-name">{{user.name || user.username}}</view>
+
+        <view class="pf-meta">
+
+          <text class="pf-role-badge">{{fmt.roleLabel(user.role)}}</text>
+
+          <text class="pf-account" wx:if="{{user.username}}">@{{user.username}}</text>
+
+        </view>
+
+      </view>
+
+    </view>
+
+    <view class="pf-metrics">
+
+      <view class="pf-metric pf-metric--purchase">
+
+        <text class="pf-metric-num">{{workload.today_purchase || 0}}</text>
+
+        <text class="pf-metric-label">今日采购</text>
+
+      </view>
+
+      <view class="pf-metric pf-metric--inspect">
+
+        <text class="pf-metric-num">{{workload.today_inspection || 0}}</text>
+
+        <text class="pf-metric-label">验货</text>
+
+      </view>
+
+      <view class="pf-metric pf-metric--outbound">
+
+        <text class="pf-metric-num">{{workload.today_sales || 0}}</text>
+
+        <text class="pf-metric-label">出库</text>
+
+      </view>
+
+    </view>
+
+  </view>
+
+
+
+  <!-- 库存概览 -->
+
+  <view wx:if="{{showStatsGrid}}" class="stats-grid">
+
+    <view wx:if="{{showInspectStat}}" class="stat-card" hover-class="stat-card--hover" bindtap="goPendingInspect">
+
+      <view class="st-num">{{summary.pending_inspect || 0}}</view>
+
+      <view class="st-label">待验货</view>
+
+    </view>
+
+    <view wx:if="{{showInStockStat}}" class="stat-card" hover-class="stat-card--hover" bindtap="goInStock">
+
+      <view class="st-num">{{summary.in_stock || 0}}</view>
+
+      <view class="st-label">在库</view>
+
+    </view>
+
+    <view wx:if="{{showPurchaseStat}}" class="stat-card" hover-class="stat-card--hover" bindtap="goPurchaseRecords">
+
+      <view class="st-num">{{summary.today_purchase || 0}}</view>
+
+      <view class="st-label">今日采购</view>
+
+    </view>
+
+    <view wx:if="{{showOutboundStat}}" class="stat-card" hover-class="stat-card--hover" bindtap="goOutboundRecords">
+
+      <view class="st-num">{{summary.today_outbound || 0}}</view>
+
+      <view class="st-label">今日出库</view>
+
+    </view>
+
+  </view>
+
+
+
+  <!-- 当日净利润 · 仅管理员 -->
+
+  <view class="netprofit-card" wx:if="{{isAdmin && financeStats}}" bindtap="goBill">
+
+    <view class="netprofit-head">
+
+      <text class="netprofit-title">当日净利润</text>
+
+      <text class="netprofit-tag">查看账单 →</text>
+
+    </view>
+
+    <view class="netprofit-amt {{financeStats.net_profit < 0 ? 'netprofit-amt--neg' : ''}}">¥{{fmt.money(financeStats.net_profit)}}</view>
+
+    <view class="netprofit-foot">毛利 ¥{{fmt.money(financeStats.gross_profit)}} · 销售额 ¥{{fmt.money(financeStats.sales_amount)}} · 提成 ¥{{fmt.money(financeStats.staff_commission)}}</view>
+
+  </view>
+
+
+
+  <!-- 预计工资 -->
+
+  <view class="commission-card" wx:if="{{commission}}">
+
+    <view class="commission-head">
+
+      <text class="commission-title">预计工资</text>
+
+      <text class="commission-period">今日</text>
+
+    </view>
+
+    <view class="commission-total">
+
+      <text class="commission-total-label">合计</text>
+
+      <text class="commission-total-amt">¥{{fmt.money(commission.total_commission)}}</text>
+
+    </view>
+
+    <view class="commission-rows" wx:if="{{showCommissionRows}}">
+
+      <view class="commission-row" wx:if="{{showPurchaseCommission}}">
+
+        <text class="commission-row-label">采购提成</text>
+
+        <text class="commission-row-val">¥{{fmt.money(commission.purchase_commission)}}</text>
+
+      </view>
+
+      <view class="commission-row" wx:if="{{showWarehouseCommission}}">
+
+        <text class="commission-row-label">仓管提成</text>
+
+        <text class="commission-row-val">¥{{fmt.money(commission.warehouse_commission)}}</text>
+
+      </view>
+
+      <view class="commission-row" wx:if="{{showSalesCommission}}">
+
+        <text class="commission-row-label">销售提成</text>
+
+        <text class="commission-row-val">¥{{fmt.money(commission.sales_commission)}}</text>
+
+      </view>
+
+    </view>
+
+  </view>
+
+
+
+  <!-- 工资 -->
+
+  <view class="card profile-menu-card" wx:if="{{showCommissionRows}}">
+
+    <view class="card-head">工资</view>
+
+    <view class="list-item" bindtap="goPayslip">
+
+      <view class="li-icon li-icon--finance">薪</view>
+
+      <view class="li-info">
+
+        <view class="li-title">工资单明细</view>
+
+        <view class="li-sub">逐笔提成 · 今日/昨日/本周/本月/任意月 · 逾期采购显示 ¥0</view>
+
+      </view>
+
+      <view class="li-meta li-arrow">→</view>
+
+    </view>
+
+  </view>
+
+
+
+  <!-- 财务 -->
+
+  <view class="card profile-menu-card" wx:if="{{showFinanceMenu}}">
+
+    <view class="card-head">财务</view>
+
+    <view class="list-item" bindtap="goBill">
+
+      <view class="li-icon li-icon--finance">利</view>
+
+      <view class="li-info">
+
+        <view class="li-title">经营账单</view>
+
+        <view class="li-sub">采购/销售金额统计 · 按日/周/月/自定义区间 · 逐笔明细</view>
+
+      </view>
+
+      <view class="li-meta li-arrow">→</view>
+
+    </view>
+
+  </view>
+
+
+
+  <!-- 工具 · 员工填自己的，管理员看全部 -->
+  <view class="card profile-menu-card">
+    <view class="card-head">工具</view>
+    <view class="list-item" bindtap="goAsset">
+      <view class="li-icon li-icon--asset">资</view>
+      <view class="li-info">
+        <view class="li-title">资产管理</view>
+        <view class="li-sub">{{isAdmin ? '设备资产登记 · 采购单关联 · 生命周期跟踪' : '登记我使用的设备资产'}}</view>
+      </view>
+      <view class="li-meta li-arrow">→</view>
+    </view>
+    <view class="list-item" bindtap="goPhone">
+      <view class="li-icon li-icon--phone">号</view>
+      <view class="li-info">
+        <view class="li-title">手机号管理</view>
+        <view class="li-sub">{{isAdmin ? '号码登记 · 套餐记录 · 闲鱼会员关联' : '登记我使用的号码 · 套餐 · 闲鱼会员'}}</view>
+      </view>
+      <view class="li-meta li-arrow">→</view>
+    </view>
+    <view class="list-item" bindtap="goAccountProfile">
+      <view class="li-icon li-icon--phone">档</view>
+      <view class="li-info">
+        <view class="li-title">账号档案</view>
+        <view class="li-sub">闲鱼账号初始化 · SN/IMEI/手机号自动采集 · 补全运营商/法人/种类</view>
+      </view>
+      <view class="li-meta li-arrow">→</view>
+    </view>
+    <view class="list-item" bindtap="goLedger">
+      <view class="li-icon li-icon--finance">账</view>
+      <view class="li-info">
+        <view class="li-title">大台账</view>
+        <view class="li-sub">{{isAdmin ? '法人 · 主体 · 支付宝 · 店铺 · 对账' : '登记法人 · 主体 · 支付宝 · 店铺'}}</view>
+      </view>
+      <view class="li-meta li-arrow">→</view>
+    </view>
+    <view wx:if="{{isAdmin}}" class="list-item" bindtap="goGcBind">
+      <view class="li-icon li-icon--asset">绑</view>
+      <view class="li-info">
+        <view class="li-title">设备账号对账</view>
+        <view class="li-sub">真机↔闲鱼 自动绑定 · 在线/就绪/串号 对账</view>
+      </view>
+      <view class="li-meta li-arrow">→</view>
+    </view>
+  </view>
+
+  <!-- 账号设置 -->
+
+  <view class="card profile-menu-card">
+
+    <view class="card-head">账号设置</view>
+
+    <view class="list-item" wx:if="{{user.role === 'ADMIN'}}" bindtap="goStats">
+
+      <view class="li-icon li-icon--stats">统</view>
+
+      <view class="li-info">
+
+        <view class="li-title">数据统计</view>
+
+        <view class="li-sub">今日 / 昨日 / 近7天 / 近30天</view>
+
+      </view>
+
+      <view class="li-meta li-arrow">→</view>
+
+    </view>
+
+    <view class="list-item" bindtap="goMyInfo">
+
+      <view class="li-icon li-icon--phone">息</view>
+
+      <view class="li-info">
+
+        <view class="li-title">个人信息</view>
+
+        <view class="li-sub">手机卡信息 · 手机号 / ICCID / 空卡序列号（可绑定多张）</view>
+
+      </view>
+
+      <view class="li-meta li-arrow">→</view>
+
+    </view>
+
+    <view class="list-item" wx:if="{{user.role === 'ADMIN'}}" bindtap="goMcp">
+
+      <view class="li-icon li-icon--stats">M</view>
+
+      <view class="li-info">
+
+        <view class="li-title">MCP 与使用说明</view>
+
+        <view class="li-sub">AI 工具只读接入 ERP 数据 · 群控/AdsPower 操作指南</view>
+
+      </view>
+
+      <view class="li-meta li-arrow">→</view>
+
+    </view>
+
+    <view class="list-item" bindtap="goChangePassword">
+
+      <view class="li-icon li-icon--pwd">密</view>
+
+      <view class="li-info">
+
+        <view class="li-title">修改密码</view>
+
+        <view class="li-sub">修改后需重新绑定微信</view>
+
+      </view>
+
+      <view class="li-meta li-arrow">→</view>
+
+    </view>
+
+  </view>
+
+
+
+  <!-- 匿名反馈 -->
+  <view class="card profile-menu-card">
+    <view class="card-head">匿名反馈</view>
+    <view class="list-item" bindtap="goAnonymousFeedback">
+      <view class="li-icon li-icon--stats">匿</view>
+      <view class="li-info">
+        <view class="li-title">流程返工 / 系统反馈 / 投诉建议</view>
+        <view class="li-sub">匿名保存并提交给管理后台处理</view>
+      </view>
+      <view class="li-meta li-arrow">→</view>
+    </view>
+  </view>
+
+  <!-- 最近动态 · 仅管理员 -->
+
+  <view class="card" wx:if="{{isAdmin}}">
+
+    <view class="card-head">最近动态</view>
+
+    <view wx:if="{{!activities.length}}" class="empty">
+
+      <view class="e-icon">—</view>
+
+      <view class="e-text">暂无动态</view>
+
+    </view>
+
+    <scroll-view wx:else scroll-y class="feed-scroll" bindscrolltolower="loadMoreActivities" lower-threshold="60">
+
+      <view wx:for="{{activities}}" wx:key="index" class="feed-item">
+        <view class="feed-item__title">{{fmt.stockEventLabel(item.event_type)}}{{item.ref_no ? ' · ' + item.ref_no : ''}}</view>
+        <view wx:if="{{item.created_at}}" class="feed-item__time">{{fmt.datetime(item.created_at)}}</view>
+      </view>
+
+      <view wx:if="{{activitiesLoading}}" class="feed-more">加载中…</view>
+
+      <view wx:elif="{{!activitiesHasMore}}" class="feed-more">没有更多了</view>
+
+    </scroll-view>
+
+  </view>
+
+
+
+  <view class="profile-footer">
+
+    <button class="btn btn-outline btn-block profile-logout" bindtap="onLogout">退出登录</button>
+
+  </view>
+
+</view>
+

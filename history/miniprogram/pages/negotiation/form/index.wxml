@@ -1,0 +1,96 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<view class="page-wrap page-wrap--no-tab neg-form-page">
+  <view class="card">
+    <view class="card-head"><view class="card-head-main">商品信息</view></view>
+    <view class="neg-product">
+      <media-thumb
+        wx:if="{{detail.cover_thumb_url || detail.cover_url}}"
+        url="{{detail.cover_thumb_url || detail.cover_url}}"
+        preview-url="{{detail.cover_url}}"
+        size="medium"
+      />
+      <view class="neg-product-info">
+        <view class="neg-title">{{detail.product_name}}</view>
+        <view class="neg-sub">{{detail.sku_code}}</view>
+        <view class="neg-sub">成色 {{detail.condition_grade || '—'}} · 库位 {{detail.location_code || '—'}}</view>
+        <view class="neg-sub">采购成本 ¥{{fmt.money(detail.cost_price)}}</view>
+      </view>
+    </view>
+    <view class="condition-warn" wx:if="{{detail.condition_warning}}">
+      <text class="condition-warn__icon">⚠</text>
+      <text class="condition-warn__text">实拍图含「{{detail.condition_warning_text || '全新'}}」字样，请重点核对货况与议价</text>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{detail.inspection_media.length}}">
+    <view class="card-head"><view class="card-head-main">验货素材</view></view>
+    <view class="form-note">验货环节上传的入库图、瑕疵照片与视频，供核对货况</view>
+    <view class="pd-media-block">
+      <media-gallery urls="{{detail.inspection_media}}" thumb-size="medium" />
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-head"><view class="card-head-main">议价</view></view>
+    <view class="form-group">
+      <text class="form-label">实收金额<text class="req">*</text></text>
+      <view class="form-note">与卖家议定后的实际成交价（实际成本）</view>
+      <input
+        class="input input--price"
+        type="digit"
+        placeholder="填写议价后的实收金额"
+        value="{{form.suggest_price}}"
+        bindinput="onPriceInput"
+      />
+    </view>
+    <view class="form-group">
+      <text class="form-label">议价证据<text class="req">*</text><text class="label-hint"> 图片/视频</text></text>
+      <view class="form-note">截图聊天记录、议价凭证或瑕疵视频，便于后续核对</view>
+      <view class="evidence-grid">
+        <view
+          wx:for="{{form.evidence}}"
+          wx:key="*this"
+          class="evidence-item"
+        >
+          <media-thumb
+            url="{{evidenceDisplayUrls[index] || item}}"
+            preview-url="{{evidenceDisplayUrls[index] || item}}"
+            size="fill"
+            preview="{{true}}"
+          />
+          <view class="evidence-del" catchtap="removeEvidence" data-index="{{index}}">×</view>
+        </view>
+        <view class="evidence-add" bindtap="addEvidence">
+          <view class="evidence-add-plus">+</view>
+          <view class="evidence-add-text">图片 / 视频</view>
+        </view>
+      </view>
+    </view>
+    <view class="form-group">
+      <text class="form-label">备注<text class="req">*</text></text>
+      <textarea
+        class="input input--textarea"
+        auto-height="{{true}}"
+        placeholder="议价说明（必填）"
+        value="{{form.remark}}"
+        bindinput="onRemarkInput"
+        maxlength="200"
+      />
+    </view>
+    <!-- 转账功能暂未实现，开关先放着但隐藏（showTransferSwitch 为 true 时显示） -->
+    <view class="form-group form-group--switch" wx:if="{{showTransferSwitch}}">
+      <text class="form-label">议价后跳转转账</text>
+      <switch checked="{{form.need_transfer}}" bindchange="onTransferChange" />
+    </view>
+    <view class="form-note">提交后商品进入待填表/建品流程，群控中心可见。</view>
+  </view>
+</view>
+
+<view class="neg-form-footer">
+  <view class="neg-form-footer-sum">
+    <text class="neg-form-footer-label">实收金额</text>
+    <text class="neg-form-footer-amount {{form.suggest_price ? '' : 'is-empty'}}">{{form.suggest_price ? '¥' + form.suggest_price : '待填写'}}</text>
+  </view>
+  <button class="btn btn-primary neg-form-submit" loading="{{submitting}}" bindtap="onSubmit">提交议价</button>
+</view>

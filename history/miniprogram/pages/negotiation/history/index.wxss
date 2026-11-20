@@ -1,0 +1,72 @@
+.neg-history-page .list-item .li-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.neg-history-page .li-meta {
+  align-items: flex-end;
+}
+
+.neg-history-page .li-old-cost {
+  color: #9CA3AF;
+  text-decoration: line-through;
+  margin-top: 2rpx;
+}
+
+/* 搜索框内嵌扫码图标（与仓库页一致）：让 wrap 撑满搜索栏、给输入框留出图标位、绘制扫码 icon */
+.search-input-wrap {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.search-input-wrap .search-input--with-scan {
+  flex: 1;
+  width: 100%;
+  padding-right: 84rpx;
+}
+
+.search-scan-icon {
+  position: absolute;
+  right: 8rpx;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 64rpx;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-scan-icon:active {
+  opacity: 0.6;
+}
+
+.search-scan-icon .scan-frame {
+  position: relative;
+  width: 34rpx;
+  height: 34rpx;
+  /* 四角扫码框：用渐变绘制四个 L 形直角 */
+  background:
+    linear-gradient(#2563EB, #2563EB) left top,
+    linear-gradient(#2563EB, #2563EB) left top,
+    linear-gradient(#2563EB, #2563EB) right top,
+    linear-gradient(#2563EB, #2563EB) right top,
+    linear-gradient(#2563EB, #2563EB) left bottom,
+    linear-gradient(#2563EB, #2563EB) left bottom,
+    linear-gradient(#2563EB, #2563EB) right bottom,
+    linear-gradient(#2563EB, #2563EB) right bottom;
+  background-repeat: no-repeat;
+  background-size: 12rpx 3rpx, 3rpx 12rpx;
+}
+
+.search-scan-icon .scan-line {
+  position: absolute;
+  left: 15rpx;
+  right: 15rpx;
+  height: 3rpx;
+  background: #2563EB;
+  border-radius: 2rpx;
+}

@@ -1,0 +1,117 @@
+<view class="page-wrap page-wrap--no-tab sku-edit-page intake-form-page">
+  <view class="card" wx:if="{{code}}">
+    <view class="card-head card-head--split">
+      <view class="card-head-main">货号 {{code}}</view>
+      <view wx:if="{{statusLabel}}" class="tag {{editable ? 'tag-warning' : 'tag-info'}}">{{statusLabel}}</view>
+    </view>
+    <view wx:if="{{lockedTip}}" class="intake-locked">{{lockedTip}}</view>
+  </view>
+
+  <view class="card">
+    <view class="card-head">商品信息</view>
+
+    <view class="form-group">
+      <text class="form-label">商品类型<text class="req">*</text></text>
+      <picker mode="selector" range="{{productTypes}}" value="{{productTypeIndex}}" bindchange="pickProductType" disabled="{{!editable}}">
+        <view class="form-input sku-edit-picker">{{form.product_type || '选择商品类型'}}</view>
+      </picker>
+    </view>
+
+    <view class="form-row">
+      <view class="form-group">
+        <text class="form-label">品牌<text class="req">*</text></text>
+        <input class="form-input" value="{{form.brand}}" data-field="brand" bindinput="onInput" placeholder="如 戴尔" disabled="{{!editable}}" />
+      </view>
+      <view class="form-group">
+        <text class="form-label">型号<text class="req">*</text></text>
+        <input class="form-input" value="{{form.model}}" data-field="model" bindinput="onInput" placeholder="如 U2720Q" disabled="{{!editable}}" />
+      </view>
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">配置</text>
+      <input class="form-input" value="{{form.spec}}" data-field="spec" bindinput="onInput" placeholder="如 i5 / 16G / 512G，27寸 4K" disabled="{{!editable}}" />
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">序列号<text class="req">*</text></text>
+      <view class="sku-edit-scan-wrap">
+        <input class="form-input sku-edit-scan-input" value="{{form.serial_number}}" data-field="serial_number" bindinput="onInput" placeholder="扫码或手填" disabled="{{!editable}}" />
+        <view wx:if="{{editable}}" class="sku-edit-scan-icon" catchtap="scanSerial">
+          <view class="scan-frame"></view>
+          <view class="scan-line"></view>
+        </view>
+      </view>
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">成色<text class="req">*</text></text>
+      <picker mode="selector" range="{{grades}}" value="{{gradeIndex}}" bindchange="pickGrade" disabled="{{!editable}}">
+        <view class="form-input sku-edit-picker">{{form.condition_grade || '选择成色'}}</view>
+      </picker>
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">来源资产编号</text>
+      <view class="sku-edit-scan-wrap">
+        <input class="form-input sku-edit-scan-input" value="{{form.source_asset_no}}" data-field="source_asset_no" bindinput="onInput" placeholder="原系统里的编号，选填" disabled="{{!editable}}" />
+        <view wx:if="{{editable}}" class="sku-edit-scan-icon" catchtap="scanSourceNo">
+          <view class="scan-frame"></view>
+          <view class="scan-line"></view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-head">价格</view>
+    <view class="form-row">
+      <view class="form-group">
+        <text class="form-label">售价 ¥<text class="req">*</text></text>
+        <input class="form-input" type="digit" value="{{form.price}}" data-field="price" bindinput="onMoneyInput" disabled="{{!editable}}" />
+      </view>
+      <view class="form-group">
+        <text class="form-label">运费 ¥</text>
+        <input class="form-input" type="digit" value="{{form.express_fee}}" data-field="express_fee" bindinput="onMoneyInput" placeholder="不填按 0 元运费" disabled="{{!editable}}" />
+      </view>
+    </view>
+    <view class="form-group">
+      <text class="form-label">成本价 ¥</text>
+      <input class="form-input" type="digit" value="{{form.cost_price}}" data-field="cost_price" bindinput="onMoneyInput" placeholder="不知道就不填，按 0 算" disabled="{{!editable}}" />
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-head">商品实拍图<text class="req">*</text></view>
+    <view class="sku-edit-grid" wx:if="{{form.images.length}}">
+      <view class="sku-edit-thumb" wx:for="{{form.images}}" wx:key="*this">
+        <media-thumb url="{{imageDisplay[index] || item}}" size="fill" preview="{{true}}" />
+        <view wx:if="{{editable}}" class="sku-edit-thumb__del" data-index="{{index}}" catchtap="removeImage">×</view>
+      </view>
+    </view>
+    <view wx:if="{{editable && form.images.length < 9}}" class="upload-zone upload-zone--compact" bindtap="addImage">
+      <view class="uz-plus">+</view>
+      <view class="uz-text">添加照片（第一张做封面）</view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-head">其他</view>
+    <view class="form-group">
+      <text class="form-label">瑕疵 / 配件说明</text>
+      <textarea class="input form-textarea" auto-height="{{true}}" value="{{form.desc}}" data-field="desc" bindinput="onInput" placeholder="如：右下角轻微划痕，带原装电源" disabled="{{!editable}}" />
+    </view>
+    <view class="form-group">
+      <text class="form-label">库位</text>
+      <picker mode="selector" range="{{locations}}" range-key="label" value="{{locationIndex}}" bindchange="pickLocation" disabled="{{!editable}}">
+        <view class="form-input sku-edit-picker">{{form.location_code || '不知道就不选'}}</view>
+      </picker>
+    </view>
+    <view class="form-group">
+      <text class="form-label">备注</text>
+      <input class="form-input" value="{{form.remark}}" data-field="remark" bindinput="onInput" placeholder="只给内部看" disabled="{{!editable}}" />
+    </view>
+  </view>
+
+  <button wx:if="{{editable}}" class="btn-primary btn-block sku-edit-save" loading="{{submitting}}" bindtap="submit">{{code ? '保存修改' : '确认录入'}}</button>
+</view>

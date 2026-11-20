@@ -1,0 +1,56 @@
+<view class="page-wrap page-wrap--no-tab">
+  <view class="search-bar">
+    <view class="search-input-wrap">
+      <input
+        class="search-input"
+        placeholder="姓名 / 号码 / 闲鱼会员名…"
+        value="{{q}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+        bindconfirm="onSearch"
+      />
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-head card-head--split">
+      <view class="card-head-main">
+        手机号码
+        <view class="tag tag-info head-extra">{{total}} 个</view>
+      </view>
+    </view>
+
+    <view wx:if="{{!list.length}}" class="empty">
+      <view class="e-icon">—</view>
+      <view class="e-text">暂无号码</view>
+    </view>
+
+    <view
+      wx:for="{{list}}"
+      wx:key="id"
+      class="list-item list-item--stacked"
+      data-id="{{item.id}}"
+      data-no="{{item.phone_number}}"
+      bindtap="openForm"
+      bindlongpress="onDeleteItem"
+    >
+      <view class="list-item__main">
+        <view class="li-icon li-icon--phone-item">{{item.name[0] || '号'}}</view>
+        <view class="li-info">
+          <view class="li-title">{{item.name}}</view>
+          <view class="li-sub">{{item.phone_number}}{{item.carrier ? ' · ' + item.carrier : ''}}</view>
+          <view wx:if="{{item.xianyu_member_name}}" class="li-sub li-sub--xianyu">闲鱼: {{item.xianyu_member_name}}</view>
+        </view>
+        <view class="li-meta">
+          <view class="li-del-btn" catchtap="onDeleteItem" data-id="{{item.id}}" data-no="{{item.phone_number}}">删除</view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{loading}}" class="phone-loading">加载中…</view>
+  </view>
+</view>
+
+<view class="phone-fab" bindtap="onCreate">
+  <text class="phone-fab-plus">+</text>
+</view>

@@ -1,0 +1,134 @@
+<!-- 上架审批（电脑版）：一行一件货、一列一个号，格子里是这个号的状态；点行进这件货。设置在居中对话框里 -->
+<view class="dk-page lap-dk">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">上架审批</view>
+      <view class="dk-sub">每件在库货、每个号的价和图：员工清洗提交，别人批过才发。点一行进这件货清洗、审批</view>
+    </view>
+    <view wx:if="{{settings}}" class="dk-row">
+      <text class="dk-tag {{settings.required ? 'dk-tag--green' : ''}}">{{settings.required ? '审批已打开' : '审批没打开，照旧发布'}}</text>
+      <text class="dk-sub">最低价 = 成本 × {{settings.min_cost_ratio}}<text wx:if="{{settings.auto_publish}}"> · 提交即发布</text></text>
+      <view wx:if="{{isAdmin}}" class="dk-btn" bindtap="openSetting">审批设置</view>
+    </view>
+  </view>
+
+  <view class="dk-stats">
+    <view
+      wx:for="{{tabs}}"
+      wx:key="key"
+      class="dk-stat dk-stat--click {{tab === item.key ? 'dk-stat--on' : ''}}"
+      data-key="{{item.key}}"
+      bindtap="switchTab"
+    >
+      <view class="dk-stat__label">{{item.label}}</view>
+      <view class="dk-stat__value">{{counts[item.key] === undefined ? '—' : counts[item.key]}}</view>
+    </view>
+  </view>
+
+  <view class="dk-card">
+    <view class="dk-toolbar">
+      <view class="dk-tabs">
+        <view
+          wx:for="{{tabs}}"
+          wx:key="key"
+          class="dk-tab {{tab === item.key ? 'dk-tab--on' : ''}}"
+          data-key="{{item.key}}"
+          bindtap="switchTab"
+        >{{item.label}}</view>
+      </view>
+      <input
+        class="dk-input dk-search"
+        placeholder="货号 / 商品名"
+        value="{{q}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+        bindconfirm="reload"
+      />
+      <view class="dk-btn" bindtap="onScanSearch">扫码搜</view>
+      <view class="dk-grow"></view>
+      <text class="dk-sub">共 {{total || 0}} 件</text>
+    </view>
+
+    <view class="dk-table-wrap">
+      <table class="dk-table">
+        <thead>
+          <tr>
+            <th>商品</th>
+            <th wx:if="{{!costHidden}}" class="dk-num">成本</th>
+            <th wx:for="{{list[0].shopCells}}" wx:for-item="c" wx:key="id" class="lap-dk-shop-th">{{c.label}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr wx:for="{{list}}" wx:key="sku_code" class="dk-tr--click" data-code="{{item.sku_code}}" bindtap="openSku">
+            <td>
+              <view class="dk-media">
+                <image wx:if="{{item.thumb}}" class="dk-thumb" src="{{item.thumb}}" mode="aspectFill" data-url="{{item.thumb}}" catchtap="dkPreview" />
+                <view wx:else class="dk-thumb lap-dk-noimg">无图</view>
+                <view class="dk-grow">
+                  <view class="dk-cell-main">{{item.sku_code}}</view>
+                  <view class="dk-cell-sub dk-ellipsis lap-dk-name" title="{{item.product_name}}">{{item.product_name}}</view>
+                </view>
+              </view>
+            </td>
+            <td wx:if="{{!costHidden}}" class="dk-num">
+              <text wx:if="{{item.cost_price}}">¥{{item.cost_price}}</text>
+              <text wx:else class="lap-dk-warn">没有</text>
+            </td>
+            <td wx:for="{{item.shopCells}}" wx:for-item="c" wx:key="id" class="dk-nowrap">
+              <text class="dk-tag lap-dk-st {{c.cls}}">{{c.state || '—'}}</text>
+              <text wx:if="{{c.fix}}" class="lap-dk-fix" title="在架待整改">在架</text>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </view>
+
+    <view wx:if="{{!list.length && !loading}}" class="dk-empty">没有要处理的货</view>
+    <view wx:if="{{loading && !list.length}}" class="dk-empty">加载中…</view>
+
+    <view wx:if="{{total > dkPageSize}}" class="dk-pager">
+      <text>共 {{total}} 件，每页 {{dkPageSize}} 件</text>
+      <view class="dk-row">
+        <view class="dk-btn dk-btn--sm {{dkPage <= 1 ? 'dk-btn--disabled' : ''}}" bindtap="dkPrev">上一页</view>
+        <text>第 {{dkPage}} / {{dkPages}} 页</text>
+        <view class="dk-btn dk-btn--sm {{dkPage >= dkPages ? 'dk-btn--disabled' : ''}}" bindtap="dkNext">下一页</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 管理员：审批开关和成本比例 -->
+  <view wx:if="{{settingOpen}}" class="lap-dk-mask" bindtap="closeSetting">
+    <view class="lap-dk-dialog" catchtap="noop">
+      <view class="dk-card__head">
+        <text>上架审批设置</text>
+        <text class="lap-dk-x" bindtap="closeSetting">×</text>
+      </view>
+      <view class="dk-card__body lap-dk-set">
+        <view class="lap-dk-set__row">
+          <view>
+            <view class="dk-cell-main">{{settings.required ? '已打开' : '没打开'}}</view>
+            <view class="dk-help">{{settings.required ? '手动上架、自动上架都只发批过的价和图' : '照旧发布，不看审批'}}</view>
+          </view>
+          <view class="dk-btn {{settings.required ? 'dk-btn--danger' : 'dk-btn--primary'}}" bindtap="toggleRequired">{{settings.required ? '关掉' : '打开'}}</view>
+        </view>
+        <view class="lap-dk-set__row">
+          <view>
+            <view class="dk-cell-main">提交即发布</view>
+            <view class="dk-help">打开后员工提交价和图就直接发布，不用再点「通过」</view>
+          </view>
+          <view class="dk-btn {{settings.auto_publish ? 'dk-btn--primary' : ''}}" bindtap="toggleAutoPublish">{{settings.auto_publish ? '已开' : '没开'}}</view>
+        </view>
+        <view class="lap-dk-set__row">
+          <view>
+            <view class="dk-cell-main">最低价 = 成本 ×</view>
+            <view class="dk-help">0 到 10 之间；低于最低价的价提交不了</view>
+          </view>
+          <view class="dk-row">
+            <input class="dk-input lap-dk-ratio" type="digit" value="{{ratioInput}}" bindinput="onRatioInput" />
+            <view class="dk-btn dk-btn--primary" bindtap="saveRatio">保存比例</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

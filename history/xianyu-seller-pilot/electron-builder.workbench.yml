@@ -1,0 +1,43 @@
+appId: com.erp.xianyu.workbench
+productName: 卖家工作台
+artifactName: ${productName}-${version}-${arch}.${ext}
+directories:
+  output: release-workbench
+files:
+  - out/**/*
+  # 安装包入口与内置代码版本号：热更新副本比它新才会被采用
+  - loader.js
+  - code-version.json
+  # better-sqlite3 只有 `npm run server` 那个独立服务在用，Electron 这边从不加载它
+  # （打包后的主进程只 require axios / electron-store / ws / xlsx）。
+  # 它又是全项目唯一的原生模块，带上它就等于要求每台打包机都装 Windows SDK——
+  # 为一个装进去也不会被 require 的包。所以明确排除。
+  - '!node_modules/better-sqlite3/**/*'
+
+# 同理：没有任何被加载的原生模块，就不必让 electron-builder 走重编译那一步。
+npmRebuild: false
+mac:
+  category: public.app-category.business
+  icon: resources/icon-workbench.icns
+  target:
+    - dmg
+win:
+  # Windows 的图标用铺满整块那版（resources 里的 .ico）：
+  # macOS 会拿图标四周的透明留白自己排版，Windows 不会——留白版进任务栏会小一圈。
+  icon: resources/icon-workbench.ico
+  # 执行端随安装包走（打包机先把 PyInstaller 产物 dist/gc-ads 放到 vendor/gc-ads）
+  extraResources:
+    - from: vendor/gc-ads
+      to: gc-ads
+  target:
+    - target: nsis
+      arch:
+        - x64
+nsis:
+  oneClick: false                 # 让用户能选安装位置：工位机 C 盘经常是满的
+  allowToChangeInstallationDirectory: true
+  perMachine: false               # 装到用户目录，免得每次都要管理员
+  createDesktopShortcut: true
+  shortcutName: 卖家工作台
+  # 覆盖安装前关掉执行端，否则程序文件被占着装不上。台账不动，打开后照常恢复。
+  include: resources/installer.nsh

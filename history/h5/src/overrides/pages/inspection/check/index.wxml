@@ -1,0 +1,147 @@
+<view class="page-wrap page-wrap--no-tab ck-page" wx:if="{{loaded}}">
+  <view class="card">
+    <view class="ck-title"><text wx:if="{{task.piece_label}}" class="ck-piece">{{task.piece_label}}</text>{{task.product_name}}</view>
+    <view class="ck-sub">{{task.order_no}} · {{task.inspect_no}}{{task.model ? ' · ' + task.model : ''}}</view>
+    <view class="ck-state {{stateClass}}">{{fullCheck.label}}</view>
+    <view wx:if="{{!pending && fullCheck.state === 'RETEST'}}" class="ck-tip">验货单已提交。点「无法测试」的项目补测成通过或不通过。</view>
+  </view>
+
+  <!-- 异常：登记后照样要把其余项目验完 -->
+  <view wx:for="{{exceptions}}" wx:key="id" class="card ck-exc {{item.overdue ? 'ck-exc--late' : ''}}">
+    <view class="ck-exc__head">异常：{{item.description}}</view>
+    <view class="ck-exc__sub">{{item.notice || '还没发通知'}}<text wx:if="{{item.overdue_parts.length}}">；超时：{{item.overdue_parts}}</text></view>
+  </view>
+
+  <!-- W11：卖家原来怎么说的（下单时那版商品快照），和实物对照 -->
+  <view wx:if="{{compare && compare.snapshot}}" class="card ck-claim">
+    <view class="ck-h">卖家原来怎么说的</view>
+    <view class="ck-muted">{{compare.snapshot.capture_kind_label}}{{compare.snapshot.frozen_at ? ' · 下单时冻结' : ''}}</view>
+    <view class="ck-claim__line"><text class="ck-claim__k">标题</text>{{compare.snapshot.title || '—'}}</view>
+    <view wx:if="{{compare.snapshot.declared_model || compare.snapshot.specs}}" class="ck-claim__line"><text class="ck-claim__k">型号</text>{{compare.snapshot.declared_model || ''}} {{compare.snapshot.specs || ''}}</view>
+    <view wx:if="{{compare.snapshot.condition_text}}" class="ck-claim__line"><text class="ck-claim__k">成色</text>{{compare.snapshot.condition_text}}</view>
+    <view wx:if="{{compare.snapshot.accessories_text}}" class="ck-claim__line"><text class="ck-claim__k">配件</text>{{compare.snapshot.accessories_text}}</view>
+    <view wx:if="{{compare.snapshot.description}}" class="ck-claim__line ck-claim__desc"><text class="ck-claim__k">描述</text>{{compare.snapshot.description}}</view>
+  </view>
+  <view wx:elif="{{compare}}" class="card ck-tip">这单没有存卖家原话（商品快照），按采购截图核对。</view>
+  <view wx:for="{{compare.risks}}" wx:key="index" class="card ck-risk">{{item}}</view>
+
+  <!-- 开箱视频 -->
+  <view class="card">
+    <view class="ck-row">
+      <text class="ck-h">开箱视频与凭证</text>
+      <button wx:if="{{pending}}" class="btn btn-outline ck-mini" bindtap="recordVideo">录开箱视频</button>
+    </view>
+    <view class="ck-tip">拆封前先开始录：拍清外包装和面单，再拆封、取出商品、拍型号/序列号和配件。</view>
+    <view wx:if="{{!evidence.length}}" class="ck-empty">还没有凭证</view>
+    <view wx:for="{{evidence}}" wx:key="id" class="ck-ev" data-index="{{index}}" bindtap="openEvidence">
+      <text class="tag">{{item.kindLabel}}</text>
+      <text class="ck-ev__by">{{item.recorded_by_name}}</text>
+      <text class="ck-link">查看</text>
+    </view>
+  </view>
+
+  <!-- 还没开始：预览流程 + 选规范开始 -->
+  <view class="card" wx:if="{{!items.length}}">
+    <view class="ck-h">验货流程</view>
+    <block wx:if="{{pending}}">
+      <picker range="{{templates}}" range-key="name" value="{{templateIndex}}" bindchange="onTemplateChange">
+        <view class="picker-field">{{templateIndex >= 0 ? templates[templateIndex].name : '选验货规范'}}</view>
+      </picker>
+      <view wx:if="{{preview.length}}" class="ck-tip">系统按商品匹配到的规范，开始前可以先看一遍全部步骤：</view>
+      <view wx:for="{{preview}}" wx:key="index" class="ck-preview">{{index + 1}}. {{item}}</view>
+      <button class="btn-primary btn-block ck-gap" loading="{{busy}}" bindtap="startCheck">开始逐项验货</button>
+    </block>
+    <view wx:else class="ck-empty">这张单子没有逐项记录。</view>
+  </view>
+
+  <!-- 逐项 -->
+  <view class="card" wx:else>
+    <view class="ck-row">
+      <text class="ck-h">逐项验货 {{doneCount}}/{{items.length}}</text>
+      <button wx:if="{{pending}}" class="btn btn-outline ck-mini ck-danger" bindtap="openException">发现异常</button>
+    </view>
+    <view class="ck-tip">坏货、货不对版也要把每一项验完。测不了的选「无法测试」，写原因并拍照，之后补测。</view>
+    <view wx:for="{{items}}" wx:key="item_key" class="ck-item {{editingKey === item.item_key ? 'ck-item--on' : ''}}" data-key="{{item.item_key}}" bindtap="openItem">
+      <view class="ck-row">
+        <text class="ck-item__title"><text class="ck-dim">{{item.dimension_label}}</text>{{index + 1}}. {{item.title}}<text wx:if="{{item.need_photo}}" class="ck-muted">（要拍照）</text></text>
+        <text wx:if="{{item.result}}" class="tag {{item.resultClass}}">{{item.resultLabel}}</text>
+        <text wx:else class="ck-muted">未验</text>
+      </view>
+      <view wx:if="{{item.review_hint}}" class="ck-hint">{{item.review_hint}}</view>
+      <view wx:if="{{item.note && editingKey !== item.item_key}}" class="ck-muted">{{item.note}}</view>
+      <view wx:if="{{item.result === 'FAIL' && editingKey !== item.item_key}}" class="ck-muted">{{item.disclosed ? '卖家原来说过' : '卖家没说过'}} · 原因：{{item.cause_label || '待判'}}</view>
+
+      <view wx:if="{{editingKey === item.item_key}}" class="ck-edit" catchtap="noop">
+        <view wx:if="{{item.guide}}" class="ck-guide">{{item.guide}}</view>
+        <view wx:if="{{item.standard}}" class="ck-std">判定标准：{{item.standard}}</view>
+        <view wx:if="{{item.video_url}}" class="ck-video" data-url="{{item.video_url}}" catchtap="playTutorial">▶ 看这一步的操作视频（看完回来接着验，进度不丢）</view>
+        <view wx:if="{{retesting}}" class="ck-tip">补测：原来「无法测试」，原因：{{item.note}}</view>
+        <view class="ck-results">
+          <view
+            wx:for="{{results}}"
+            wx:for-item="r"
+            wx:key="key"
+            wx:if="{{!retesting || r.key !== 'UNTESTABLE'}}"
+            class="ck-result {{editing.result === r.key ? 'ck-result--on' : ''}}"
+            data-key="{{r.key}}"
+            catchtap="pickResult"
+          >{{r.label}}</view>
+        </view>
+        <block wx:if="{{editing.result === 'FAIL'}}">
+          <input class="input ck-gapline" maxlength="64" value="{{editing.defect_part}}" data-key="defect_part" bindinput="onField" placeholder="瑕疵部位，如 屏幕右下角" />
+          <input class="input ck-gapline" maxlength="255" value="{{editing.seller_claim}}" data-key="seller_claim" bindinput="onField" placeholder="卖家原来怎么描述的（给采购议价对比，选填）" />
+          <view wx:if="{{editing.claim && !editing.seller_claim}}" class="ck-link ck-gapline" catchtap="useClaim">带入卖家原话：{{editing.claim}}</view>
+          <view class="ck-results">
+            <view class="ck-result {{editing.disclosed ? 'ck-result--on' : ''}}" catchtap="toggleDisclosed">{{editing.disclosed ? '✓ 卖家原来说过' : '卖家原来说过？'}}</view>
+          </view>
+          <view class="ck-results">
+            <view wx:for="{{causes}}" wx:for-item="c" wx:key="key" class="ck-result {{editing.cause === c.key ? 'ck-result--on' : ''}}" data-key="{{c.key}}" catchtap="pickCause">{{c.label}}</view>
+          </view>
+        </block>
+        <textarea class="input input--textarea" auto-height="{{true}}" maxlength="300" value="{{editing.note}}" bindinput="onNote"
+          placeholder="{{editing.result === 'UNTESTABLE' ? '为什么测不了（必填）' : (editing.result === 'FAIL' ? '哪里不行、在什么部位' : '说明（选填）')}}" />
+        <view class="ck-photos">
+          <view wx:for="{{editing.files}}" wx:for-item="f" wx:key="raw" class="ck-photo" data-index="{{index}}" catchtap="removePhoto">
+            <image src="{{f.url}}" mode="aspectFill" class="ck-photo__img" />
+            <view class="ck-photo__x">×</view>
+          </view>
+          <view class="ck-photo ck-photo--add" catchtap="addPhoto">+ 拍照</view>
+        </view>
+        <view class="ck-row ck-gap">
+          <button class="btn btn-outline ck-half" catchtap="closeItem">收起</button>
+          <button class="btn-primary ck-half" loading="{{busy}}" catchtap="saveItem">{{retesting ? '保存补测' : '保存，下一项'}}</button>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{newProblems.length}}" class="ck-newp">
+      <view>卖家没说过的问题：{{newProblems}}</view>
+      <button class="btn btn-outline ck-mini ck-danger ck-gap" loading="{{busy}}" bindtap="raiseFromItems">建差异工单</button>
+    </view>
+
+    <view wx:if="{{pending && doneCount === items.length}}" class="ck-done">
+      <view>都验完了，回验货页提交入库或拒签。</view>
+      <button class="btn-primary btn-block ck-gap" bindtap="backToForm">回验货页</button>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{history.length}}">
+    <view class="ck-h">改答案和补测记录</view>
+    <view wx:for="{{history}}" wx:key="index" class="ck-muted ck-hist">{{item.at}} {{item.operator}} {{item.action}}「{{item.item}}」：{{item.from}} → {{item.to}}</view>
+  </view>
+
+  <view wx:if="{{exceptionOpen}}" class="ck-mask" bindtap="closeException">
+    <view class="ck-dialog" catchtap="noop">
+      <view class="ck-h">发现异常</view>
+      <view class="ck-results">
+        <view wx:for="{{exceptionTypes}}" wx:key="key" class="ck-result {{exceptionType === item.key ? 'ck-result--on' : ''}}" data-key="{{item.key}}" catchtap="pickExceptionType">{{item.label}}</view>
+      </view>
+      <textarea class="input input--textarea" auto-height="{{true}}" maxlength="300" value="{{exceptionText}}" bindinput="onExceptionText" placeholder="什么情况，在哪个部位" />
+      <view class="ck-tip">登记后会立刻通知业务员和采购（10 分钟内要处理）。登记完继续验完其余项目。</view>
+      <view class="ck-row ck-gap">
+        <button class="btn btn-outline ck-half" catchtap="closeException">取消</button>
+        <button class="btn-primary ck-half" loading="{{busy}}" catchtap="submitException">通知处理</button>
+      </view>
+    </view>
+  </view>
+</view>

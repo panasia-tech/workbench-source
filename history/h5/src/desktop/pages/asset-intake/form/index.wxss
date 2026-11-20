@@ -1,0 +1,149 @@
+/* 录入资产（电脑版模板用；类名 aif-dk-*） */
+.aif-dk-split {
+  grid-template-columns: minmax(0, 1fr) 380px;
+}
+
+.aif-dk-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.aif-dk-locked {
+  padding: 10px 16px;
+  border: 1px solid #fde68a;
+  border-radius: 8px;
+  background: #fffbeb;
+  color: #b45309;
+  font-size: 13px;
+}
+
+.aif-dk-nowrap {
+  flex-wrap: nowrap;
+}
+
+.aif-dk-span2 {
+  grid-column: span 2;
+}
+
+.aif-dk-ro {
+  background: #f3f4f6;
+  color: #6b7280;
+  cursor: default;
+}
+
+.aif-dk-seg {
+  align-self: flex-start;
+  flex-wrap: wrap;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.aif-dk-seg .dk-tab {
+  padding: 0 8px;
+}
+
+.aif-dk-seg--ro {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.aif-dk-textarea {
+  width: 100%;
+}
+
+.aif-dk-note {
+  font-weight: 400;
+}
+
+.aif-dk-gallery {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.aif-dk-item {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #f3f4f6;
+}
+
+.aif-dk-item media-thumb,
+.aif-dk-item :deep(.media-thumb) {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+}
+
+.aif-dk-cover {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  padding: 0 6px;
+  border-radius: 0 6px 0 0;
+  background: rgba(37, 99, 235, 0.85);
+  color: #fff;
+  font-size: 11px;
+  line-height: 18px;
+}
+
+.aif-dk-del {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(17, 24, 39, 0.65);
+  color: #fff;
+  font-size: 14px;
+  line-height: 22px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.aif-dk-add {
+  aspect-ratio: 1;
+  border: 1px dashed #cbd5e1;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  cursor: pointer;
+  background: #fff;
+}
+
+.aif-dk-add:hover {
+  border-color: #2563eb;
+}
+
+.aif-dk-add__plus {
+  font-size: 26px;
+  line-height: 1;
+  color: #9ca3af;
+}
+
+button.aif-dk-btn {
+  margin: 0;
+  line-height: normal;
+  font-size: 13px;
+  border-radius: 6px;
+}
+
+button.aif-dk-btn::after {
+  display: none;
+}
+
+.aif-dk-readonly .dk-input {
+  background: #f3f4f6;
+  color: #4b5563;
+}
+
+/* 内容不满一屏时操作条也贴在底部 */
+.aif-dk-bar {
+  margin-top: auto;
+}

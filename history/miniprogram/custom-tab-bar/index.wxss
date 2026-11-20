@@ -1,0 +1,230 @@
+.tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: calc(112rpx + env(safe-area-inset-bottom));
+  background: rgba(255, 255, 255, 0.96);
+  display: flex;
+  align-items: stretch;
+  border-top: 1rpx solid #E5E7EB;
+  padding: 0 8rpx env(safe-area-inset-bottom);
+  z-index: 999;
+  box-shadow: 0 -2rpx 12rpx rgba(15, 23, 42, 0.06);
+}
+
+.tab-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4rpx;
+  padding: 12rpx 0 10rpx;
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.tab-item--pressed {
+  opacity: 0.72;
+  transform: scale(0.96);
+}
+
+.tab-item.active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40rpx;
+  height: 4rpx;
+  border-radius: 0 0 4rpx 4rpx;
+  background: #2563EB;
+}
+
+.tab-icon-wrap {
+  width: 52rpx;
+  height: 52rpx;
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  transition: background 0.2s ease, border-color 0.2s ease;
+  pointer-events: none;
+}
+
+.tab-item.active .tab-icon-wrap {
+  background: #EFF6FF;
+  border: 1rpx solid #BFDBFE;
+}
+
+.tab-icon {
+  width: 28rpx;
+  height: 28rpx;
+  position: relative;
+  color: #9CA3AF;
+}
+
+.tab-item.active .tab-icon {
+  color: #2563EB;
+}
+
+.tab-text {
+  font-size: 20rpx;
+  font-weight: 600;
+  color: #6B7280;
+  line-height: 1.2;
+  letter-spacing: 0.4rpx;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.tab-item.active .tab-text {
+  color: #2563EB;
+}
+
+/* 工作台 — 四格 */
+.tab-icon--workbench::before {
+  content: '';
+  position: absolute;
+  top: 2rpx;
+  left: 2rpx;
+  width: 10rpx;
+  height: 10rpx;
+  border: 3rpx solid currentColor;
+  border-radius: 3rpx;
+  box-sizing: border-box;
+  box-shadow: 14rpx 0 0 currentColor, 0 14rpx 0 currentColor, 14rpx 14rpx 0 currentColor;
+}
+
+/* 采购录入 — 文档 */
+.tab-icon--purchase::before {
+  content: '';
+  position: absolute;
+  top: 2rpx;
+  left: 4rpx;
+  width: 20rpx;
+  height: 24rpx;
+  border: 3rpx solid currentColor;
+  border-radius: 4rpx;
+  box-sizing: border-box;
+}
+
+.tab-icon--purchase::after {
+  content: '';
+  position: absolute;
+  top: 10rpx;
+  left: 8rpx;
+  width: 12rpx;
+  height: 3rpx;
+  background: currentColor;
+  border-radius: 2rpx;
+  box-shadow: 0 6rpx 0 currentColor;
+}
+
+/* 验货 — 对勾 */
+.tab-icon--inspection::before {
+  content: '';
+  position: absolute;
+  top: 2rpx;
+  left: 2rpx;
+  width: 24rpx;
+  height: 24rpx;
+  border: 3rpx solid currentColor;
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+.tab-icon--inspection::after {
+  content: '';
+  position: absolute;
+  top: 12rpx;
+  left: 8rpx;
+  width: 6rpx;
+  height: 10rpx;
+  border-right: 3rpx solid currentColor;
+  border-bottom: 3rpx solid currentColor;
+  transform: rotate(45deg);
+}
+
+/* 仓库 — 箱子 */
+.tab-icon--warehouse::before {
+  content: '';
+  position: absolute;
+  top: 8rpx;
+  left: 2rpx;
+  width: 24rpx;
+  height: 16rpx;
+  border: 3rpx solid currentColor;
+  border-radius: 4rpx;
+  box-sizing: border-box;
+}
+
+.tab-icon--warehouse::after {
+  content: '';
+  position: absolute;
+  top: 2rpx;
+  left: 6rpx;
+  width: 16rpx;
+  height: 8rpx;
+  border: 3rpx solid currentColor;
+  border-bottom: none;
+  border-radius: 4rpx 4rpx 0 0;
+  box-sizing: border-box;
+}
+
+/* 销售 — 标签 */
+.tab-icon--sales::before {
+  content: '';
+  position: absolute;
+  top: 4rpx;
+  left: 2rpx;
+  width: 22rpx;
+  height: 18rpx;
+  border: 3rpx solid currentColor;
+  border-radius: 4rpx 4rpx 4rpx 0;
+  box-sizing: border-box;
+}
+
+.tab-icon--sales::after {
+  content: '';
+  position: absolute;
+  top: 10rpx;
+  left: 8rpx;
+  width: 8rpx;
+  height: 3rpx;
+  background: currentColor;
+  border-radius: 2rpx;
+}
+
+/* 我的 — 头像 */
+.tab-icon--profile::before {
+  content: '';
+  position: absolute;
+  top: 2rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12rpx;
+  height: 12rpx;
+  border: 3rpx solid currentColor;
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+.tab-icon--profile::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 22rpx;
+  height: 10rpx;
+  border: 3rpx solid currentColor;
+  border-bottom: none;
+  border-radius: 12rpx 12rpx 0 0;
+  box-sizing: border-box;
+}

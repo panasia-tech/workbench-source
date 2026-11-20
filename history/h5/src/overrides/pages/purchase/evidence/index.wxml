@@ -1,0 +1,83 @@
+<view class="page-wrap page-wrap--no-tab pe-page" wx:if="{{loaded}}">
+  <view class="card">
+    <view class="pe-title">{{d.product_name}}</view>
+    <view class="pe-pieces" wx:if="{{d.pieces.length}}">
+      <text wx:for="{{d.pieces}}" wx:key="piece_no" class="pe-piece {{item.piece_no === d.piece_no ? 'pe-piece--on' : ''}}" data-no="{{item.piece_no}}" bindtap="switchPiece">{{item.label}}</text>
+    </view>
+    <view class="pe-sub">{{d.order_no}}<text wx:if="{{d.sku_code}}"> · 货号 {{d.sku_code}}</text><text wx:if="{{d.pieces.length && d.piece_cost}}"> · 这件 ¥{{d.piece_cost}}</text><text wx:elif="{{d.unit_price}}"> · 采购 ¥{{d.unit_price}}</text></view>
+    <view wx:if="{{!d.task}}" class="pe-empty">还没有验货记录。</view>
+    <view wx:elif="{{d.full_check && d.full_check.state !== 'NONE'}}" class="pe-state">{{d.full_check.label}}</view>
+    <view wx:if="{{d.task && d.task.mismatch_remark}}" class="pe-warn">货不对版：{{d.task.mismatch_remark}}</view>
+  </view>
+
+  <view class="card" wx:if="{{d.items.length}}">
+    <view class="pe-h">验出来的问题（议价/退款对照）</view>
+    <view wx:for="{{d.items}}" wx:key="item_key" class="pe-item">
+      <view><text class="tag {{item.result === 'FAIL' ? 'tag-danger' : 'tag-warning'}}">{{item.label}}</text> {{item.title}}<text wx:if="{{item.defect_part}}" class="pe-muted"> · {{item.defect_part}}</text></view>
+      <view wx:if="{{item.seller_claim}}" class="pe-vs"><text class="pe-k">卖家说</text>{{item.seller_claim}}</view>
+      <view wx:if="{{item.note}}" class="pe-vs"><text class="pe-k">实测</text>{{item.note}}</view>
+      <view class="pe-photos" wx:if="{{item.evidence.length}}">
+        <image wx:for="{{item.evidence}}" wx:for-item="u" wx:for-index="ui" wx:key="ui" src="{{u}}" mode="aspectFill" class="pe-photo" data-list="{{item.evidence}}" data-index="{{ui}}" bindtap="previewItemPhoto" />
+      </view>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{d.task}}">
+    <view class="pe-h">开箱视频与照片</view>
+    <view wx:if="{{!videos.length && !photos.length}}" class="pe-empty">没有凭证</view>
+    <view wx:for="{{videos}}" wx:key="index" class="pe-video" data-index="{{index}}" bindtap="playVideo">▶ {{item.kindLabel}}<text wx:if="{{item.recorded_by_name}}"> · {{item.recorded_by_name}}</text><text wx:if="{{item.interrupted}}" class="pe-warn">（中断：{{item.gap_note}}）</text></view>
+    <view class="pe-photos" wx:if="{{photos.length}}">
+      <image wx:for="{{photos}}" wx:key="index" src="{{item}}" mode="aspectFill" class="pe-photo" data-index="{{index}}" bindtap="previewPhoto" />
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{d.exceptions.length}}">
+    <view class="pe-h">异常处理</view>
+    <view wx:for="{{d.exceptions}}" wx:key="id" wx:for-item="x" class="pe-item">
+      <view>{{x.description}}<text class="pe-muted">（{{x.status === 'OPEN' ? '处理中' : '已结束'}}）</text></view>
+      <view class="pe-muted">拒签 {{x.rejectLabel}} · 退款 {{x.refundLabel}}<text wx:if="{{x.refund_amount}}"> · 到账 ¥{{x.refund_amount}}</text></view>
+      <view class="pe-as">
+        <view>平台售后：<text class="pe-strong">{{x.aftersale_label}}</text><text wx:if="{{x.deadlineText}}" class="pe-muted"> · 期限 {{x.deadlineText}}（{{x.deadline_source_label}}）</text></view>
+        <view wx:for="{{x.aftersale_hints}}" wx:for-item="h" wx:key="*this" class="pe-warn">{{h}}</view>
+        <view class="pe-photos" wx:if="{{x.aftersale_receipt.length}}">
+          <image wx:for="{{x.aftersale_receipt}}" wx:for-item="u" wx:for-index="ui" wx:key="ui" src="{{u}}" mode="aspectFill" class="pe-photo pe-photo--sm" data-list="{{x.aftersale_receipt}}" data-index="{{ui}}" bindtap="previewReceipt" />
+        </view>
+        <view wx:if="{{x.offers.length}}" class="pe-offers">
+          <view class="pe-muted">留货 / 补差提议<text wx:if="{{x.first_offer_by}}"> · {{x.first_offer_by === 'seller' ? '卖家先提的' : '我们先提的'}}</text></view>
+          <view wx:for="{{x.offers}}" wx:for-item="o" wx:key="at" class="pe-vs">{{o.atText}} {{o.by_label}}：「{{o.text}}」<text wx:if="{{o.amount}}"> 补差 ¥{{o.amount}}</text></view>
+        </view>
+      </view>
+      <button wx:if="{{x.can_edit}}" class="btn btn-outline pe-mini" data-id="{{x.id}}" bindtap="openAftersale">{{asOpen === x.id ? '收起' : '更新售后 / 记留货'}}</button>
+
+      <view wx:if="{{asOpen === x.id}}" class="pe-form">
+        <view class="pe-k2">平台回执</view>
+        <button class="btn btn-outline pe-mini" loading="{{asBusy}}" bindtap="uploadReceipt">传申请成功的截图</button>
+        <view class="pe-k2">售后状态</view>
+        <view class="pe-chips">
+          <view wx:for="{{aftersaleOptions}}" wx:for-item="c" wx:key="key" class="pe-chip {{asForm.status === c.key ? 'pe-chip--on' : ''}} {{x.aftersale_status === c.key ? 'pe-chip--now' : ''}}" data-key="{{c.key}}" bindtap="pickAsStatus">{{c.label}}</view>
+        </view>
+        <view class="pe-k2">平台期限</view>
+        <view class="pe-row">
+          <picker mode="date" value="{{asForm.date}}" bindchange="onAsDate"><view class="picker-field pe-pick">{{asForm.date || '选日期'}}</view></picker>
+          <picker mode="time" value="{{asForm.time}}" bindchange="onAsTime"><view class="picker-field pe-pick">{{asForm.time || '几点（不填 23:59）'}}</view></picker>
+        </view>
+        <view class="pe-chips">
+          <view class="pe-chip {{asForm.source === 'platform' ? 'pe-chip--on' : ''}}" data-key="platform" bindtap="pickAsSource">平台页面上写的</view>
+          <view class="pe-chip {{asForm.source === 'estimate' ? 'pe-chip--on' : ''}}" data-key="estimate" bindtap="pickAsSource">自己估的</view>
+        </view>
+        <input class="input pe-gap" maxlength="300" value="{{asForm.note}}" bindinput="onAsNote" placeholder="说明（撤销、介入、处理完要写为什么）" />
+        <button class="btn-primary btn-block pe-gap" loading="{{asBusy}}" bindtap="saveAftersale">保存售后</button>
+
+        <view class="pe-k2 pe-gap">记一次留货 / 补差提议</view>
+        <view class="pe-chips">
+          <view class="pe-chip {{offer.by === 'seller' ? 'pe-chip--on' : ''}}" data-key="seller" bindtap="pickOfferBy">卖家提的</view>
+          <view class="pe-chip {{offer.by === 'us' ? 'pe-chip--on' : ''}}" data-key="us" bindtap="pickOfferBy">我们提的</view>
+        </view>
+        <input class="input pe-gap" maxlength="500" value="{{offer.text}}" bindinput="onOfferText" placeholder="对方原话" />
+        <input class="input pe-gap" type="digit" value="{{offer.amount}}" bindinput="onOfferAmount" placeholder="补差金额（没说就空着）" />
+        <button class="btn btn-outline btn-block pe-gap" loading="{{asBusy}}" bindtap="addOffer">记下</button>
+      </view>
+    </view>
+    <view class="pe-muted pe-gap">拒签、退回物流、退款到账在电脑后台「拒签退款跟踪」里更新。</view>
+  </view>
+</view>

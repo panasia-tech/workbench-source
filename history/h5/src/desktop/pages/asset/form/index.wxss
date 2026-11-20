@@ -1,0 +1,110 @@
+/* 资产信息（电脑版模板用；类名 af-dk-*） */
+.af-dk-po {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.af-dk-results {
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.af-dk-nowrap {
+  flex-wrap: nowrap;
+}
+
+.af-dk-readonly {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.af-dk-seg {
+  align-self: flex-start;
+}
+
+.af-dk-span2 {
+  grid-column: span 2;
+}
+
+.af-dk-textarea {
+  width: 100%;
+}
+
+.af-dk-note {
+  font-weight: 400;
+}
+
+.af-dk-gallery {
+  grid-template-columns: repeat(auto-fill, 112px);
+}
+
+.af-dk-item {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #f3f4f6;
+}
+
+.af-dk-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: zoom-in;
+}
+
+.af-dk-del {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(17, 24, 39, 0.65);
+  color: #fff;
+  font-size: 14px;
+  line-height: 22px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.af-dk-add {
+  aspect-ratio: 1;
+  border: 1px dashed #cbd5e1;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  cursor: pointer;
+  background: #fff;
+}
+
+.af-dk-add:hover {
+  border-color: #2563eb;
+}
+
+.af-dk-add__plus {
+  font-size: 26px;
+  line-height: 1;
+  color: #9ca3af;
+}
+
+button.af-dk-btn {
+  margin: 0;
+  line-height: normal;
+  font-size: 13px;
+  border-radius: 6px;
+}
+
+button.af-dk-btn::after {
+  display: none;
+}
+
+/* 内容不满一屏时操作条也贴在底部 */
+.af-dk-bar {
+  margin-top: auto;
+}

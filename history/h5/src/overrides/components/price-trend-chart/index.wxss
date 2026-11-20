@@ -1,0 +1,42 @@
+.ptc {
+  display: block;
+  width: 100%;
+}
+
+.ptc-canvas-wrap {
+  position: relative;
+  width: 100%;
+  height: 160px;
+}
+
+.ptc-canvas {
+  width: 100%;
+  height: 100%;
+  touch-action: pan-y;
+}
+
+.ptc-empty {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 24px;
+  box-sizing: border-box;
+  border: 1px dashed #dde5f2;
+  border-radius: 10px;
+  font-size: 12px;
+  line-height: 1.6;
+  text-align: center;
+  color: #9ca3af;
+  background: #f8fafd;
+}
+
+@media (min-width: 1024px) {
+  .ptc-canvas-wrap {
+    height: 260px;
+  }
+}

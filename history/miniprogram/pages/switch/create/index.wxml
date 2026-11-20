@@ -1,0 +1,26 @@
+<view class="page-wrap page-wrap--no-tab">
+  <view class="card">
+    <view class="card-head">新建切单</view>
+    <view class="form-group form-group--code">
+      <text class="form-label">货号</text>
+      <view class="code-input-field">
+        <input class="input input--code" data-key="sku_code" value="{{form.sku_code}}" bindinput="onInput" placeholder="扫码或输入货号" />
+        <button class="btn btn-outline btn-sm btn-block code-input-scan" bindtap="scanSku">扫码填入</button>
+      </view>
+    </view>
+    <view class="form-group">
+      <text class="form-label">单价 ¥</text>
+      <input class="input" type="digit" data-key="unit_price" value="{{form.unit_price}}" bindinput="onInput" />
+    </view>
+    <view class="form-group">
+      <text class="form-label">切单证据 ({{form.evidence_urls.length}})</text>
+      <button class="btn btn-sm" bindtap="addEvidence">拍照上传</button>
+      <media-gallery wx:if="{{form.evidence_urls.length}}" urls="{{form.evidence_urls}}" display-urls="{{evidenceDisplayUrls}}" thumb-size="medium" />
+    </view>
+    <view class="form-group">
+      <text class="form-label">备注</text>
+      <input class="input" data-key="remark" value="{{form.remark}}" bindinput="onInput" />
+    </view>
+    <button class="btn-primary btn-block" bindtap="submit">提交切单</button>
+  </view>
+</view>

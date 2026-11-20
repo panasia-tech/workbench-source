@@ -1,0 +1,26 @@
+/* 资产详情（电脑版模板用；类名 ad-dk-*） */
+.ad-dk-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.ad-dk-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+}
+
+.ad-dk-link {
+  color: #2563eb;
+}
+
+.ad-dk-noimg {
+  padding: 24px 0;
+}
+
+.ad-dk-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}

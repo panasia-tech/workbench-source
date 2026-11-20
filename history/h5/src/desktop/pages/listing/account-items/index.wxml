@@ -1,0 +1,106 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<!-- 这个号发的商品（电脑版）：左边表格，右边点中那件的标题、描述（手机上是行内展开） -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">{{nick || '未识别的号'}} 发的商品</view>
+      <view class="dk-sub">共 {{all.length}} 件{{shopLabels ? ' · 也挂在店铺：' + shopLabels : ''}}</view>
+    </view>
+  </view>
+
+  <view class="dk-split ai-dk-split">
+    <view class="dk-card">
+      <view class="dk-toolbar">
+        <view class="dk-tabs">
+          <view
+            wx:for="{{tabs}}"
+            wx:key="key"
+            class="dk-tab {{tab === item.key ? 'dk-tab--on' : ''}}"
+            data-tab="{{item.key}}"
+            bindtap="switchTab"
+          >{{item.label}} <text class="dk-tab__n">{{item.count}}</text></view>
+        </view>
+      </view>
+
+      <view wx:if="{{loading}}" class="dk-empty">加载中…</view>
+      <view wx:elif="{{!list.length}}" class="dk-empty">{{all.length ? '这一栏没有商品' : '这个号还没发过商品'}}</view>
+      <view wx:else class="dk-table-wrap">
+        <table class="dk-table">
+          <thead>
+            <tr>
+              <th>商品</th>
+              <th>SKU / 库位</th>
+              <th class="dk-num">价格</th>
+              <th>状态</th>
+              <th>时间</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              wx:for="{{list}}"
+              wx:key="sku_id"
+              class="dk-tr--click {{expanded === item.sku_id ? 'dk-tr--on' : ''}}"
+              data-id="{{item.sku_id}}"
+              bindtap="toggle"
+            >
+              <td>
+                <view class="dk-media">
+                  <image wx:if="{{item.cover_url}}" class="dk-thumb" src="{{item.cover_url}}" mode="aspectFill" data-url="{{item.cover_url}}" catchtap="dkPreview" />
+                  <view wx:else class="dk-thumb ai-dk-thumb-empty">{{item.sku_code ? item.sku_code.slice(-2) : '?'}}</view>
+                  <view class="dk-grow">
+                    <view class="dk-cell-main dk-ellipsis ai-dk-name" title="{{item.title || item.product_name}}">{{item.title || item.product_name || item.sku_code}}</view>
+                    <view class="dk-cell-sub dk-ellipsis ai-dk-name">{{item.spec || '—'}}</view>
+                  </view>
+                </view>
+              </td>
+              <td class="dk-nowrap">
+                <view>{{item.sku_code}}</view>
+                <view class="dk-cell-sub">{{item.location_code || '无库位'}}</view>
+              </td>
+              <td class="dk-num">{{item.price ? '¥' + item.price : '—'}}</td>
+              <td class="dk-nowrap"><text class="dk-tag {{fmt.shopStateTag(item.publish_status, false)}}">{{fmt.shopListingLabel(item.publish_status)}}</text></td>
+              <td class="ai-dk-when">{{item._when}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </view>
+    </view>
+
+    <view class="dk-card ai-dk-side">
+      <view class="dk-card__head">商品详情</view>
+      <view wx:if="{{!expanded}}" class="dk-empty">点左边一行，看上架标题和描述</view>
+      <block wx:for="{{list}}" wx:key="sku_id">
+        <view wx:if="{{expanded === item.sku_id}}" class="dk-card__body ai-dk-detail">
+          <image wx:if="{{item.cover_url}}" class="ai-dk-cover" src="{{item.cover_url}}" mode="aspectFill" data-url="{{item.cover_url}}" bindtap="dkPreview" />
+          <view wx:if="{{item.last_error && item.publish_status === 'FAILED'}}" class="ai-dk-err">失败原因：{{item.last_error}}</view>
+          <view class="dk-desc dk-desc--2">
+            <view class="dk-desc__item dk-desc__item--full">
+              <text class="dk-desc__k">商品名</text>
+              <text class="dk-desc__v">{{item.product_name || '—'}}</text>
+            </view>
+            <view class="dk-desc__item dk-desc__item--full">
+              <text class="dk-desc__k">上架标题</text>
+              <text class="dk-desc__v">{{item.title || '—'}}</text>
+            </view>
+            <view class="dk-desc__item">
+              <text class="dk-desc__k">售价</text>
+              <text class="dk-desc__v">{{item.price ? '¥' + item.price : '—'}}</text>
+            </view>
+            <view class="dk-desc__item">
+              <text class="dk-desc__k">库存</text>
+              <text class="dk-desc__v">{{fmt.statusLabel(item.sku_status)}}</text>
+            </view>
+            <view class="dk-desc__item dk-desc__item--full">
+              <text class="dk-desc__k">描述</text>
+              <text class="dk-desc__v ai-dk-desc">{{item.desc || '—'}}</text>
+            </view>
+          </view>
+          <view class="dk-row">
+            <view class="dk-btn" data-code="{{item.sku_code}}" bindtap="openSku">打开商品详情</view>
+          </view>
+        </view>
+      </block>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,141 @@
+:root {
+  --brand-dark: #001529;
+  --brand-primary: #1677ff;
+  --page-bg: #f0f2f5;
+  --text-primary: #1f1f1f;
+  --text-secondary: #8c8c8c;
+  --border-color: #f0f0f0;
+  --aside-width: 220px;
+  --header-height: 56px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    'Noto Sans SC', sans-serif;
+  color: var(--text-primary);
+  background: var(--page-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+.page-card {
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  margin-bottom: 16px;
+}
+
+.page-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.page-card__title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.page-card__body {
+  padding: 20px;
+}
+
+.page-card__body--table {
+  padding: 0;
+}
+
+.page-card__body--table .el-table {
+  border-radius: 0 0 8px 8px;
+}
+
+.page-card__body--table .el-table th.el-table__cell {
+  background: #fafafa;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* border 开启后支持列宽拖拽，边框色与页面一致（含 Teleport 到 body 的弹窗表格） */
+#app .el-table--border .el-table__cell,
+body > .el-overlay .el-table--border .el-table__cell {
+  border-color: var(--border-color);
+}
+
+#app .el-table--border::before,
+#app .el-table--border::after,
+body > .el-overlay .el-table--border::before,
+body > .el-overlay .el-table--border::after {
+  background-color: var(--border-color);
+}
+
+.table-pagination {
+  display: flex;
+  justify-content: center;
+  padding: 16px 20px;
+}
+
+/*
+ * 主数据行内编辑表：业务列预设固定宽度，末列 is-filler 吸收剩余宽度形成右侧留白
+ * 采购账号：120 + 200 + 150 + 72 + 120 + filler
+ * 销售店铺：100 + 140 + 160 + 478 + 120 + 72 + 72 + filler
+ */
+.page-card__body--table.table--compact .table-cell-input,
+.page-card__body--table.table--compact .table-cell-input--wide {
+  width: 100%;
+  max-width: 180px;
+}
+
+/* 排序：左右 - / + 按钮（Element Plus 默认布局） */
+.sort-input-number {
+  width: 140px;
+}
+
+/* 避免 el-table .cell 的 ellipsis 把略宽的数字框裁成「..」 */
+.page-card__body--table.table--compact .col-sort .cell {
+  overflow: visible;
+  text-overflow: clip;
+}
+
+.page-card__body--table.table--compact .col-sort .sort-input-number {
+  width: 100%;
+  max-width: 132px;
+  margin: 0 auto;
+}
+
+.page-card__body--table.table--compact .el-table .is-filler {
+  background: #fff;
+}
+
+.page-card__body--table.table--compact .el-table--striped .el-table__body tr.el-table__row--striped td.is-filler {
+  background: #fafafa;
+}
+
+.page-card__body--table.table--compact .el-table th.is-filler,
+.page-card__body--table.table--compact .el-table td.is-filler {
+  border-right: none;
+}
+
+.page-card__body--table.table--compact .el-table th.is-filler .cell,
+.page-card__body--table.table--compact .el-table td.is-filler .cell {
+  padding: 0;
+}
+
+.inline-form--compact .el-form-item {
+  margin-bottom: 0;
+  margin-right: 16px;
+}

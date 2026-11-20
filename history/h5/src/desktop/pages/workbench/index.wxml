@@ -1,0 +1,30 @@
+<wxs module="fmt" src="../../utils/format.wxs" />
+
+<!-- 工作台（电脑版）：问候 + 功能入口铺成多列卡片（左侧菜单里也有同一组入口） -->
+<view class="dk-page wb-page">
+  <view class="dk-head" wx:if="{{user}}">
+    <view>
+      <view class="dk-title">你好，{{user.name || user.username}}</view>
+      <view class="dk-sub">{{fmt.roleLabel(user.role)}} · 选择功能开始今日工作</view>
+    </view>
+  </view>
+
+  <view wx:if="{{entries.length}}" class="wb-dk-grid">
+    <view
+      wx:for="{{entries}}"
+      wx:key="key"
+      class="dk-card wb-dk-entry"
+      data-url="{{item.url}}"
+      bindtap="openEntry"
+    >
+      <view class="wb-entry-icon {{item.iconClass}}">{{item.icon}}</view>
+      <view class="dk-grow">
+        <view class="wb-dk-title">{{item.title}}</view>
+        <view class="dk-sub">{{item.sub}}</view>
+      </view>
+      <text wx:if="{{item.badgeText}}" class="wb-entry-badge">{{item.badgeText}}</text>
+    </view>
+  </view>
+
+  <view wx:if="{{user && !entries.length}}" class="dk-card dk-empty">当前角色暂无可用功能</view>
+</view>

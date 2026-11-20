@@ -1,0 +1,132 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<view class="page-wrap page-wrap--no-tab bill-page">
+  <!-- 周期选择 -->
+  <view class="card">
+    <view class="card-head">经营账单</view>
+    <view class="pill-group bill-periods">
+      <text
+        wx:for="{{periods}}"
+        wx:key="key"
+        class="pill {{period === item.key ? 'active' : ''}}"
+        data-period="{{item.key}}"
+        bindtap="pickPeriod"
+      >{{item.label}}</text>
+    </view>
+
+    <view class="bill-custom" wx:if="{{period === 'custom'}}">
+      <picker mode="date" value="{{customFrom}}" end="{{customTo}}" bindchange="onCustomFromChange">
+        <view class="date-box">{{customFrom || '开始日期'}}</view>
+      </picker>
+      <text class="date-sep">至</text>
+      <picker mode="date" value="{{customTo}}" start="{{customFrom}}" bindchange="onCustomToChange">
+        <view class="date-box">{{customTo || '结束日期'}}</view>
+      </picker>
+    </view>
+
+    <view class="bill-range">{{dateFrom}} ~ {{dateTo}}</view>
+  </view>
+
+  <!-- 毛利（主数字，最大） -->
+  <view class="profit-card">
+    <view class="profit-head">
+      <text class="profit-title">毛利</text>
+      <text class="profit-tag">销售额 − 成本</text>
+    </view>
+    <view class="profit-amt">¥{{fmt.money(stats.gross_profit)}}</view>
+    <view class="profit-foot">销售收入 ¥{{fmt.money(stats.sales_amount)}} · 销售成本 ¥{{fmt.money(stats.sales_cost)}}</view>
+  </view>
+
+  <!-- 净利润（中号·强调） -->
+  <view class="net-card">
+    <view class="net-left">
+      <view class="net-label">净利润</view>
+      <view class="net-sub">毛利 − 手续费 − 快递 − 工资 − 退货</view>
+    </view>
+    <view class="net-amt {{stats.net_profit < 0 ? 'net-amt--neg' : ''}}">¥{{fmt.money(stats.net_profit)}}</view>
+  </view>
+
+  <!-- 收支构成（中号网格） -->
+  <view class="card stats-section">
+    <view class="card-head">收支构成</view>
+    <view class="stats-grid">
+      <view class="stat-card stat-card--money">
+        <view class="st-num {{fmt.numScale('¥' + fmt.statMoney(stats.sales_amount))}}">¥{{fmt.statMoney(stats.sales_amount)}}</view>
+        <view class="st-label">销售额 · {{stats.sales_count || 0}}笔</view>
+      </view>
+      <view class="stat-card stat-card--money">
+        <view class="st-num {{fmt.numScale('¥' + fmt.statMoney(stats.sales_cost))}}">¥{{fmt.statMoney(stats.sales_cost)}}</view>
+        <view class="st-label">销售成本</view>
+      </view>
+      <view class="stat-card stat-card--money">
+        <view class="st-num {{fmt.numScale('¥' + fmt.statMoney(stats.platform_fee))}}">¥{{fmt.statMoney(stats.platform_fee)}}</view>
+        <view class="st-label">平台手续费</view>
+      </view>
+      <view class="stat-card stat-card--money">
+        <view class="st-num {{fmt.numScale('¥' + fmt.statMoney(stats.staff_commission))}}">¥{{fmt.statMoney(stats.staff_commission)}}</view>
+        <view class="st-label">员工工资(提成)</view>
+      </view>
+      <view class="stat-card stat-card--money">
+        <view class="st-num {{fmt.numScale('¥' + fmt.statMoney(stats.express_fee))}}">¥{{fmt.statMoney(stats.express_fee)}}</view>
+        <view class="st-label">快递费</view>
+      </view>
+      <view class="stat-card stat-card--money">
+        <view class="st-num {{fmt.numScale('¥' + fmt.statMoney(stats.return_refund))}}">¥{{fmt.statMoney(stats.return_refund)}}</view>
+        <view class="st-label">退货 · {{stats.return_count || 0}}笔</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 采购支出 -->
+  <view class="card stats-section">
+    <view class="card-head">采购支出</view>
+    <view class="stats-grid">
+      <view class="stat-card">
+        <view class="st-num {{fmt.numScale(stats.purchase_count)}}">{{stats.purchase_count || 0}}</view>
+        <view class="st-label">采购笔数</view>
+      </view>
+      <view class="stat-card stat-card--money stat-card--wide">
+        <view class="st-num {{fmt.numScale('¥' + fmt.statMoney(stats.purchase_amount))}}">¥{{fmt.statMoney(stats.purchase_amount)}}</view>
+        <view class="st-label">采购支出</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 逐笔明细 -->
+  <view class="card stats-section">
+    <view class="bill-detail-tabs">
+      <text class="detail-tab {{detailTab === 'purchase' ? 'active' : ''}}" data-tab="purchase" bindtap="switchDetailTab">采购明细</text>
+      <text class="detail-tab {{detailTab === 'sales' ? 'active' : ''}}" data-tab="sales" bindtap="switchDetailTab">销售明细</text>
+    </view>
+
+    <!-- 采购明细 -->
+    <block wx:if="{{detailTab === 'purchase'}}">
+      <view wx:for="{{list}}" wx:key="id" class="detail-row">
+        <view class="detail-main">
+          <view class="detail-title">{{fmt.productLine(item.product_name, item.spec)}}</view>
+          <view class="detail-sub">{{item.order_no}} · {{fmt.datetime(item.created_at)}}</view>
+          <view class="detail-sub" wx:if="{{item.seller_name || item.purchase_account}}">{{item.seller_name || '—'}}{{item.purchase_account ? ' · ' + item.purchase_account : ''}}</view>
+        </view>
+        <view class="detail-amt detail-amt--out">-¥{{fmt.money(item.unit_price)}}</view>
+      </view>
+    </block>
+
+    <!-- 销售明细 -->
+    <block wx:if="{{detailTab === 'sales'}}">
+      <view wx:for="{{list}}" wx:key="id" class="detail-row">
+        <view class="detail-main">
+          <view class="detail-title">{{item.outbound_no}}</view>
+          <view class="detail-sub">{{fmt.datetime(item.created_at)}}{{item.buyer_name ? ' · ' + item.buyer_name : ''}}</view>
+          <view class="detail-sub">成本 ¥{{fmt.money(item.cost_price)}} · 毛利 ¥{{fmt.money(item.gross_profit)}}<text wx:if="{{item.express_fee}}"> · 快递 ¥{{fmt.money(item.express_fee)}}</text></view>
+        </view>
+        <view class="detail-amt detail-amt--in">+¥{{fmt.money(item.sale_price)}}</view>
+      </view>
+    </block>
+
+    <view wx:if="{{!list.length && !listLoading}}" class="detail-empty">该区间暂无{{detailTab === 'purchase' ? '采购' : '销售'}}记录</view>
+    <view wx:if="{{listLoading}}" class="detail-empty">加载中...</view>
+    <view wx:if="{{noMore && list.length}}" class="detail-empty">没有更多了</view>
+  </view>
+
+  <view wx:if="{{loading}}" class="bill-loading">统计加载中...</view>
+</view>

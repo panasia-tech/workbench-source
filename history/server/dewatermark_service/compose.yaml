@@ -1,0 +1,27 @@
+# 部署在京东云 /srv/platform/stacks/dewatermark/(11-10)。
+# 入口:ERP → http://127.0.0.1:8000 → 阿里云边缘 Caddy → 京东云内层 Caddy(去掉前缀)→ 127.0.0.1:18091
+# .env 放 DEWATERMARK_TOKEN(= ERP 生产 .env 的 DEWATERMARK_REMOTE_TOKEN);models/ 放 lama_fp32.onnx。
+services:
+  dewatermark:
+    image: erp-dewatermark:${DEWATERMARK_TAG}
+    container_name: platform-dewatermark
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DEWATERMARK_THREADS: "4"
+      DEWATERMARK_CONCURRENCY: "2"
+    ports:
+      - "127.0.0.1:18091:8091"
+    volumes:
+      - ./models:/models:ro
+    # 模型加载后约 1 GB,闲置 10 分钟自己卸掉
+    mem_limit: 2g
+    cpus: 4.0
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://127.0.0.1:8091/livez',timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3

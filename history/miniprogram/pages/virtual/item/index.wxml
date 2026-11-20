@@ -1,0 +1,228 @@
+<!-- 一张虚拟产品卡：问题箱 + 四个数，横排 8 步、本页交证据；订单发码、补码、设置都在本页（照交付包，浅色） -->
+<view class="page-wrap page-wrap--no-tab vi-page">
+  <view wx:if="{{loading}}" class="list-footer">加载中…</view>
+  <block wx:if="{{d}}">
+    <view class="vi-hero">
+      <view class="vi-tags">
+        <text class="vi-badge vi-badge--{{d.level}}">{{d.badge}}</text>
+        <text class="vi-tag vi-tag--dark">{{d.state_label}}</text>
+        <text class="vi-tag">{{d.listing_type === 'follow' ? '跟卖型' : '路测型'}}</text>
+        <text class="vi-tag">{{d.delivery_label}}</text>
+        <text class="vi-tag vi-tag--{{d.compliance.lawyer}}">律师：{{d.lawyer_label}}</text>
+        <text class="vi-q" bindtap="toggleHelp">?</text>
+      </view>
+      <view wx:if="{{showHelp}}" class="vi-help">8 步：领线索 → 看三个榜 → 查取得路径 → 算账 → 小额实测 → 他人复现 → 申请上架 → 每周复盘。有同行在卖的是跟卖型，免做 5、6 步。每步要交证据，不知道的写「待核」。第 6 步要换一个人做；第 7 步交上去等主管批（自己交的自己不能批）。在售以后，填上闲鱼链接，买家付款会出现在「订单」里，付款超过 1 分钟没发就红。</view>
+      <view class="vi-name">{{d.name}}</view>
+      <view class="vi-codes">{{d.code}}<text wx:if="{{d.face}}">　{{d.face}}</text><text wx:if="{{d.region}}">　{{d.region}}</text><text wx:if="{{d.valid}}">　有效期：{{d.valid}}</text>　负责人 {{d.owner}}</view>
+      <view class="vi-codes">{{d.pathText}}</view>
+
+      <view class="vi-issues vi-issues--{{d.level}}">
+        <view class="vi-issues__t">{{d.issues.length ? '现在有 ' + d.issues.length + ' 件事要看' : '这张产品卡没有要处理的事'}}</view>
+        <view wx:for="{{d.issues}}" wx:key="text" class="vi-issue" data-go="{{item.go}}" bindtap="jump">
+          <text class="vi-dot vi-dot--{{item.level}}"></text>
+          <text class="vi-issue__text">{{item.text}}</text>
+          <text class="vi-link">去看 ›</text>
+        </view>
+        <view wx:if="{{!d.issues.length}}" class="vi-ok">订单、库存、价格、成熟度都正常。</view>
+      </view>
+
+      <view class="vi-facts">
+        <view class="vi-fact"><view class="vi-fact__k">售价</view><view class="vi-fact__v">{{d.price ? '¥' + d.price : '待定'}}</view><view class="vi-fact__s">进价 {{d.cost ? '¥' + d.cost : '待定'}}</view></view>
+        <view class="vi-fact"><view class="vi-fact__k">单笔毛利</view><view class="vi-fact__v">{{d.profit !== null ? '¥' + d.profit : '—'}}</view><view class="vi-fact__s">已扣平台费和售后预留</view></view>
+        <view class="vi-fact"><view class="vi-fact__k">{{d.stock ? '库存' : '交付'}}</view><view class="vi-fact__v">{{d.stock ? d.stock.avail + ' 张' : '不囤码'}}</view><view class="vi-fact__s">{{d.stock ? '提醒线 ' + d.warn_at + ' 张' : d.delivery_label}}</view></view>
+        <view class="vi-fact"><view class="vi-fact__k">7 天销量</view><view class="vi-fact__v">{{d.week_sales}} 单</view><view class="vi-fact__s">30 天退款率 {{d.refundPct}}%</view></view>
+      </view>
+    </view>
+
+    <!-- 8 步 -->
+    <view id="vi-steps" class="vi-card">
+      <view class="vi-card__h"><text class="vi-card__t">产品卡 8 步</text><text class="vi-card__s">点圆圈看那一步交了什么</text></view>
+      <scroll-view scroll-x class="vi-steps-wrap">
+        <view class="vi-steps">
+          <view wx:for="{{d.steps}}" wx:key="n" class="vi-st vi-st--{{item.state}} {{sel === item.n ? 'is-sel' : ''}}" data-n="{{item.n}}" bindtap="pickStep">
+            <view class="vi-st__i">{{item.state === 'done' ? '✓' : item.n}}</view>
+            <view class="vi-st__t">{{item.title}}</view>
+          </view>
+        </view>
+      </scroll-view>
+
+      <view wx:if="{{step}}" class="vi-pn">
+        <view class="vi-pn__t">{{step.n}}. {{step.title}}
+          <text wx:if="{{step.state === 'skip'}}" class="vi-skip">跟卖免做</text>
+          <text wx:elif="{{step.state === 'done'}}" class="vi-done">做完了</text>
+          <text wx:elif="{{d.state === 'pending' && step.n === 7}}" class="vi-wait">等主管批</text>
+        </view>
+        <view class="vi-pn__n">要交：{{step.give}}。做到：{{step.done_when}}。</view>
+        <view wx:if="{{d.reject_note && step.n === 7 && d.state === 'research'}}" class="vi-reject">主管退回：{{d.reject_note}}</view>
+
+        <!-- 当前步：本页交证据 -->
+        <block wx:if="{{step.state === 'cur' && d.can_step}}">
+          <view wx:for="{{step.fields}}" wx:key="key" class="vi-field">
+            <view class="vi-field__k">{{item.label}}</view>
+            <picker wx:if="{{step.n === 8 && item.key === 'decision'}}" mode="selector" range="{{decisions}}" value="{{decisionIdx}}" bindchange="onDecision">
+              <view class="vi-in vi-pick">{{form.decision || '选一个结论'}} ›</view>
+            </picker>
+            <textarea wx:else class="vi-ta" auto-height maxlength="2000" placeholder="{{item.hint}}" value="{{form[item.key]}}" data-k="{{item.key}}" bindinput="onField" />
+          </view>
+          <view wx:if="{{step.n === 2}}" class="vi-field">
+            <view class="vi-field__k">同行在卖的链接（有就是跟卖型，免做 5、6 步；没有就空着）</view>
+            <textarea class="vi-ta" auto-height placeholder="闲鱼商品链接，一行一条" value="{{peers}}" bindinput="onPeers" />
+          </view>
+          <view wx:if="{{step.n === 5 || step.n === 6}}" class="vi-field">
+            <view class="vi-field__k">截图{{step.n === 5 ? '（必须）' : '（可不传）'}}</view>
+            <view class="vi-imgs">
+              <view wx:for="{{images}}" wx:key="*this" class="vi-img"><image src="{{item}}" mode="aspectFill" /><text class="vi-img__x" data-i="{{index}}" bindtap="removeImage">×</text></view>
+              <view wx:if="{{images.length < 9}}" class="vi-img vi-img--add" bindtap="addImage">＋</view>
+            </view>
+          </view>
+          <view class="vi-btn {{busy ? 'vi-btn--off' : ''}}" bindtap="submitStep">{{step.n === 7 ? '申请上架' : step.n === 8 ? '交这周复盘' : '交这一步'}}</view>
+        </block>
+        <view wx:elif="{{step.state === 'cur' && d.state !== 'pending'}}" class="vi-lock">🔒 {{step.n === 6 ? '他人复现要换一个人做：负责人以外的同事打开这张卡来交' : '这张卡不是你负责的，找负责人或主管'}}</view>
+        <view wx:elif="{{step.state === 'todo'}}" class="vi-lock">🔒 先做完第 {{d.step}} 步</view>
+
+        <view wx:if="{{d.can_review && step.n === 7}}" class="vi-acts">
+          <view class="vi-btn vi-btn--ok" bindtap="approve">批准上架</view>
+          <view class="vi-btn vi-btn--plain" bindtap="reject">退回</view>
+        </view>
+
+        <!-- 交过的证据 -->
+        <view wx:for="{{ev}}" wx:key="at" class="vi-ev">
+          <view class="vi-ev__h">{{item.action === 'approve' ? '批准上架' : item.action === 'reject' ? '退回' : item.action === 'review' ? '周复盘' : '交证据'}} · {{item.who}} · {{item.at}}</view>
+          <block wx:for="{{step.fields}}" wx:for-item="f" wx:key="key"><view wx:if="{{item.data[f.key]}}" class="vi-ev__r"><text class="vi-ev__k">{{f.label}}</text>{{item.data[f.key]}}</view></block>
+          <view wx:if="{{item.data.note}}" class="vi-ev__r"><text class="vi-ev__k">意见</text>{{item.data.note}}</view>
+          <view wx:if="{{item.images.length}}" class="vi-imgs">
+            <image wx:for="{{item.images}}" wx:for-item="u" wx:key="*this" class="vi-img" src="{{u}}" mode="aspectFill" data-url="{{u}}" data-urls="{{item.images}}" bindtap="preview" />
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 订单 -->
+    <view id="vi-orders" class="vi-card">
+      <view class="vi-card__h">
+        <text class="vi-card__t">订单</text>
+        <text class="vi-card__s">从聊天里认的付款，每分钟一次</text>
+        <text class="vi-link" bindtap="syncNow">马上同步</text>
+      </view>
+      <view wx:if="{{d.auto_delivery && d.auto_global}}" class="vi-banner vi-banner--grn">自动发货开着：付款后没被拦的单会自动发码。</view>
+      <view wx:elif="{{d.auto_delivery}}" class="vi-banner">这张卡开了自动发货，但总开关关着（主管在「虚拟商品」页开），现在都要人点发码。</view>
+      <view wx:if="{{d.state === 'on_sale' && !d.item_ids.length}}" class="vi-banner vi-banner--amb">还没填闲鱼链接：在下面「设置」里填，填了才认得出订单。</view>
+      <view wx:if="{{!d.orders.length}}" class="vi-muted vi-empty">还没有订单。</view>
+      <view wx:for="{{d.orders}}" wx:key="id" class="vi-order vi-order--{{item.late ? 'red' : item.status}}">
+        <view class="vi-order__h">
+          <text class="vi-order__b">{{item.buyer}}</text>
+          <text class="vi-stag vi-stag--{{item.late ? 'red' : item.status}}">{{item.status_label}}</text>
+          <text class="vi-muted">付款 {{item.paid_at}}（{{item.ago}}前）<text wx:if="{{item.amount}}"> · ¥{{item.amount}}</text></text>
+        </view>
+        <view wx:if="{{item.hits.length && item.status === 'held'}}" class="vi-order__n vi-red">拦住：{{item.hits[0]}}<text wx:if="{{item.hits.length > 1}}">（还有 {{item.hits.length - 1}} 条）</text></view>
+        <view wx:if="{{item.send_error}}" class="vi-order__n vi-red">上次没发出去：{{item.send_error}}</view>
+        <view wx:if="{{item.platform_status}}" class="vi-order__n vi-muted">闲鱼：{{item.platform_status}}</view>
+        <view wx:if="{{item.note}}" class="vi-order__n vi-muted">{{item.note}}</view>
+        <view wx:if="{{item.sent_at}}" class="vi-order__n vi-muted">{{item.sent_by || '自动发货'}} {{item.sent_at}} 发的</view>
+        <view wx:if="{{item.buyer_flag && (item.buyer_flag.blacklisted || item.buyer_flag.refunds)}}" class="vi-order__n vi-amb">这个买家{{item.buyer_flag.blacklisted ? '在退款名单里' : ''}}{{item.buyer_flag.refunds ? '，退过 ' + item.buyer_flag.refunds + ' 次款' : ''}}</view>
+        <view wx:if="{{item.code}}" class="vi-code" data-code="{{item.code}}" bindtap="copyCode">{{item.code}}<text class="vi-muted">　点一下复制</text></view>
+        <view class="vi-acts">
+          <view wx:if="{{(item.status === 'ready' || item.status === 'waiting') && (d.delivery === 'card' || d.delivery === 'nocard')}}" class="vi-btn vi-btn--sm {{item.status === 'waiting' ? 'vi-btn--off' : ''}}" data-id="{{item.id}}" bindtap="sendCode">{{item.status === 'waiting' ? '没码了，先补货' : '发码'}}</view>
+          <view wx:if="{{item.status === 'held'}}" class="vi-btn vi-btn--sm" data-id="{{item.id}}" bindtap="release">看清了，放行</view>
+          <view wx:if="{{item.status === 'ready' || item.status === 'waiting' || item.status === 'held'}}" class="vi-btn vi-btn--sm vi-btn--plain" data-id="{{item.id}}" bindtap="delivered">{{d.delivery === 'topup' || d.delivery === 'manual' ? '已交付' : '在别处发了'}}</view>
+          <view wx:if="{{item.has_code && !item.code}}" class="vi-btn vi-btn--sm vi-btn--plain" data-id="{{item.id}}" bindtap="reveal">看码</view>
+          <view wx:if="{{item.has_code && item.status !== 'closed'}}" class="vi-btn vi-btn--sm vi-btn--plain" data-id="{{item.id}}" bindtap="voidCode">码用不了，作废</view>
+          <view wx:if="{{item.buyer_key}}" class="vi-btn vi-btn--sm vi-btn--plain" data-id="{{item.id}}" bindtap="flagBuyer">{{item.buyer_flag && item.buyer_flag.blacklisted ? '移出退款名单' : '拉进退款名单'}}</view>
+        </view>
+      </view>
+      <view class="vi-muted vi-foot">发出去以后还要去闲鱼点「发货」（选无需寄件）；买家申请退款也在闲鱼里处理。</view>
+    </view>
+
+    <!-- 库存 -->
+    <view id="vi-stock" class="vi-card">
+      <block wx:if="{{d.delivery === 'card'}}">
+        <view class="vi-card__h"><text class="vi-card__t">卡券库存</text><text class="vi-card__s">卖一张少一张，每单发不同的码</text></view>
+        <view class="vi-legend">
+          <text><text class="vi-dot vi-dot--grn"></text>可用 {{d.stock.avail}}</text>
+          <text><text class="vi-dot vi-dot--acc"></text>已发 {{d.stock.sold}}</text>
+          <text><text class="vi-dot vi-dot--red"></text>作废 {{d.stock.void}}</text>
+          <text class="vi-muted">提醒线 {{d.warn_at}} · 停售线 {{d.stop_at}}</text>
+        </view>
+        <block wx:if="{{d.can_edit}}">
+          <textarea class="vi-ta vi-ta--codes" maxlength="-1" placeholder="把码贴进来，一行一张；重复的会自动跳过" value="{{rs.codes}}" data-k="codes" bindinput="onRs" />
+          <view class="vi-row3">
+            <input class="vi-in" placeholder="供应商（可不填）" value="{{rs.supplier}}" data-k="supplier" bindinput="onRs" />
+            <input class="vi-in" type="digit" placeholder="这批进价（可不填）" value="{{rs.cost}}" data-k="cost" bindinput="onRs" />
+            <input class="vi-in" placeholder="有效期至 2026-12-31" value="{{rs.expire_on}}" data-k="expire_on" bindinput="onRs" />
+          </view>
+          <view class="vi-btn {{busy ? 'vi-btn--off' : ''}}" bindtap="restock">补货入库</view>
+        </block>
+        <view wx:if="{{d.batches.length}}" class="vi-tbl">
+          <view class="vi-tr vi-th"><text>批次</text><text>来源</text><text>进价</text><text>入库</text><text>剩余</text><text>有效期至</text></view>
+          <view wx:for="{{d.batches}}" wx:key="no" class="vi-tr"><text>#{{item.no}} {{item.at}}</text><text>{{item.supplier || '—'}}</text><text>{{item.cost ? '¥' + item.cost : '—'}}</text><text>{{item.qty}}</text><text class="vi-b">{{item.left}}</text><text>{{item.expire_on || '—'}}</text></view>
+        </view>
+      </block>
+      <block wx:elif="{{d.delivery === 'nocard'}}">
+        <view class="vi-card__h"><text class="vi-card__t">发给买家的内容</text><text class="vi-card__s">人人同一份，发码时连同话术一起发</text></view>
+        <view class="vi-muted">{{d.has_shared_content ? '已经填了（不在页面上显示，要看点订单里的「看码」）' : '还没填：不填没法发'}}</view>
+        <block wx:if="{{d.can_edit}}">
+          <textarea class="vi-ta" maxlength="400" placeholder="{{d.has_shared_content ? '要换就重新写一份' : '比如：兑换链接、账号说明'}}" value="{{shared}}" bindinput="onShared" />
+          <view class="vi-btn {{busy ? 'vi-btn--off' : ''}}" bindtap="saveShared">保存</view>
+        </block>
+      </block>
+      <block wx:else>
+        <view class="vi-card__h"><text class="vi-card__t">交付</text></view>
+        <view class="vi-muted">{{d.delivery_label}}：不囤码。来一单做一单，做完在订单上点「已交付」写一句怎么交付的。货源断了在「设置」里把结论改成暂停。</view>
+      </block>
+    </view>
+
+    <!-- 算账 -->
+    <view id="vi-money" class="vi-card">
+      <view class="vi-card__h"><text class="vi-card__t">算账</text><text class="vi-card__s">单笔毛利 = 售价 − 进价 − 平台费 − 售后预留</text></view>
+      <view wx:if="{{d.price}}" class="vi-kv">
+        <text>售价</text><text>¥{{d.price}}</text>
+        <text>进价</text><text>− ¥{{d.cost}}</text>
+        <text>平台费 {{d.feePct}}%</text><text>− ¥{{d.fee}}</text>
+        <text>售后预留</text><text>− ¥{{d.after_sale_reserve}}</text>
+        <text class="vi-b">单笔毛利</text><text class="vi-b">¥{{d.profit}}</text>
+      </view>
+      <view wx:else class="vi-muted">第 4 步算账交了以后这里才有数。</view>
+      <view wx:if="{{d.commission}}" class="vi-muted vi-foot">提成按交付包的口径估：交付人每单约 ¥{{d.commission.deliver}}（毛利 10%），建卡人上架后半年每单约 ¥{{d.commission.creator}}（5%）。还没接进提成结算。</view>
+    </view>
+
+    <!-- 设置 -->
+    <view id="vi-settings" class="vi-card">
+      <view class="vi-card__h"><text class="vi-card__t">设置</text></view>
+      <view class="vi-field">
+        <view class="vi-field__k">闲鱼链接（这几条卖出就算这张卡的单，一行一条）</view>
+        <textarea class="vi-ta" auto-height disabled="{{!d.can_edit}}" placeholder="https://www.goofish.com/item?id=…" value="{{set.item_ids}}" data-k="item_ids" bindinput="onSet" />
+      </view>
+      <view class="vi-row3">
+        <view class="vi-field"><view class="vi-field__k">提醒线（张）</view><input class="vi-in" type="number" disabled="{{!d.can_edit}}" value="{{set.warn_at}}" data-k="warn_at" bindinput="onSet" /></view>
+        <view class="vi-field"><view class="vi-field__k">停售线（张）</view><input class="vi-in" type="number" disabled="{{!d.can_edit}}" value="{{set.stop_at}}" data-k="stop_at" bindinput="onSet" /></view>
+        <view class="vi-field"><view class="vi-field__k">退过几次款就拦</view><input class="vi-in" type="number" disabled="{{!d.can_edit}}" value="{{set.refund_limit}}" data-k="refund_limit" bindinput="onSet" /></view>
+      </view>
+      <view wx:if="{{d.can_edit}}" class="vi-btn vi-btn--plain" bindtap="saveSet">保存</view>
+
+      <view class="vi-sw">
+        <text>退款名单里的买家先拦</text>
+        <text class="vi-link" data-k="blacklist" bindtap="toggleCheck">{{d.checks.blacklist ? '开着' : '关着'}}</text>
+      </view>
+      <view class="vi-sw">
+        <text>上一单 7 天内没确认的先拦</text>
+        <text class="vi-link" data-k="prev_unconfirmed" bindtap="toggleCheck">{{d.checks.prev_unconfirmed ? '开着' : '关着'}}</text>
+      </view>
+      <view wx:if="{{d.delivery === 'card' || d.delivery === 'nocard'}}" class="vi-sw">
+        <text>自动发货<text class="vi-muted">（总开关{{d.auto_global ? '开着' : '关着'}}；批准上架后才能开）</text></text>
+        <text class="vi-link" bindtap="toggleAuto">{{d.auto_delivery ? '开着' : '关着'}}</text>
+      </view>
+
+      <view id="vi-law" class="vi-sub">合规与律师</view>
+      <block wx:if="{{d.is_admin}}">
+        <view class="vi-row3">
+          <picker mode="selector" range="{{levels}}" value="{{d.levelIdx}}" bindchange="onLevel"><view class="vi-in vi-pick">合规等级：{{d.compliance.level}} 级 ›</view></picker>
+          <picker mode="selector" range="{{lawyerLabels}}" value="{{d.lawyerIdx}}" bindchange="onLawyer"><view class="vi-in vi-pick">律师：{{d.lawyer_label}} ›</view></picker>
+        </view>
+        <textarea class="vi-ta" auto-height placeholder="律师意见 / 备注" value="{{set.note}}" data-k="note" bindinput="onSet" />
+        <view class="vi-btn vi-btn--plain" bindtap="saveLawNote">保存意见</view>
+        <picker mode="selector" range="{{decisions}}" bindchange="onAdminDecision"><view class="vi-in vi-pick">经营结论：{{d.decision || '还没有'}}（主管改）›</view></picker>
+      </block>
+      <view wx:else class="vi-muted">合规等级 {{d.compliance.level}} 级 · 律师：{{d.lawyer_label}}<text wx:if="{{d.compliance.note}}"> · {{d.compliance.note}}</text>。C 级要律师通过才能上架，律师没通过的不能上架；这些由主管改。</view>
+    </view>
+  </block>
+</view>

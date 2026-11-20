@@ -1,0 +1,85 @@
+<wxs module="fmt" src="../../utils/format.wxs" />
+
+<!-- 资产录入（电脑版）：搜索 + 表格 + 页码；录入新资产放标题右边。数据、方法和手机版是同一套 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">资产录入</view>
+      <view class="dk-sub">{{isAdmin ? '全部录入' : '我录入的'}} · 共 {{total}} 台</view>
+    </view>
+    <view class="dk-btn dk-btn--primary" bindtap="onCreate">+ 录入资产</view>
+  </view>
+
+  <view class="dk-card">
+    <view class="dk-toolbar">
+      <input
+        class="dk-input dk-search"
+        placeholder="序列号 / 型号 / 货号 / 来源编号"
+        value="{{q}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+        bindconfirm="onSearch"
+      />
+      <view class="dk-btn dk-btn--primary" bindtap="onSearch">搜索</view>
+    </view>
+
+    <view class="dk-table-wrap">
+      <table class="dk-table">
+        <thead>
+          <tr>
+            <th>商品</th>
+            <th>序列号</th>
+            <th>货号</th>
+            <th>来源编号</th>
+            <th wx:if="{{isAdmin}}">录入人</th>
+            <th>状态</th>
+            <th class="dk-num">售价</th>
+            <th>录入时间</th>
+            <th class="dk-ops">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr wx:for="{{list}}" wx:key="sku_code" class="dk-tr--click" data-code="{{item.sku_code}}" bindtap="openItem">
+            <td>
+              <view class="dk-media">
+                <image
+                  wx:if="{{item.cover_url}}"
+                  class="dk-thumb"
+                  src="{{item.cover_url}}"
+                  mode="aspectFill"
+                  data-url="{{item.cover_url}}"
+                  catchtap="dkPreview"
+                />
+                <view wx:else class="dk-thumb ai-dk-thumb-empty">{{item.product_name[0] || '资'}}</view>
+                <view class="dk-grow">
+                  <view class="dk-cell-main dk-ellipsis">{{item.product_name}}</view>
+                  <view class="dk-cell-sub dk-ellipsis">{{item.spec || '—'}}</view>
+                </view>
+              </view>
+            </td>
+            <td class="dk-nowrap ai-dk-mono">{{item.serial_number || '—'}}</td>
+            <td class="dk-nowrap">{{item.sku_code}}</td>
+            <td class="dk-nowrap">{{item.source_asset_no || '—'}}</td>
+            <td wx:if="{{isAdmin}}" class="dk-nowrap">{{item.entered_by_name || '—'}}</td>
+            <td><text class="dk-tag {{item.statusCls}}">{{item.status_label}}</text></td>
+            <td class="dk-num">{{item.price ? '¥' + fmt.money(item.price) : '—'}}</td>
+            <td class="dk-nowrap">{{item.created_at ? fmt.datetime(item.created_at) : '—'}}</td>
+            <td class="dk-ops"><text class="dk-link" data-code="{{item.sku_code}}" catchtap="openItem">{{item.editable ? '修改' : '查看'}}</text></td>
+          </tr>
+        </tbody>
+      </table>
+    </view>
+
+    <view wx:if="{{!list.length && !loading}}" class="dk-empty">还没有录入的资产</view>
+    <view wx:if="{{loading && !list.length}}" class="dk-empty">加载中…</view>
+
+    <view wx:if="{{total > dkPageSize}}" class="dk-pager">
+      <text>共 {{total}} 台，每页 {{dkPageSize}} 台</text>
+      <view class="dk-row">
+        <view class="dk-btn dk-btn--sm {{dkPage <= 1 ? 'dk-btn--disabled' : ''}}" bindtap="dkPrev">上一页</view>
+        <text>第 {{dkPage}} / {{dkPages}} 页</text>
+        <view class="dk-btn dk-btn--sm {{dkPage >= dkPages ? 'dk-btn--disabled' : ''}}" bindtap="dkNext">下一页</view>
+      </view>
+    </view>
+  </view>
+</view>

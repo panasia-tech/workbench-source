@@ -1,0 +1,93 @@
+{
+  "surfaces": {
+    "primaryPath": "/prices",
+    "historyPath": "/prices/history",
+    "primaryContainsHistory": false,
+    "historyIsOnlyHistorySurface": true
+  },
+  "viewport": {
+    "width": 1280,
+    "contentWidth": 1080,
+    "horizontalScroll": false
+  },
+  "primaryFilters": ["全部", "待采集", "成功", "异常", "待复核"],
+  "priceBands": ["未满120%", "120%档", "150%档", "200%档"],
+  "primaryRows": [
+    {
+      "taskId": "fixture-pg248qp",
+      "status": "success",
+      "reason": "已完成抓取；采购价对比正常",
+      "detailEntry": "查看详情"
+    },
+    {
+      "taskId": "fixture-m350",
+      "status": "invalid_price",
+      "reason": "行情价低于采购价",
+      "detailEntry": "查看详情"
+    }
+  ],
+  "mixedLegacyRow": {
+    "taskId": "fixture-legacy-mixed",
+    "status": "fail",
+    "snapshotPaths": ["legacy-first.html", "legacy-second.html"],
+    "snapshotPath": "legacy-primary.html",
+    "queryLogs": [
+      { "entryId": "legacy-q1", "query": "屏幕", "error": "只保存了判定日志", "logOnly": true },
+      { "entryId": "legacy-q2", "query": "屏幕 别称", "error": "未保存网页快照", "logOnly": true }
+    ]
+  },
+  "historyRows": [
+    {
+      "taskId": "fixture-pg248qp",
+      "status": "success",
+      "detailEntry": "查看详情",
+      "priceComparison": {
+        "label": "达到采购价120%",
+        "reason": "行情价为采购价的 137.5%"
+      },
+      "snapshotEntries": [
+        { "entryId": "pg248qp-q1", "query": "PG248QP", "path": "pg248qp-1.html", "snapshotStatus": "saved" },
+        { "entryId": "pg248qp-q2", "query": "ROG PG248QP", "path": "pg248qp-2.html", "snapshotStatus": "saved" },
+        { "entryId": "pg248qp-q3", "query": "PG248QP 540Hz", "path": "pg248qp-3.html", "snapshotStatus": "saved" }
+      ],
+      "queryLogs": [
+        { "entryId": "pg248qp-q3", "query": "PG248QP 540Hz", "accepted": 1, "reasonCodes": ["accepted"] },
+        { "entryId": "pg248qp-q1", "query": "PG248QP", "accepted": 2, "reasonCodes": ["accepted", "blacklist"] },
+        { "entryId": "pg248qp-q2", "query": "ROG PG248QP", "accepted": 1, "reasonCodes": ["accepted"] }
+      ]
+    },
+    {
+      "taskId": "fixture-m470",
+      "status": "success",
+      "detailEntry": "查看详情",
+      "priceComparison": {
+        "label": "高于采购价（未满120%）",
+        "reason": "行情价为采购价的 117.5%"
+      },
+      "snapshotEntries": [
+        { "entryId": "m470-q1", "query": "M470", "path": "m470-1.html", "snapshotStatus": "saved" },
+        { "entryId": "m470-q2", "query": "M470 显示器", "path": "m470-2.html", "snapshotStatus": "saved" }
+      ],
+      "queryLogs": [
+        { "entryId": "m470-q2", "query": "M470 显示器", "accepted": 2, "reasonCodes": ["accepted"] },
+        { "entryId": "m470-q1", "query": "M470", "accepted": 1, "reasonCodes": ["accepted"] }
+      ]
+    },
+    {
+      "taskId": "fixture-m350",
+      "status": "invalid_price",
+      "detailEntry": "查看详情",
+      "reason": "行情价低于采购价",
+      "priceComparison": {
+        "label": "低于采购价",
+        "reason": "行情价 ¥350 低于采购价 ¥400"
+      },
+      "snapshotEntries": [
+        { "entryId": "m350-q1", "query": "M350", "path": null, "snapshotStatus": "unrecorded", "error": "该次运行没有保存逐关键词快照" }
+      ],
+      "queryLogs": [
+        { "entryId": "m350-q1", "query": "M350", "snapshotStatus": "log_only", "logOnly": true, "error": "行情价低于采购价", "cards": 0, "accepted": 0, "reasonCodes": ["below_purchase_price"] }
+      ]
+    }
+  ]
+}

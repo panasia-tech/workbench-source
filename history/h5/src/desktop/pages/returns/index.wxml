@@ -1,0 +1,116 @@
+<wxs module="fmt" src="../../utils/format.wxs" />
+
+<!-- 退货管理（电脑版）：状态 tab + 表格（原因、收货核对结果拆成列）+ 操作列 + 页码 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">退货管理</view>
+      <view class="dk-sub">共 {{total}} 条</view>
+    </view>
+    <view class="dk-row">
+      <view wx:if="{{canCreate}}" class="dk-btn dk-btn--primary" bindtap="goCreate">创建退货单</view>
+    </view>
+  </view>
+
+  <view class="dk-card">
+    <view class="dk-toolbar">
+      <view class="dk-tabs">
+        <view
+          wx:for="{{filterTabs}}"
+          wx:key="key"
+          class="dk-tab {{listTab === item.key ? 'dk-tab--on' : ''}}"
+          data-tab="{{item.key}}"
+          bindtap="switchTab"
+        >{{item.label}}</view>
+      </view>
+      <text wx:if="{{canReceive}}" class="dk-help">退回的货先「复验」对照入库结果逐项验、看历次影像，再「收货核对」入库</text>
+    </view>
+
+    <view class="dk-table-wrap">
+      <table class="dk-table">
+        <thead>
+          <tr>
+            <th>商品</th>
+            <th>退货单 / 创建</th>
+            <th>退回原因</th>
+            <th>收货核对</th>
+            <th>状态</th>
+            <th class="dk-ops">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr wx:for="{{list}}" wx:key="id">
+            <td>
+              <view class="dk-media">
+                <image
+                  wx:if="{{item.cover_thumb_url || item.cover_url}}"
+                  class="dk-thumb"
+                  src="{{item.cover_thumb_url || item.cover_url}}"
+                  mode="aspectFill"
+                  data-url="{{item.cover_url || item.cover_thumb_url}}"
+                  bindtap="dkPreview"
+                />
+                <view wx:elif="{{item.location_images[0]}}" class="ret-dk-thumb-wrap">
+                  <image class="dk-thumb" src="{{item.location_images[0]}}" mode="aspectFill" data-url="{{item.location_images[0]}}" bindtap="dkPreview" />
+                  <text class="ret-dk-loc-badge">定位</text>
+                </view>
+                <view wx:else class="dk-thumb ret-dk-thumb-empty">{{item.product_name[0] || '退'}}</view>
+                <view class="dk-grow">
+                  <view class="dk-cell-main dk-ellipsis ret-dk-name" title="{{item.product_name}}">{{item.product_name}}</view>
+                  <view class="dk-cell-sub">{{item.sku_code}}</view>
+                </view>
+              </view>
+            </td>
+            <td class="dk-nowrap">
+              <view>{{item.return_no}}</view>
+              <view class="dk-cell-sub">{{fmt.datetime(item.created_at)}} · {{item.operator_name || '—'}}</view>
+            </td>
+            <td>
+              <view class="dk-nowrap">{{item.dkReason || '—'}}</view>
+              <view wx:if="{{item.reason}}" class="dk-cell-sub dk-ellipsis ret-dk-reason" title="{{item.reason}}">{{item.reason}}</view>
+            </td>
+            <td class="dk-nowrap">
+              <block wx:if="{{item.received_at}}">
+                <view>{{fmt.datetime(item.received_at)}}</view>
+                <view class="dk-cell-sub" title="{{item.received_serial ? '序列号 ' + item.received_serial : ''}}">{{item.receiver_name || '—'}} · {{item.dkCondition || '—'}}{{item.received_location_code ? ' · ' + item.received_location_code : ''}}</view>
+              </block>
+              <text wx:else class="dk-muted">未收货</text>
+            </td>
+            <td>
+              <text class="dk-tag {{fmt.returnStatusTag(item.status)}}">{{fmt.returnStatusLabel(item.status)}}</text>
+              <view wx:if="{{item.dkResolution}}" class="dk-cell-sub">{{item.dkResolution}}{{item.resolver_name ? ' · ' + item.resolver_name : ''}}</view>
+              <view wx:if="{{item.status === 'ABNORMAL' && item.abnormal_reason}}" class="ret-dk-abnormal dk-ellipsis" title="{{item.abnormal_reason}}">异常：{{item.abnormal_reason}}</view>
+            </td>
+            <td class="dk-ops ret-dk-opscell">
+                <text
+                  wx:if="{{canReceive && (item.status === 'RETURNING' || item.status === 'PENDING_INBOUND' || item.status === 'ABNORMAL')}}"
+                  class="dk-link"
+                  data-url="/pages/returns/recheck/index?id={{item.id}}"
+                  bindtap="dkOpen"
+                >复验</text>
+                <text wx:if="{{item.status === 'RETURNING' && canCreate}}" class="dk-link" data-id="{{item.id}}" bindtap="markInbound">标记待入库</text>
+                <text wx:if="{{(item.status === 'RETURNING' || item.status === 'PENDING_INBOUND') && canReceive}}" class="dk-link" data-item="{{item}}" bindtap="receive">收货核对</text>
+                <block wx:if="{{item.status === 'ABNORMAL' && canResolve}}">
+                  <text class="dk-link" data-id="{{item.id}}" data-action="RESTOCK" bindtap="resolve">恢复在库</text>
+                  <text class="dk-link dk-link--danger" data-id="{{item.id}}" data-action="LOSS" bindtap="resolve">报损</text>
+                  <text class="dk-link" data-id="{{item.id}}" data-action="REJECT" bindtap="resolve">驳回重核</text>
+                </block>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </view>
+
+    <view wx:if="{{!list.length && !loading}}" class="dk-empty">{{emptyText}}</view>
+    <view wx:if="{{loading && !list.length}}" class="dk-empty">加载中…</view>
+
+    <view wx:if="{{total > dkPageSize}}" class="dk-pager">
+      <text>共 {{total}} 条，每页 {{dkPageSize}} 条</text>
+      <view class="dk-row">
+        <view class="dk-btn dk-btn--sm {{dkPage <= 1 ? 'dk-btn--disabled' : ''}}" bindtap="dkPrev">上一页</view>
+        <text>第 {{dkPage}} / {{dkPages}} 页</text>
+        <view class="dk-btn dk-btn--sm {{dkPage >= dkPages ? 'dk-btn--disabled' : ''}}" bindtap="dkNext">下一页</view>
+      </view>
+    </view>
+  </view>
+</view>

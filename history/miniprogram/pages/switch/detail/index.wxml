@@ -1,0 +1,34 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<view class="page-wrap page-wrap--no-tab" wx:if="{{order}}">
+  <view class="card">
+    <view class="card-head">{{order.switch_no}}</view>
+    <view class="list-item"><text>货号</text><text>{{order.sku_code}}</text></view>
+    <view class="list-item"><text>商品</text><text>{{order.product_name}}</text></view>
+    <view class="list-item"><text>单价</text><text>¥{{fmt.money(order.unit_price)}}</text></view>
+    <view class="list-item"><text>状态</text><text>{{order.status}}</text></view>
+    <view class="list-item"><text>截单</text><text>{{order.cutoff_status}}</text></view>
+  </view>
+
+  <view class="card" wx:if="{{order.status === 'ACTIVE'}}">
+    <view class="card-head">收定金</view>
+    <input class="input" type="digit" value="{{depositAmount}}" bindinput="onDepositInput" placeholder="定金金额" />
+    <button class="btn btn-sm" bindtap="payDeposit" wx:if="{{!order.deposit_paid_at}}">确认收定金</button>
+    <view wx:else class="tip">已收定金 ¥{{fmt.money(order.deposit_amount)}}</view>
+  </view>
+
+  <view class="card" wx:if="{{order.status === 'ACTIVE' && order.deposit_paid_at}}">
+    <view class="card-head">收尾款</view>
+    <input class="input" type="digit" value="{{finalAmount}}" bindinput="onFinalInput" placeholder="尾款金额" />
+    <button class="btn btn-sm" bindtap="payFinal" wx:if="{{!order.final_paid_at}}">确认收尾款</button>
+    <view wx:else class="tip">已收尾款 ¥{{fmt.money(order.final_amount)}}</view>
+  </view>
+
+  <view class="card" wx:if="{{order.status === 'ACTIVE' && order.final_paid_at && order.cutoff_status !== 'PENDING'}}">
+    <button class="btn-primary btn-block" bindtap="applyCutoff">申请截单</button>
+  </view>
+
+  <view class="card" wx:if="{{order.status === 'ACTIVE' && order.cutoff_status !== 'APPROVED'}}">
+    <button class="btn btn-outline btn-block" bindtap="cancelOrder">取消切单</button>
+  </view>
+</view>

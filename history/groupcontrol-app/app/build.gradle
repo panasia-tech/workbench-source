@@ -1,0 +1,117 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+// 签名配置从 keystore.properties 读(该文件与 *.jks 均已 gitignore，勿把密钥提交进库)
+def keystorePropsFile = rootProject.file('keystore.properties')
+def keystoreProps = new Properties()
+if (keystorePropsFile.exists()) {
+    keystoreProps.load(new FileInputStream(keystorePropsFile))
+}
+
+android {
+    namespace 'com.erp.groupcontrol'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.erp.groupcontrol"
+        minSdk 24                 // 无障碍手势 dispatchGesture 需 24+
+        targetSdk 34
+        versionCode 5
+        versionName "1.4"
+    }
+
+    signingConfigs {
+        release {
+            if (keystoreProps['storeFile']) {
+                storeFile rootProject.file(keystoreProps['storeFile'])
+                storePassword keystoreProps['storePassword']
+                keyAlias keystoreProps['keyAlias']
+                keyPassword keystoreProps['keyPassword']
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+            // ===== 本地联调档：走开发机上的 gc 服务 + 本地 EMQX =====
+            // ⚠️ 真机的「本地」不是 127.0.0.1！要填【开发机在局域网里的 IP】(手机与开发机同一 Wi-Fi)。
+            //    · 真机 → 用开发机局域网 IP，如 192.168.x.x
+            //    · Android 模拟器 → 访问宿主机固定用 10.0.2.2
+            // 以下均为占位，务必改成你自己的开发机地址。
+            // 本机 gc 服务 HTTP(:8100)直连不过 nginx → API_BASE 含完整 /api/gc 前缀。
+            // 192.168.5.20 = 本开发机局域网 IP(手机需与之同一 Wi-Fi;换网络/换机要改这里)。
+            buildConfigField "String",  "API_BASE",      '"http://127.0.0.1:8100/api/gc"'
+            // 本地 EMQX/mosquitto 主机(= 开发机 IP)
+            buildConfigField "String",  "MQTT_HOST",     '"192.168.5.20"'
+            buildConfigField "int",     "MQTT_PORT",     "1883"
+            buildConfigField "boolean", "MQTT_TLS",      "false"
+            // 与服务端 .env 的 GC_ENROLL_SECRET 一致(= .env.example 的 dev 值)
+            buildConfigField "String",  "ENROLL_SECRET", '"gc-enroll-dev-secret"'
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            // 无 keystore.properties 时不挂签名，避免他人 clone 后构建直接失败
+            if (keystoreProps['storeFile']) {
+                signingConfig signingConfigs.release
+            }
+            // ===== 线上正式档 =====
+            // gc 经 nginx 反代:service.example.invalid/gc/ → 后端 /api/gc/(见 deploy/nginx/admin.conf)。
+            // API_BASE 到 /gc 为止,拼 /enroll = http://127.0.0.1:8000 → 后端收 /api/gc/enroll。
+            // ⚠️别写成 .../api/gc —— 那会绕过 /gc/ 反代、打到 ERP 的【旧内嵌】/api/gc/*(两个代际,见 gc_bind.py 顶注)。
+            buildConfigField "String",  "API_BASE",      '"http://127.0.0.1:8000"'
+            // EMQX 在腾讯云生产机 122.51.208.149(service.example.invalid 同机)。
+            // ⚠️ 8883/TLS 需先在 EMQX 配 TLS 监听 + service.example.invalid 证书(emqx.conf 现在只有明文 1883)。
+            //    没配好前,把下面 PORT 改 1883、MQTT_TLS 改 false 走明文即可先联通。
+            buildConfigField "String",  "MQTT_HOST",     '"service.example.invalid"'
+            buildConfigField "int",     "MQTT_PORT",     "8883"
+            buildConfigField "boolean", "MQTT_TLS",      "true"
+            // 正式 enroll 密钥,与生产服务端 .env 的 GC_ENROLL_SECRET 一致(2026-07-23 部署时生成)
+            buildConfigField "String",  "ENROLL_SECRET", '"gc-enroll-92ebe9c6c9701c5140f71b3c3eedfb7c"'
+        }
+    }
+
+    compileOptions {
+        // HiveMQ MQTT Client 用到 java.util.Optional / java.time，低版本 Android 需脱糖
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+    buildFeatures {
+        viewBinding true
+        // enroll/MQTT 的环境值经 BuildConfig.* 注入(见 buildTypes 里的 buildConfigField)
+        buildConfig true
+    }
+
+    // HiveMQ 依赖的 Netty 各 jar 都带 META-INF/INDEX.LIST 等，合并会冲突，统一排除
+    packaging {
+        resources {
+            excludes += [
+                'META-INF/INDEX.LIST',
+                'META-INF/io.netty.versions.properties',
+                'META-INF/DEPENDENCIES',
+                'META-INF/LICENSE*',
+                'META-INF/NOTICE*',
+                'META-INF/*.kotlin_module',
+            ]
+        }
+    }
+}
+
+dependencies {
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.7.0'
+    implementation 'androidx.activity:activity-ktx:1.8.2'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
+    // MQTT 5 客户端（手机↔EMQX 长连接）
+    implementation 'com.hivemq:hivemq-mqtt-client:1.3.3'
+    implementation 'com.google.code.gson:gson:2.10.1'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
+}

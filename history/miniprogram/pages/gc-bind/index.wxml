@@ -1,0 +1,87 @@
+<view class="page-wrap page-wrap--no-tab gc-bind-page">
+  <view class="card">
+    <view class="card-head">设备账号对账</view>
+    <view class="form-hint">
+      真机开机自检会自动上报「本机登录的闲鱼」并绑定,此页是对账看板:看每个店铺是否有一台在线、就绪、且登录了正确闲鱼的设备。异常可点进去手动指定设备兜底。
+    </view>
+    <view wx:if="{{!loading && !error}}" class="gc-summary">
+      共 {{total}} 个启用店铺 · <text class="gc-summary-ok">就绪 {{readyCount}}</text>
+      <text wx:if="{{issueCount}}"> · <text class="gc-summary-warn">待处理 {{issueCount}}</text></text>
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="card"><view class="gc-empty">加载中…</view></view>
+
+  <view wx:elif="{{error}}" class="card">
+    <view class="gc-empty gc-empty--err">{{error}}</view>
+    <button class="btn btn-outline btn-block" bindtap="load">重试</button>
+  </view>
+
+  <view wx:elif="{{!shops.length}}" class="card">
+    <view class="gc-empty">暂无启用的销售店铺</view>
+  </view>
+
+  <view wx:else class="card">
+    <view
+      wx:for="{{shops}}"
+      wx:key="shop_id"
+      class="gc-row"
+      data-nick="{{item.nick}}"
+      data-label="{{item.shop_label}}"
+      data-device-id="{{item.device_id}}"
+      bindtap="openSheet"
+    >
+      <view class="gc-row-main">
+        <view class="gc-row-title">{{item.shop_label}}</view>
+        <view class="gc-row-sub">期望闲鱼：{{item.nick || '未配置'}}</view>
+        <view class="gc-row-dev gc-row-hint">{{item._st.hint}}</view>
+      </view>
+      <view class="gc-row-right">
+        <view class="tag {{item._st.tag}}">{{item._st.label}}</view>
+        <text class="gc-row-act">手动指定 ›</text>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 设备选择 bottom-sheet -->
+<view wx:if="{{sheetVisible}}" class="gc-mask" bindtap="closeSheet" catchtouchmove="noop">
+  <view class="gc-sheet" catchtap="noop">
+    <view class="gc-sheet-head">
+      <text class="gc-sheet-cancel" bindtap="closeSheet">取消</text>
+      <text class="gc-sheet-title">{{activeLabel}} · 手动指定设备</text>
+      <text class="gc-sheet-nick">{{activeNick}}</text>
+    </view>
+
+    <view class="gc-sheet-body">
+      <view wx:if="{{devLoading}}" class="gc-empty">设备加载中…</view>
+      <view wx:elif="{{!devices.length}}" class="gc-empty">群控暂无设备，请先注册真机或启动 AdsPower 执行端</view>
+      <block wx:else>
+        <view
+          wx:for="{{devices}}"
+          wx:key="id"
+          class="gc-dev {{item.id === activeDeviceId ? 'gc-dev--on' : ''}}"
+          data-id="{{item.id}}"
+          bindtap="pickDevice"
+        >
+          <view class="gc-dev-main">
+            <view class="gc-dev-name">
+              <text class="gc-dot {{item.online ? 'gc-dot--on' : 'gc-dot--off'}}"></text>
+              {{item.name}}
+            </view>
+            <view class="gc-dev-sub">{{item.kind === 'browser' ? '浏览器环境 · AdsPower' : (item.brand || '') + ' ' + (item.model || '')}} · {{item.online ? '在线' : '离线'}}</view>
+          </view>
+          <text wx:if="{{item.id === activeDeviceId}}" class="gc-dev-check">✓ 当前</text>
+        </view>
+      </block>
+    </view>
+
+    <button
+      wx:if="{{activeDeviceId}}"
+      class="btn btn-outline btn-block gc-unbind"
+      bindtap="unbind"
+      loading="{{binding}}"
+      disabled="{{binding}}"
+    >解绑设备</button>
+  </view>
+</view>

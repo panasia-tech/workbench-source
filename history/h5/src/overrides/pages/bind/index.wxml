@@ -1,0 +1,54 @@
+<!-- H5 版登录页：小程序那份是「绑定微信」，H5 没有微信，直接账号密码登录 -->
+<view class="page-wrap page-wrap--no-tab h5-login">
+  <view class="bind-logo">
+    <view class="logo-icon">泛</view>
+    <view class="logo-title">泛亚货运社</view>
+    <view class="logo-sub">员工账号登录</view>
+  </view>
+
+  <view wx:if="{{ddPending}}" class="card h5-dd-tip">正在用钉钉登录…</view>
+
+  <view class="card">
+    <view class="card-head">{{confirm ? '确认本人' : '员工登录'}}</view>
+    <view wx:if="{{ddError && !confirm}}" class="h5-dd-err">钉钉登录没成功：{{ddError}}</view>
+    <view wx:if="{{confirm}}" class="h5-confirm-tip">第一次从员工工作台进入，输一次这个账号的 ERP 密码，确认是你本人。以后从工作台进来就不用再输了。</view>
+    <view class="form-group">
+      <text class="form-label">账号</text>
+      <input class="input" placeholder="请输入账号" placeholder-class="input-ph" data-key="username" value="{{username}}" disabled="{{confirm}}" confirm-type="next" autocomplete="username" name="username" bindinput="onInput" />
+    </view>
+    <view class="form-group">
+      <text class="form-label">密码</text>
+      <view class="input-wrap">
+        <input
+          class="input input--with-suffix {{remembered ? 'h5-pwd--remembered' : ''}}"
+          password="DEMO_ONLY_REDACTED"
+          placeholder="{{remembered ? '已记住密码' : '请输入密码'}}"
+          placeholder-class="input-ph"
+          data-key="password"
+          value="{{password}}"
+          confirm-type="go"
+          autocomplete="current-password"
+          name="password"
+          bindinput="onInput"
+          bindfocus="onPasswordFocus"
+          bindconfirm="onSubmit"
+        />
+        <view wx:if="{{!remembered}}" class="pwd-toggle" bindtap="togglePassword">
+          <view class="pwd-eye {{showPassword ? 'pwd-eye--visible' : 'pwd-eye--hidden'}}"></view>
+        </view>
+      </view>
+    </view>
+    <view wx:if="{{!confirm}}" class="h5-remember" bindtap="toggleRemember" aria-role="checkbox" aria-checked="{{remember}}">
+      <view class="h5-check {{remember ? 'h5-check--on' : ''}}"></view>
+      <text>记住密码</text>
+    </view>
+    <button class="btn btn-primary btn-block" loading="{{submitting}}" bindtap="onSubmit">{{confirm ? '确认并进入' : '登录'}}</button>
+    <button wx:if="{{ddAvailable && !confirm}}" class="btn btn-outline btn-block h5-dd-btn" disabled="{{submitting}}" bindtap="onDingtalk">用钉钉登录</button>
+  </view>
+
+  <view wx:if="{{canInstall}}" class="h5-install" bindtap="onInstall">添加到手机桌面</view>
+
+  <view class="h5-beian">
+    <a class="h5-beian-link" href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">浙ICP备2026010391号-2</a>
+  </view>
+</view>

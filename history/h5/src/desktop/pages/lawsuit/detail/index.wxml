@@ -1,0 +1,200 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<!-- 材料模块（电脑版）：一张卡片一类材料，图片墙 + 上传格子 -->
+<template name="dk-law-media">
+  <view class="dk-card">
+    <view class="dk-card__head">
+      <text>{{title}}</text>
+      <text class="dk-sub">{{items.length}} 个</text>
+    </view>
+    <view class="dk-card__body">
+      <view class="dk-gallery ld-dk-gallery">
+        <view wx:for="{{items}}" wx:key="*this" class="ld-dk-cell">
+          <media-thumb url="{{item}}" preview-url="{{item}}" size="fill" preview="{{true}}" group-urls="{{items}}" />
+          <view
+            class="ld-dk-del"
+            catchtap="removeMedia"
+            data-field="{{field}}"
+            data-display="{{display}}"
+            data-index="{{index}}"
+            title="删除"
+          >×</view>
+        </view>
+        <view
+          class="ld-dk-add"
+          catchtap="addMedia"
+          data-field="{{field}}"
+          data-display="{{display}}"
+          data-dir="{{dir}}"
+        >
+          <text class="ld-dk-add__plus">+</text>
+          <text>图片 / 视频</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<!-- 起诉单（电脑版）：新建先在表格里选采购单；选好后左边四类材料、右边采购单与起诉单信息，保存在底部操作条 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">{{isEdit ? '起诉单 ' + (lawsuitNo || '') : '新建起诉单'}}</view>
+      <view class="dk-sub">{{isEdit ? '补传律师回复、法院材料、判决结果后保存' : (boundOrder ? '先上传证据材料，律师回复可一并上传；法院材料 / 判决结果创建后再编辑补传' : '搜索并选择一条采购单进行绑定')}}</view>
+    </view>
+    <view class="dk-row">
+      <text wx:if="{{isEdit && statusText}}" class="dk-tag {{statusCls}}">{{statusText}}</text>
+    </view>
+  </view>
+
+  <!-- 新建：还没绑定采购单 -->
+  <view wx:if="{{!isEdit && !boundOrder}}" class="dk-card">
+    <view class="dk-toolbar">
+      <input
+        class="dk-input dk-search"
+        placeholder="采购单号 / 商品名 / 闲鱼单号…"
+        value="{{q}}"
+        bindinput="onQInput"
+        confirm-type="search"
+        bindconfirm="onSearchPO"
+      />
+      <view class="dk-btn dk-btn--primary {{searching ? 'dk-btn--disabled' : ''}}" bindtap="onSearchPO">{{searching ? '搜索中…' : '搜索采购单'}}</view>
+      <text class="dk-sub">{{isSearchResult ? '搜索结果' : '最近采购单'}}，点一行绑定</text>
+    </view>
+    <view wx:if="{{searched}}" class="dk-table-wrap">
+      <table class="dk-table">
+        <thead>
+          <tr>
+            <th>商品</th>
+            <th>采购单号</th>
+            <th>规格</th>
+            <th class="dk-num">单价</th>
+            <th class="dk-ops">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr wx:for="{{poList}}" wx:key="id" class="dk-tr--click" data-id="{{item.id}}" bindtap="bindPO">
+            <td>
+              <view class="dk-media">
+                <image
+                  wx:if="{{item.product_image_thumb}}"
+                  class="dk-thumb"
+                  src="{{item.product_image_thumb}}"
+                  mode="aspectFill"
+                  data-url="{{item.product_image || item.product_image_thumb}}"
+                  catchtap="dkPreview"
+                />
+                <view wx:else class="dk-thumb ld-dk-thumb-empty">{{item.product_name[0] || '采'}}</view>
+                <view class="dk-cell-main dk-ellipsis" title="{{item.product_name}}">{{item.product_name}}</view>
+              </view>
+            </td>
+            <td class="dk-nowrap">{{item.order_no}}</td>
+            <td class="dk-nowrap">{{item.spec || '—'}}</td>
+            <td class="dk-num">¥{{fmt.money(item.unit_price)}}</td>
+            <td class="dk-ops"><text class="dk-link" data-id="{{item.id}}" catchtap="bindPO">选择</text></td>
+          </tr>
+        </tbody>
+      </table>
+    </view>
+    <view wx:if="{{searched && !poList.length && !searching}}" class="dk-empty">{{isSearchResult ? '未找到采购单' : '暂无采购单'}}</view>
+    <view wx:if="{{searching && !poList.length}}" class="dk-empty">加载中…</view>
+  </view>
+
+  <!-- 已绑定采购单 / 编辑 -->
+  <view wx:if="{{boundOrder}}" class="dk-split">
+    <view class="ld-dk-col">
+      <view class="dk-grid-2">
+        <template is="dk-law-media" data="{{title:'证据材料', field:'evidenceMedia', display:'evidenceDisplay', dir:'lawsuit/evidence/', items:evidenceDisplay}}" />
+        <template is="dk-law-media" data="{{title:'律师回复', field:'lawyerMedia', display:'lawyerDisplay', dir:'lawsuit/lawyer/', items:lawyerDisplay}}" />
+        <block wx:if="{{isEdit}}">
+          <template is="dk-law-media" data="{{title:'法院材料', field:'courtMedia', display:'courtDisplay', dir:'lawsuit/court/', items:courtDisplay}}" />
+          <template is="dk-law-media" data="{{title:'判决结果', field:'judgmentMedia', display:'judgmentDisplay', dir:'lawsuit/judgment/', items:judgmentDisplay}}" />
+        </block>
+      </view>
+      <view wx:if="{{!isEdit}}" class="dk-help">新建起诉单需先上传证据材料；员工整理后可补充律师回复，法院材料 / 判决结果可创建后再编辑补传。</view>
+    </view>
+
+    <view class="ld-dk-col">
+      <view class="dk-card">
+        <view class="dk-card__head">
+          <text>采购单</text>
+          <text wx:if="{{!isEdit}}" class="dk-link ld-dk-headlink" bindtap="unbindPO">重新选择</text>
+        </view>
+        <view class="dk-card__body">
+          <view class="dk-media ld-dk-po">
+            <media-thumb
+              wx:if="{{boundOrder.product_image_thumb}}"
+              url="{{boundOrder.product_image_thumb}}"
+              preview-url="{{boundOrder.product_image}}"
+              size="small"
+            />
+            <view wx:else class="dk-thumb dk-thumb--lg ld-dk-thumb-empty">{{boundOrder.product_name[0] || '采'}}</view>
+            <view class="dk-grow">
+              <view class="dk-cell-main">{{boundOrder.product_name}}</view>
+              <view class="dk-cell-sub">{{boundOrder.brand || ''}}{{boundOrder.model ? ' ' + boundOrder.model : ''}}{{(boundOrder.brand || boundOrder.model) && boundOrder.spec ? ' · ' : ''}}{{boundOrder.spec || ''}}</view>
+            </view>
+          </view>
+          <view class="dk-desc dk-desc--2">
+            <view class="dk-desc__item">
+              <view class="dk-desc__k">采购单号</view>
+              <view class="dk-desc__v">{{boundOrder.order_no || '—'}}</view>
+            </view>
+            <view class="dk-desc__item">
+              <view class="dk-desc__k">单价</view>
+              <view class="dk-desc__v">¥{{fmt.money(boundOrder.unit_price)}}</view>
+            </view>
+            <block wx:if="{{isEdit && dkMeta}}">
+              <view class="dk-desc__item">
+                <view class="dk-desc__k">卖家</view>
+                <view class="dk-desc__v">{{dkMeta.seller_name || '—'}}</view>
+              </view>
+              <view class="dk-desc__item">
+                <view class="dk-desc__k">快递单号</view>
+                <view class="dk-desc__v">{{dkMeta.tracking_no || '—'}}</view>
+              </view>
+            </block>
+          </view>
+          <view class="dk-link ld-dk-gap" bindtap="openBoundPO">查看采购单详情 ›</view>
+        </view>
+      </view>
+
+      <view wx:if="{{isEdit}}" class="dk-card">
+        <view class="dk-card__head">起诉单</view>
+        <view class="dk-card__body">
+          <view class="dk-desc dk-desc--2">
+            <view class="dk-desc__item">
+              <view class="dk-desc__k">起诉单号</view>
+              <view class="dk-desc__v">{{lawsuitNo || '—'}}</view>
+            </view>
+            <view class="dk-desc__item">
+              <view class="dk-desc__k">状态</view>
+              <view class="dk-desc__v"><text class="dk-tag {{statusCls}}">{{statusText || '—'}}</text></view>
+            </view>
+            <block wx:if="{{dkMeta}}">
+              <view class="dk-desc__item">
+                <view class="dk-desc__k">建单</view>
+                <view class="dk-desc__v">{{dkMeta.created_by_name || '—'}}</view>
+                <view class="dk-cell-sub">{{fmt.datetime(dkMeta.created_at)}}</view>
+              </view>
+              <view class="dk-desc__item">
+                <view class="dk-desc__k">最后整理</view>
+                <view class="dk-desc__v">{{dkMeta.last_action_by_name || '—'}}</view>
+                <view wx:if="{{dkMeta.last_action_at}}" class="dk-cell-sub">{{fmt.datetime(dkMeta.last_action_at)}}</view>
+              </view>
+            </block>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{loading && !boundOrder}}" class="dk-card dk-empty">加载中…</view>
+
+  <view wx:if="{{boundOrder}}" class="dk-actionbar">
+    <block wx:if="{{isEdit}}">
+      <view class="dk-btn dk-btn--danger" bindtap="onDelete">删除起诉单</view>
+      <view class="dk-btn dk-btn--primary {{submitting ? 'dk-btn--disabled' : ''}}" bindtap="onSubmit">{{submitting ? '保存中…' : '保存'}}</view>
+    </block>
+    <view wx:else class="dk-btn dk-btn--primary {{submitting ? 'dk-btn--disabled' : ''}}" bindtap="onSubmit">{{submitting ? '创建中…' : '创建起诉单'}}</view>
+  </view>
+</view>

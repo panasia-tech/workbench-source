@@ -1,0 +1,467 @@
+{
+ "screen": [
+  1080,
+  2400
+ ],
+ "nodes": [
+  {
+   "desc": "",
+   "cls": "android.widget.FrameLayout",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1200,
+   "w": 1080,
+   "h": 2400
+  },
+  {
+   "desc": "",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1200,
+   "w": 1080,
+   "h": 2400
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.LinearLayout",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1178,
+   "w": 1080,
+   "h": 2356
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.FrameLayout",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1178,
+   "w": 1080,
+   "h": 2356
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.FrameLayout",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1178,
+   "w": 1080,
+   "h": 2356
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.FrameLayout",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1178,
+   "w": 1080,
+   "h": 2356
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.FrameLayout",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1178,
+   "w": 1080,
+   "h": 2356
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.FrameLayout",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1178,
+   "w": 1080,
+   "h": 2356
+  },
+  {
+   "desc": "",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1178,
+   "w": 1080,
+   "h": 2356
+  },
+  {
+   "desc": "",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1178,
+   "w": 1080,
+   "h": 2356
+  },
+  {
+   "desc": "闲鱼私聊, 左\n滑\n看\nTA\n的\n闲\n鱼\n号",
+   "cls": "android.view.View",
+   "clickable": true,
+   "cx": 540,
+   "cy": 1178,
+   "w": 1080,
+   "h": 2356
+  },
+  {
+   "desc": "",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1178,
+   "w": 1080,
+   "h": 2356
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.ScrollView",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1178,
+   "w": 1080,
+   "h": 2356
+  },
+  {
+   "desc": "卖家人不错？送Ta闲鱼小红花\n动动手指，鼓励一下~\n送给Ta",
+   "cls": "android.widget.ImageView",
+   "clickable": true,
+   "cx": 540,
+   "cy": 18,
+   "w": 1080,
+   "h": 37
+  },
+  {
+   "desc": "",
+   "cls": "android.view.View",
+   "clickable": true,
+   "cx": 540,
+   "cy": 110,
+   "w": 1080,
+   "h": 146
+  },
+  {
+   "desc": "",
+   "cls": "android.view.View",
+   "clickable": true,
+   "cx": 540,
+   "cy": 118,
+   "w": 742,
+   "h": 52
+  },
+  {
+   "desc": "",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 540,
+   "cy": 118,
+   "w": 742,
+   "h": 52
+  },
+  {
+   "desc": "",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 540,
+   "cy": 118,
+   "w": 742,
+   "h": 52
+  },
+  {
+   "desc": "购买获50g蚂蚁森林能量，1分钱兑好礼  ",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 486,
+   "cy": 119,
+   "w": 657,
+   "h": 71
+  },
+  {
+   "desc": "去兑换",
+   "cls": "android.widget.Button",
+   "clickable": true,
+   "cx": 856,
+   "cy": 119,
+   "w": 132,
+   "h": 71
+  },
+  {
+   "desc": "已读",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 540,
+   "cy": 381,
+   "w": 1080,
+   "h": 396
+  },
+  {
+   "desc": "我已付款，等待你发货\n请包装好商品，并按我在闲鱼上提供的地址发货",
+   "cls": "android.view.View",
+   "clickable": true,
+   "cx": 551,
+   "cy": 375,
+   "w": 700,
+   "h": 275
+  },
+  {
+   "desc": "头像",
+   "cls": "android.widget.ImageView",
+   "clickable": true,
+   "cx": 978,
+   "cy": 295,
+   "w": 137,
+   "h": 137
+  },
+  {
+   "desc": "",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1277,
+   "w": 1080,
+   "h": 1397
+  },
+  {
+   "desc": "头像",
+   "cls": "android.widget.ImageView",
+   "clickable": true,
+   "cx": 102,
+   "cy": 692,
+   "w": 138,
+   "h": 138
+  },
+  {
+   "desc": "\n温馨提示：\n网盘容易失效，先转存再观看\n\n转存方法： 右下角先转存，然后在网盘查看下载\n如文件太多无法转存，可多次少量转存\n\n❤️好   讠平    一下，主页任意资料截图发我，送你一份\n\n我用夸克网盘给你分享了「24故事会1960-2025」，点击链接或复制整段内容，打开「夸克APP」即可获取。\n祄七七并枫并哉级纳哉娃汢\n/~b7a13ZJnz8~:/\n链接：https://pan.quark.cn/s/ae01fd15fe6c",
+   "cls": "android.view.View",
+   "clickable": true,
+   "cx": 558,
+   "cy": 1288,
+   "w": 759,
+   "h": 1309
+  },
+  {
+   "desc": "",
+   "cls": "android.view.View",
+   "clickable": true,
+   "cx": 540,
+   "cy": 2049,
+   "w": 1080,
+   "h": 146
+  },
+  {
+   "desc": "",
+   "cls": "android.view.View",
+   "clickable": true,
+   "cx": 540,
+   "cy": 2058,
+   "w": 178,
+   "h": 52
+  },
+  {
+   "desc": "",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 540,
+   "cy": 2058,
+   "w": 178,
+   "h": 52
+  },
+  {
+   "desc": "卖家已发货",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 540,
+   "cy": 2058,
+   "w": 178,
+   "h": 52
+  },
+  {
+   "desc": "",
+   "cls": "android.view.View",
+   "clickable": true,
+   "cx": 540,
+   "cy": 166,
+   "w": 1080,
+   "h": 121
+  },
+  {
+   "desc": "返回",
+   "cls": "android.widget.ImageView",
+   "clickable": true,
+   "cx": 49,
+   "cy": 166,
+   "w": 99,
+   "h": 121
+  },
+  {
+   "desc": "半卖半送了\n会员名：t***7",
+   "cls": "android.widget.ImageView",
+   "clickable": true,
+   "cx": 518,
+   "cy": 166,
+   "w": 838,
+   "h": 121
+  },
+  {
+   "desc": "更多",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 1008,
+   "cy": 166,
+   "w": 143,
+   "h": 121
+  },
+  {
+   "desc": "更多",
+   "cls": "android.widget.ImageView",
+   "clickable": true,
+   "cx": 1008,
+   "cy": 166,
+   "w": 143,
+   "h": 121
+  },
+  {
+   "desc": "商品图片",
+   "cls": "android.widget.ImageView",
+   "clickable": false,
+   "cx": 110,
+   "cy": 337,
+   "w": 154,
+   "h": 154
+  },
+  {
+   "desc": "商品信息, ¥​0​.​0​0​\n含​运​费​0​.​0​0​元​\n等待见面交易",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 628,
+   "cy": 337,
+   "w": 838,
+   "h": 154
+  },
+  {
+   "desc": "",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 688,
+   "cy": 282,
+   "w": 717,
+   "h": 38
+  },
+  {
+   "desc": "确认收货，按钮, 确认收货",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 832,
+   "cy": 365,
+   "w": 209,
+   "h": 88
+  },
+  {
+   "desc": "更多，按钮",
+   "cls": "android.widget.ImageView",
+   "clickable": false,
+   "cx": 1003,
+   "cy": 365,
+   "w": 88,
+   "h": 88
+  },
+  {
+   "desc": "想跟TA说点什么...",
+   "cls": "android.view.View",
+   "clickable": true,
+   "cx": 485,
+   "cy": 2273,
+   "w": 684,
+   "h": 99
+  },
+  {
+   "desc": "",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 485,
+   "cy": 2272,
+   "w": 618,
+   "h": 52
+  },
+  {
+   "desc": "",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 485,
+   "cy": 2272,
+   "w": 618,
+   "h": 52
+  },
+  {
+   "desc": "语音按钮",
+   "cls": "android.widget.ImageView",
+   "clickable": true,
+   "cx": 58,
+   "cy": 2285,
+   "w": 116,
+   "h": 110
+  },
+  {
+   "desc": "表情按钮",
+   "cls": "android.widget.ImageView",
+   "clickable": true,
+   "cx": 899,
+   "cy": 2285,
+   "w": 88,
+   "h": 110
+  },
+  {
+   "desc": "更多选择",
+   "cls": "android.widget.ImageView",
+   "clickable": true,
+   "cx": 998,
+   "cy": 2285,
+   "w": 110,
+   "h": 110
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.ScrollView",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1178,
+   "w": 1080,
+   "h": 2356
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.LinearLayout",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1178,
+   "w": 1080,
+   "h": 2356
+  },
+  {
+   "desc": "",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1178,
+   "w": 1080,
+   "h": 2356
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.FrameLayout",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1178,
+   "w": 1080,
+   "h": 2356
+  },
+  {
+   "desc": "",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 540,
+   "cy": 2378,
+   "w": 1080,
+   "h": 44
+  }
+ ]
+}

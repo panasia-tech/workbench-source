@@ -1,0 +1,50 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<view class="page">
+  <view class="card ai-head">
+    <view class="ai-nick">{{nick || '未识别的号'}}</view>
+    <view wx:if="{{shopLabels}}" class="ai-meta">也挂在店铺：{{shopLabels}}</view>
+    <scroll-view class="ai-tabs" scroll-x enable-flex>
+      <text
+        wx:for="{{tabs}}"
+        wx:key="key"
+        class="ai-tab {{tab === item.key ? 'ai-tab--on' : ''}}"
+        data-tab="{{item.key}}"
+        bindtap="switchTab"
+      >{{item.label}} {{item.count}}</text>
+    </scroll-view>
+  </view>
+
+  <view wx:if="{{loading}}" class="hint">加载中…</view>
+  <view wx:elif="{{!list.length}}" class="hint">{{all.length ? '这一栏没有商品' : '这个号还没发过商品'}}</view>
+
+  <view wx:else class="card">
+    <view wx:for="{{list}}" wx:key="sku_id" class="ai-item">
+      <view class="ai-row" data-id="{{item.sku_id}}" bindtap="toggle">
+        <media-thumb wx:if="{{item.cover_url}}" url="{{item.cover_url}}" preview-url="{{item.cover_url}}" size="small" />
+        <view wx:else class="ai-thumb">{{item.sku_code ? item.sku_code.slice(-2) : '?'}}</view>
+        <view class="ai-main">
+          <view class="ai-title">{{item.title || item.product_name || item.sku_code}}</view>
+          <view class="ai-sub">{{item.sku_code}}{{item.spec ? ' · ' + item.spec : ''}}{{item.location_code ? ' · ' + item.location_code : ''}}</view>
+          <view class="ai-sub">
+            <text wx:if="{{item.price}}" class="ai-price">¥{{item.price}}</text>
+            <text>{{item._when}}</text>
+          </view>
+        </view>
+        <view class="tag {{fmt.shopStateTag(item.publish_status, false)}}">{{fmt.shopListingLabel(item.publish_status)}}</view>
+      </view>
+      <view wx:if="{{expanded === item.sku_id}}" class="ai-detail">
+        <view wx:if="{{item.last_error && item.publish_status === 'FAILED'}}" class="ai-err">失败原因：{{item.last_error}}</view>
+        <view class="ai-k">商品名</view>
+        <view class="ai-v">{{item.product_name || '—'}}</view>
+        <view class="ai-k">上架标题</view>
+        <view class="ai-v">{{item.title || '—'}}</view>
+        <view class="ai-k">描述</view>
+        <view class="ai-v ai-desc">{{item.desc || '—'}}</view>
+        <view class="ai-k">库存</view>
+        <view class="ai-v">{{fmt.statusLabel(item.sku_status)}}</view>
+        <button class="btn btn-outline btn-sm" data-code="{{item.sku_code}}" catchtap="openSku">打开商品详情</button>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,40 @@
+<view class="page-wrap page-wrap--no-tab pc-page" wx:if="{{loaded}}">
+  <view class="card">
+    <view class="pc-title">{{d.product_name}}</view>
+    <view class="pc-sub">{{d.order_no}} · 成交 ¥{{d.unit_price}}</view>
+    <view class="pc-sum">共 {{d.quantity}} 件 · 已到 {{d.arrived}} 件<text wx:if="{{d.missing}}"> · 没到货 {{d.missing}} 件</text><text wx:if="{{d.quantity - d.done}}"> · 还差 {{d.quantity - d.done}} 件</text></view>
+  </view>
+
+  <view class="card" wx:if="{{d.can_set_quantity}}">
+    <view class="pc-h">这单一共几件</view>
+    <view class="pc-row">
+      <input class="pc-input" type="number" value="{{qty}}" bindinput="onQty" />
+      <button class="btn btn-primary pc-btn" bindtap="saveQty">保存</button>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="pc-h">各件情况</view>
+    <view wx:for="{{d.pieces}}" wx:key="piece_no" class="pc-piece">
+      <view class="pc-piece__head">
+        <text class="pc-piece__no">第 {{item.piece_no}} 件</text>
+        <text class="pc-state pc-state--{{item.cls}}">{{item.state}}</text>
+        <text class="pc-cost">¥{{item.cost}}</text>
+      </view>
+      <view class="pc-line">验货单 {{item.inspect_no}}<text wx:if="{{item.sku_code}}"> · 货号 {{item.sku_code}}</text><text wx:if="{{item.at}}"> · {{item.at}}</text></view>
+      <view class="pc-line" wx:if="{{item.remark}}">情况：{{item.remark}}</view>
+      <view class="pc-line" wx:if="{{item.refundLabel}}">退款：{{item.refundLabel}}</view>
+      <view class="pc-acts">
+        <text wx:if="{{item.status !== 'PENDING' && item.action_type !== 'MISSING'}}" class="pc-link" data-no="{{item.piece_no}}" bindtap="goEvidence">看这件的凭证 ›</text>
+        <text wx:if="{{item.status === 'PENDING' && d.quantity > 1}}" class="pc-link pc-link--bad" data-no="{{item.piece_no}}" bindtap="openMissing">标记没到货</text>
+      </view>
+      <view wx:if="{{missingNo === item.piece_no}}" class="pc-missing">
+        <textarea class="pc-textarea" placeholder="写明情况，比如：卖家说只剩 2 件，第 3 件退款" value="{{reason}}" bindinput="onReason" auto-height />
+        <view class="pc-row">
+          <button class="btn btn-outline pc-btn" bindtap="closeMissing">取消</button>
+          <button class="btn btn-danger pc-btn" bindtap="submitMissing">确认没到货</button>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

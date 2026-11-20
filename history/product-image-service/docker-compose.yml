@@ -1,0 +1,17 @@
+services:
+  product-image-service:
+    build: .
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "8090:8090"
+    volumes:
+      - ./data:/app/data
+      - ./storage:/app/storage
+      - ./config:/app/config:ro
+    mem_limit: 10g
+    cpus: 8.0
+    shm_size: "512m"
+    security_opt:
+      - no-new-privileges:true

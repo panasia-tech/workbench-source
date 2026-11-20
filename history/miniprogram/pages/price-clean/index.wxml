@@ -1,0 +1,98 @@
+<view class="page-wrap page-wrap--no-tab pc-page">
+  <view wx:if="{{loading}}" class="list-footer">加载中…</view>
+  <block wx:if="{{d}}">
+    <view class="card">
+      <view class="pc-name">{{d.sku.product_name}}</view>
+      <view class="pc-meta">货号 {{d.sku.sku_code}} · 型号 {{d.sku.model || '—'}}<text wx:if="{{d.query}}"> · 采集词 {{d.query}}</text></view>
+      <view class="pc-facts">
+        <view class="pc-fact"><view class="pc-fact__k">成本</view><view class="pc-fact__v">{{d.sku.cost_price ? '¥' + d.sku.cost_price : '没有'}}</view></view>
+        <view class="pc-fact"><view class="pc-fact__k">最低价</view><view class="pc-fact__v pc-blue">{{d.floor_price ? '¥' + d.floor_price : '—'}}</view></view>
+        <view class="pc-fact"><view class="pc-fact__k">清洗价</view>
+          <view wx:if="{{d.current}}" class="pc-fact__v pc-green">¥{{d.current.price}}</view>
+          <view wx:else class="pc-fact__v pc-muted">没有</view>
+          <view class="pc-fact__s">{{d.current ? 'v' + d.current.version + ' · ' + d.current.expires_on + ' 到期' : '还没有生效的'}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="card-head card-head--split">
+        <view class="card-head-main">样本</view>
+        <text class="pc-q" bindtap="toggleHelp">?</text>
+      </view>
+      <view wx:if="{{showHelp}}" class="pc-help">取这个型号最近一次采集的闲鱼第一页挂牌，按商品 ID 去重。系统先剔：3C 低于 100 元的诱饵价、标题有配件 / 维修 / 租赁 / 求购 / 回收的、偏离中位数一倍以上的。剔掉的都能恢复，人剔要写原因。只有挂牌价、已售挂牌价算销售有效价，取中位数；回收价不能代替销售价，闲鱼「已售」不当成交价。行情超过 {{d.fresh_days}} 天算旧，过期不能用；确认后要管理员生效。</view>
+      <view class="pc-crawl {{d.latest_stale ? 'pc-crawl--bad' : ''}}">
+        最近一次采集：{{d.latest_crawl_date || '没有'}}<text wx:if="{{d.latest_stale}}">，超过 {{d.fresh_days}} 天算旧，等重新采集</text>
+      </view>
+      <view wx:if="{{!d.task || d.task.status !== 'OPEN' || canRestart}}" class="pc-start">
+        <view class="pc-btn {{d.can_start && !d.latest_stale ? '' : 'pc-btn--off'}}" bindtap="start">{{d.task && d.task.status === 'OPEN' ? '换最新样本重新清洗' : d.task ? '重新清洗' : '开始清洗'}}</view>
+        <view wx:if="{{!d.can_start}}" class="pc-err">{{d.start_blocker}}</view>
+      </view>
+
+      <block wx:if="{{d.task}}">
+        <view class="pc-sub">{{d.task.crawl_date}} 采集 · {{d.task.effective.total}} 条 · 剔掉 {{d.task.effective.rejected}} 条{{d.task.status === 'OPEN' ? '' : ' · 这次已出版本，只能看'}}</view>
+        <view wx:for="{{d.task.samples}}" wx:key="id" class="pc-sample {{item.kept ? '' : 'pc-sample--out'}}">
+          <view class="pc-sample__row" data-id="{{item.id}}" bindtap="editSample">
+            <text class="pc-sample__price">¥{{item.price}}</text>
+            <text class="pc-type {{item.price_type === 'LISTING' || item.price_type === 'SOLD_LISTING' ? '' : 'pc-type--other'}}">{{item.price_type_label}}</text>
+            <text class="pc-sample__title">{{item.title}}</text>
+          </view>
+          <view wx:if="{{!item.kept}}" class="pc-reason">剔除：{{item.reject_reason}}{{item.auto ? '（系统）' : ''}}</view>
+          <view wx:if="{{editing === item.id && d.task.status === 'OPEN'}}" class="pc-edit">
+            <block wx:if="{{item.kept}}">
+              <input class="input pc-edit__in" placeholder="剔除原因，如：配置不同" value="{{reason}}" bindinput="onReason" />
+              <view class="pc-mini pc-mini--bad" data-id="{{item.id}}" bindtap="rejectSample">剔除</view>
+            </block>
+            <view wx:else class="pc-mini" data-id="{{item.id}}" bindtap="keepSample">恢复</view>
+            <picker range="{{d.price_types}}" range-key="label" data-id="{{item.id}}" bindchange="pickType">
+              <view class="pc-mini pc-mini--ghost">改类型</view>
+            </picker>
+          </view>
+          <view wx:if="{{editing === item.id && item.snapshot_path}}" class="pc-snap">原页快照：{{item.snapshot_path}}</view>
+        </view>
+      </block>
+    </view>
+
+    <view wx:if="{{d.task}}" class="card">
+      <view class="card-head">有效价</view>
+      <block wx:if="{{d.task.effective.count}}">
+        <view class="pc-eff"><text class="pc-eff__n">¥{{d.task.effective.median}}</text><text class="pc-eff__t">{{d.task.effective.method}}</text></view>
+        <view class="pc-sub">区间 ¥{{d.task.effective.low}} ~ ¥{{d.task.effective.high}} · {{d.task.effective.count}} 条 · 可信度{{d.task.effective.confidence_label}}</view>
+      </block>
+      <view wx:if="{{d.task.effective.blocker}}" class="pc-err">{{d.task.effective.blocker}}</view>
+      <view wx:if="{{d.task.stale}}" class="pc-err">这批样本超过 {{d.fresh_days}} 天，不能出价；有了新采集在上面点「换最新样本重新清洗」</view>
+    </view>
+
+    <view wx:if="{{d.task && d.task.status === 'OPEN' && d.task.effective.enough && !d.task.stale}}" class="card">
+      <view class="card-head">确认价格</view>
+      <view class="pc-row">
+        <input class="input pc-price" type="number" value="{{price}}" bindinput="onPrice" />
+        <text>元</text>
+        <text wx:if="{{low}}" class="pc-err">低于成本线 ¥{{d.floor_price}}，下面写清依据</text>
+        <text wx:elif="{{high}}" class="pc-warn">高于成本 {{d.high_multiple}} 倍，确认没填错</text>
+      </view>
+      <input class="input pc-gap" placeholder="和有效价不一样要写依据（至少 4 个字）" value="{{note}}" bindinput="onNote" />
+      <view class="pc-btn pc-gap {{saving ? 'pc-btn--off' : ''}}" bindtap="confirm">确认，交管理员生效</view>
+    </view>
+
+    <view class="card">
+      <view class="card-head">版本</view>
+      <view wx:if="{{!d.versions.length}}" class="pc-muted pc-sub">还没有版本</view>
+      <view wx:for="{{d.versions}}" wx:key="id" class="pc-ver">
+        <view class="pc-ver__head">
+          <text class="pc-ver__v">v{{item.version}} · ¥{{item.price}}</text>
+          <text class="pc-st pc-st--{{item.status}}">{{item.status_label}}</text>
+        </view>
+        <view class="pc-sub">中位数 ¥{{item.median}} · {{item.sample_count}} 条 · {{item.crawl_date}} 采集 · {{item.expires_on}} 到期</view>
+        <view wx:if="{{item.note}}" class="pc-sub">依据：{{item.note}}</view>
+        <view class="pc-sub">{{item.confirmed_by_name || ''}} 确认<text wx:if="{{item.activated_by_name}}">，{{item.activated_by_name}} {{item.status === 'REJECTED' ? '退回' : '生效'}}</text><text wx:if="{{item.review_note}}">：{{item.review_note}}</text></view>
+        <view wx:if="{{item.pending && d.can_activate}}" class="pc-row">
+          <input class="input pc-grow" placeholder="{{item.status === 'EXPIRED' ? '行情过期了，退回让人重洗' : '退回原因'}}" value="{{rejectNotes[item.id]}}" data-id="{{item.id}}" bindinput="onRejectNote" />
+          <view class="pc-mini pc-mini--bad" data-id="{{item.id}}" bindtap="rejectVersion">退回</view>
+          <view wx:if="{{item.status === 'PENDING'}}" class="pc-mini" data-id="{{item.id}}" bindtap="activate">生效</view>
+        </view>
+        <view wx:elif="{{item.status === 'PENDING'}}" class="pc-sub pc-warn">等管理员生效</view>
+      </view>
+    </view>
+  </block>
+</view>

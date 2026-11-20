@@ -1,0 +1,226 @@
+.redraw-group {
+  border-top: 1rpx dashed #E5E7EB;
+  padding-top: 24rpx;
+}
+
+.redraw-tag-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.redraw-tag-prefix {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #6B7280;
+  flex-shrink: 0;
+}
+
+.redraw-tag-pick {
+  flex: 1;
+  min-width: 0;
+}
+
+.redraw-slots {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 8rpx;
+}
+
+.redraw-slot {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+  align-items: stretch;
+}
+
+.redraw-thumb {
+  width: 100%;
+  height: 240rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+  background: #F3F4F6;
+  border: 1rpx solid #E5E7EB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.redraw-thumb-img {
+  width: 100%;
+  height: 100%;
+}
+
+.redraw-thumb-empty {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #9CA3AF;
+}
+
+.redraw-btn {
+  width: 100% !important;
+}
+
+/* 微信 button 内置样式(灰底/定宽)优先级高于普通规则,非 !important 的边框/背景/宽度
+   会被吞掉——按钮渲染成灰条或裸文字(2026-10-15 真机+开发者工具实测)。本页按钮统一压回去。 */
+.form-group .btn,
+.card > .btn {
+  background: var(--bg-card) !important;
+  border: 1rpx solid var(--border) !important;
+}
+
+.form-group .btn-outline,
+.card > .btn-outline {
+  background: transparent !important;
+  border-color: var(--color-primary-border) !important;
+}
+
+.card .btn-block {
+  width: 100% !important;
+}
+
+.redraw-t2i {
+  margin-top: 20rpx;
+  padding-top: 16rpx;
+  border-top: 1rpx dashed #E5E7EB;
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.redraw-t2i-label {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #6B7280;
+}
+
+.redraw-t2i-input {
+  min-height: 88rpx;
+}
+
+.redraw-t2i-btn {
+  margin-top: 16rpx;
+}
+
+.redraw-records {
+  margin-top: 24rpx;
+  border-top: 1rpx dashed #E5E7EB;
+  padding-top: 16rpx;
+}
+
+.redraw-records-head {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #1F2937;
+  margin-bottom: 12rpx;
+}
+
+.redraw-record {
+  display: flex;
+  gap: 16rpx;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid #F3F4F6;
+}
+
+.redraw-record:last-child {
+  border-bottom: none;
+}
+
+.redraw-record-thumb {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 12rpx;
+  overflow: hidden;
+  background: #F3F4F6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.redraw-record-img {
+  width: 100%;
+  height: 100%;
+}
+
+.redraw-record-loading {
+  font-size: 22rpx;
+  color: #2563EB;
+  font-weight: 700;
+}
+
+.redraw-record-failed {
+  font-size: 22rpx;
+  color: #DC2626;
+  font-weight: 700;
+}
+
+.redraw-record-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.redraw-record-line {
+  font-size: 24rpx;
+  color: #1F2937;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.redraw-record-line--sub {
+  font-size: 20rpx;
+  color: #9CA3AF;
+}
+
+.redraw-record-line--err {
+  font-size: 22rpx;
+  color: #DC2626;
+}
+
+.redraw-record-tag {
+  font-weight: 700;
+  color: #2563EB;
+}
+
+.redraw-record-status {
+  font-size: 20rpx;
+  font-weight: 700;
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+  background: #F3F4F6;
+  color: #6B7280;
+}
+
+.redraw-record-status--SUCCEEDED {
+  background: #DCFCE7;
+  color: #15803D;
+}
+
+.redraw-record-status--FAILED {
+  background: #FEE2E2;
+  color: #B91C1C;
+}
+
+.redraw-record-status--RUNNING,
+.redraw-record-status--PENDING {
+  background: #DBEAFE;
+  color: #1D4ED8;
+}
+
+.redraw-record-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  align-self: center;
+}
+
+.redraw-record-actions .btn {
+  margin: 0;
+}

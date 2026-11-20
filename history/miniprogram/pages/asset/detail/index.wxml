@@ -1,0 +1,117 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<view class="page-wrap" wx:if="{{device}}">
+  <!-- 图片 -->
+  <view wx:if="{{device.image_files.length}}" class="detail-images">
+    <scroll-view scroll-x class="detail-images-scroll">
+      <image
+        wx:for="{{device.image_files}}"
+        wx:key="index"
+        src="{{item}}"
+        mode="aspectFill"
+        class="detail-image"
+        data-url="{{item}}"
+        bindtap="previewImage"
+      />
+    </scroll-view>
+  </view>
+
+  <!-- 基本信息 -->
+  <view class="card">
+    <view class="card-head card-head--split">
+      <view class="card-head-main">
+        {{device.device_name}}
+        <view class="tag {{statusCls}} head-extra">{{statusText}}</view>
+      </view>
+    </view>
+
+    <view class="detail-kv">
+      <view class="detail-row">
+        <text class="detail-key">资产编号</text>
+        <text class="detail-val">{{device.asset_no}}</text>
+      </view>
+      <view class="detail-row" wx:if="{{device.device_sn}}">
+        <text class="detail-key">设备 SN</text>
+        <text class="detail-val mono">{{device.device_sn}}</text>
+      </view>
+      <view class="detail-row" wx:if="{{device.device_type}}">
+        <text class="detail-key">设备类型</text>
+        <text class="detail-val">{{device.device_type}}</text>
+      </view>
+      <view class="detail-row" wx:if="{{device.brand || device.model}}">
+        <text class="detail-key">品牌型号</text>
+        <text class="detail-val">{{device.brand || ''}}{{device.model ? ' ' + device.model : ''}}{{device.spec ? ' · ' + device.spec : ''}}</text>
+      </view>
+      <view class="detail-row">
+        <text class="detail-key">单价</text>
+        <text class="detail-val">¥{{fmt.money(device.unit_price || 0)}}</text>
+      </view>
+      <view class="detail-row">
+        <text class="detail-key">成本</text>
+        <text class="detail-val">¥{{fmt.money(device.cost || 0)}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 归属信息 -->
+  <view class="card">
+    <view class="card-head">归属信息</view>
+    <view class="detail-kv">
+      <view class="detail-row" wx:if="{{device.owner_name}}">
+        <text class="detail-key">使用人</text>
+        <text class="detail-val">{{device.owner_name}}</text>
+      </view>
+      <view class="detail-row" wx:if="{{device.office_site}}">
+        <text class="detail-key">办公地点</text>
+        <text class="detail-val">{{device.office_site}}</text>
+      </view>
+      <view class="detail-row" wx:if="{{device.purpose}}">
+        <text class="detail-key">用途</text>
+        <text class="detail-val">{{device.purpose}}</text>
+      </view>
+      <view class="detail-row" wx:if="{{device.purchase_date}}">
+        <text class="detail-key">购入日期</text>
+        <text class="detail-val">{{device.purchase_date}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 采购单来源 -->
+  <view class="card" wx:if="{{device.purchase_order_no}}">
+    <view class="card-head">采购单来源</view>
+    <view class="detail-kv">
+      <view class="detail-row">
+        <text class="detail-key">采购单号</text>
+        <text class="detail-val detail-val--link">{{device.purchase_order_no}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 备注 -->
+  <view class="card" wx:if="{{device.remark}}">
+    <view class="card-head">备注</view>
+    <view class="detail-kv">
+      <text class="detail-val">{{device.remark}}</text>
+    </view>
+  </view>
+
+  <!-- 时间 -->
+  <view class="card">
+    <view class="detail-kv">
+      <view class="detail-row">
+        <text class="detail-key">创建时间</text>
+        <text class="detail-val">{{fmt.datetime(device.created_at)}}</text>
+      </view>
+      <view class="detail-row">
+        <text class="detail-key">更新时间</text>
+        <text class="detail-val">{{fmt.datetime(device.updated_at)}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 操作 -->
+  <view class="detail-actions">
+    <button class="btn btn-primary btn-block" bindtap="goEdit">编辑</button>
+    <button class="btn btn-outline btn-block" bindtap="onDelete">删除资产</button>
+  </view>
+</view>

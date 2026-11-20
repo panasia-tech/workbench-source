@@ -1,0 +1,80 @@
+<wxs module="fmt" src="../../utils/format.wxs" />
+
+<view class="page-wrap page-wrap--no-tab law-page">
+  <view class="search-bar">
+    <view class="search-input-wrap">
+      <input
+        class="search-input"
+        placeholder="起诉单号 / 采购单号…"
+        value="{{q}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+        bindconfirm="onSearch"
+      />
+    </view>
+  </view>
+
+  <scroll-view class="law-tab-scroll" scroll-x enable-flex>
+    <view class="status-segment">
+      <text
+        wx:for="{{statusTabs}}"
+        wx:key="key"
+        class="status-seg {{status === item.key ? 'active' : ''}}"
+        data-key="{{item.key}}"
+        bindtap="switchStatus"
+      >{{item.label}}</text>
+    </view>
+  </scroll-view>
+
+  <view class="card">
+    <view class="card-head card-head--split">
+      <view class="card-head-main">
+        起诉记录
+        <view class="tag tag-info head-extra">{{total}} 单</view>
+      </view>
+    </view>
+
+    <view wx:if="{{!list.length}}" class="empty">
+      <view class="e-icon">—</view>
+      <view class="e-text">暂无起诉记录</view>
+    </view>
+
+    <view
+      wx:for="{{list}}"
+      wx:key="id"
+      class="list-item list-item--stacked"
+      data-id="{{item.id}}"
+      data-no="{{item.lawsuit_no}}"
+      bindtap="openDetail"
+      bindlongpress="onDeleteItem"
+    >
+      <view class="list-item__main">
+        <view class="li-thumb-wrap">
+          <media-thumb
+            wx:if="{{item.product_image_thumb}}"
+            url="{{item.product_image_thumb}}"
+            preview-url="{{item.product_image}}"
+            size="small"
+          />
+          <view wx:else class="li-icon">{{item.product_name[0] || '诉'}}</view>
+        </view>
+        <view class="li-info">
+          <view class="li-title">{{item.product_name || item.lawsuit_no}}</view>
+          <view class="li-sub">{{item.lawsuit_no}}{{item.order_no ? ' · 采购单 ' + item.order_no : ''}}</view>
+          <view class="li-sub li-sub--time">创建 {{fmt.datetime(item.created_at)}}</view>
+        </view>
+        <view class="li-meta">
+          <view class="tag {{item.statusCls}} li-tag">{{item.statusText}}</view>
+          <view class="law-del-btn" catchtap="onDeleteItem" data-id="{{item.id}}" data-no="{{item.lawsuit_no}}">删除</view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{loading}}" class="law-loading">加载中…</view>
+  </view>
+</view>
+
+<!-- 右下角固定新建按钮 -->
+<view class="law-fab" bindtap="onCreate">
+  <text class="law-fab-plus">+</text>
+</view>

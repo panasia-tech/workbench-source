@@ -1,0 +1,98 @@
+<view class="page-wrap page-wrap--no-tab feedback-page">
+  <view class="card feedback-hero">
+    <view class="feedback-hero__title">匿名保存，后台可查</view>
+    <view class="feedback-hero__text">你可以在这里提交流程返工、ERP 使用反馈，或向管理层提出投诉与建议。内容不会展示提交人身份，只会进入后台统一处理。</view>
+  </view>
+
+  <view class="card">
+    <view class="card-head"><view class="card-head-main">反馈类型</view></view>
+    <view class="pill-group feedback-pill-group">
+      <view
+        wx:for="{{categoryOptions}}"
+        wx:key="key"
+        class="pill feedback-pill {{form.category === item.key ? 'active' : ''}}"
+        data-key="{{item.key}}"
+        bindtap="switchCategory"
+      >
+        {{item.label}}
+      </view>
+    </view>
+    <view class="feedback-type-hint">{{currentHint}}</view>
+  </view>
+
+  <view class="card">
+    <view class="card-head card-head--split">
+      <view class="card-head-main">参考示例</view>
+      <view class="sample-head-tip">点一下直接带入</view>
+    </view>
+    <view
+      wx:for="{{samples}}"
+      wx:key="title"
+      class="sample-item"
+      data-index="{{index}}"
+      bindtap="applySample"
+    >
+      <view class="sample-item__head">
+        <view class="sample-item__title">{{item.title}}</view>
+        <view class="sample-item__action">套用</view>
+      </view>
+      <view class="sample-item__target">{{item.target}}</view>
+      <view class="sample-item__content">{{item.content}}</view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-head"><view class="card-head-main">匿名内容</view></view>
+    <view class="form-group">
+      <text class="form-label">标题<text class="req">*</text></text>
+      <input
+        class="input"
+        placeholder="一句话概括问题，例如：物流驳回缺少闭环"
+        value="{{form.title}}"
+        bindinput="onTitleInput"
+        maxlength="128"
+      />
+    </view>
+    <view class="form-group">
+      <text class="form-label">涉及模块 / 对象</text>
+      <input
+        class="input"
+        placeholder="例如：议价模块 / 仓库流程 / 管理层沟通"
+        value="{{form.target}}"
+        bindinput="onTargetInput"
+        maxlength="128"
+      />
+    </view>
+    <view class="form-group">
+      <text class="form-label">详细内容<text class="req">*</text></text>
+      <textarea
+        class="input input--textarea feedback-textarea"
+        auto-height="{{true}}"
+        maxlength="4000"
+        placeholder="详细写清楚问题经过、影响、建议动作，方便后台接手处理。"
+        value="{{form.content}}"
+        bindinput="onContentInput"
+      />
+    </view>
+    <view class="form-group">
+      <text class="form-label">附件</text>
+      <view class="form-note">可选上传聊天截图、流程截图、照片或视频作为补充证据。</view>
+      <view class="evidence-grid">
+        <view wx:for="{{form.attachments}}" wx:key="*this" class="evidence-item">
+          <media-thumb
+            url="{{attachmentDisplayUrls[index] || item}}"
+            preview-url="{{attachmentDisplayUrls[index] || item}}"
+            size="fill"
+            preview="{{true}}"
+          />
+          <view class="evidence-del" catchtap="removeAttachment" data-index="{{index}}">×</view>
+        </view>
+        <view class="evidence-add" bindtap="addAttachment">
+          <view class="evidence-add-plus">+</view>
+          <view class="evidence-add-text">图片 / 视频</view>
+        </view>
+      </view>
+    </view>
+    <button class="btn-primary btn-block feedback-submit" loading="{{submitting}}" bindtap="onSubmit">匿名提交</button>
+  </view>
+</view>

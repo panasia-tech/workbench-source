@@ -1,0 +1,72 @@
+<wxs module="fmt" src="../../utils/format.wxs" />
+
+<!-- 手机号管理（电脑版）：搜索 + 表格 + 页码；新建放标题右边，删除放操作列。数据、方法和手机版是同一套 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">手机号管理</view>
+      <view class="dk-sub">共 {{total}} 个号码</view>
+    </view>
+    <view class="dk-btn dk-btn--primary" bindtap="onCreate">+ 新建号码</view>
+  </view>
+
+  <view class="dk-card">
+    <view class="dk-toolbar">
+      <input
+        class="dk-input dk-search"
+        placeholder="姓名 / 号码 / 闲鱼会员名…"
+        value="{{q}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+        bindconfirm="onSearch"
+      />
+      <view class="dk-btn dk-btn--primary" bindtap="onSearch">搜索</view>
+    </view>
+
+    <view class="dk-table-wrap">
+      <table class="dk-table">
+        <thead>
+          <tr>
+            <th>姓名</th>
+            <th>号码</th>
+            <th>运营商</th>
+            <th>ICCID</th>
+            <th>开通时间</th>
+            <th>闲鱼会员名</th>
+            <th>套餐</th>
+            <th>备注</th>
+            <th class="dk-ops">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr wx:for="{{list}}" wx:key="id" class="dk-tr--click" data-id="{{item.id}}" bindtap="openForm">
+            <td class="dk-nowrap dk-cell-main">{{item.name}}</td>
+            <td class="dk-nowrap ph-dk-mono">{{item.phone_number}}</td>
+            <td class="dk-nowrap">{{item.carrier || '—'}}</td>
+            <td class="dk-nowrap ph-dk-mono">{{item.iccid || '—'}}</td>
+            <td class="dk-nowrap">{{item.activation_date || '—'}}</td>
+            <td class="dk-nowrap">{{item.xianyu_member_name || '—'}}</td>
+            <td><view class="dk-ellipsis ph-dk-short" title="{{item.plan_details}}">{{item.plan_details || '—'}}</view></td>
+            <td><view class="dk-ellipsis ph-dk-short" title="{{item.remark}}">{{item.remark || '—'}}</view></td>
+            <td class="dk-ops">
+              <text class="dk-link" data-id="{{item.id}}" catchtap="openForm">编辑</text>
+              <text class="dk-link dk-link--danger" data-id="{{item.id}}" data-no="{{item.phone_number}}" catchtap="onDeleteItem">删除</text>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </view>
+
+    <view wx:if="{{!list.length && !loading}}" class="dk-empty">暂无号码</view>
+    <view wx:if="{{loading && !list.length}}" class="dk-empty">加载中…</view>
+
+    <view wx:if="{{total > dkPageSize}}" class="dk-pager">
+      <text>共 {{total}} 个，每页 {{dkPageSize}} 个</text>
+      <view class="dk-row">
+        <view class="dk-btn dk-btn--sm {{dkPage <= 1 ? 'dk-btn--disabled' : ''}}" bindtap="dkPrev">上一页</view>
+        <text>第 {{dkPage}} / {{dkPages}} 页</text>
+        <view class="dk-btn dk-btn--sm {{dkPage >= dkPages ? 'dk-btn--disabled' : ''}}" bindtap="dkNext">下一页</view>
+      </view>
+    </view>
+  </view>
+</view>

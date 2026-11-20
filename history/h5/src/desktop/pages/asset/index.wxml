@@ -1,0 +1,93 @@
+<wxs module="fmt" src="../../utils/format.wxs" />
+
+<!-- 资产管理（电脑版）：搜索 + 表格 + 页码；新建放标题右边，删除放操作列。数据、方法和手机版是同一套 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">资产管理</view>
+      <view class="dk-sub">共 {{total}} 件资产设备</view>
+    </view>
+    <view class="dk-btn dk-btn--primary" bindtap="onCreate">+ 新建资产</view>
+  </view>
+
+  <view class="dk-card">
+    <view class="dk-toolbar">
+      <input
+        class="dk-input dk-search"
+        placeholder="资产编号 / 名称 / SN / 品牌…"
+        value="{{q}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+        bindconfirm="onSearch"
+      />
+      <view class="dk-btn dk-btn--primary" bindtap="onSearch">搜索</view>
+    </view>
+
+    <view class="dk-table-wrap">
+      <table class="dk-table">
+        <thead>
+          <tr>
+            <th>设备</th>
+            <th>资产编号 / SN</th>
+            <th>使用人 / 办公地点</th>
+            <th>状态</th>
+            <th class="dk-num">单价</th>
+            <th class="dk-num">成本</th>
+            <th>采购单</th>
+            <th class="dk-ops">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr wx:for="{{list}}" wx:key="id" class="dk-tr--click" data-id="{{item.id}}" data-no="{{item.asset_no}}" bindtap="openDetail">
+            <td>
+              <view class="dk-media">
+                <image
+                  wx:if="{{item.thumb}}"
+                  class="dk-thumb"
+                  src="{{item.thumb}}"
+                  mode="aspectFill"
+                  data-url="{{item.thumb}}"
+                  catchtap="dkPreview"
+                />
+                <view wx:else class="dk-thumb as-dk-thumb-empty">{{item.device_name[0] || '资'}}</view>
+                <view class="dk-grow">
+                  <view class="dk-cell-main dk-ellipsis">{{item.device_name}}</view>
+                  <view class="dk-cell-sub dk-ellipsis">{{item.brand || ''}}{{item.model ? ' ' + item.model : ''}}{{(item.brand || item.model) && item.device_type ? ' · ' : ''}}{{item.device_type || ''}}{{item.spec ? ' · ' + item.spec : ''}}</view>
+                </view>
+              </view>
+            </td>
+            <td class="dk-nowrap">
+              <view>{{item.asset_no}}</view>
+              <view class="dk-cell-sub as-dk-mono">{{item.device_sn || '无 SN'}}</view>
+            </td>
+            <td class="dk-nowrap">
+              <view>{{item.owner_name || '—'}}</view>
+              <view class="dk-cell-sub">{{item.office_site || '—'}}</view>
+            </td>
+            <td><text class="dk-tag {{item.statusCls}}">{{item.statusText}}</text></td>
+            <td class="dk-num">{{item.unit_price != null ? '¥' + fmt.money(item.unit_price) : '—'}}</td>
+            <td class="dk-num">{{item.cost != null ? '¥' + fmt.money(item.cost) : '—'}}</td>
+            <td class="dk-nowrap">{{item.purchase_order_no || '—'}}</td>
+            <td class="dk-ops">
+              <text class="dk-link" data-id="{{item.id}}" catchtap="openDetail">详情</text>
+              <text class="dk-link" data-url="/pages/asset/form/index?id={{item.id}}" catchtap="dkOpen">编辑</text>
+              <text class="dk-link dk-link--danger" data-id="{{item.id}}" data-no="{{item.asset_no}}" catchtap="onDeleteItem">删除</text>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </view>
+
+    <view wx:if="{{!list.length && !loading}}" class="dk-empty">暂无资产</view>
+    <view wx:if="{{loading && !list.length}}" class="dk-empty">加载中…</view>
+
+    <view wx:if="{{total > dkPageSize}}" class="dk-pager">
+      <text>共 {{total}} 件，每页 {{dkPageSize}} 件</text>
+      <view class="dk-row">
+        <view class="dk-btn dk-btn--sm {{dkPage <= 1 ? 'dk-btn--disabled' : ''}}" bindtap="dkPrev">上一页</view>
+        <text>第 {{dkPage}} / {{dkPages}} 页</text>
+        <view class="dk-btn dk-btn--sm {{dkPage >= dkPages ? 'dk-btn--disabled' : ''}}" bindtap="dkNext">下一页</view>
+      </view>
+    </view>
+  </view>
+</view>

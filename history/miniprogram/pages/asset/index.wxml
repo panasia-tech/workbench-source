@@ -1,0 +1,67 @@
+<wxs module="fmt" src="../../utils/format.wxs" />
+
+<view class="page-wrap page-wrap--no-tab">
+  <view class="search-bar">
+    <view class="search-input-wrap">
+      <input
+        class="search-input"
+        placeholder="资产编号 / 名称 / SN / 品牌…"
+        value="{{q}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+        bindconfirm="onSearch"
+      />
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-head card-head--split">
+      <view class="card-head-main">
+        资产设备
+        <view class="tag tag-info head-extra">{{total}} 件</view>
+      </view>
+    </view>
+
+    <view wx:if="{{!list.length}}" class="empty">
+      <view class="e-icon">—</view>
+      <view class="e-text">暂无资产</view>
+    </view>
+
+    <view
+      wx:for="{{list}}"
+      wx:key="id"
+      class="list-item list-item--stacked"
+      data-id="{{item.id}}"
+      data-no="{{item.asset_no}}"
+      bindtap="openDetail"
+      bindlongpress="onDeleteItem"
+    >
+      <view class="list-item__main">
+        <view class="li-thumb-wrap">
+          <media-thumb
+            wx:if="{{item.thumb}}"
+            url="{{item.thumb}}"
+            preview-url="{{item.thumb}}"
+            size="small"
+          />
+          <view wx:else class="li-icon">{{item.device_name[0] || '资'}}</view>
+        </view>
+        <view class="li-info">
+          <view class="li-title">{{item.device_name}}</view>
+          <view class="li-sub">{{item.asset_no}}{{item.brand ? ' · ' + item.brand : ''}}{{item.model ? ' ' + item.model : ''}}</view>
+          <view wx:if="{{item.purchase_order_no}}" class="li-sub li-sub--link">采购单 {{item.purchase_order_no}}</view>
+        </view>
+        <view class="li-meta">
+          <view class="tag {{item.statusCls}} li-tag">{{item.statusText}}</view>
+          <view class="li-del-btn" catchtap="onDeleteItem" data-id="{{item.id}}" data-no="{{item.asset_no}}">删除</view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{loading}}" class="asset-loading">加载中…</view>
+  </view>
+</view>
+
+<view class="asset-fab" bindtap="onCreate">
+  <text class="asset-fab-plus">+</text>
+</view>

@@ -1,0 +1,55 @@
+<!-- 新建切单（电脑版）：两栏表单，证据图占一行，提交在底部操作条。
+     注意：miniprogram 里这页没有 index.wxss，src/desktop/ 下的 index.wxss 不会被编译进来，所以补充样式只能写成行内 style -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">新建切单</view>
+      <view class="dk-sub">货号和单价必填；切单证据最多一次选 3 张</view>
+    </view>
+  </view>
+
+  <view class="dk-card" style="max-width: 960px;">
+    <view class="dk-card__body">
+      <view class="dk-form">
+        <view class="dk-field">
+          <text class="dk-label dk-label--req">货号</text>
+          <view class="dk-row" style="flex-wrap: nowrap;">
+            <input class="dk-input dk-grow" data-key="sku_code" value="{{form.sku_code}}" bindinput="onInput" placeholder="扫码或输入货号" />
+            <view class="dk-btn" bindtap="scanSku">扫码填入</view>
+          </view>
+        </view>
+        <view class="dk-field">
+          <text class="dk-label dk-label--req">单价 ¥</text>
+          <input class="dk-input" type="digit" data-key="unit_price" value="{{form.unit_price}}" bindinput="onInput" />
+        </view>
+        <view class="dk-field dk-field--full">
+          <text class="dk-label">备注</text>
+          <input class="dk-input" data-key="remark" value="{{form.remark}}" bindinput="onInput" />
+        </view>
+        <view class="dk-field dk-field--full">
+          <text class="dk-label">切单证据（{{form.evidence_urls.length}}）</text>
+          <view class="dk-gallery" style="grid-template-columns: repeat(auto-fill, 112px);">
+            <image
+              wx:for="{{form.evidence_urls}}"
+              wx:key="*this"
+              class="dk-gallery__item" style="display: block; width: 112px; height: 112px;"
+              src="{{evidenceDisplayUrls[index] || item}}"
+              mode="aspectFill"
+              data-url="{{evidenceDisplayUrls[index] || item}}"
+              data-urls="{{evidenceDisplayUrls}}"
+              bindtap="dkPreview"
+            />
+            <view class="dk-btn" style="width: 112px; height: 112px; flex-direction: column; border-style: dashed;" bindtap="addEvidence">
+              <text style="font-size: 24px; line-height: 1;">+</text>
+              <text>拍照上传</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="dk-actionbar" style="margin-top: auto; justify-content: flex-start;">
+    <view class="dk-btn dk-btn--primary" bindtap="submit">提交切单</view>
+  </view>
+</view>

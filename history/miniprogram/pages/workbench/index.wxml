@@ -1,0 +1,47 @@
+<wxs module="fmt" src="../../utils/format.wxs" />
+
+<view class="page-wrap wb-page">
+  <view class="wb-hero" wx:if="{{user}}">
+    <view class="wb-hero-row">
+      <view class="wb-avatar">{{user.name ? user.name[0] : (user.username ? user.username[0] : '?')}}</view>
+      <view class="wb-hero-body">
+        <view class="wb-greeting">你好，{{user.name || user.username}}</view>
+        <view class="wb-role">{{fmt.roleLabel(user.role)}}</view>
+      </view>
+    </view>
+    <view class="wb-hero-tip">选择下方功能开始今日工作</view>
+  </view>
+
+  <view wx:if="{{lockLeft}}" class="wb-lock">
+    <text class="wb-lock__t">真实任务先锁着：先做完上手练习（还差 {{lockLeft}} 步），才能上架、审批、发货</text>
+    <text class="wb-lock__btn" bindtap="goPractice">去做练习</text>
+  </view>
+
+  <view class="card wb-entry-card" wx:if="{{entries.length}}">
+    <view class="card-head">功能入口</view>
+    <view class="wb-entry-list">
+      <view
+        wx:for="{{entries}}"
+        wx:key="key"
+        class="wb-entry-item"
+        data-url="{{item.url}}"
+        bindtap="openEntry"
+      >
+        <view class="wb-entry-body">
+          <view class="wb-entry-icon {{item.iconClass}}">{{item.icon}}</view>
+          <view class="wb-entry-text">
+            <view class="wb-entry-title">{{item.title}}</view>
+            <view class="wb-entry-sub">{{item.sub}}</view>
+          </view>
+        </view>
+        <text wx:if="{{item.badgeText}}" class="wb-entry-badge">{{item.badgeText}}</text>
+        <text class="wb-entry-arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty" wx:if="{{user && !entries.length}}">
+    <view class="e-icon">—</view>
+    <view class="e-text">当前角色暂无可用功能</view>
+  </view>
+</view>

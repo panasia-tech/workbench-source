@@ -1,0 +1,62 @@
+[
+  {
+    "file": "pages/profile/index.wxml",
+    "from": "修改后需重新绑定微信",
+    "to": "修改后需重新登录",
+    "why": "H5 用账号密码登录，没有微信绑定"
+  },
+  {
+    "file": "pages/profile/change-password/index.wxml",
+    "from": "需使用新密码重新绑定微信",
+    "to": "需使用新密码重新登录",
+    "why": "同上"
+  },
+  {
+    "file": "app.json",
+    "from": "\"pages/purchase/detail/index\",",
+    "to": "\"pages/purchase/detail/index\",\n    \"pages/purchase/evidence/index\",\n    \"pages/purchase/pieces/index\",",
+    "why": "H5 专有的采购单验货凭证页（h5/src/overrides/pages/purchase/evidence）；分件到货页（h5/src/overrides/pages/purchase/pieces，WH01-04）"
+  },
+  {
+    "file": "pages/purchase/detail/index.wxml",
+    "from": "      <view class=\"tag {{fmt.statusTag(order.status)}}\">{{fmt.statusLabel(order.status)}}</view>\n    </view>",
+    "to": "      <view class=\"tag {{fmt.statusTag(order.status)}}\">{{fmt.statusLabel(order.status)}}</view>\n    </view>\n    <navigator class=\"h5-evidence-entry\" url=\"/pages/purchase/evidence/index?no={{order.order_no}}\" hover-class=\"none\">验货凭证：瑕疵照、开箱视频、卖家描述 vs 实测 ›</navigator>\n    <navigator wx:if=\"{{order.quantity > 1}}\" class=\"h5-evidence-entry\" url=\"/pages/purchase/pieces/index?id={{order.id}}\" hover-class=\"none\">分件到货：共 {{order.quantity}} 件，看每件到没到、标没到货 ›</navigator>\n    <navigator wx:elif=\"{{order.status === 'PENDING_INSPECT'}}\" class=\"h5-evidence-entry\" url=\"/pages/purchase/pieces/index?id={{order.id}}\" hover-class=\"none\">同一件商品买了好几件？设件数 ›</navigator>",
+    "why": "H5 采购单详情加验货凭证入口（禅道 WH05-04）；分件到货入口（禅道 WH01-04）"
+  },
+  {
+    "file": "pages/purchase/detail/index.wxss",
+    "from": ".pd-detail-page .pd-tag-row {",
+    "to": ".h5-evidence-entry {\n  display: block;\n  margin-top: 16rpx;\n  padding: 16rpx 22rpx;\n  border-radius: 12rpx;\n  background: #EFF6FF;\n  border: 2rpx solid #BFDBFE;\n  color: #1D4ED8;\n  font-size: 26rpx;\n  font-weight: 600;\n}\n\n.pd-detail-page .pd-tag-row {",
+    "why": "入口样式"
+  },
+  {
+    "file": "app.json",
+    "from": "\"pages/returns/receive/index\",",
+    "to": "\"pages/returns/receive/index\",\n    \"pages/returns/recheck/index\",",
+    "why": "H5 专有的退回复验页（h5/src/overrides/pages/returns/recheck，禅道 WH10-07/08/10）"
+  },
+  {
+    "file": "pages/returns/index.wxml",
+    "from": "      <view class=\"ret-actions\" wx:if=\"{{item.status === 'RETURNING'}}\">",
+    "to": "      <navigator wx:if=\"{{canReceive && (item.status === 'RETURNING' || item.status === 'PENDING_INBOUND' || item.status === 'ABNORMAL')}}\" class=\"h5-recheck-entry\" url=\"/pages/returns/recheck/index?id={{item.id}}\" hover-class=\"none\">退回复验：对照入库结果逐项验、看历次影像 ›</navigator>\n      <view class=\"ret-actions\" wx:if=\"{{item.status === 'RETURNING'}}\">",
+    "why": "H5 退货列表加退回复验入口，放在收货核对按钮前面（先复验再收货）"
+  },
+  {
+    "file": "pages/returns/index.wxss",
+    "from": ".ret-page .ret-actions {",
+    "to": ".h5-recheck-entry {\n  display: block;\n  margin: 14rpx 0 4rpx;\n  padding: 14rpx 20rpx;\n  border-radius: 12rpx;\n  background: #EFF6FF;\n  border: 2rpx solid #BFDBFE;\n  color: #1D4ED8;\n  font-size: 25rpx;\n  font-weight: 600;\n}\n\n.ret-page .ret-actions {",
+    "why": "退回复验入口样式"
+  },
+  {
+    "file": "pages/inspection/form/index.wxml",
+    "from": "<view class=\"insp-form-sub\">{{task.product_name || task.order_no || task.inspect_no}}{{task.spec ? ' · ' + task.spec : ''}}</view>",
+    "to": "<view class=\"insp-form-sub\">{{task.product_name || task.order_no || task.inspect_no}}{{task.spec ? ' · ' + task.spec : ''}}</view>\n        <navigator wx:if=\"{{task.piece_label}}\" class=\"h5-piece-entry\" url=\"/pages/purchase/pieces/index?id={{task.purchase_order_id}}\" hover-class=\"none\">{{task.piece_label}} · 看各件、标没到货 ›</navigator>",
+    "why": "一单多件时标出验的是第几件，能去分件到货页（禅道 WH01-04）"
+  },
+  {
+    "file": "pages/inspection/form/index.wxss",
+    "from": ".insp-form-page .form-note {",
+    "to": ".h5-piece-entry {\n  display: inline-block;\n  margin-top: 8rpx;\n  padding: 4rpx 16rpx;\n  border-radius: 999rpx;\n  background: #EFF6FF;\n  color: #1D4ED8;\n  font-size: 24rpx;\n  font-weight: 600;\n}\n\n.insp-form-page .form-note {",
+    "why": "第几件标签样式"
+  }
+]

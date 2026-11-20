@@ -1,0 +1,153 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<!-- 经营账单（电脑版）：周期工具栏 + 利润数字卡片 + 收支构成 + 逐笔明细表格（页码） -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">经营账单</view>
+      <view class="dk-sub">{{dateFrom}} ~ {{dateTo}}{{loading ? ' · 统计加载中…' : ''}}</view>
+    </view>
+    <view class="dk-row">
+      <view class="dk-tabs">
+        <view
+          wx:for="{{periods}}"
+          wx:key="key"
+          class="dk-tab {{period === item.key ? 'dk-tab--on' : ''}}"
+          data-period="{{item.key}}"
+          bindtap="pickPeriod"
+        >{{item.label}}</view>
+      </view>
+      <block wx:if="{{period === 'custom'}}">
+        <picker mode="date" value="{{customFrom}}" end="{{customTo}}" bindchange="onCustomFromChange">
+          <view class="dk-select">{{customFrom || '开始日期'}}</view>
+        </picker>
+        <text class="dk-sub">至</text>
+        <picker mode="date" value="{{customTo}}" start="{{customFrom}}" bindchange="onCustomToChange">
+          <view class="dk-select">{{customTo || '结束日期'}}</view>
+        </picker>
+      </block>
+    </view>
+  </view>
+
+  <view class="bill-dk-top">
+    <view class="dk-stat bill-dk-profit">
+      <view class="dk-stat__label">毛利 <text class="dk-muted">销售额 − 成本</text></view>
+      <view class="dk-stat__value">¥{{fmt.money(stats.gross_profit)}}</view>
+      <view class="dk-stat__hint">销售收入 ¥{{fmt.money(stats.sales_amount)}} · 销售成本 ¥{{fmt.money(stats.sales_cost)}}</view>
+    </view>
+    <view class="dk-stat bill-dk-net">
+      <view class="dk-stat__label">净利润</view>
+      <view class="dk-stat__value {{stats.net_profit < 0 ? 'bill-dk-neg' : ''}}">¥{{fmt.money(stats.net_profit)}}</view>
+      <view class="dk-stat__hint">毛利 − 手续费 − 快递 − 工资 − 退货</view>
+    </view>
+    <view class="dk-stat">
+      <view class="dk-stat__label">采购支出</view>
+      <view class="dk-stat__value">¥{{fmt.money(stats.purchase_amount || 0)}}</view>
+      <view class="dk-stat__hint">采购笔数 {{stats.purchase_count || 0}}</view>
+    </view>
+  </view>
+
+  <view class="dk-card">
+    <view class="dk-card__head">收支构成</view>
+    <view class="dk-card__body bill-dk-parts">
+      <view class="bill-dk-part">
+        <view class="dk-desc__k">销售额 · {{stats.sales_count || 0}}笔</view>
+        <view class="bill-dk-part__v">¥{{fmt.money(stats.sales_amount || 0)}}</view>
+      </view>
+      <view class="bill-dk-part">
+        <view class="dk-desc__k">销售成本</view>
+        <view class="bill-dk-part__v">¥{{fmt.money(stats.sales_cost || 0)}}</view>
+      </view>
+      <view class="bill-dk-part">
+        <view class="dk-desc__k">平台手续费</view>
+        <view class="bill-dk-part__v">¥{{fmt.money(stats.platform_fee || 0)}}</view>
+      </view>
+      <view class="bill-dk-part">
+        <view class="dk-desc__k">员工工资(提成)</view>
+        <view class="bill-dk-part__v">¥{{fmt.money(stats.staff_commission || 0)}}</view>
+      </view>
+      <view class="bill-dk-part">
+        <view class="dk-desc__k">快递费</view>
+        <view class="bill-dk-part__v">¥{{fmt.money(stats.express_fee || 0)}}</view>
+      </view>
+      <view class="bill-dk-part">
+        <view class="dk-desc__k">退货 · {{stats.return_count || 0}}笔</view>
+        <view class="bill-dk-part__v">¥{{fmt.money(stats.return_refund || 0)}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="dk-card">
+    <view class="dk-toolbar">
+      <view class="dk-tabs">
+        <view class="dk-tab {{detailTab === 'purchase' ? 'dk-tab--on' : ''}}" data-tab="purchase" bindtap="switchDetailTab">采购明细</view>
+        <view class="dk-tab {{detailTab === 'sales' ? 'dk-tab--on' : ''}}" data-tab="sales" bindtap="switchDetailTab">销售明细</view>
+      </view>
+      <text class="dk-sub">共 {{dkTotal}} 笔</text>
+    </view>
+
+    <view class="dk-table-wrap" wx:if="{{detailTab === 'purchase' && list.length}}">
+      <table class="dk-table">
+        <thead>
+          <tr>
+            <th>商品</th>
+            <th>采购单号</th>
+            <th>时间</th>
+            <th>卖家</th>
+            <th>采购账号</th>
+            <th class="dk-num">金额</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr wx:for="{{list}}" wx:key="id">
+            <td><view class="dk-cell-main dk-ellipsis">{{fmt.productLine(item.product_name, item.spec)}}</view></td>
+            <td class="dk-nowrap">{{item.order_no}}</td>
+            <td class="dk-nowrap">{{fmt.datetime(item.created_at)}}</td>
+            <td class="dk-nowrap">{{item.seller_name || '—'}}</td>
+            <td class="dk-nowrap">{{item.purchase_account || '—'}}</td>
+            <td class="dk-num bill-dk-out">-¥{{fmt.money(item.unit_price)}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </view>
+
+    <view class="dk-table-wrap" wx:if="{{detailTab === 'sales' && list.length}}">
+      <table class="dk-table">
+        <thead>
+          <tr>
+            <th>出库单号</th>
+            <th>时间</th>
+            <th>买家</th>
+            <th class="dk-num">成本</th>
+            <th class="dk-num">毛利</th>
+            <th class="dk-num">快递</th>
+            <th class="dk-num">售价</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr wx:for="{{list}}" wx:key="id">
+            <td class="dk-nowrap dk-cell-main">{{item.outbound_no}}</td>
+            <td class="dk-nowrap">{{fmt.datetime(item.created_at)}}</td>
+            <td class="dk-nowrap">{{item.buyer_name || '—'}}</td>
+            <td class="dk-num">¥{{fmt.money(item.cost_price)}}</td>
+            <td class="dk-num">¥{{fmt.money(item.gross_profit)}}</td>
+            <td class="dk-num">{{item.express_fee ? '¥' + fmt.money(item.express_fee) : '—'}}</td>
+            <td class="dk-num bill-dk-in">+¥{{fmt.money(item.sale_price)}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </view>
+
+    <view wx:if="{{!list.length && !listLoading}}" class="dk-empty">该区间暂无{{detailTab === 'purchase' ? '采购' : '销售'}}记录</view>
+    <view wx:if="{{listLoading && !list.length}}" class="dk-empty">加载中...</view>
+
+    <view wx:if="{{dkTotal > dkPageSize}}" class="dk-pager">
+      <text>共 {{dkTotal}} 笔，每页 {{dkPageSize}} 笔</text>
+      <view class="dk-row">
+        <view class="dk-btn dk-btn--sm {{dkPage <= 1 ? 'dk-btn--disabled' : ''}}" bindtap="dkPrev">上一页</view>
+        <text>第 {{dkPage}} / {{dkPages}} 页</text>
+        <view class="dk-btn dk-btn--sm {{dkPage >= dkPages ? 'dk-btn--disabled' : ''}}" bindtap="dkNext">下一页</view>
+      </view>
+    </view>
+  </view>
+</view>

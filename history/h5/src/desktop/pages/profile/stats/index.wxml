@@ -1,0 +1,62 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<!-- 数据统计（电脑版）：标题旁切周期，采购、销售两组数字卡片并排 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">数据统计</view>
+      <view class="dk-sub">{{loading ? '加载中…' : '采购、验货、入库、出库、销售按所选周期统计'}}</view>
+    </view>
+    <view class="dk-tabs">
+      <view
+        wx:for="{{periods}}"
+        wx:key="key"
+        class="dk-tab {{period === item.key ? 'dk-tab--on' : ''}}"
+        data-period="{{item.key}}"
+        bindtap="pickPeriod"
+      >{{item.label}}</view>
+    </view>
+  </view>
+
+  <view class="dk-grid-2">
+    <view class="dk-card">
+      <view class="dk-card__head">采购</view>
+      <view class="dk-card__body st-dk-grid">
+        <view class="dk-stat">
+          <view class="dk-stat__label">采购单数</view>
+          <view class="dk-stat__value">{{stats.purchase_count || 0}}</view>
+        </view>
+        <view class="dk-stat">
+          <view class="dk-stat__label">采购金额</view>
+          <view class="dk-stat__value">¥{{fmt.money(stats.purchase_amount)}}</view>
+        </view>
+        <view class="dk-stat">
+          <view class="dk-stat__label">验货完成</view>
+          <view class="dk-stat__value">{{stats.inspection_count || 0}}</view>
+        </view>
+        <view class="dk-stat">
+          <view class="dk-stat__label">入库数量</view>
+          <view class="dk-stat__value">{{stats.inbound_count || 0}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="dk-card">
+      <view class="dk-card__head">销售</view>
+      <view class="dk-card__body st-dk-grid">
+        <view class="dk-stat">
+          <view class="dk-stat__label">出库数量</view>
+          <view class="dk-stat__value">{{stats.outbound_count || 0}}</view>
+        </view>
+        <view class="dk-stat">
+          <view class="dk-stat__label">销售额</view>
+          <view class="dk-stat__value">¥{{fmt.money(stats.sales_amount)}}</view>
+        </view>
+        <view class="dk-stat st-dk-wide">
+          <view class="dk-stat__label">毛利</view>
+          <view class="dk-stat__value st-dk-profit">¥{{fmt.money(stats.gross_profit)}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

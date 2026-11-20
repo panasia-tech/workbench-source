@@ -1,0 +1,317 @@
+{
+  "version": 1,
+  "defaults": {
+    "max_parallel_platforms": 4,
+    "max_browser_workers": 1,
+    "default_image_mode": "real_photo"
+  },
+  "platforms": [
+    {
+      "id": "amazon",
+      "name": "Amazon",
+      "group": "ecommerce",
+      "region": "global",
+      "enabled": true,
+      "components": [
+        {"id": "amazon_reviews", "name": "Amazon Reviews Scraper", "kind": "external_project", "health": "reference_only", "repo": "https://github.com/DevEmily1/amazon-reviews-scraper", "runtime": "python", "role": "评论文字与 reviewImages 字段"},
+        {"id": "amazon_product_parser", "name": "Amazon Product Parser", "kind": "external_project", "health": "reference_only", "repo": "https://github.com/ChocoData-com/amazon-product-scraper", "runtime": "python/http", "role": "商品身份与商品图库"},
+        {"id": "amazon_review_normalizer", "name": "Review Media Normalizer", "kind": "builtin_stage", "health": "ready", "runtime": "python", "role": "图片 URL 规范化、去重与型号证据"}
+      ]
+    },
+    {
+      "id": "pinduoduo",
+      "name": "拼多多",
+      "group": "ecommerce",
+      "region": "china",
+      "enabled": true,
+      "components": [
+        {"id": "pdd_product_parser", "name": "Pinduoduo Product Parser", "kind": "external_project", "health": "reference_only", "repo": "https://github.com/spider-rs/web-scraping-examples", "runtime": "rust/browser", "role": "商品详情与页面媒体"},
+        {"id": "pdd_review_probe", "name": "Pinduoduo Review Probe", "kind": "builtin_stage", "health": "unverified", "runtime": "python/browser", "role": "评论区图片字段探测"}
+      ]
+    },
+    {
+      "id": "douyin_shop",
+      "name": "抖音电商/TikTok Shop",
+      "group": "ecommerce",
+      "region": "global",
+      "enabled": true,
+      "components": [
+        {"id": "tiktok_shop_reviews", "name": "TikTok Shop Reviews", "kind": "external_project", "health": "reference_only", "repo": "https://github.com/PRO100CHOK/tiktok-shop-product-scraper-python", "runtime": "python/apify", "role": "商品、评论和媒体字段"},
+        {"id": "douyin_official_api", "name": "Douyin Official Search", "kind": "builtin_stage", "health": "auth_required", "runtime": "python/http", "role": "官方 Access Token Provider"},
+        {"id": "shop_media_filter", "name": "Shop Media Filter", "kind": "builtin_stage", "health": "ready", "runtime": "python", "role": "区分商品图和买家媒体"}
+      ]
+    },
+    {
+      "id": "jd",
+      "name": "京东",
+      "group": "ecommerce",
+      "region": "china",
+      "enabled": true,
+      "components": [
+        {"id": "jd_product_parser", "name": "JD Product Parser", "kind": "external_project", "health": "reference_only", "repo": "https://github.com/spider-rs/web-scraping-examples", "runtime": "rust/browser", "role": "商品页解析"},
+        {"id": "jd_comment_probe", "name": "JD Comment Probe", "kind": "external_project", "health": "reference_only", "repo": "https://gist.github.com/tmasjc/71e7c51960756439023eb1dd05040d9c", "runtime": "r/http", "role": "评论接口参考"},
+        {"id": "jd_review_media", "name": "JD Review Media Adapter", "kind": "builtin_stage", "health": "unverified", "runtime": "python/browser", "role": "评论图片抽取"}
+      ]
+    },
+    {
+      "id": "taobao",
+      "name": "淘宝",
+      "group": "ecommerce",
+      "region": "china",
+      "enabled": true,
+      "components": [
+        {"id": "taobao_mcp_parser", "name": "Taobao MCP Parser", "kind": "external_project", "health": "reference_only", "repo": "https://github.com/JeremyDong22/taobao_mcp", "runtime": "python/playwright", "role": "商品、评价和图片参考解析"},
+        {"id": "taobao_public_page", "name": "Taobao Public Page", "kind": "builtin_stage", "health": "ready", "runtime": "python/http", "role": "公开商品页入口"},
+        {"id": "taobao_review_parser", "name": "Taobao Review Parser", "kind": "builtin_stage", "health": "unverified", "runtime": "python/browser", "role": "评价文本和图片"},
+        {"id": "taobao_media_extractor", "name": "Taobao Review Media Extractor", "kind": "builtin_stage", "health": "unverified", "runtime": "python/browser", "role": "买家实拍图提取"},
+        {"id": "taobao_session_probe", "name": "Taobao Session Probe", "kind": "builtin_stage", "health": "auth_required", "runtime": "python/playwright", "role": "合法登录态检查"},
+        {"id": "taobao_image_classifier", "name": "Taobao Photo Classifier", "kind": "builtin_stage", "health": "ready", "runtime": "python/pillow", "role": "宣传图与实拍图分类"},
+        {"id": "taobao_model_evidence", "name": "Taobao Model Evidence", "kind": "builtin_stage", "health": "ready", "runtime": "python", "role": "品牌型号证据评分"},
+        {"id": "taobao_storage", "name": "Taobao Media Storage", "kind": "builtin_stage", "health": "ready", "runtime": "python/sqlite", "role": "本地存储、去重和来源索引"}
+      ]
+    },
+    {
+      "id": "tmall",
+      "name": "天猫",
+      "group": "ecommerce",
+      "region": "china",
+      "enabled": true,
+      "components": [
+        {"id": "tmall_page_parser", "name": "Tmall Page Parser", "kind": "builtin_stage", "health": "ready", "runtime": "python/browser", "role": "天猫商品页入口"},
+        {"id": "tmall_review_media", "name": "Tmall Review Media", "kind": "builtin_stage", "health": "unverified", "runtime": "python/browser", "role": "评价图片"},
+        {"id": "tmall_session_probe", "name": "Tmall Session Probe", "kind": "builtin_stage", "health": "auth_required", "runtime": "python/playwright", "role": "合法登录态检查"}
+      ]
+    },
+    {
+      "id": "walmart",
+      "name": "Walmart",
+      "group": "ecommerce",
+      "region": "north_america",
+      "enabled": true,
+      "components": [
+        {"id": "walmart_scraper", "name": "Walmart Scraper API", "kind": "external_project", "health": "reference_only", "repo": "https://github.com/omkarcloud/walmart-scraper", "runtime": "hosted_api", "role": "商品与评论摘要"},
+        {"id": "walmart_review_media", "name": "Walmart Review Media", "kind": "builtin_stage", "health": "unverified", "runtime": "python/browser", "role": "买家图片抽取"}
+      ]
+    },
+    {
+      "id": "shopee",
+      "name": "Shopee",
+      "group": "ecommerce",
+      "region": "southeast_asia",
+      "enabled": true,
+      "components": [
+        {"id": "shopee_scraper", "name": "Shopee Scraper", "kind": "external_project", "health": "reference_only", "repo": "https://github.com/dtungpka/shopee-scraper", "runtime": "python/selenium", "role": "商品和评论"},
+        {"id": "shopee_review_media", "name": "Shopee Review Media", "kind": "builtin_stage", "health": "unverified", "runtime": "python/browser", "role": "评论图片字段"},
+        {"id": "shopee_market_router", "name": "Shopee Market Router", "kind": "builtin_stage", "health": "ready", "runtime": "python", "role": "区域站点路由"}
+      ]
+    },
+    {
+      "id": "ebay",
+      "name": "eBay",
+      "group": "ecommerce",
+      "region": "global",
+      "enabled": true,
+      "components": [
+        {"id": "ebay_listing_parser", "name": "eBay Listing Parser", "kind": "external_project", "health": "reference_only", "repo": "https://github.com/spider-rs/web-scraping-examples", "runtime": "rust/browser", "role": "商品和二手 listing 图片"},
+        {"id": "ebay_browse_api", "name": "eBay Browse API", "kind": "builtin_stage", "health": "auth_required", "runtime": "python/http", "role": "官方商品入口"},
+        {"id": "ebay_feedback_probe", "name": "eBay Feedback Probe", "kind": "builtin_stage", "health": "unverified", "runtime": "python/browser", "role": "评价媒体探测"}
+      ]
+    },
+    {
+      "id": "aliexpress",
+      "name": "AliExpress",
+      "group": "ecommerce",
+      "region": "global",
+      "enabled": true,
+      "components": [
+        {"id": "aliexpress_official_reviews", "name": "AliExpress Official Reviews", "kind": "builtin_stage", "health": "auth_required", "repo": "https://open.alitrip.com/docs/api.htm?apiId=54478", "runtime": "python/http", "role": "评价和 image_urls"},
+        {"id": "aliexpress_reviews_scraper", "name": "AliExpress Reviews Scraper", "kind": "external_project", "health": "reference_only", "repo": "https://github.com/MohammedDerouiche/aliExpressReviewsScraper", "runtime": "python/http", "role": "评论解析参考"},
+        {"id": "aliexpress_media_parser", "name": "AliExpress Media Parser", "kind": "external_project", "health": "reference_only", "repo": "https://github.com/sherifmohamed3378-ui/aliexpress-actor-products", "runtime": "node/apify", "role": "reviewPhotos 字段参考"}
+      ]
+    },
+    {
+      "id": "temu",
+      "name": "Temu",
+      "group": "ecommerce",
+      "region": "global",
+      "enabled": true,
+      "components": [
+        {"id": "temu_data_scraper", "name": "Temu Data Scraper", "kind": "external_project", "health": "reference_only", "repo": "https://github.com/xilo1653/temu-data-scraper", "runtime": "python/hosted_api", "role": "商品、评论和媒体字段参考"},
+        {"id": "temu_review_probe", "name": "Temu Review Probe", "kind": "builtin_stage", "health": "unverified", "runtime": "python/browser", "role": "评论图片实测入口"}
+      ]
+    },
+    {
+      "id": "mercado_libre",
+      "name": "Mercado Libre",
+      "group": "ecommerce",
+      "region": "latin_america",
+      "enabled": true,
+      "components": [
+        {"id": "mercado_listing_parser", "name": "Mercado Libre Listing Parser", "kind": "external_project", "health": "reference_only", "repo": "https://github.com/spider-rs/web-scraping-examples", "runtime": "rust/browser", "role": "商品和 listing 图片"},
+        {"id": "mercado_official_api", "name": "Mercado Libre Official API", "kind": "builtin_stage", "health": "auth_required", "runtime": "python/http", "role": "商品图片与详情"},
+        {"id": "mercado_review_media", "name": "Mercado Review Media", "kind": "builtin_stage", "health": "unverified", "runtime": "python/browser", "role": "评论媒体探测"}
+      ]
+    },
+    {
+      "id": "etsy",
+      "name": "Etsy",
+      "group": "ecommerce",
+      "region": "global",
+      "enabled": true,
+      "components": [
+        {"id": "etsy_official_reviews", "name": "Etsy Official Reviews", "kind": "builtin_stage", "health": "auth_required", "repo": "https://developer.etsy.com/documentation/reference/", "runtime": "python/http", "role": "评论和 image_url_fullxfull"},
+        {"id": "etsy_listing_parser", "name": "Etsy Listing Parser", "kind": "builtin_stage", "health": "ready", "runtime": "python/http", "role": "商品页和图片"},
+        {"id": "etsy_review_media", "name": "Etsy Review Media", "kind": "builtin_stage", "health": "unverified", "runtime": "python/http", "role": "买家评论图归一化"}
+      ]
+    },
+    {
+      "id": "rakuten",
+      "name": "Rakuten",
+      "group": "ecommerce",
+      "region": "japan",
+      "enabled": true,
+      "components": [
+        {"id": "rakuten_item_api", "name": "Rakuten Item API", "kind": "builtin_stage", "health": "auth_required", "repo": "https://webservice.rakuten.co.jp/documentation/ichiba-item-search", "runtime": "python/http", "role": "商品图和评分"},
+        {"id": "rakuten_review_probe", "name": "Rakuten Review Probe", "kind": "builtin_stage", "health": "unverified", "runtime": "python/browser", "role": "单条评论图片探测"}
+      ]
+    },
+    {
+      "id": "coupang",
+      "name": "Coupang",
+      "group": "ecommerce",
+      "region": "korea",
+      "enabled": true,
+      "components": [
+        {"id": "coupang_review_crawling", "name": "Coupang Review Crawling", "kind": "external_project", "health": "reference_only", "repo": "https://github.com/JaehyoJJAng/Coupang-Review-Crawling", "runtime": "python/http", "role": "评论抓取"},
+        {"id": "coupang_review_media", "name": "Coupang Review Media", "kind": "builtin_stage", "health": "unverified", "runtime": "python/browser", "role": "买家图片提取"}
+      ]
+    },
+    {
+      "id": "flipkart",
+      "name": "Flipkart",
+      "group": "ecommerce",
+      "region": "india",
+      "enabled": true,
+      "components": [
+        {"id": "flipkart_review_reference", "name": "Flipkart Review Reference", "kind": "external_project", "health": "reference_only", "repo": "https://github.com/topics/product-review", "runtime": "python", "role": "评论文本参考"},
+        {"id": "flipkart_review_media", "name": "Flipkart Review Media", "kind": "builtin_stage", "health": "unverified", "runtime": "python/browser", "role": "评论图片探测"}
+      ]
+    },
+    {
+      "id": "ozon",
+      "name": "Ozon",
+      "group": "ecommerce",
+      "region": "russia",
+      "enabled": true,
+      "components": [
+        {"id": "ozon_search_collector", "name": "Ozon Search Collector", "kind": "external_project", "health": "reference_only", "repo": "https://github.com/sergerdn/ozon-search-queries-collector", "runtime": "python/scrapy-playwright", "role": "搜索和页面会话参考"},
+        {"id": "ozon_review_media", "name": "Ozon Review Media", "kind": "builtin_stage", "health": "unverified", "runtime": "python/browser", "role": "评论图片探测"}
+      ]
+    },
+    {
+      "id": "shein",
+      "name": "SHEIN",
+      "group": "ecommerce",
+      "region": "global",
+      "enabled": true,
+      "components": [
+        {"id": "shein_page_probe", "name": "SHEIN Public Page Probe", "kind": "builtin_stage", "health": "unverified", "runtime": "python/browser", "role": "公开商品页探测"},
+        {"id": "shein_review_media", "name": "SHEIN Review Media", "kind": "builtin_stage", "health": "unverified", "runtime": "python/browser", "role": "评论图片探测"}
+      ]
+    },
+    {
+      "id": "lazada",
+      "name": "Lazada",
+      "group": "ecommerce",
+      "region": "southeast_asia",
+      "enabled": true,
+      "components": [
+        {"id": "lazada_scraper", "name": "Lazada Scraper", "kind": "external_project", "health": "reference_only", "repo": "https://github.com/omkarcloud/lazada-scraper", "runtime": "hosted_api", "role": "商品、评分和媒体参考"},
+        {"id": "lazada_review_media", "name": "Lazada Review Media", "kind": "builtin_stage", "health": "unverified", "runtime": "python/browser", "role": "买家媒体探测"}
+      ]
+    },
+    {
+      "id": "kuaishou",
+      "name": "快手电商",
+      "group": "ecommerce",
+      "region": "china",
+      "enabled": true,
+      "components": [
+        {"id": "ks_downloader", "name": "KS-Downloader", "kind": "external_project", "health": "reference_only", "repo": "https://github.com/JoeanAmier/KS-Downloader", "runtime": "python/fastapi", "role": "公开作品图片和媒体"},
+        {"id": "ks_public_page", "name": "Kuaishou Public Page", "kind": "builtin_stage", "health": "ready", "runtime": "python/http", "role": "公开页面入口"},
+        {"id": "ks_shop_probe", "name": "Kuaishou Shop Probe", "kind": "builtin_stage", "health": "unverified", "runtime": "python/browser", "role": "电商商品页探测"},
+        {"id": "ks_media_classifier", "name": "Kuaishou Media Classifier", "kind": "builtin_stage", "health": "ready", "runtime": "python/pillow", "role": "作品图与实拍图分类"},
+        {"id": "ks_storage", "name": "Kuaishou Media Storage", "kind": "builtin_stage", "health": "ready", "runtime": "python/sqlite", "role": "媒体存储和来源索引"}
+      ]
+    },
+    {
+      "id": "allegro",
+      "name": "Allegro",
+      "group": "ecommerce",
+      "region": "europe",
+      "enabled": true,
+      "components": [
+        {"id": "allegro_listing_parser", "name": "Allegro Listing Parser", "kind": "external_project", "health": "reference_only", "repo": "https://github.com/spider-rs/web-scraping-examples", "runtime": "rust/browser", "role": "商品 listing 图片"},
+        {"id": "allegro_review_media", "name": "Allegro Review Media", "kind": "builtin_stage", "health": "unverified", "runtime": "python/browser", "role": "评论图片探测"}
+      ]
+    },
+    {
+      "id": "xianyu",
+      "name": "闲鱼/Goofish",
+      "group": "secondhand",
+      "region": "china",
+      "enabled": true,
+      "components": [
+        {"id": "xianyu_auto", "name": "Xianyu Auto", "kind": "external_project", "health": "reference_only", "repo": "https://github.com/HongBaoCool/xianyu-auto", "runtime": "electron/python/playwright", "role": "闲鱼图片库和页面自动化"},
+        {"id": "goofish_listing_parser", "name": "Goofish Listing Parser", "kind": "builtin_stage", "health": "unverified", "runtime": "python/playwright", "role": "二手 listing 全图"},
+        {"id": "xianyu_media_storage", "name": "Xianyu Media Storage", "kind": "builtin_stage", "health": "ready", "runtime": "python/sqlite", "role": "卖家实拍图存储"}
+      ]
+    },
+    {
+      "id": "mercari",
+      "name": "Mercari",
+      "group": "secondhand",
+      "region": "north_america",
+      "enabled": true,
+      "components": [
+        {"id": "mercari_us_scraper", "name": "Mercari US Scraper", "kind": "external_project", "health": "reference_only", "repo": "https://github.com/getascraper/how-to-scrape-mercari-us", "runtime": "node/apify", "role": "listing 和 media.image_urls"},
+        {"id": "mercari_public_page", "name": "Mercari Public Page", "kind": "builtin_stage", "health": "ready", "runtime": "python/http", "role": "公开 listing 入口"},
+        {"id": "mercari_media_normalizer", "name": "Mercari Media Normalizer", "kind": "builtin_stage", "health": "ready", "runtime": "python", "role": "多图、去重和实拍分类"}
+      ]
+    },
+    {
+      "id": "facebook_marketplace",
+      "name": "Facebook Marketplace",
+      "group": "secondhand",
+      "region": "global",
+      "enabled": true,
+      "components": [
+        {"id": "marketscrape", "name": "MarketScrape", "kind": "external_project", "health": "reference_only", "repo": "https://github.com/Marketscrape/marketscrape-web", "runtime": "python/django", "role": "Marketplace listing 研究"},
+        {"id": "facebook_listing_media", "name": "Facebook Listing Media", "kind": "builtin_stage", "health": "unverified", "repo": "https://github.com/SocQAPI/facebook-marketplace-item-api", "runtime": "python/http", "role": "公开 listing 多图提取"}
+      ]
+    },
+    {
+      "id": "depop_poshmark",
+      "name": "Depop/Poshmark",
+      "group": "secondhand",
+      "region": "global",
+      "enabled": true,
+      "components": [
+        {"id": "secondhand_mcp_reference", "name": "Secondhand Marketplace Reference", "kind": "external_project", "health": "reference_only", "repo": "https://github.com/jlsookiki/secondhand-mcp", "runtime": "python/mcp", "role": "多平台 listing 和全图字段参考"},
+        {"id": "depop_listing_media", "name": "Depop Listing Media", "kind": "builtin_stage", "health": "unverified", "runtime": "python/browser", "role": "卖家实拍图"},
+        {"id": "poshmark_listing_media", "name": "Poshmark Listing Media", "kind": "builtin_stage", "health": "unverified", "runtime": "python/browser", "role": "卖家实拍图"}
+      ]
+    },
+    {
+      "id": "vinted",
+      "name": "Vinted",
+      "group": "secondhand",
+      "region": "europe",
+      "enabled": true,
+      "components": [
+        {"id": "vinted_public_page", "name": "Vinted Public Page", "kind": "builtin_stage", "health": "unverified", "runtime": "python/browser", "role": "公开 listing 页面"},
+        {"id": "vinted_media_normalizer", "name": "Vinted Media Normalizer", "kind": "builtin_stage", "health": "unverified", "runtime": "python", "role": "图片归一化和去重"}
+      ]
+    }
+  ]
+}

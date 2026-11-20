@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>{{title}}</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f2f4f7;color:#1f2329;font:15px/1.6 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}
+main{max-width:960px;margin:0 auto;padding:16px}
+h1{margin:4px 0 12px;font-size:20px;font-weight:600}
+.player{position:relative;background:#000;border-radius:8px;overflow:hidden}
+video{display:block;width:100%;max-height:75vh;background:#000}
+.tip{display:none;padding:10px 12px;margin-top:10px;font-size:13px;color:#d83931;background:#fdecec;border-radius:6px}
+.desc{margin:12px 0;color:#646a73;white-space:pre-wrap}
+ul{margin:12px 0;padding:0;list-style:none}
+li{display:flex;justify-content:space-between;gap:12px;padding:10px 12px;margin-bottom:6px;background:#fff;border-radius:6px}
+li span{color:#8f959e;font-size:13px;white-space:nowrap}
+a{color:#3370ff;text-decoration:none}
+footer{margin-top:16px;color:#8f959e;font-size:12px}
+</style>
+</head>
+<body>
+<main>
+  <h1>{{title}}</h1>
+  <div class="player" id="player" hidden>
+    <video id="video" controls playsinline preload="metadata" controlslist="nodownload"></video>
+  </div>
+  <p class="tip" id="tip"></p>
+  <p class="desc">{{description}}</p>
+  <ul>{{files}}</ul>
+  <footer>{{viewer}}</footer>
+</main>
+<script>
+(() => {
+  if (!"{{has_video}}") return;
+  const id = "{{item_id}}";
+  const video = document.getElementById("video");
+  const tip = document.getElementById("tip");
+  document.getElementById("player").hidden = false;
+  let expiresAt = 0;
+  let failures = 0;
+  let swapping = false;
+
+  function say(text) { tip.textContent = text; tip.style.display = text ? "block" : "none"; }
+
+  async function freshUrl() {
+    const r = await fetch(`/api/m/${encodeURIComponent(id)}/play`, { credentials: "same-origin", cache: "no-store" });
+    if (r.status === 401) { location.href = "/auth/login?next=" + encodeURIComponent(location.pathname); return null; }
+    if (r.status === 403) { say("你的账号已经看不了这份资料了。"); return null; }
+    if (!r.ok) throw new Error("play " + r.status);
+    const d = await r.json();
+    expiresAt = Date.now() + Math.max(d.expires_in - 60, 30) * 1000;
+    return d.url;
+  }
+
+  // 签名地址有效期有限：换地址时记住进度和是否在播，换完接着放
+  async function swap(resume) {
+    if (swapping) return;
+    swapping = true;
+    const at = video.currentTime;
+    const playing = resume ?? !video.paused;
+    try {
+      const url = await freshUrl();
+      if (!url) return;
+      video.src = url;
+      video.addEventListener("loadedmetadata", () => {
+        if (at) video.currentTime = at;
+        if (playing) video.play().catch(() => {});
+      }, { once: true });
+    } catch (e) {
+      say("视频地址取不到，检查网络后刷新页面。");
+    } finally {
+      swapping = false;
+    }
+  }
+
+  const stale = () => Date.now() > expiresAt;
+  video.addEventListener("play", () => { if (stale()) swap(true); });
+  video.addEventListener("seeking", () => { if (stale()) swap(); });
+  video.addEventListener("playing", () => { failures = 0; say(""); });
+  video.addEventListener("error", () => {
+    // 多半是地址过期（OSS 回 403）；连着失败三次才算真出错
+    if (++failures <= 3) swap();
+    else say("视频播放出错了，刷新页面再试；还不行找管理员。");
+  });
+
+  swap(false);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+/* 大部分样式复用全局 app.wxss（card / form-group / input / btn / search-scan-icon） */
+
+.sim-card {
+  padding: 20rpx 0 4rpx;
+  border-top: 1rpx dashed var(--border);
+  margin-top: 8rpx;
+}
+
+.sim-card:first-of-type {
+  border-top: none;
+}
+
+.sim-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12rpx;
+}
+
+.sim-card__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.sim-card__del {
+  font-size: 26rpx;
+  color: #EF4444;
+  padding: 4rpx 8rpx;
+}
+
+.sim-add {
+  margin-top: 8rpx;
+  margin-bottom: 16rpx;
+}

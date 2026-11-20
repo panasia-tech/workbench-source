@@ -1,0 +1,50 @@
+# 调度中心（groupcontrol-server）
+# base_url 已含 gc 前缀（对齐群控 App API_BASE 约定）：
+#   dev 直连后端:  http://127.0.0.1:8100/api/gc
+#   prod 经 nginx: http://127.0.0.1:8000   （⚠️ 别用 /api/gc，那是 ERP 旧内嵌路由）
+# prod 的 MQTT 走 8883/TLS（EMQX 明文 1883 只监听 127.0.0.1）：mqtt_host service.example.invalid / mqtt_port 8883 / mqtt_tls true
+server:
+  base_url: "http://127.0.0.1:8100/api/gc"     # enroll / heartbeat
+  enroll_secret: ""                     # 与调度中心 GC_ENROLL_SECRET 一致
+  mqtt_host: "127.0.0.1"
+  mqtt_port: 1883
+  mqtt_tls: false
+
+# AdsPower 本地 API（必须用 127.0.0.1：local.adspower.net 会被本机代理 fake-ip 劫持）
+adspower:
+  api_base: "http://127.0.0.1:50326"    # 本机代理（manage.py broker）；代理没起就改回 :50325 直连降级
+  owner: "executor"                     # 身份，代理按用途登记表校验环境归属
+  user_id: ""                           # 单环境兜底（仅 env_source: config 且 environments 为空时用）
+  headless: false
+  env_source: "api"                     # api=直接从 AdsPower 拉环境清单（付费版）；config=只认下面的 environments
+  env_cache_sec: 60                     # 枚举缓存秒数（看门狗 10s 一轮，Local API 限流 1 次/秒）
+  env_group: "行情"                      # 环境归属边界：只认领这个 AdsPower 分组；留空=认领全部（同机跑桌面端时必须设）
+
+# 环境清单：一个环境 = 一台"设备" = 一个闲鱼账号
+# env_source: api（默认）下清单直接从 AdsPower /api/v1/user/list 拉，这里退化成**覆盖项**：
+# 只用来给环境起备注名，或用 enabled: false 把某个环境排除在纳管之外。没写到的环境一律纳管。
+# 想固化一份完整骨架（批量改名 / 准备切 env_source: config）：manage.py sync-envs
+environments: []
+#  - user_id: "k1esvnuc"
+#    name: "备注名（闲鱼昵称）"
+#    enabled: true
+
+# 闲鱼网页版
+xianyu:
+  home_url: "https://www.goofish.com"
+  chat_url: ""                          # M0 阶段核实后填入消息页 URL
+
+# 执行端行为
+executor:
+  heartbeat_interval_sec: 5
+  rpc_timeout_sec: 15
+  screencap_timeout_sec: 30
+  media_tmp_dir: "./tmp/media"
+  # 常驻 /im 消息门铃：会话列表未读上涨 → 提示服务端立刻建一单 chat_scan，
+  # 把「知道有新消息」从一轮周期扫描（服务端 chat_scan_interval_sec，默认 300s）压到秒级。
+  # 纯只读（只 goto + evaluate，不点不发）；关掉只是退回周期粒度，功能不缺。
+  im_watch_enabled: true
+  im_watch_poll_sec: 3.0                # 帧没来时也定期看一眼（长连接断了不至于瞎）
+  im_watch_min_hint_interval_sec: 15.0  # 两次提示的最小间隔
+  im_watch_retry_sec: 60.0              # 环境未登录/异常后的重试间隔
+  im_watch_ignore_nicks: ["通知消息"]    # 这些会话的未读上涨不即时触发（周期扫描照常收）

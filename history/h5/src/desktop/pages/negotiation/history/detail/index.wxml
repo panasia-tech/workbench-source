@@ -1,0 +1,150 @@
+<wxs module="fmt" src="../../../../utils/format.wxs" />
+
+<!-- 议价详情（电脑版）：左边商品与议价结果，右边议价证据 / 改派凭证 / 验货素材 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view class="dk-media">
+      <media-thumb
+        wx:if="{{detail.cover_thumb_url || detail.cover_url}}"
+        url="{{detail.cover_thumb_url || detail.cover_url}}"
+        preview-url="{{detail.cover_url}}"
+        size="small"
+      />
+      <view>
+        <view class="dk-title">{{detail.product_name || (loading ? '加载中…' : '议价详情')}}</view>
+        <view class="dk-sub">{{detail.sku_code}}{{detail.spec ? ' · ' + detail.spec : ''}}</view>
+      </view>
+    </view>
+    <view class="dk-row">
+      <text wx:if="{{detail.status}}" class="dk-tag {{fmt.statusTag(detail.status)}}">{{fmt.statusLabel(detail.status)}}</text>
+      <text wx:if="{{detail.sku_code}}" class="dk-tag {{detail.recalled_at ? 'tag-success' : 'tag-warning'}}">{{detail.recalled_at ? '已召回快递' : '待召回快递'}}</text>
+    </view>
+  </view>
+
+  <view class="dk-split">
+    <view class="nd-dk-col">
+      <view class="dk-card">
+        <view class="dk-card__head">议价结果</view>
+        <view class="dk-card__body">
+          <view class="nd-dk-board">
+            <view class="nd-dk-board__item">
+              <view class="dk-desc__k">议价实收</view>
+              <view class="nd-dk-board__main">¥{{fmt.money(detail.final_price)}}</view>
+            </view>
+            <view class="nd-dk-board__item">
+              <view class="dk-desc__k">原始采购成本</view>
+              <view class="nd-dk-board__v">{{detail.old_cost != null ? '¥' + fmt.money(detail.old_cost) : '—'}}</view>
+            </view>
+            <view class="nd-dk-board__item">
+              <view class="dk-desc__k">议价幅度</view>
+              <view class="nd-dk-board__v {{priceDiff.dir === 'down' ? 'nd-dk-down' : (priceDiff.dir === 'up' ? 'nd-dk-up' : '')}}">
+                {{!priceDiff ? '—' : (priceDiff.dir === 'flat' ? '持平' : priceDiff.sign + '¥' + fmt.money(priceDiff.abs))}}
+              </view>
+            </view>
+          </view>
+          <view class="dk-desc nd-dk-gap">
+            <view class="dk-desc__item">
+              <view class="dk-desc__k">议价人</view>
+              <view class="dk-desc__v">{{detail.negotiator_name || '—'}}</view>
+            </view>
+            <view class="dk-desc__item">
+              <view class="dk-desc__k">议价时间</view>
+              <view class="dk-desc__v">{{fmt.datetime(detail.negotiated_at)}}</view>
+            </view>
+            <view class="dk-desc__item">
+              <view class="dk-desc__k">召回快递</view>
+              <view class="dk-desc__v">{{detail.recalled_at ? fmt.datetime(detail.recalled_at) : '未补传改派截图'}}</view>
+            </view>
+            <view class="dk-desc__item dk-desc__item--full">
+              <view class="dk-desc__k">议价备注</view>
+              <view class="dk-desc__v">{{detail.negotiation_remark || '—'}}</view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="dk-card">
+        <view class="dk-card__head">商品信息</view>
+        <view class="dk-card__body">
+          <view class="dk-desc">
+            <view class="dk-desc__item dk-desc__item--full">
+              <view class="dk-desc__k">商品</view>
+              <view class="dk-desc__v">{{detail.product_name || '—'}}</view>
+            </view>
+            <view class="dk-desc__item">
+              <view class="dk-desc__k">货号</view>
+              <view class="dk-desc__v">{{detail.sku_code || '—'}}</view>
+            </view>
+            <view class="dk-desc__item">
+              <view class="dk-desc__k">规格</view>
+              <view class="dk-desc__v">{{detail.spec || '—'}}</view>
+            </view>
+            <view class="dk-desc__item">
+              <view class="dk-desc__k">品牌 / 型号</view>
+              <view class="dk-desc__v">{{detail.brand || '—'}}{{detail.model ? ' / ' + detail.model : ''}}</view>
+            </view>
+            <view class="dk-desc__item">
+              <view class="dk-desc__k">成色</view>
+              <view class="dk-desc__v">{{detail.condition_grade || '—'}}</view>
+            </view>
+            <view class="dk-desc__item">
+              <view class="dk-desc__k">库位</view>
+              <view class="dk-desc__v">{{detail.location_code || '—'}}</view>
+            </view>
+            <view class="dk-desc__item">
+              <view class="dk-desc__k">入库时间</view>
+              <view class="dk-desc__v">{{fmt.datetime(detail.inbound_at)}}</view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="dk-card" wx:if="{{detail.inspection_media.length}}">
+        <view class="dk-card__head">
+          <text>验货素材</text>
+          <text class="dk-sub">验货环节上传的入库图、瑕疵照片与视频</text>
+        </view>
+        <view class="dk-card__body">
+          <view class="dk-gallery">
+            <view wx:for="{{detail.inspection_media}}" wx:key="*this" class="nd-dk-cell">
+              <media-thumb url="{{item}}" preview-url="{{item}}" size="fill" group-urls="{{detail.inspection_media}}" />
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="nd-dk-col">
+      <view class="dk-card">
+        <view class="dk-card__head">
+          <text>议价证据</text>
+          <text class="dk-sub">{{detail.negotiation_media.length || 0}} 个</text>
+        </view>
+        <view class="dk-card__body">
+          <view wx:if="{{detail.negotiation_media.length}}" class="dk-gallery nd-dk-gallery-s">
+            <view wx:for="{{detail.negotiation_media}}" wx:key="*this" class="nd-dk-cell">
+              <media-thumb url="{{item}}" preview-url="{{item}}" size="fill" group-urls="{{detail.negotiation_media}}" />
+            </view>
+          </view>
+          <view wx:else class="dk-muted">没有上传议价证据</view>
+          <view class="dk-help nd-dk-gap-s">议价时上传的聊天截图、议价凭证或瑕疵视频</view>
+        </view>
+      </view>
+
+      <view class="dk-card">
+        <view class="dk-card__head">
+          <text>顺丰改派 / 再次派件凭证</text>
+          <text class="dk-sub">{{detail.redispatch_media.length || 0}} 个</text>
+        </view>
+        <view class="dk-card__body">
+          <view wx:if="{{detail.redispatch_media.length}}" class="dk-gallery nd-dk-gallery-s">
+            <view wx:for="{{detail.redispatch_media}}" wx:key="*this" class="nd-dk-cell">
+              <media-thumb url="{{item}}" preview-url="{{item}}" size="fill" group-urls="{{detail.redispatch_media}}" />
+            </view>
+          </view>
+          <view wx:else class="dk-muted">还没补传</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

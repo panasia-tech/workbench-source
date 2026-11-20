@@ -1,0 +1,124 @@
+/* 采购单搜索结果：限制最大高度，超出滚动 */
+.law-detail-page .po-result-card {
+  padding-top: 8rpx;
+  padding-bottom: 8rpx;
+}
+
+.law-detail-page .po-result-head {
+  font-size: 24rpx;
+  color: #9CA3AF;
+  padding: 4rpx 4rpx 12rpx;
+}
+
+.law-detail-page .po-scroll {
+  max-height: 540rpx;
+}
+
+.law-detail-page .po-unbind {
+  font-size: 24rpx;
+  color: #2563EB;
+  padding: 4rpx 8rpx;
+}
+
+.law-detail-page .law-no {
+  font-size: 24rpx;
+  color: #6B7280;
+  margin-bottom: 12rpx;
+}
+
+.law-detail-page .law-submit-bar {
+  margin-top: 32rpx;
+  padding-bottom: 40rpx;
+}
+
+.law-detail-page .law-po-row:active {
+  opacity: 0.7;
+}
+
+.law-detail-page .li-sub--link {
+  color: #2563EB;
+}
+
+.law-detail-page .law-btn-row {
+  display: flex;
+  gap: 20rpx;
+  align-items: stretch;
+}
+
+.law-detail-page .law-btn-row button {
+  margin: 0;
+}
+
+.law-detail-page .law-btn-save {
+  flex: 1.6;
+}
+
+.law-detail-page .law-btn-del {
+  flex: 1;
+}
+
+.law-detail-page .law-delete-btn {
+  background: #FEF2F2;
+  color: #DC2626;
+  border: 1rpx solid #FECACA;
+  font-size: 30rpx;
+  font-weight: 600;
+}
+
+.law-detail-page .law-delete-btn:active {
+  opacity: 0.7;
+}
+
+/* ===== 材料上传网格（与议价证据一致） ===== */
+.law-detail-page .evidence-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  margin-top: 12rpx;
+}
+
+.law-detail-page .evidence-item {
+  position: relative;
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 12rpx;
+  overflow: hidden;
+}
+
+.law-detail-page .evidence-del {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 40rpx;
+  height: 40rpx;
+  line-height: 36rpx;
+  text-align: center;
+  color: #fff;
+  font-size: 32rpx;
+  background: rgba(0, 0, 0, 0.5);
+  border-bottom-left-radius: 12rpx;
+}
+
+.law-detail-page .evidence-add {
+  width: 160rpx;
+  height: 160rpx;
+  border: 2rpx dashed #cbd5e1;
+  border-radius: 12rpx;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.law-detail-page .evidence-add-plus {
+  font-size: 48rpx;
+  line-height: 1;
+  color: #94a3b8;
+  font-weight: 300;
+}
+
+.law-detail-page .evidence-add-text {
+  font-size: 22rpx;
+  color: #94a3b8;
+}

@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#06080b">
+  <title>Wallpaper Display · 等待手机</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --black: #06080b;
+      --panel: #10151b;
+      --line: rgba(255, 255, 255, .12);
+      --ink: #f3f5f7;
+      --muted: #909ba7;
+      --cyan: #75e2d3;
+      --orange: #ffb36b;
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html, body { width: 100%; min-width: 320px; min-height: 100%; overflow: hidden; }
+    body { min-height: 100vh; margin: 0; background: #020304; color: var(--ink); }
+    .display-shell { width: 100%; min-height: 100vh; }
+    .topbar { position: fixed; z-index: 5; top: 18px; left: 22px; right: 22px; display: flex; align-items: center; justify-content: space-between; gap: 16px; transition: opacity .25s ease; }
+    .brand { display: flex; align-items: center; gap: 11px; }
+    .brand-mark { display: grid; place-items: center; width: 38px; height: 38px; border: 1px solid rgba(117, 226, 211, .42); border-radius: 12px; background: rgba(117, 226, 211, .12); color: var(--cyan); font-size: 13px; font-weight: 900; letter-spacing: -.08em; }
+    .brand-copy strong, .brand-copy span { display: block; }
+    .brand-copy strong { font-size: 15px; letter-spacing: -.02em; }
+    .brand-copy span { margin-top: 3px; color: var(--muted); font-size: 11px; }
+    .mode { display: inline-flex; align-items: center; gap: 7px; color: var(--muted); font-size: 12px; }
+    .mode::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 0 4px rgba(255, 179, 107, .12); }
+    .mode.ready { color: var(--cyan); }
+    .mode.ready::before { background: var(--cyan); box-shadow: 0 0 0 4px rgba(117, 226, 211, .12); }
+    .stage-zone { display: block; width: 100vw; min-height: 100vh; padding: 0; }
+    .stage-card { display: grid; grid-template-rows: minmax(0, 1fr) auto; width: 100vw; height: 100vh; height: 100dvh; overflow: hidden; border: 0; border-radius: 0; background: #020304; box-shadow: none; }
+    .stage { position: relative; display: grid; place-items: center; width: 100vw; height: 100vh; height: 100dvh; aspect-ratio: auto; min-height: 100vh; min-height: 100dvh; overflow: hidden; background: #020304; }
+    .stage-image { width: 100%; height: 100%; object-fit: cover; opacity: 0; }
+    .stage-image.visible { opacity: 1; }
+    .stage::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, rgba(0, 0, 0, .42), transparent 25%, transparent 70%, rgba(0, 0, 0, .56)); }
+    .stage-copy { position: absolute; z-index: 1; inset: 0; display: grid; place-content: center; gap: 7px; padding: 20px; text-align: center; pointer-events: none; }
+    .stage-copy strong { font-size: clamp(24px, 4vw, 42px); letter-spacing: -.055em; }
+    .stage-copy span { color: rgba(255, 255, 255, .66); font-size: 13px; }
+    .stage-card.playing .stage-copy { display: none; }
+    .frame-counter { position: absolute; z-index: 2; top: 16px; right: 16px; display: flex; align-items: baseline; gap: 5px; padding: 6px 9px; border: 1px solid rgba(255, 255, 255, .2); border-radius: 8px; background: rgba(0, 0, 0, .35); font-variant-numeric: tabular-nums; }
+    .frame-counter strong { font-size: 24px; letter-spacing: -.06em; }
+    .frame-counter span { color: rgba(255, 255, 255, .72); font-size: 11px; }
+    .stage-footer { position: fixed; z-index: 4; right: 22px; bottom: 18px; left: 22px; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 15px; padding: 14px 17px; border: 1px solid rgba(255, 255, 255, .16); border-radius: 14px; background: rgba(16, 21, 27, .82); backdrop-filter: blur(12px); transition: opacity .25s ease; }
+    .footer-label span, .footer-label strong { display: block; }
+    .footer-label span { color: var(--muted); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
+    .footer-label strong { margin-top: 2px; font-size: 14px; }
+    .progress-track { height: 8px; overflow: hidden; border-radius: 999px; background: #27303a; }
+    .progress-bar { width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--cyan), var(--orange)); }
+    .stage-time { color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+    .pairing { position: fixed; z-index: 4; right: 22px; bottom: 88px; left: 22px; display: flex; align-items: center; justify-content: space-between; gap: 22px; padding: 12px 14px; border: 1px solid rgba(255, 255, 255, .16); border-radius: 14px; background: rgba(16, 21, 27, .82); backdrop-filter: blur(12px); transition: opacity .25s ease; }
+    .pairing-copy span, .pairing-copy strong { display: block; }
+    .pairing-copy span { color: var(--muted); font-size: 12px; }
+    .pairing-copy strong { margin-top: 4px; font-size: 18px; letter-spacing: -.03em; }
+    .pairing-code { min-width: 150px; padding: 10px 16px; border: 1px solid rgba(117, 226, 211, .42); border-radius: 12px; background: rgba(117, 226, 211, .08); color: var(--cyan); font-size: 28px; font-weight: 850; letter-spacing: .18em; text-align: center; font-variant-numeric: tabular-nums; }
+    .pairing-code.error { border-color: rgba(255, 110, 118, .45); background: rgba(255, 110, 118, .08); color: #ff969b; font-size: 13px; letter-spacing: 0; }
+    .note { position: fixed; z-index: 4; top: 69px; right: 22px; margin: 0; color: var(--muted); font-size: 11px; text-align: right; transition: opacity .25s ease; }
+    body.playing .topbar, body.playing .stage-footer, body.playing footer { opacity: 0; pointer-events: none; }
+    body.playing .stage::after { display: none; }
+    @media (max-width: 700px) {
+      .topbar { top: 12px; left: 12px; right: 12px; }
+      .brand-copy span { display: none; }
+      .stage-footer { right: 12px; bottom: 12px; left: 12px; gap: 10px; padding: 12px; }
+      .pairing { right: 12px; bottom: 82px; left: 12px; display: block; padding: 11px 12px; }
+      .pairing-code { width: 100%; margin-top: 8px; }
+      .note { top: 58px; right: 12px; left: 12px; text-align: left; }
+    }
+  </style>
+</head>
+<body>
+  <main class="display-shell">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">DP</span><span class="brand-copy"><strong>Wallpaper Display</strong><span>电脑全屏显示端 · 手机录像</span></span></div>
+      <span id="mode" class="mode">正在连接</span>
+    </header>
+
+    <section class="stage-zone" aria-label="电脑显示画面">
+      <div id="stage-card" class="stage-card">
+        <div id="stage" class="stage">
+          <img id="stage-image" class="stage-image" alt="当前播放画面" draggable="false">
+          <div id="stage-copy" class="stage-copy"><strong id="stage-title">等待手机</strong><span id="stage-subtitle">请在手机录像页面中输入下方配对码</span></div>
+          <div class="frame-counter"><strong id="frame-number">—</strong><span>/ 100</span></div>
+        </div>
+        <div class="stage-footer"><div class="footer-label"><span>播放状态</span><strong id="frame-status">等待开始</strong></div><div class="progress-track" aria-hidden="true"><div id="progress-bar" class="progress-bar"></div></div><span id="stage-time" class="stage-time">00.0 / 10.0s</span></div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="pairing"><div class="pairing-copy"><span>手机配对码</span><strong id="pairing-help">手机点击“开始录像”后，这里自动播放 10 秒</strong></div><div id="pairing-code" class="pairing-code" aria-label="手机配对码">------</div></div>
+      <p id="note" class="note">电脑端不需要操作；请保持此页面打开并全屏显示。</p>
+    </footer>
+  </main>
+
+  <script>
+    (() => {
+      const FRAME_COUNT = 100;
+      const FRAME_MS = 100;
+      const DURATION_MS = 10000;
+      const el = {
+        mode: document.getElementById('mode'), stageCard: document.getElementById('stage-card'), image: document.getElementById('stage-image'),
+        title: document.getElementById('stage-title'), subtitle: document.getElementById('stage-subtitle'), frameNumber: document.getElementById('frame-number'),
+        frameStatus: document.getElementById('frame-status'), progress: document.getElementById('progress-bar'), time: document.getElementById('stage-time'),
+        pairingCode: document.getElementById('pairing-code'), pairingHelp: document.getElementById('pairing-help'), note: document.getElementById('note'),
+      };
+      let storedOffset = 0;
+      try { storedOffset = Number.parseInt(window.localStorage.getItem('wallpaper-display-offset') || '0', 10); } catch (_) {}
+      const state = {frames: [], images: [], current: -1, running: false, startTimer: 0, startAt: 0, raf: 0, socket: null, code: '', offset: Number.isFinite(storedOffset) && storedOffset > 0 ? storedOffset : 0};
+
+      const api = async (path, options = {}) => {
+        const response = await fetch(path, options);
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(payload.detail || `请求失败（${response.status}）`);
+        return payload;
+      };
+      const setMode = (text, ready = false) => { el.mode.textContent = text; el.mode.classList.toggle('ready', ready); };
+      const setPairingError = (message) => { el.pairingCode.textContent = message; el.pairingCode.classList.add('error'); };
+      const updateProgress = (elapsed) => { const value = Math.max(0, Math.min(DURATION_MS, elapsed)); el.progress.style.width = `${value / DURATION_MS * 100}%`; el.time.textContent = `${(value / 1000).toFixed(1).padStart(4, '0')} / 10.0s`; };
+
+      function paintFrame(index) {
+        if (!state.frames.length) return;
+        const safeIndex = Math.max(0, Math.min(FRAME_COUNT - 1, index));
+        const frame = state.frames[safeIndex];
+        state.current = safeIndex;
+        el.image.src = state.images[safeIndex]?.src || frame.player_url || frame.url;
+        el.image.alt = `第 ${safeIndex + 1} 帧`;
+        el.image.classList.add('visible');
+        el.frameNumber.textContent = String(safeIndex + 1).padStart(3, '0');
+        el.frameStatus.textContent = `${String(safeIndex + 1).padStart(3, '0')} / 100`;
+      }
+
+      function preload(url) {
+        return new Promise((resolve) => { const image = new Image(); image.decoding = 'async'; image.onload = () => resolve(image); image.onerror = () => resolve(null); image.src = url; });
+      }
+
+      async function loadFrames() {
+        try {
+          const payload = await api(`/v1/wallpaper/player/playlist?offset=${state.offset}`);
+          if (!payload.frames?.length) throw new Error('图片目录为空');
+          state.frames = payload.frames;
+          state.offset = Number(payload.next_offset || 0);
+          try { window.localStorage.setItem('wallpaper-display-offset', String(state.offset)); } catch (_) {}
+          let cursor = 0;
+          const worker = async () => { while (cursor < state.frames.length) { const index = cursor++; state.images[index] = await preload(state.frames[index].player_url || state.frames[index].url); } };
+          await Promise.all(Array.from({length: 6}, worker));
+          paintFrame(0);
+          setMode('等待手机', true);
+          el.title.textContent = '等待手机';
+          el.subtitle.textContent = '请在手机录像页面中输入下方配对码';
+        } catch (error) {
+          setMode('素材不可用');
+          el.title.textContent = '无法读取图片';
+          el.subtitle.textContent = error.message.includes('401') ? '当前页面没有播放器访问权限' : error.message;
+          el.note.textContent = '请检查服务和外置盘图片目录。';
+        }
+      }
+
+      function finishPlayback() {
+        state.running = false;
+        document.body.classList.remove('playing');
+        el.stageCard.classList.remove('playing');
+        el.title.textContent = '播放完成';
+        el.subtitle.textContent = '等待手机下一次点击开始录像';
+        el.frameStatus.textContent = '等待下一次';
+        el.pairingHelp.textContent = '手机可以再次点击“开始录像”';
+        setMode('等待手机', true);
+        updateProgress(DURATION_MS);
+        if (state.socket?.readyState === WebSocket.OPEN) state.socket.send(JSON.stringify({type: 'display_done'}));
+      }
+
+      function tick(now) {
+        if (!state.running) return;
+        const elapsed = now - state.startAt;
+        const index = Math.min(FRAME_COUNT - 1, Math.floor(elapsed / FRAME_MS));
+        if (index !== state.current) paintFrame(index);
+        updateProgress(elapsed);
+        if (elapsed >= DURATION_MS) { finishPlayback(); return; }
+        state.raf = requestAnimationFrame(tick);
+      }
+
+      function beginPlayback(startAtMs) {
+        if (!state.frames.length || state.running) return;
+        const delay = Math.max(0, Number(startAtMs || Date.now()) - Date.now());
+        window.clearTimeout(state.startTimer);
+        state.startTimer = window.setTimeout(() => {
+          state.running = true;
+          state.current = -1;
+          state.startAt = performance.now();
+          document.body.classList.add('playing');
+          el.stageCard.classList.add('playing');
+          el.title.textContent = '正在播放';
+          el.subtitle.textContent = '手机正在录制，请保持画面稳定';
+          el.pairingHelp.textContent = '本轮 100 帧 / 10 秒';
+          setMode('播放中', true);
+          paintFrame(0);
+          updateProgress(0);
+          state.raf = requestAnimationFrame(tick);
+        }, delay);
+      }
+
+      function connectSocket() {
+        if (!state.code) return;
+        const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+        const socket = new WebSocket(`${protocol}://${window.location.host}/v1/wallpaper/player/ws?code=${encodeURIComponent(state.code)}&role=display`);
+        state.socket = socket;
+        socket.onopen = () => { setMode('等待手机', true); el.note.textContent = '电脑端不需要操作；请保持此页面打开并全屏显示。'; };
+        socket.onmessage = (event) => {
+          let payload = {};
+          try { payload = JSON.parse(event.data); } catch (_) { return; }
+          if (payload.type === 'peer_connected' && payload.role === 'remote') { el.note.textContent = '手机已连接，等待手机点击“开始录像”。'; return; }
+          if (payload.type === 'start_playback') beginPlayback(payload.start_at_ms);
+          if (payload.type === 'peer_disconnected' && payload.role === 'remote') { setMode('等待手机', true); el.note.textContent = '手机已断开，等待重新连接。'; }
+        };
+        socket.onclose = () => { if (state.socket === socket) { setMode('连接重试中'); window.setTimeout(connectSocket, 1500); } };
+        socket.onerror = () => setMode('连接异常');
+      }
+
+      async function createSession() {
+        try {
+          const payload = await api('/v1/wallpaper/player/session', {method: 'POST'});
+          state.code = String(payload.pairing_code || '');
+          el.pairingCode.textContent = state.code || '------';
+          el.pairingCode.classList.remove('error');
+          connectSocket();
+        } catch (error) {
+          setPairingError(error.message.includes('401') ? '需要登录' : '不可用');
+          setMode('无法配对');
+          el.note.textContent = error.message;
+        }
+      }
+
+      (async () => {
+        await loadFrames();
+        await createSession();
+      })();
+    })();
+  </script>
+</body>
+</html>

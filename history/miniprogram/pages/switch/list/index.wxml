@@ -1,0 +1,43 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<view class="page-wrap page-wrap--no-tab record-page switch-list-page">
+  <view class="link-row">
+    <text class="link-btn" bindtap="goCreate">新建切单 ›</text>
+  </view>
+
+  <view class="card filter-card">
+    <view class="filter-meta">共 {{total}} 条切单</view>
+  </view>
+
+  <view class="card list-card">
+    <view wx:if="{{!list.length && !loading}}" class="empty">
+      <view class="e-icon">—</view>
+      <view class="e-text">暂无切单</view>
+    </view>
+
+    <view
+      wx:for="{{list}}"
+      wx:key="id"
+      class="list-item"
+      bindtap="openDetail"
+      data-id="{{item.id}}"
+    >
+      <view class="li-icon">{{fmt.iconChar(item.product_name)}}</view>
+      <view class="li-info">
+        <view class="li-title">{{item.switch_no}} · {{item.product_name || item.sku_code}}</view>
+        <view class="li-sub">货号 {{item.sku_code}} · ¥{{fmt.money(item.unit_price)}}</view>
+        <view class="li-sub li-sub--time">创建时间 {{fmt.datetime(item.created_at)}}</view>
+      </view>
+      <view class="li-meta">
+        <view class="tag li-tag tag-warning">{{item.status}}</view>
+      </view>
+    </view>
+
+    <view wx:if="{{loading}}" class="list-footer">加载中…</view>
+    <view wx:elif="{{noMore && list.length}}" class="list-footer">没有更多了</view>
+  </view>
+
+  <view class="card more-card">
+    <button class="btn btn-outline btn-block" bindtap="goSwitchShip">切单快递发货出库</button>
+  </view>
+</view>

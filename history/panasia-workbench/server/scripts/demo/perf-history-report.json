@@ -1,0 +1,71 @@
+{
+  "at": "2026-09-28T15:39:05.655Z",
+  "steps": [
+    {
+      "step": "入职日期调整为 2026-01-05（否则 6 月周期/薪资事件无法创建）",
+      "ok": true
+    },
+    {
+      "step": "Appraisal Demo 2026-06",
+      "ok": true,
+      "detail": "goals=7 行，调分 0 处，Σscore_earned=91.6"
+    },
+    {
+      "step": "Appraisal Demo 2026-07",
+      "ok": true,
+      "detail": "goals=7 行，调分 0 处，Σscore_earned=83"
+    },
+    {
+      "step": "Appraisal Demo 2026-08",
+      "ok": true,
+      "detail": "goals=7 行，调分 0 处，Σscore_earned=77.4"
+    },
+    {
+      "step": "Salary Component 迟到扣款 已存在",
+      "ok": true
+    },
+    {
+      "step": "Salary Component 绩效奖金扣减 已存在",
+      "ok": true
+    },
+    {
+      "step": "建 Salary Structure Assignment（采购专员-月度）",
+      "ok": true,
+      "detail": "HR-SSA-26-09-00001"
+    },
+    {
+      "step": "建事件 其他奖励@2026-06-30",
+      "ok": true,
+      "detail": "HR-ADS-26-09-00001"
+    },
+    {
+      "step": "建事件 迟到扣款@2026-07-15",
+      "ok": true,
+      "detail": "HR-ADS-26-09-00002"
+    },
+    {
+      "step": "建事件 绩效奖金扣减@2026-08-31",
+      "ok": true,
+      "detail": "HR-ADS-26-09-00003"
+    },
+    {
+      "step": "考勤 2026-07-14 已存在",
+      "ok": true
+    },
+    {
+      "step": "考勤 2026-07-15 已存在",
+      "ok": true
+    }
+  ],
+  "verify": {
+    "cycles": 4,
+    "byCycle": {
+      "Demo 2026-09": 86,
+      "Demo 2026-06": 91.6,
+      "Demo 2026-07": 83,
+      "Demo 2026-08": 77.4
+    },
+    "additionalSalary": 3,
+    "julyAttendance": 2
+  }
+}

@@ -1,0 +1,50 @@
+<view class="gc-task-page">
+  <view class="gc-tabs">
+    <view
+      wx:for="{{sectionTabs}}"
+      wx:key="key"
+      class="gc-tab {{section === item.key ? 'gc-tab--on' : ''}}"
+      data-section="{{item.key}}"
+      bindtap="onTabChange"
+    >{{item.label}}</view>
+  </view>
+
+  <!-- 当前任务:进行中在顶部,待开始在后 -->
+  <view class="card" wx:if="{{section === 'current'}}">
+    <view wx:if="{{!currentList.length && !currentLoading}}" class="gc-empty">暂无进行中的任务</view>
+    <view wx:for="{{currentList}}" wx:key="id" class="gc-row" data-id="{{item.id}}" bindtap="openDetail">
+      <view class="gc-row-main">
+        <view class="gc-row-title">{{item.task_type || '任务'}} · {{item.device_name || '—'}}</view>
+        <view class="gc-row-sub">{{item._time}}{{item.account_nick ? ' · ' + item.account_nick : ''}}</view>
+        <view wx:if="{{item.error}}" class="gc-row-err">{{item.error}}</view>
+      </view>
+      <view class="gc-row-right">
+        <view class="tag {{item._statusTag}}">{{item._statusLabel}}</view>
+      </view>
+    </view>
+    <view wx:if="{{currentLoading}}" class="list-footer">加载中...</view>
+  </view>
+
+  <!-- 历史任务:按最近时间倒序,触底加载更多 -->
+  <view class="card" wx:if="{{section === 'history'}}">
+    <view wx:if="{{!historyList.length && !historyLoading}}" class="gc-empty">暂无历史任务</view>
+    <view wx:for="{{historyList}}" wx:key="id" class="gc-row" data-id="{{item.id}}" bindtap="openDetail">
+      <view class="gc-row-main">
+        <view class="gc-row-title">{{item.task_type || '任务'}} · {{item.device_name || '—'}}</view>
+        <view class="gc-row-sub">{{item._time}}{{item.account_nick ? ' · ' + item.account_nick : ''}}</view>
+        <view wx:if="{{item.error}}" class="gc-row-err">{{item.error}}</view>
+      </view>
+      <view class="gc-row-right">
+        <view class="tag {{item._statusTag}}">{{item._statusLabel}}</view>
+        <text
+          wx:if="{{isAdmin && (item.status === 'FAILED' || item.status === 'TIMEOUT')}}"
+          class="gc-row-act"
+          data-id="{{item.id}}"
+          catchtap="retryTask"
+        >重发</text>
+      </view>
+    </view>
+    <view wx:if="{{historyLoading}}" class="list-footer">加载中...</view>
+    <view wx:elif="{{historyNoMore && historyList.length}}" class="list-footer">没有更多了</view>
+  </view>
+</view>

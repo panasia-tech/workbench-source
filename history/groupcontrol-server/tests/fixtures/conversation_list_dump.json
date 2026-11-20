@@ -1,0 +1,908 @@
+{
+ "screen": [
+  1080,
+  2400
+ ],
+ "nodes": [
+  {
+   "desc": "",
+   "cls": "android.widget.FrameLayout",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1200,
+   "w": 1080,
+   "h": 2400
+  },
+  {
+   "desc": "",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1200,
+   "w": 1080,
+   "h": 2400
+  },
+  {
+   "desc": "",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1200,
+   "w": 1080,
+   "h": 2400
+  },
+  {
+   "desc": "",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1200,
+   "w": 1080,
+   "h": 2400
+  },
+  {
+   "desc": "",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1200,
+   "w": 1080,
+   "h": 2400
+  },
+  {
+   "desc": "",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1200,
+   "w": 1080,
+   "h": 2400
+  },
+  {
+   "desc": "",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1200,
+   "w": 1080,
+   "h": 2400
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.LinearLayout",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1178,
+   "w": 1080,
+   "h": 2356
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.FrameLayout",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1178,
+   "w": 1080,
+   "h": 2356
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.FrameLayout",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1178,
+   "w": 1080,
+   "h": 2356
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.FrameLayout",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1178,
+   "w": 1080,
+   "h": 2356
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.ImageView",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1178,
+   "w": 1080,
+   "h": 2356
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.FrameLayout",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1178,
+   "w": 1080,
+   "h": 2356
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.FrameLayout",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1178,
+   "w": 1080,
+   "h": 2356
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.FrameLayout",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1178,
+   "w": 1080,
+   "h": 2356
+  },
+  {
+   "desc": "",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1178,
+   "w": 1080,
+   "h": 2356
+  },
+  {
+   "desc": "",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1178,
+   "w": 1080,
+   "h": 2356
+  },
+  {
+   "desc": "消息",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 105,
+   "cy": 166,
+   "w": 132,
+   "h": 93
+  },
+  {
+   "desc": "清除未读",
+   "cls": "android.view.View",
+   "clickable": true,
+   "cx": 904,
+   "cy": 167,
+   "w": 66,
+   "h": 66
+  },
+  {
+   "desc": "清除未读",
+   "cls": "android.widget.ImageView",
+   "clickable": false,
+   "cx": 904,
+   "cy": 167,
+   "w": 66,
+   "h": 66
+  },
+  {
+   "desc": "设置",
+   "cls": "android.widget.ImageView",
+   "clickable": true,
+   "cx": 1003,
+   "cy": 167,
+   "w": 66,
+   "h": 66
+  },
+  {
+   "desc": "",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1223,
+   "w": 1080,
+   "h": 1992
+  },
+  {
+   "desc": "",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1223,
+   "w": 1080,
+   "h": 1992
+  },
+  {
+   "desc": "搜索聊天记录/联系人/服务号",
+   "cls": "android.view.View",
+   "clickable": true,
+   "cx": 540,
+   "cy": 293,
+   "w": 1080,
+   "h": 132
+  },
+  {
+   "desc": "1天前",
+   "cls": "android.widget.ImageView",
+   "clickable": true,
+   "cx": 540,
+   "cy": 480,
+   "w": 1080,
+   "h": 242
+  },
+  {
+   "desc": "未读数2",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 165,
+   "cy": 414,
+   "w": 50,
+   "h": 50
+  },
+  {
+   "desc": "通知消息",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 302,
+   "cy": 426,
+   "w": 187,
+   "h": 63
+  },
+  {
+   "desc": "卖家已发货",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 611,
+   "cy": 491,
+   "w": 805,
+   "h": 55
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.ImageView",
+   "clickable": true,
+   "cx": 540,
+   "cy": 722,
+   "w": 1080,
+   "h": 242
+  },
+  {
+   "desc": "互动消息",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 302,
+   "cy": 668,
+   "w": 187,
+   "h": 63
+  },
+  {
+   "desc": "还没有新通知~",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 611,
+   "cy": 733,
+   "w": 805,
+   "h": 55
+  },
+  {
+   "desc": "1天前",
+   "cls": "android.widget.ImageView",
+   "clickable": true,
+   "cx": 540,
+   "cy": 964,
+   "w": 1080,
+   "h": 242
+  },
+  {
+   "desc": "半卖半送了",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 326,
+   "cy": 910,
+   "w": 234,
+   "h": 63
+  },
+  {
+   "desc": "等待买家收货",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 478,
+   "cy": 910,
+   "w": 27,
+   "h": 27
+  },
+  {
+   "desc": "等待买家收货",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 580,
+   "cy": 910,
+   "w": 165,
+   "h": 35
+  },
+  {
+   "desc": "[卖家已发货]",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 523,
+   "cy": 975,
+   "w": 629,
+   "h": 55
+  },
+  {
+   "desc": "1天前",
+   "cls": "android.widget.ImageView",
+   "clickable": true,
+   "cx": 540,
+   "cy": 1206,
+   "w": 1080,
+   "h": 242
+  },
+  {
+   "desc": "红点提醒",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 162,
+   "cy": 1147,
+   "w": 27,
+   "h": 28
+  },
+  {
+   "desc": "闲鱼精选",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 302,
+   "cy": 1152,
+   "w": 187,
+   "h": 63
+  },
+  {
+   "desc": "[10条] 📢您通过了信用评估，借钱额度可提升。",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 611,
+   "cy": 1217,
+   "w": 805,
+   "h": 55
+  },
+  {
+   "desc": "可能感兴趣的人",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1724,
+   "w": 1080,
+   "h": 795
+  },
+  {
+   "desc": "",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1756,
+   "w": 1080,
+   "h": 544
+  },
+  {
+   "desc": "",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 540,
+   "cy": 1756,
+   "w": 1080,
+   "h": 544
+  },
+  {
+   "desc": "金Kate\nVintage 玩家",
+   "cls": "android.view.View",
+   "clickable": true,
+   "cx": 212,
+   "cy": 1756,
+   "w": 358,
+   "h": 544
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.ImageView",
+   "clickable": false,
+   "cx": 212,
+   "cy": 1632,
+   "w": 220,
+   "h": 220
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.ImageView",
+   "clickable": false,
+   "cx": 212,
+   "cy": 1717,
+   "w": 220,
+   "h": 49
+  },
+  {
+   "desc": "图片",
+   "cls": "android.widget.ImageView",
+   "clickable": true,
+   "cx": 212,
+   "cy": 1943,
+   "w": 302,
+   "h": 88
+  },
+  {
+   "desc": "Andrew的微缩世界\n模玩玩家",
+   "cls": "android.view.View",
+   "clickable": true,
+   "cx": 591,
+   "cy": 1756,
+   "w": 357,
+   "h": 544
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.ImageView",
+   "clickable": false,
+   "cx": 591,
+   "cy": 1632,
+   "w": 220,
+   "h": 220
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.ImageView",
+   "clickable": false,
+   "cx": 591,
+   "cy": 1717,
+   "w": 220,
+   "h": 49
+  },
+  {
+   "desc": "图片",
+   "cls": "android.widget.ImageView",
+   "clickable": true,
+   "cx": 591,
+   "cy": 1943,
+   "w": 303,
+   "h": 88
+  },
+  {
+   "desc": "小小疯子\n明星玩家",
+   "cls": "android.view.View",
+   "clickable": true,
+   "cx": 936,
+   "cy": 1756,
+   "w": 288,
+   "h": 544
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.ImageView",
+   "clickable": false,
+   "cx": 970,
+   "cy": 1632,
+   "w": 219,
+   "h": 220
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.ImageView",
+   "clickable": false,
+   "cx": 970,
+   "cy": 1717,
+   "w": 219,
+   "h": 49
+  },
+  {
+   "desc": "图片",
+   "cls": "android.widget.ImageView",
+   "clickable": true,
+   "cx": 950,
+   "cy": 1943,
+   "w": 260,
+   "h": 88
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.FrameLayout",
+   "clickable": false,
+   "cx": 540,
+   "cy": 2257,
+   "w": 1080,
+   "h": 198
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.RelativeLayout",
+   "clickable": false,
+   "cx": 540,
+   "cy": 2257,
+   "w": 1080,
+   "h": 198
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.ImageView",
+   "clickable": false,
+   "cx": 540,
+   "cy": 2196,
+   "w": 1080,
+   "h": 44
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.FrameLayout",
+   "clickable": false,
+   "cx": 540,
+   "cy": 2287,
+   "w": 1080,
+   "h": 138
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.ImageView",
+   "clickable": false,
+   "cx": 540,
+   "cy": 2287,
+   "w": 1080,
+   "h": 138
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.LinearLayout",
+   "clickable": false,
+   "cx": 540,
+   "cy": 2287,
+   "w": 1080,
+   "h": 138
+  },
+  {
+   "desc": "闲鱼，未选中状态",
+   "cls": "android.widget.FrameLayout",
+   "clickable": true,
+   "cx": 120,
+   "cy": 2287,
+   "w": 196,
+   "h": 138
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.RelativeLayout",
+   "clickable": false,
+   "cx": 120,
+   "cy": 2287,
+   "w": 196,
+   "h": 138
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.LinearLayout",
+   "clickable": false,
+   "cx": 119,
+   "cy": 2287,
+   "w": 77,
+   "h": 138
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.FrameLayout",
+   "clickable": false,
+   "cx": 119,
+   "cy": 2279,
+   "w": 77,
+   "h": 77
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.ImageView",
+   "clickable": false,
+   "cx": 119,
+   "cy": 2279,
+   "w": 77,
+   "h": 77
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.TextView",
+   "clickable": false,
+   "cx": 119,
+   "cy": 2337,
+   "w": 56,
+   "h": 38
+  },
+  {
+   "desc": "同城，未选中状态",
+   "cls": "android.widget.FrameLayout",
+   "clickable": true,
+   "cx": 316,
+   "cy": 2287,
+   "w": 197,
+   "h": 138
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.RelativeLayout",
+   "clickable": false,
+   "cx": 316,
+   "cy": 2287,
+   "w": 197,
+   "h": 138
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.LinearLayout",
+   "clickable": false,
+   "cx": 316,
+   "cy": 2287,
+   "w": 77,
+   "h": 138
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.FrameLayout",
+   "clickable": false,
+   "cx": 316,
+   "cy": 2279,
+   "w": 77,
+   "h": 77
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.ImageView",
+   "clickable": false,
+   "cx": 316,
+   "cy": 2279,
+   "w": 77,
+   "h": 77
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.TextView",
+   "clickable": false,
+   "cx": 316,
+   "cy": 2337,
+   "w": 56,
+   "h": 38
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.FrameLayout",
+   "clickable": false,
+   "cx": 345,
+   "cy": 2243,
+   "w": 110,
+   "h": 39
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.TextView",
+   "clickable": false,
+   "cx": 345,
+   "cy": 2243,
+   "w": 88,
+   "h": 30
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.FrameLayout",
+   "clickable": true,
+   "cx": 539,
+   "cy": 2287,
+   "w": 248,
+   "h": 138
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.LinearLayout",
+   "clickable": false,
+   "cx": 539,
+   "cy": 2287,
+   "w": 248,
+   "h": 138
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.LinearLayout",
+   "clickable": false,
+   "cx": 539,
+   "cy": 2287,
+   "w": 248,
+   "h": 138
+  },
+  {
+   "desc": "消息，未读消息数2，未选中状态",
+   "cls": "android.widget.FrameLayout",
+   "clickable": true,
+   "cx": 761,
+   "cy": 2287,
+   "w": 197,
+   "h": 138
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.RelativeLayout",
+   "clickable": false,
+   "cx": 761,
+   "cy": 2287,
+   "w": 197,
+   "h": 138
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.LinearLayout",
+   "clickable": false,
+   "cx": 761,
+   "cy": 2287,
+   "w": 77,
+   "h": 138
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.FrameLayout",
+   "clickable": false,
+   "cx": 761,
+   "cy": 2279,
+   "w": 77,
+   "h": 77
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.ImageView",
+   "clickable": false,
+   "cx": 761,
+   "cy": 2279,
+   "w": 77,
+   "h": 77
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.TextView",
+   "clickable": false,
+   "cx": 761,
+   "cy": 2337,
+   "w": 56,
+   "h": 38
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.FrameLayout",
+   "clickable": false,
+   "cx": 795,
+   "cy": 2249,
+   "w": 50,
+   "h": 50
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.TextView",
+   "clickable": false,
+   "cx": 795,
+   "cy": 2249,
+   "w": 50,
+   "h": 50
+  },
+  {
+   "desc": "我的，未选中状态",
+   "cls": "android.widget.FrameLayout",
+   "clickable": true,
+   "cx": 959,
+   "cy": 2287,
+   "w": 198,
+   "h": 138
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.RelativeLayout",
+   "clickable": false,
+   "cx": 959,
+   "cy": 2287,
+   "w": 198,
+   "h": 138
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.LinearLayout",
+   "clickable": false,
+   "cx": 958,
+   "cy": 2287,
+   "w": 77,
+   "h": 138
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.FrameLayout",
+   "clickable": false,
+   "cx": 958,
+   "cy": 2279,
+   "w": 77,
+   "h": 77
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.ImageView",
+   "clickable": false,
+   "cx": 958,
+   "cy": 2279,
+   "w": 77,
+   "h": 77
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.TextView",
+   "clickable": false,
+   "cx": 958,
+   "cy": 2337,
+   "w": 56,
+   "h": 38
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.RelativeLayout",
+   "clickable": false,
+   "cx": 540,
+   "cy": 2257,
+   "w": 226,
+   "h": 198
+  },
+  {
+   "desc": "卖闲置",
+   "cls": "android.widget.FrameLayout",
+   "clickable": true,
+   "cx": 540,
+   "cy": 2257,
+   "w": 226,
+   "h": 198
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.ImageView",
+   "clickable": false,
+   "cx": 540,
+   "cy": 2257,
+   "w": 226,
+   "h": 198
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.RelativeLayout",
+   "clickable": false,
+   "cx": 540,
+   "cy": 2257,
+   "w": 226,
+   "h": 198
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.FrameLayout",
+   "clickable": false,
+   "cx": 538,
+   "cy": 2269,
+   "w": 162,
+   "h": 162
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.ImageView",
+   "clickable": false,
+   "cx": 538,
+   "cy": 2269,
+   "w": 162,
+   "h": 162
+  },
+  {
+   "desc": "",
+   "cls": "android.widget.ImageView",
+   "clickable": false,
+   "cx": 538,
+   "cy": 2269,
+   "w": 162,
+   "h": 162
+  },
+  {
+   "desc": "",
+   "cls": "android.view.View",
+   "clickable": false,
+   "cx": 540,
+   "cy": 2378,
+   "w": 1080,
+   "h": 44
+  }
+ ]
+}

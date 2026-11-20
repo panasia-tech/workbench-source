@@ -1,0 +1,165 @@
+.lc-page .lc-phase-scroll {
+  width: 100%;
+  margin: 16rpx 0 12rpx;
+  white-space: nowrap;
+}
+
+/* 群控中心顶部分区 tab(商品上架/设备列表/任务队列) */
+.lc-page .gc-section-bar {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 24rpx;
+}
+
+.lc-page .gc-section-tab {
+  flex: 1;
+  text-align: center;
+  padding: 16rpx 0;
+  font-size: 26rpx;
+  color: var(--text-secondary);
+  background: var(--bg-card);
+  border: 1rpx solid var(--border);
+  border-radius: 999rpx;
+}
+
+.lc-page .gc-section-tab.active {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+  font-weight: 600;
+}
+
+.lc-page .status-segment {
+  display: inline-flex;
+  gap: 12rpx;
+  padding: 6rpx;
+  background: #F9FAFB;
+  border-radius: 40rpx;
+  min-width: max-content;
+}
+
+.lc-page .status-seg {
+  flex: 0 0 auto;
+  min-width: 120rpx;
+  padding: 16rpx 20rpx;
+  text-align: center;
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #6B7280;
+  border-radius: 16rpx;
+}
+
+.lc-page .status-seg.active {
+  background: #EFF6FF;
+  color: #2563EB;
+  box-shadow: none;
+}
+
+.lc-page .list-card {
+  padding: 12rpx 28rpx 24rpx;
+}
+
+/* 商品行：独立浅底卡片，对齐仓库 wh-item */
+.lc-page .lc-item {
+  display: block;
+  margin-bottom: 20rpx;
+  padding: 24rpx;
+  background: #F9FAFB;
+  border: 2rpx solid #F9FAFB;
+  border-radius: 28rpx;
+}
+
+.lc-page .lc-item:last-child {
+  margin-bottom: 0;
+}
+
+.lc-page .lc-item__main {
+  display: flex;
+  align-items: flex-start;
+  gap: 20rpx;
+}
+
+.lc-page .lc-item__main:active {
+  opacity: 0.72;
+}
+
+.lc-page .lc-thumb-wrap {
+  position: relative;
+  width: 120rpx;
+  height: 120rpx;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 16rpx;
+  border: 1rpx solid #E5E7EB;
+  background: #fff;
+}
+
+.lc-page .lc-thumb-wrap media-thumb {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.lc-page .lc-thumb {
+  width: 120rpx;
+  height: 120rpx;
+  line-height: 120rpx;
+  text-align: center;
+  font-size: 28rpx;
+  font-weight: 800;
+  color: #6B7280;
+  background: #F3F4F6;
+}
+
+.lc-page .lc-body {
+  flex: 1;
+  min-width: 0;
+  padding-top: 2rpx;
+}
+
+.lc-page .lc-head {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 8rpx;
+}
+
+.lc-page .lc-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.lc-page .lc-tag {
+  flex-shrink: 0;
+  min-height: 36rpx;
+  padding: 0 14rpx;
+  font-size: 20rpx;
+  border-radius: 20rpx;
+  border-width: 2rpx;
+}
+
+.lc-page .lc-sub {
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #6B7280;
+  line-height: 1.45;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lc-page .lc-item__action {
+  margin-top: 20rpx;
+  height: 64rpx;
+  line-height: 1;
+  font-size: 26rpx;
+  font-weight: 700;
+  border-radius: 32rpx;
+}

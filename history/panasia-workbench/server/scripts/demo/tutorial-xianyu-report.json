@@ -1,0 +1,55 @@
+{
+  "at": "2026-10-02T01:49:09.621Z",
+  "steps": [
+    {
+      "step": "signIn",
+      "ok": true,
+      "detail": "http://127.0.0.1:8000"
+    },
+    {
+      "step": "清理旧数据",
+      "ok": true,
+      "detail": "无历史版本，跳过"
+    },
+    {
+      "step": "创建教程项目",
+      "ok": true,
+      "detail": "id=3 闲鱼矩阵开店"
+    },
+    {
+      "step": "阶段 1",
+      "ok": true,
+      "detail": "id=8 P0 环境准备（联通卡最前置）"
+    },
+    {
+      "step": "阶段 2",
+      "ok": true,
+      "detail": "id=9 P1 营业执照办理（4 条路线并行）"
+    },
+    {
+      "step": "阶段 3",
+      "ok": true,
+      "detail": "id=10 P2 账号槽位配置（4×3+2=14）"
+    },
+    {
+      "step": "阶段 4",
+      "ok": true,
+      "detail": "id=11 P3 支付验证与财务连通"
+    },
+    {
+      "step": "写入步骤与材料",
+      "ok": true,
+      "detail": "stages=4 steps=13 materials=15"
+    },
+    {
+      "step": "创建案例",
+      "ok": true,
+      "detail": "id=11 owner=1871790158440555 status=in_progress"
+    },
+    {
+      "step": "回查",
+      "ok": true,
+      "detail": "project=3 stages=4 cases=1"
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+/* 电脑端：size="fill"（宽 100%、高 320rpx）在 760 宽的列里会拉成长条，限一个手机上差不多的宽度 */
+@media (min-width: 1024px) {
+  .media-thumb--fill {
+    max-width: 400px;
+  }
+}

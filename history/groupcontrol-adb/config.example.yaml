@@ -1,0 +1,34 @@
+# 群控 ADB 保活/投屏守护配置。复制为 config.yaml 后按需改。
+
+# adb 可执行路径。留空=用系统 PATH 里的 adb;exe 分发时指向随包 adb,如 adb\adb.exe
+adb_path: ""
+
+# 目标 app(已按本项目填好)
+package: com.erp.groupcontrol
+main_activity: .ui.MainActivity
+
+# 每轮扫描间隔(秒)
+scan_interval: 15
+
+keepalive:
+  disable_screen_off: true      # 永不自动息屏(settings screen_off_timeout 拉满)
+  stay_on_while_charging: true  # 充电时保持常亮(svc power stayon)
+  battery_whitelist: true       # 加 Doze 电池白名单(dumpsys deviceidle whitelist)
+  allow_background: true        # 放开后台运行/唤醒(appops)
+  autostart_extra: true         # am start 带 --ez autostart true(需 app 配合,见 README)
+  # 注:拉活只在 GcService 没跑时触发;服务在跑(哪怕前台是闲鱼在执行任务)绝不 am start,免得打断操作
+
+# 投屏(可选):为每台设备自动拉起 scrcpy 窗口
+scrcpy:
+  enabled: false
+  bin: scrcpy                   # scrcpy 可执行文件路径(QtScrcpy 内含内核,也可指向独立 scrcpy)
+  extra_args:
+    - "--stay-awake"            # 投屏期间保持唤醒(顺带防息屏)
+    - "--window-title"
+    - "{serial}"                # {serial} 会替换成设备序列号
+
+# 上报 server(可选):把 ADB 侧物理在线状态报给 gc server
+# 复用 /api/gc/devices/{id}/heartbeat 需 app token;物理层上报建议 server 侧另加端点。
+report:
+  enabled: false
+  base_url: http://127.0.0.1:8100   # 本地开发的 groupcontrol-server;生产 gc-api 只听腾讯云生产机本机,外网要走 http://127.0.0.1:8000

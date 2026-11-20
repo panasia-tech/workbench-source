@@ -1,0 +1,28 @@
+/* 手机号信息（电脑版模板用；类名 phf-dk-*） */
+.phf-dk-nowrap {
+  flex-wrap: nowrap;
+}
+
+.phf-dk-seg {
+  align-self: flex-start;
+}
+
+.phf-dk-textarea {
+  width: 100%;
+}
+
+/* 内容不满一屏时操作条也贴在底部 */
+.phf-dk-bar {
+  margin-top: auto;
+}
+
+button.phf-dk-btn {
+  margin: 0;
+  line-height: normal;
+  font-size: 13px;
+  border-radius: 6px;
+}
+
+button.phf-dk-btn::after {
+  display: none;
+}

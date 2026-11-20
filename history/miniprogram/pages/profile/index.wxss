@@ -1,0 +1,333 @@
+/* ===== Profile page ===== */
+.profile-page .stats-grid {
+  margin-bottom: 28rpx;
+}
+
+/* 统计卡片点击反馈 */
+.stat-card--hover {
+  opacity: 0.6;
+  transform: scale(0.98);
+}
+
+/* 最近动态：限高 + 触底加载 */
+.feed-scroll {
+  max-height: 600rpx;
+}
+
+.feed-more {
+  text-align: center;
+  font-size: 22rpx;
+  color: #9CA3AF;
+  padding: 20rpx 0 8rpx;
+}
+
+/* 用户卡片：左头像 + 右信息，下方三列今日工作量 */
+.profile-hero {
+  background: #fff;
+  border: 1rpx solid #E5E7EB;
+  border-radius: 24rpx;
+  padding: 40rpx 36rpx 32rpx;
+  margin-bottom: 28rpx;
+  box-shadow: 0 4rpx 8rpx 0 rgba(15, 23, 42, 0.04);
+}
+
+.pf-row {
+  display: flex;
+  align-items: center;
+  gap: 28rpx;
+  margin-bottom: 32rpx;
+}
+
+.profile-hero .pf-avatar {
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 50%;
+  background: #EFF6FF;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 44rpx;
+  font-weight: 700;
+  color: #2563EB;
+  border: 1rpx solid #BFDBFE;
+  margin: 0;
+}
+
+.pf-body {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+}
+
+.pf-name {
+  font-size: 36rpx;
+  font-weight: 800;
+  color: #1F2937;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pf-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-top: 12rpx;
+}
+
+.pf-role-badge {
+  display: inline-block;
+  padding: 6rpx 20rpx;
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #2563EB;
+  background: #EFF6FF;
+  border: 2rpx solid #BFDBFE;
+  border-radius: 999rpx;
+}
+
+.pf-account {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #6B7280;
+}
+
+.pf-metrics {
+  display: flex;
+  gap: 16rpx;
+}
+
+.pf-metric {
+  flex: 1;
+  text-align: center;
+  padding: 20rpx 12rpx;
+  border-radius: 28rpx;
+  background: #F5F7FA;
+  border: 1rpx solid #E5E7EB;
+}
+
+.pf-metric-num {
+  display: block;
+  font-size: 40rpx;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -1rpx;
+}
+
+.pf-metric-label {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #6B7280;
+}
+
+.pf-metric--purchase .pf-metric-num { color: #D97706; }
+.pf-metric--inspect .pf-metric-num { color: #2563EB; }
+.pf-metric--outbound .pf-metric-num { color: #059669; }
+
+/* 预计工资卡片 */
+.commission-card {
+  background: #FFFFFF;
+  border: 1rpx solid #E5E7EB;
+  border-radius: 24rpx;
+  padding: 36rpx 32rpx;
+  margin-bottom: 28rpx;
+  box-shadow: 0 2rpx 12rpx rgba(15, 23, 42, 0.06);
+}
+
+.commission-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24rpx;
+}
+
+.commission-title {
+  font-size: 30rpx;
+  font-weight: 800;
+  color: #1F2937;
+}
+
+.commission-period {
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #6B7280;
+  padding: 6rpx 16rpx;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 999rpx;
+  border: 1rpx solid #E5E7EB;
+}
+
+.commission-total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 24rpx 28rpx;
+  margin-bottom: 20rpx;
+  background: #F9FAFB;
+  border-radius: 16rpx;
+  border: 1rpx solid #E5E7EB;
+}
+
+.commission-total-label {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #6B7280;
+}
+
+.commission-total-amt {
+  font-size: 48rpx;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -1rpx;
+  max-width: 60%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.commission-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.commission-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16rpx 8rpx;
+  border-bottom: 1rpx solid #E5E7EB;
+}
+
+.commission-row:last-child {
+  border-bottom: none;
+}
+
+.commission-row-label {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #6B7280;
+}
+
+.commission-row-val {
+  font-size: 30rpx;
+  font-weight: 800;
+  color: #1F2937;
+  max-width: 55%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.netprofit-card {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  border-radius: 24rpx;
+  padding: 36rpx 32rpx;
+  margin-bottom: 28rpx;
+  box-shadow: 0 8rpx 24rpx rgba(5, 150, 105, 0.28);
+}
+
+.netprofit-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8rpx;
+}
+
+.netprofit-title {
+  font-size: 30rpx;
+  font-weight: 800;
+  color: #FFFFFF;
+}
+
+.netprofit-tag {
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #ECFDF5;
+  padding: 6rpx 18rpx;
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 999rpx;
+}
+
+.netprofit-amt {
+  font-size: 88rpx;
+  font-weight: 900;
+  color: #FFFFFF;
+  letter-spacing: -2rpx;
+  line-height: 1.1;
+  margin: 8rpx 0 12rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.netprofit-amt--neg {
+  color: #FECACA;
+}
+
+.netprofit-foot {
+  font-size: 22rpx;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.profile-menu-card .card-head {
+  margin-bottom: 8rpx;
+}
+
+.profile-menu-card .list-item:first-of-type {
+  padding-top: 16rpx;
+}
+
+/* 列表图标徽章：用更高权重盖过 app.wxss 的 .list-item .li-icon 基础灰底 */
+.profile-menu-card .list-item .li-icon {
+  border: none;
+  color: #FFFFFF;
+  font-size: 32rpx;
+  font-weight: 800;
+}
+
+.profile-menu-card .list-item .li-icon--finance {
+  background: linear-gradient(135deg, #10B981 0%, #047857 100%);
+  box-shadow: 0 6rpx 14rpx rgba(5, 150, 105, 0.30);
+}
+
+.profile-menu-card .list-item .li-icon--stats {
+  background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+  box-shadow: 0 6rpx 14rpx rgba(37, 99, 235, 0.30);
+}
+
+.profile-menu-card .list-item .li-icon--pwd {
+  background: linear-gradient(135deg, #94A3B8 0%, #64748B 100%);
+  box-shadow: 0 6rpx 14rpx rgba(100, 116, 139, 0.28);
+}
+
+.profile-footer {
+  padding-bottom: 24rpx;
+}
+
+.profile-footer .profile-logout {
+  color: #DC2626;
+  border-color: #FECACA;
+  background: #fff;
+}
+
+.profile-footer .profile-logout::after {
+  border: none;
+}
+
+.profile-menu-card .list-item .li-icon--asset {
+  background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);
+  box-shadow: 0 6rpx 14rpx rgba(109, 40, 217, 0.30);
+}
+.profile-menu-card .list-item .li-icon--phone {
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+  box-shadow: 0 6rpx 14rpx rgba(217, 119, 6, 0.30);
+}

@@ -1,0 +1,7 @@
+# 京东云去水印补图服务。算法依赖和 ../requirements-dewatermark.txt 同一份口径
+fastapi>=0.110
+uvicorn>=0.29
+httpx>=0.27
+opencv-python-headless>=4.8,<5
+numpy>=1.26
+onnxruntime>=1.17

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 微型输入法的 meta-data:一个 zh_CN keyboard 子类型即可,无设置页 -->
+<input-method xmlns:android="http://schemas.android.com/apk/res/android">
+    <subtype
+        android:name="@string/app_name"
+        android:imeSubtypeLocale="zh_CN"
+        android:imeSubtypeMode="keyboard"
+        android:imeSubtypeExtraValue="noKeyboard"
+        android:isAsciiCapable="true" />
+</input-method>

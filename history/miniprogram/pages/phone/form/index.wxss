@@ -1,0 +1,63 @@
+.form-field {
+  margin-bottom: 24rpx;
+}
+
+.form-label {
+  font-size: 26rpx;
+  color: #6B7280;
+  margin-bottom: 8rpx;
+}
+
+.form-required {
+  color: #DC2626;
+}
+
+.form-input {
+  width: 100%;
+  height: 80rpx;
+  padding: 0 24rpx;
+  background: #F9FAFB;
+  border: 1rpx solid #E5E7EB;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  box-sizing: border-box;
+}
+
+.form-textarea {
+  width: 100%;
+  min-height: 120rpx;
+  padding: 16rpx 24rpx;
+  background: #F9FAFB;
+  border: 1rpx solid #E5E7EB;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  box-sizing: border-box;
+}
+
+/* ICCID 扫码输入框：复用全局 .search-scan-icon（纯 CSS 扫码图标） */
+.form-input-scan {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.form-input--scan {
+  padding-right: 84rpx;
+}
+
+.form-picker {
+  width: 100%;
+  height: 80rpx;
+  padding: 0 24rpx;
+  background: #F9FAFB;
+  border: 1rpx solid #E5E7EB;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  line-height: 80rpx;
+  box-sizing: border-box;
+  color: #374151;
+}
+
+.btn {
+  margin-top: 16rpx;
+}

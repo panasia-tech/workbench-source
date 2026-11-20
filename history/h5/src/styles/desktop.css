@@ -1,0 +1,1019 @@
+/* 电脑端：外壳（左侧菜单、顶栏）+ 电脑版模板（src/desktop/**.wxml）共用的后台样式。
+ * 全部是 dk- 开头的全局类，手机模板里不出现，所以不用包媒体查询。
+ * 电脑版模板直接写 px：电脑屏上的字号、行高按管理后台的密度来，不走 rpx。 */
+
+:root {
+  --dk-primary: #2563eb;
+  --dk-primary-soft: #eff4ff;
+  --dk-text: #1f2937;
+  --dk-sub: #6b7280;
+  --dk-faint: #9ca3af;
+  --dk-border: #e5e7eb;
+  --dk-line: #f0f1f3;
+  --dk-bg: #f0f2f5;
+  --dk-side-w: 208px;
+  --dk-top-h: 52px;
+}
+
+/* ---------------------------------------------------------------- 外壳 */
+.mp-stage,
+.mp-pages {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.mp-app--desktop {
+  background: var(--dk-bg);
+}
+
+.mp-app--desktop .mp-stage {
+  left: var(--dk-side-w);
+}
+
+.mp-app--desktop .mp-pages {
+  top: var(--dk-top-h);
+}
+
+/* 手机导航栏换成顶栏面包屑；底部 tab 换成左侧菜单；切页不滑动 */
+.mp-app--desktop .mp-nav,
+.mp-app--desktop wx-custom-tab-bar {
+  display: none;
+}
+
+.mp-app--desktop .mp-host {
+  transition: none;
+  background: var(--dk-bg);
+}
+
+.mp-app--desktop .mp-host--wide {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.mp-app--desktop .mp-host--wide .mp-viewport {
+  background: var(--dk-bg);
+}
+
+/* 电脑版模板的根（dk-page）撑满整页高度，底色和内容区一致 */
+.mp-app--desktop .mp-host--wide wx-page {
+  display: flex;
+  flex-direction: column;
+  background: var(--dk-bg);
+}
+
+.mp-app--desktop .mp-host--wide wx-page > .dk-page {
+  flex: 1;
+}
+
+.dk-side {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: var(--dk-side-w);
+  display: flex;
+  flex-direction: column;
+  background: #111827;
+  color: #cbd5e1;
+  z-index: 3;
+}
+
+.dk-side__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: var(--dk-top-h);
+  padding: 0 18px;
+  flex: none;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.dk-side__logo {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: var(--dk-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.dk-side__menu {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 10px 10px;
+}
+
+.dk-side__item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 40px;
+  padding: 0 10px;
+  margin-bottom: 2px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dk-side__item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+}
+
+.dk-side__item--on,
+.dk-side__item--on:hover {
+  background: var(--dk-primary);
+  color: #fff;
+}
+
+.dk-side__icon {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.dk-side__item--on .dk-side__icon {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.dk-side__text {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* 销售工作台入口的红点：红的有几条 */
+.dk-side__badge {
+  margin-left: auto;
+  flex: none;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+/* 顶栏：练习门禁拦着时的「真实任务先锁着」 */
+.dk-top__lock {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+  padding: 5px 6px 5px 12px;
+  border-radius: 8px;
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+  color: #92400e;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.dk-top__lock button {
+  height: 26px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 6px;
+  background: #d97706;
+  color: #fff;
+  font: inherit;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+
+.dk-side__user {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.dk-side__avatar {
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border-radius: 50%;
+  background: #374151;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+}
+
+.dk-side__who {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.dk-side__uname {
+  color: #fff;
+  font-size: 13px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.dk-side__role {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.dk-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--dk-top-h);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 20px 0 12px;
+  background: #fff;
+  border-bottom: 1px solid var(--dk-border);
+  box-sizing: border-box;
+  z-index: 2;
+}
+
+.dk-top__btn {
+  height: 32px;
+  min-width: 32px;
+  padding: 0 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--dk-sub);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.dk-top__btn:hover {
+  background: #f3f4f6;
+  color: var(--dk-text);
+}
+
+.dk-top__btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.dk-top__btn--text {
+  margin-left: auto;
+  border: 1px solid var(--dk-border);
+}
+
+.dk-top__crumbs {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  margin: 0;
+  padding: 0 0 0 4px;
+  list-style: none;
+  font-size: 14px;
+  color: var(--dk-sub);
+}
+
+.dk-top__crumb {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.dk-top__crumb + .dk-top__crumb::before {
+  content: '/';
+  margin: 0 8px;
+  color: #d1d5db;
+}
+
+.dk-top__crumb button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.dk-top__crumb button:hover {
+  color: var(--dk-primary);
+}
+
+.dk-top__crumb--last {
+  color: var(--dk-text);
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------------------------------------------------------------- 页面骨架 */
+.dk-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px 24px 40px;
+  min-height: 100%;
+  box-sizing: border-box;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--dk-text);
+  background: var(--dk-bg);
+}
+
+.dk-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.dk-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.dk-sub {
+  font-size: 13px;
+  color: var(--dk-sub);
+}
+
+.dk-muted {
+  color: var(--dk-faint);
+}
+
+.dk-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.dk-grow {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 左主右辅：列表 + 侧栏、详情 + 操作 */
+.dk-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 16px;
+  align-items: start;
+}
+
+.dk-split--even {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.dk-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.dk-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+/* ---------------------------------------------------------------- 卡片 */
+.dk-card {
+  background: #fff;
+  border: 1px solid var(--dk-border);
+  border-radius: 8px;
+  min-width: 0;
+}
+
+.dk-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 48px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--dk-line);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.dk-card__body {
+  padding: 16px;
+}
+
+.dk-card__body--flush {
+  padding: 0;
+}
+
+/* ---------------------------------------------------------------- 数字卡片 */
+.dk-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+  gap: 12px;
+}
+
+.dk-stat {
+  background: #fff;
+  border: 1px solid var(--dk-border);
+  border-radius: 8px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dk-stat--click {
+  cursor: pointer;
+}
+
+.dk-stat--click:hover,
+.dk-stat--on {
+  border-color: var(--dk-primary);
+}
+
+.dk-stat--on {
+  background: var(--dk-primary-soft);
+}
+
+.dk-stat__label {
+  font-size: 13px;
+  color: var(--dk-sub);
+}
+
+.dk-stat__value {
+  font-size: 24px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.3;
+}
+
+.dk-stat__hint {
+  font-size: 12px;
+  color: var(--dk-faint);
+}
+
+/* ---------------------------------------------------------------- 工具栏、筛选 */
+.dk-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px 12px;
+  flex-wrap: wrap;
+  padding: 12px 16px;
+}
+
+.dk-tabs {
+  display: inline-flex;
+  padding: 3px;
+  gap: 2px;
+  border-radius: 7px;
+  background: #f3f4f6;
+}
+
+.dk-tab {
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--dk-sub);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.dk-tab:hover {
+  color: var(--dk-text);
+}
+
+.dk-tab--on,
+.dk-tab--on:hover {
+  background: #fff;
+  color: var(--dk-text);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+}
+
+.dk-tab__n {
+  font-size: 12px;
+  color: var(--dk-faint);
+  font-weight: 400;
+}
+
+.dk-input,
+input.dk-input,
+textarea.dk-input {
+  height: 32px;
+  min-width: 0;
+  padding: 0 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 13px;
+  color: var(--dk-text);
+  box-sizing: border-box;
+  outline: none;
+}
+
+textarea.dk-input {
+  width: 100%;
+  height: auto;
+  min-height: 72px;
+  padding: 8px 10px;
+  line-height: 1.5;
+}
+
+.dk-input:focus,
+.dk-input:focus-within {
+  border-color: var(--dk-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.dk-search {
+  width: 260px;
+}
+
+/* picker 外面包一层显示当前值 */
+.dk-select {
+  height: 32px;
+  min-width: 120px;
+  padding: 0 28px 0 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  position: relative;
+  font-size: 13px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.dk-select::after {
+  content: '';
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  margin-top: -5px;
+  border-right: 1.5px solid var(--dk-faint);
+  border-bottom: 1.5px solid var(--dk-faint);
+  transform: rotate(45deg);
+}
+
+/* ---------------------------------------------------------------- 按钮 */
+.dk-btn {
+  height: 32px;
+  padding: 0 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  color: var(--dk-text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 13px;
+  white-space: nowrap;
+  cursor: pointer;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+.dk-btn:hover {
+  border-color: var(--dk-primary);
+  color: var(--dk-primary);
+}
+
+.dk-btn--primary {
+  background: var(--dk-primary);
+  border-color: var(--dk-primary);
+  color: #fff;
+}
+
+.dk-btn--primary:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+  color: #fff;
+}
+
+.dk-btn--danger {
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
+.dk-btn--danger:hover {
+  background: #fef2f2;
+  border-color: #dc2626;
+  color: #dc2626;
+}
+
+.dk-btn--sm {
+  height: 26px;
+  padding: 0 10px;
+  font-size: 12px;
+}
+
+.dk-btn--disabled,
+.dk-btn--disabled:hover {
+  opacity: 0.45;
+  cursor: not-allowed;
+  border-color: #d1d5db;
+  color: var(--dk-text);
+  background: #fff;
+}
+
+.dk-link {
+  color: var(--dk-primary);
+  cursor: pointer;
+}
+
+.dk-link:hover {
+  text-decoration: underline;
+}
+
+.dk-link--danger {
+  color: #dc2626;
+}
+
+/* ---------------------------------------------------------------- 表格 */
+.dk-table-wrap {
+  overflow-x: auto;
+}
+
+.dk-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 13px;
+}
+
+.dk-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 10px 12px;
+  background: #f8fafc;
+  border-bottom: 1px solid var(--dk-border);
+  color: var(--dk-sub);
+  font-weight: 500;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.dk-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--dk-line);
+  vertical-align: middle;
+}
+
+.dk-table tbody tr:hover td {
+  background: #f8fafc;
+}
+
+.dk-table tr.dk-tr--click {
+  cursor: pointer;
+}
+
+.dk-table tr.dk-tr--on td {
+  background: var(--dk-primary-soft);
+}
+
+.dk-table .dk-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.dk-table .dk-nowrap {
+  white-space: nowrap;
+}
+
+.dk-table .dk-ops {
+  white-space: nowrap;
+  text-align: right;
+}
+
+.dk-table .dk-ops .dk-link + .dk-link {
+  margin-left: 12px;
+}
+
+.dk-cell-main {
+  font-weight: 500;
+  color: var(--dk-text);
+}
+
+.dk-cell-sub {
+  font-size: 12px;
+  color: var(--dk-faint);
+  margin-top: 2px;
+}
+
+.dk-ellipsis {
+  max-width: 320px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.dk-thumb {
+  width: 44px;
+  height: 44px;
+  border-radius: 4px;
+  background: #f3f4f6;
+  overflow: hidden;
+  flex: none;
+}
+
+.dk-thumb--lg {
+  width: 72px;
+  height: 72px;
+}
+
+.dk-media {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+/* ---------------------------------------------------------------- 状态标签 */
+.dk-tag {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid transparent;
+  box-sizing: border-box;
+}
+
+/* 小程序的状态色（app.wxss 的 tag-success / tag-warning…）直接叠在 dk-tag 上用 */
+.dk-tag--blue { background: #eff6ff; color: #1d4ed8; }
+.dk-tag--green { background: #ecfdf5; color: #047857; }
+.dk-tag--orange { background: #fff7ed; color: #c2410c; }
+.dk-tag--red { background: #fef2f2; color: #b91c1c; }
+.dk-tag--purple { background: #f5f3ff; color: #6d28d9; }
+
+/* ---------------------------------------------------------------- 表单 */
+.dk-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 24px;
+}
+
+.dk-form--3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.dk-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.dk-field--full {
+  grid-column: 1 / -1;
+}
+
+.dk-label {
+  font-size: 13px;
+  color: var(--dk-sub);
+}
+
+.dk-label--req::before {
+  content: '*';
+  margin-right: 3px;
+  color: #dc2626;
+}
+
+.dk-help {
+  font-size: 12px;
+  color: var(--dk-faint);
+}
+
+/* 详情：键值对排成几列 */
+.dk-desc {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px 24px;
+}
+
+.dk-desc--2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.dk-desc__item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.dk-desc__item--full {
+  grid-column: 1 / -1;
+}
+
+.dk-desc__k {
+  font-size: 12px;
+  color: var(--dk-faint);
+}
+
+.dk-desc__v {
+  font-size: 14px;
+  word-break: break-all;
+}
+
+/* 图片墙 */
+.dk-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+  gap: 8px;
+}
+
+.dk-gallery__item {
+  aspect-ratio: 1;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #f3f4f6;
+  cursor: zoom-in;
+}
+
+/* 页面底部操作条：贴在内容区底部，表单提交、批量操作 */
+.dk-actionbar {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  /* 内容不满一屏时也贴在底部（dk-page 是纵向 flex） */
+  margin: auto -24px -40px;
+  padding: 12px 24px;
+  background: #fff;
+  border-top: 1px solid var(--dk-border);
+}
+
+/* ---------------------------------------------------------------- 空态、分页、加载 */
+.dk-empty {
+  padding: 48px 16px;
+  text-align: center;
+  color: var(--dk-faint);
+  font-size: 13px;
+}
+
+.dk-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--dk-sub);
+}
+
+/* ---------------------------------------------------------------- 和小程序内置组件搭配 */
+/* <button class="dk-btn">：清掉小程序按钮自带的外边距、行高、描边伪元素 */
+wx-button.dk-btn {
+  margin: 0;
+  width: auto;
+  line-height: normal;
+  font-size: 13px;
+  border-radius: 6px;
+}
+
+wx-button.dk-btn::after {
+  display: none;
+}
+
+wx-button.dk-btn[disabled] {
+  opacity: 0.45;
+  background: #fff;
+  color: var(--dk-text);
+}
+
+wx-button.dk-btn--primary[disabled] {
+  background: var(--dk-primary);
+  color: #fff;
+}
+
+/* <image class="dk-gallery__item">：撑满格子，不用图片默认的 320×240 */
+wx-image.dk-gallery__item {
+  width: 100%;
+  height: auto;
+}
+
+/* 编号、IMEI、密钥这类要逐字核对的 */
+.dk-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  letter-spacing: 0.2px;
+}
+
+/* ---------------------------------------------------------------- 下拉列表（单列 picker 在电脑上） */
+.dk-pop-mask {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.dk-pop {
+  position: fixed;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid var(--dk-border);
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.14);
+  overflow: hidden;
+  font-size: 13px;
+  color: var(--dk-text);
+}
+
+.dk-pop__search {
+  margin: 8px 8px 4px;
+  width: auto;
+}
+
+.dk-pop__list {
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 4px;
+}
+
+.dk-pop__item {
+  display: block;
+  width: 100%;
+  padding: 7px 10px;
+  border: 0;
+  border-radius: 5px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dk-pop__item:hover {
+  background: #f3f4f6;
+}
+
+.dk-pop__item--on,
+.dk-pop__item--on:hover {
+  background: var(--dk-primary-soft);
+  color: var(--dk-primary);
+  font-weight: 600;
+}
+
+.dk-pop__empty {
+  padding: 16px 10px;
+  color: var(--dk-faint);
+  text-align: center;
+}

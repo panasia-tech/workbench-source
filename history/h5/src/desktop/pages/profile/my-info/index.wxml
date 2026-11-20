@@ -1,0 +1,96 @@
+<!-- 个人信息（电脑版）：左边手机卡排成表格逐行填，右边 GitHub（部门要用代码仓库才有）。数据、方法和手机版是同一套 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">个人信息</view>
+      <view class="dk-sub">每张卡片含手机号 / ICCID / 空卡序列号，可绑定多张；每张至少填一项，留空的字段视为清除。</view>
+    </view>
+  </view>
+
+  <view class="{{needGithub ? 'dk-split' : ''}}">
+    <view class="dk-card">
+      <view class="dk-card__head">
+        <text>手机卡信息</text>
+        <view class="dk-btn dk-btn--sm" bindtap="onAdd">+ 添加卡片</view>
+      </view>
+      <view class="dk-table-wrap">
+        <table class="dk-table">
+          <thead>
+            <tr>
+              <th class="mi-dk-no">卡片</th>
+              <th>手机号</th>
+              <th>ICCID</th>
+              <th>空卡序列号</th>
+              <th class="dk-ops">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr wx:for="{{cards}}" wx:key="key" wx:for-item="card" wx:for-index="idx">
+              <td class="dk-nowrap mi-dk-no">卡片 {{idx + 1}}</td>
+              <td>
+                <input
+                  class="dk-input mi-dk-input"
+                  type="number"
+                  maxlength="11"
+                  placeholder="请输入 11 位手机号"
+                  data-idx="{{idx}}"
+                  data-key="phone"
+                  value="{{card.phone}}"
+                  bindinput="onInput"
+                />
+              </td>
+              <td>
+                <input
+                  class="dk-input mi-dk-input"
+                  maxlength="50"
+                  placeholder="SIM 卡 ICCID，最长 50 位"
+                  data-idx="{{idx}}"
+                  data-key="iccid"
+                  value="{{card.iccid}}"
+                  bindinput="onInput"
+                />
+              </td>
+              <td>
+                <view class="dk-row mi-dk-scanrow">
+                  <input
+                    class="dk-input mi-dk-input dk-grow"
+                    maxlength="64"
+                    placeholder="可扫码回填，最长 64 位"
+                    data-idx="{{idx}}"
+                    data-key="blank_serial"
+                    value="{{card.blank_serial}}"
+                    bindinput="onInput"
+                  />
+                  <view class="dk-btn dk-btn--sm" data-idx="{{idx}}" catchtap="onScan">扫码</view>
+                </view>
+              </td>
+              <td class="dk-ops">
+                <text class="dk-link dk-link--danger" data-idx="{{idx}}" bindtap="onRemove">删除</text>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </view>
+      <view class="dk-toolbar mi-dk-foot">
+        <view class="dk-grow"></view>
+        <button class="dk-btn dk-btn--primary mi-dk-btn" loading="{{submitting}}" disabled="{{submitting}}" bindtap="onSubmit">保存手机卡</button>
+      </view>
+    </view>
+
+    <view class="dk-card" wx:if="{{needGithub}}">
+      <view class="dk-card__head">GitHub</view>
+      <view class="dk-card__body mi-dk-gh">
+        <view class="dk-help">填 GitHub 邮箱或用户名，保存后自动邀请你进公司代码仓库。邮箱在 GitHub 上没公开的话查不到，改填用户名。</view>
+        <input
+          class="dk-input"
+          maxlength="128"
+          placeholder="邮箱或用户名"
+          value="{{github}}"
+          bindinput="onGithubInput"
+        />
+        <view wx:if="{{githubStatus}}" class="dk-tag dk-tag--blue mi-dk-ghstatus">{{githubStatus}}</view>
+        <button class="dk-btn dk-btn--primary mi-dk-btn" loading="{{githubSaving}}" disabled="{{githubSaving}}" bindtap="onGithubSave">保存并邀请</button>
+      </view>
+    </view>
+  </view>
+</view>

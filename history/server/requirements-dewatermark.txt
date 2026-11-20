@@ -1,0 +1,7 @@
+# 去闲鱼水印(services/dewatermark.py)的可选依赖,不在主 requirements.txt 里:
+# 生产机 7G 内存,模型每个 worker 约 1G,不在 ERP 机装:11-10 起补图在京东云跑(dewatermark_service/,ERP 配 DEWATERMARK_REMOTE_URL)。
+# 体积(linux x86_64 wheel):opencv-python-headless ≈57MB、numpy ≈17MB、onnxruntime ≈24MB(装完合计约 250MB);
+# 另需 LaMa 模型 lama_fp32.onnx 208MB,不进 git,见 services/dewatermark.py 的 MODEL_URL / MODEL_SHA256
+opencv-python-headless>=4.8
+numpy>=1.26
+onnxruntime>=1.17

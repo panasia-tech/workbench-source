@@ -1,0 +1,51 @@
+/* 价格清洗：剔掉的样本变灰、写原因；红 = 拦住，黄 = 提醒 */
+.pc-page .pc-name { font-size: 30rpx; font-weight: 800; color: #111827; }
+.pc-page .pc-meta { margin-top: 6rpx; font-size: 24rpx; color: #6B7280; }
+.pc-page .pc-facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12rpx; margin-top: 18rpx; }
+.pc-page .pc-fact { padding: 16rpx; border-radius: 16rpx; background: #F9FAFB; }
+.pc-page .pc-fact__k { font-size: 22rpx; color: #6B7280; }
+.pc-page .pc-fact__v { margin-top: 4rpx; font-size: 30rpx; font-weight: 800; color: #111827; }
+.pc-page .pc-fact__s { margin-top: 2rpx; font-size: 20rpx; color: #9CA3AF; }
+.pc-page .pc-blue { color: #2563EB; }
+.pc-page .pc-green { color: #059669; }
+.pc-page .pc-muted { color: #9CA3AF; }
+.pc-page .pc-q { width: 40rpx; height: 40rpx; line-height: 40rpx; text-align: center; border-radius: 50%; border: 1rpx solid #D1D5DB; color: #6B7280; font-size: 24rpx; }
+.pc-page .pc-help { margin-bottom: 12rpx; padding: 14rpx 18rpx; border-radius: 12rpx; background: #F9FAFB; font-size: 24rpx; color: #4B5563; line-height: 1.6; }
+.pc-page .pc-crawl { font-size: 24rpx; color: #374151; }
+.pc-page .pc-crawl--bad { color: #B91C1C; }
+.pc-page .pc-start { margin-top: 16rpx; }
+.pc-page .pc-btn { padding: 18rpx 0; border-radius: 999rpx; background: #2563EB; color: #FFFFFF; font-size: 28rpx; font-weight: 700; text-align: center; }
+.pc-page .pc-btn--off { background: #E5E7EB; color: #9CA3AF; }
+.pc-page .pc-err { margin-top: 10rpx; font-size: 24rpx; color: #DC2626; }
+.pc-page .pc-warn { font-size: 24rpx; color: #B45309; }
+.pc-page .pc-sub { margin-top: 8rpx; font-size: 22rpx; color: #6B7280; }
+.pc-page .pc-sample { padding: 16rpx 0; border-top: 1rpx solid #F3F4F6; }
+.pc-page .pc-sample__row { display: flex; align-items: center; gap: 12rpx; }
+.pc-page .pc-sample__price { flex: none; width: 140rpx; font-size: 28rpx; font-weight: 800; color: #111827; }
+.pc-page .pc-sample--out .pc-sample__price,
+.pc-page .pc-sample--out .pc-sample__title { color: #9CA3AF; text-decoration: line-through; }
+.pc-page .pc-type { flex: none; padding: 2rpx 10rpx; border-radius: 8rpx; font-size: 20rpx; background: #EFF6FF; color: #1D4ED8; }
+.pc-page .pc-type--other { background: #F3F4F6; color: #6B7280; }
+.pc-page .pc-sample__title { flex: 1; min-width: 0; font-size: 24rpx; color: #374151; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pc-page .pc-reason { margin: 6rpx 0 0 152rpx; font-size: 22rpx; color: #B91C1C; }
+.pc-page .pc-edit { display: flex; align-items: center; gap: 12rpx; margin-top: 12rpx; }
+.pc-page .pc-edit__in { flex: 1; min-width: 0; }
+.pc-page .pc-mini { flex: none; padding: 10rpx 22rpx; border-radius: 999rpx; background: #2563EB; color: #FFFFFF; font-size: 24rpx; font-weight: 700; }
+.pc-page .pc-mini--bad { background: #DC2626; }
+.pc-page .pc-mini--ghost { background: #FFFFFF; color: #2563EB; border: 1rpx solid #2563EB; }
+.pc-page .pc-snap { margin-top: 8rpx; font-size: 20rpx; color: #9CA3AF; word-break: break-all; }
+.pc-page .pc-eff { display: flex; align-items: baseline; gap: 12rpx; }
+.pc-page .pc-eff__n { font-size: 48rpx; font-weight: 800; color: #111827; }
+.pc-page .pc-eff__t { font-size: 24rpx; color: #6B7280; }
+.pc-page .pc-row { display: flex; align-items: center; gap: 12rpx; margin-top: 12rpx; flex-wrap: wrap; }
+.pc-page .pc-price { width: 220rpx; }
+.pc-page .pc-grow { flex: 1; min-width: 0; }
+.pc-page .pc-gap { margin-top: 16rpx; }
+.pc-page .pc-ver { padding: 16rpx 0; border-top: 1rpx solid #F3F4F6; }
+.pc-page .pc-ver__head { display: flex; justify-content: space-between; align-items: center; }
+.pc-page .pc-ver__v { font-size: 28rpx; font-weight: 800; color: #111827; }
+.pc-page .pc-st { padding: 2rpx 12rpx; border-radius: 999rpx; font-size: 22rpx; background: #F3F4F6; color: #6B7280; }
+.pc-page .pc-st--ACTIVE { background: #ECFDF5; color: #047857; }
+.pc-page .pc-st--PENDING { background: #FEF3C7; color: #92400E; }
+.pc-page .pc-st--REJECTED,
+.pc-page .pc-st--EXPIRED { background: #FEE2E2; color: #B91C1C; }

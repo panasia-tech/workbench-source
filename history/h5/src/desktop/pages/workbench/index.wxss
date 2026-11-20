@@ -1,0 +1,37 @@
+/* 工作台（电脑版模板 index.wxml 用；图标颜色沿用手机版的 wb-entry-icon--*） */
+.wb-dk-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.wb-dk-entry {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.wb-dk-entry:hover {
+  border-color: #2563eb;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.08);
+}
+
+.wb-page .wb-dk-entry .wb-entry-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  font-size: 18px;
+  flex: none;
+}
+
+.wb-dk-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+/* 销售工作台入口的红点（电脑上按 px） */
+.wb-dk-entry .wb-entry-badge { min-width: 20px; height: 20px; padding: 0 6px; margin: 0; border-radius: 10px; font-size: 12px; line-height: 20px; align-self: center; }

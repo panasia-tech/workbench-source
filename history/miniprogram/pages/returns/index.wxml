@@ -1,0 +1,68 @@
+<wxs module="fmt" src="../../utils/format.wxs" />
+
+<view class="page-wrap page-wrap--no-tab record-page ret-page">
+  <view class="card filter-card">
+    <view class="link-row" wx:if="{{canCreate}}">
+      <text class="link-btn" bindtap="goCreate">创建退货单 ›</text>
+    </view>
+    <view class="status-segment">
+      <view
+        wx:for="{{filterTabs}}"
+        wx:key="key"
+        class="status-seg {{listTab === item.key ? 'active' : ''}}"
+        data-tab="{{item.key}}"
+        bindtap="switchTab"
+      >{{item.label}}</view>
+    </view>
+    <view class="filter-meta">共 {{total}} 条</view>
+  </view>
+
+  <view class="card list-card">
+    <view wx:if="{{!list.length && !loading}}" class="empty">
+      <view class="e-icon">—</view>
+      <view class="e-text">{{emptyText}}</view>
+    </view>
+    <view wx:for="{{list}}" wx:key="id" class="list-item list-item--stacked">
+      <view class="list-item__main">
+        <view class="li-thumb-wrap">
+          <media-thumb
+            wx:if="{{item.cover_thumb_url || item.cover_url}}"
+            url="{{item.cover_thumb_url || item.cover_url}}"
+            preview-url="{{item.cover_url}}"
+            size="small"
+          />
+          <!-- 没有产品图时,退而显示仓库定位图(找货用),角标区分 -->
+          <block wx:elif="{{item.location_images[0]}}">
+            <media-thumb url="{{item.location_images[0]}}" preview-url="{{item.location_images[0]}}" size="small" />
+            <view class="media-loc-badge">定位</view>
+          </block>
+          <view wx:else class="li-icon">{{item.product_name[0] || '退'}}</view>
+        </view>
+        <view class="li-info">
+          <view class="li-title">{{item.product_name}}</view>
+          <view class="li-sub">{{item.return_no}} · {{item.sku_code}}</view>
+          <view class="li-sub li-sub--time">{{item.status === 'DONE' ? '入库时间 ' + fmt.datetime(item.received_at || item.created_at) : '退货时间 ' + fmt.datetime(item.created_at)}}</view>
+        </view>
+        <view class="li-meta">
+          <view class="tag {{fmt.returnStatusTag(item.status)}} li-tag">{{fmt.returnStatusLabel(item.status)}}</view>
+        </view>
+      </view>
+      <view class="ret-actions" wx:if="{{item.status === 'RETURNING'}}">
+        <button wx:if="{{canCreate}}" class="btn btn-outline btn-sm" data-id="{{item.id}}" bindtap="markInbound">标记待入库</button>
+        <button wx:if="{{canReceive}}" class="btn btn-primary btn-sm" data-item="{{item}}" bindtap="receive">收货核对</button>
+      </view>
+      <view class="ret-actions" wx:if="{{item.status === 'PENDING_INBOUND' && canReceive}}">
+        <button class="btn btn-primary btn-sm btn-block" data-item="{{item}}" bindtap="receive">收货核对</button>
+      </view>
+      <view class="ret-abnormal" wx:if="{{item.status === 'ABNORMAL' && item.abnormal_reason}}">
+        <text class="ret-abnormal-label">异常：</text>{{item.abnormal_reason}}
+      </view>
+      <view class="ret-actions" wx:if="{{item.status === 'ABNORMAL' && canResolve}}">
+        <button class="btn btn-outline btn-sm" data-id="{{item.id}}" data-action="RESTOCK" bindtap="resolve">恢复在库</button>
+        <button class="btn btn-outline btn-sm ret-btn-danger" data-id="{{item.id}}" data-action="LOSS" bindtap="resolve">报损</button>
+        <button class="btn btn-outline btn-sm" data-id="{{item.id}}" data-action="REJECT" bindtap="resolve">驳回重核</button>
+      </view>
+    </view>
+    <view class="list-footer" wx:if="{{loading}}">加载中…</view>
+  </view>
+</view>

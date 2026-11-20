@@ -1,0 +1,65 @@
+﻿群控 GPU OCR —— 这台 Windows 上要做的事(详细说明看 README.md)
+================================================================
+
+解压到任意目录都行,比如 D:\gc-ocr\ 。不需要 git,不需要整个仓库。
+
+前置(先确认):
+  1. 装了 Python 3.12 —— python.org 下载,安装时**务必勾上 Add python.exe to PATH**
+     验证:开 PowerShell 敲  python --version
+  2. NVIDIA 驱动够新(能跑 CUDA 12.8;RTX 5070 是新架构,老驱动不认)
+     验证:敲  nvidia-smi   看得到 RTX 5070 就行
+  3. OpenSSH 客户端(Win10 1809+ / Win11 自带)
+     验证:敲  ssh -V
+
+
+第 1 步:安装(在解压出来的目录里开 PowerShell)
+--------------------------------------------------------
+  powershell -NoProfile -ExecutionPolicy Bypass -File .\setup.ps1
+
+  会做:建 venv、装依赖(首次要下 ~1GB 的 CUDA/cuDNN,慢,耐心等)、
+        生成 SSH 密钥、**真跑一次推理做 GPU 自检**。
+
+  ⚠️ 结尾会打印一行以 restrict,port-forwarding 开头的长文本 ——
+     那是要贴到服务器上的公钥,**先复制下来存着**。
+  ⚠️ 如果 GPU 自检失败,照它打印的 4 条排查顺序查;实在不行先纯 CPU 跑通:
+     $env:GC_OCR_USE_GPU=0    然后继续第 2 步
+
+
+第 2 步:服务器侧(在 Mac 上做,或让我做)
+--------------------------------------------------------
+  把上面那行公钥装到服务器的 gcocr 用户下,并改 gc-api 的 .env。
+  具体命令见 README.md 的「服务器侧(2 步)」。
+
+
+第 3 步:手动验证(前台跑,看得见日志,Ctrl-C 退出)
+--------------------------------------------------------
+  powershell -NoProfile -ExecutionPolicy Bypass -File .\run.ps1 -Token <与服务器同值>
+  (直接敲 .\run.ps1 会被「禁止运行脚本」的执行策略拦掉,必须用上面这种带 Bypass 的形式;
+   -Token 要和服务器 .env 里的 GC_OCR_HTTP_TOKEN 一致,不然全部 401;
+   GPU 还没弄通时再加 -Cpu)
+
+  另开一个 PowerShell 敲:
+    Invoke-RestMethod http://127.0.0.1:8600/healthy
+  期望看到  gpu : True  ——  如果是 False,就是在用 CPU 慢慢跑,查 gc-ocr.log
+
+
+第 4 步:设开机自启(**必须用管理员 PowerShell**)
+--------------------------------------------------------
+  powershell -NoProfile -ExecutionPolicy Bypass -File .\install-task.ps1
+  Start-ScheduledTask gc-ocr
+  Start-ScheduledTask gc-ocr-tunnel
+
+  会注册两个计划任务(开机自启、崩了自动重启)并关掉睡眠/休眠。
+
+
+日常查看
+--------------------------------------------------------
+  Get-Content .\gc-ocr.log    -Tail 30 -Wait     # OCR 服务日志
+  Get-Content .\gc-tunnel.log -Tail 30 -Wait     # 隧道日志
+  Get-ScheduledTask gc-ocr,gc-ocr-tunnel | Get-ScheduledTaskInfo
+
+
+这台机器必须长期开机、别睡眠、别断网 —— 服务端 OCR 没有备用方案,
+它一挂,群控里所有需要"看屏幕找文字再点"的流程都会失败。
+Windows 更新的自动重启也会断几分钟:
+设置 → Windows 更新 → 高级选项 → 活动时间,设成全天。

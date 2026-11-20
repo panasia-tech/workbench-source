@@ -1,0 +1,83 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<!-- 工资单明细（电脑版）：标题旁切周期，合计和各岗位小计排成数字卡片，各岗位逐笔明细一张表 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">工资单明细</view>
+      <view class="dk-sub">{{dateFrom}} 至 {{dateTo}}{{loading ? ' · 加载中…' : ''}}</view>
+    </view>
+    <view class="dk-tabs">
+      <block wx:for="{{periods}}" wx:key="key">
+        <picker
+          wx:if="{{item.key === 'pick'}}"
+          mode="date"
+          fields="month"
+          value="{{pickMonth}}"
+          bindchange="onMonthChange"
+        >
+          <view class="dk-tab {{period === 'pick' ? 'dk-tab--on' : ''}}">{{period === 'pick' ? pickMonth : item.label}} ▾</view>
+        </picker>
+        <view
+          wx:else
+          class="dk-tab {{period === item.key ? 'dk-tab--on' : ''}}"
+          data-period="{{item.key}}"
+          bindtap="pickPeriod"
+        >{{item.label}}</view>
+      </block>
+    </view>
+  </view>
+
+  <view class="dk-stats">
+    <view class="dk-stat ps-dk-total">
+      <view class="dk-stat__label">预计工资合计</view>
+      <view class="dk-stat__value">¥{{fmt.money(payslip.total_commission || 0)}}</view>
+    </view>
+    <view wx:for="{{payslip.sections}}" wx:for-item="sec" wx:key="role" class="dk-stat">
+      <view class="dk-stat__label">{{sec.title}}</view>
+      <view class="dk-stat__value">¥{{fmt.money(sec.commission_total)}}</view>
+      <view class="dk-stat__hint">{{sec.items.length}} 笔{{sec.overdue_count ? ' · ' + sec.overdue_count + ' 笔逾期' : ''}}</view>
+    </view>
+  </view>
+
+  <view wx:if="{{!loading && (!payslip || !payslip.sections.length)}}" class="dk-card dk-empty">本期暂无提成记录</view>
+
+  <view class="dk-card" wx:for="{{payslip.sections}}" wx:for-item="sec" wx:key="role">
+    <view class="dk-card__head">
+      <view class="dk-row">
+        <text>{{sec.title}}</text>
+        <text class="dk-sub ps-dk-note">{{sec.note}}</text>
+      </view>
+      <text class="ps-dk-sectotal">¥{{fmt.money(sec.commission_total)}}</text>
+    </view>
+    <view wx:if="{{sec.overdue_count}}" class="ps-dk-overdue">含 {{sec.overdue_count}} 笔逾期采购不计提成（¥0）</view>
+
+    <view wx:if="{{!sec.items.length}}" class="dk-empty">本期无记录</view>
+    <view wx:else class="dk-table-wrap">
+      <table class="dk-table">
+        <thead>
+          <tr>
+            <th>商品</th>
+            <th>单号</th>
+            <th>货号</th>
+            <th>时间</th>
+            <th class="dk-num">毛利</th>
+            <th class="dk-num">提成</th>
+            <th>备注</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr wx:for="{{sec.items}}" wx:for-item="item" wx:key="ref_no" class="{{item.is_overdue ? 'ps-dk-tr--overdue' : ''}}">
+            <td><view class="dk-cell-main dk-ellipsis">{{item.product_name || item.ref_no}}</view></td>
+            <td class="dk-nowrap">{{item.ref_no}}</td>
+            <td class="dk-nowrap">{{item.sku_code || '—'}}</td>
+            <td class="dk-nowrap">{{fmt.datetime(item.occurred_at)}}</td>
+            <td class="dk-num">{{item.kind === 'purchase' ? '¥' + fmt.money(item.base_amount) : '—'}}</td>
+            <td class="dk-num"><text class="{{item.is_overdue ? 'ps-dk-zero' : 'ps-dk-amt'}}">¥{{fmt.money(item.commission)}}</text></td>
+            <td><text wx:if="{{item.is_overdue}}" class="dk-tag dk-tag--red">逾期·不发提成</text></td>
+          </tr>
+        </tbody>
+      </table>
+    </view>
+  </view>
+</view>

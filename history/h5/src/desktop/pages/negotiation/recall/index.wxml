@@ -1,0 +1,117 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<!-- 召回快递（电脑版）：左边上传改派凭证，右边对照商品与议价结果；确认在底部操作条 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view class="dk-media">
+      <media-thumb
+        wx:if="{{detail.cover_thumb_url || detail.cover_url}}"
+        url="{{detail.cover_thumb_url || detail.cover_url}}"
+        preview-url="{{detail.cover_url}}"
+        size="small"
+      />
+      <view>
+        <view class="dk-title">{{detail.product_name || '召回快递'}}</view>
+        <view class="dk-sub">{{skuCode}}{{detail.spec ? ' · ' + detail.spec : ''}}</view>
+      </view>
+    </view>
+    <view class="dk-row">
+      <text class="dk-tag tag-warning">待召回</text>
+    </view>
+  </view>
+
+  <view class="dk-split">
+    <view class="dk-card">
+      <view class="dk-card__head">召回快递</view>
+      <view class="dk-card__body">
+        <view class="dk-help">召回已发出的快递后，上传顺丰改派 / 再次派件截图，凭证补齐后议价流程才算完成。</view>
+        <view class="dk-field nr-dk-gap">
+          <text class="dk-label dk-label--req">顺丰改派 / 再次派件截图（图片 / 视频）</text>
+          <view class="dk-gallery">
+            <view wx:for="{{media}}" wx:key="*this" class="nr-dk-cell">
+              <media-thumb
+                url="{{mediaDisplayUrls[index] || item}}"
+                preview-url="{{mediaDisplayUrls[index] || item}}"
+                size="fill"
+                preview="{{true}}"
+              />
+              <view class="nr-dk-del" catchtap="removeMedia" data-index="{{index}}" title="删除">×</view>
+            </view>
+            <view class="nr-dk-add" bindtap="addMedia">
+              <text class="nr-dk-add__plus">+</text>
+              <text>图片 / 视频</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="nr-dk-col">
+      <view class="dk-card">
+        <view class="dk-card__head">议价结果</view>
+        <view class="dk-card__body">
+          <view class="dk-desc dk-desc--2">
+            <view class="dk-desc__item">
+              <view class="dk-desc__k">实收金额</view>
+              <view class="nr-dk-amount">¥{{fmt.money(detail.final_price)}}</view>
+            </view>
+            <view class="dk-desc__item">
+              <view class="dk-desc__k">议价人</view>
+              <view class="dk-desc__v">{{detail.negotiator_name || '—'}}</view>
+            </view>
+            <view class="dk-desc__item dk-desc__item--full">
+              <view class="dk-desc__k">议价时间</view>
+              <view class="dk-desc__v">{{fmt.datetime(detail.negotiated_at)}}</view>
+            </view>
+            <view class="dk-desc__item dk-desc__item--full" wx:if="{{detail.negotiation_remark}}">
+              <view class="dk-desc__k">备注</view>
+              <view class="dk-desc__v">{{detail.negotiation_remark}}</view>
+            </view>
+          </view>
+          <block wx:if="{{detail.negotiation_media.length}}">
+            <view class="dk-desc__k nr-dk-gap">议价证据</view>
+            <view class="dk-gallery nr-dk-gallery-s nr-dk-gap-s">
+              <view wx:for="{{detail.negotiation_media}}" wx:key="*this" class="nr-dk-cell">
+                <media-thumb url="{{item}}" preview-url="{{item}}" size="fill" group-urls="{{detail.negotiation_media}}" />
+              </view>
+            </view>
+          </block>
+        </view>
+      </view>
+
+      <view class="dk-card">
+        <view class="dk-card__head">商品信息</view>
+        <view class="dk-card__body">
+          <view class="dk-desc dk-desc--2">
+            <view class="dk-desc__item dk-desc__item--full">
+              <view class="dk-desc__k">商品</view>
+              <view class="dk-desc__v">{{detail.product_name || '—'}}</view>
+            </view>
+            <view class="dk-desc__item">
+              <view class="dk-desc__k">货号</view>
+              <view class="dk-desc__v">{{detail.sku_code || skuCode || '—'}}</view>
+            </view>
+            <view class="dk-desc__item">
+              <view class="dk-desc__k">成色</view>
+              <view class="dk-desc__v">{{detail.condition_grade || '—'}}</view>
+            </view>
+            <view class="dk-desc__item">
+              <view class="dk-desc__k">库位</view>
+              <view class="dk-desc__v">{{detail.location_code || '—'}}</view>
+            </view>
+            <view class="dk-desc__item">
+              <view class="dk-desc__k">入库时间</view>
+              <view class="dk-desc__v">{{fmt.datetime(detail.inbound_at)}}</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="dk-actionbar">
+    <text class="dk-sub">已传凭证</text>
+    <text class="nr-dk-sum {{media.length ? '' : 'dk-muted'}}">{{media.length ? media.length + ' 张' : '待上传'}}</text>
+    <view class="dk-btn dk-btn--primary {{submitting ? 'dk-btn--disabled' : ''}}" bindtap="onSubmit">{{submitting ? '提交中…' : '确认已召回'}}</view>
+  </view>
+</view>

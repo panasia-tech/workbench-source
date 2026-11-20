@@ -1,0 +1,180 @@
+/* 退回复验（电脑版模板 index.wxml 用的补充；通用样式在 src/styles/desktop.css） */
+.rk-dk-split {
+  grid-template-columns: minmax(0, 1fr) 400px;
+}
+
+.rk-dk-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.rk-dk-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.rk-dk-warn {
+  padding: 10px 16px;
+  border: 1px solid #fed7aa;
+  border-radius: 8px;
+  background: #fff7ed;
+  color: #c2410c;
+  font-size: 13px;
+}
+
+.rk-dk-note {
+  max-width: 260px;
+  white-space: normal;
+}
+
+.rk-dk-guide {
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: #f8fafc;
+  color: #475569;
+  font-size: 13px;
+}
+
+.rk-dk-tabs {
+  align-self: flex-start;
+}
+
+.rk-dk-ok,
+.rk-dk-ok:hover {
+  color: #047857;
+}
+
+.rk-dk-bad,
+.rk-dk-bad:hover {
+  color: #b91c1c;
+}
+
+.rk-dk-ta {
+  width: 100%;
+}
+
+.rk-dk-gallery {
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+}
+
+.rk-dk-cell {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #f3f4f6;
+}
+
+.rk-dk-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: zoom-in;
+}
+
+.rk-dk-del {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(17, 24, 39, 0.65);
+  color: #fff;
+  font-size: 13px;
+  line-height: 20px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.rk-dk-del:hover {
+  background: #dc2626;
+}
+
+.rk-dk-add {
+  aspect-ratio: 1;
+  border: 1px dashed #cbd5e1;
+  border-radius: 6px;
+  background: #f8fafc;
+  color: #6b7280;
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.rk-dk-add:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+.rk-dk-add__plus {
+  font-size: 22px;
+  line-height: 1;
+}
+
+/* 历次影像：缩略图 + 阶段/说明/时间，铺成多列 */
+.rk-dk-hist {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.rk-dk-hist__item {
+  display: flex;
+  gap: 10px;
+  padding: 8px;
+  border: 1px solid #f0f1f3;
+  border-radius: 8px;
+  cursor: zoom-in;
+  min-width: 0;
+}
+
+.rk-dk-hist__item:hover {
+  border-color: #2563eb;
+}
+
+.rk-dk-hist__img {
+  width: 64px;
+  height: 64px;
+  flex: none;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #f3f4f6;
+}
+
+.rk-dk-hist__video {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1f2937;
+  color: #fff;
+  font-size: 18px;
+}
+
+.rk-dk-hist__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.rk-dk-hist__label {
+  max-width: 140px;
+  font-size: 13px;
+}
+
+/* 窄一点的电脑屏（1024~1279）右栏收窄，左边表格不出横向滚动 */
+@media (max-width: 1279px) {
+  .rk-dk-split {
+    grid-template-columns: minmax(0, 1fr) 320px;
+  }
+}

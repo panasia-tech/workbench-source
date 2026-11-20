@@ -1,0 +1,15 @@
+/* 资产录入列表（电脑版模板用；类名 ai-dk-*） */
+.ai-dk-thumb-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2563eb;
+  background: #eff4ff;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.ai-dk-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+}

@@ -1,0 +1,82 @@
+.gc-task-page .gc-tabs {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 24rpx;
+}
+
+.gc-task-page .gc-tab {
+  flex: 1;
+  text-align: center;
+  padding: 16rpx 0;
+  font-size: 26rpx;
+  color: var(--text-secondary);
+  background: var(--bg-card);
+  border: 1rpx solid var(--border);
+  border-radius: 999rpx;
+}
+
+.gc-task-page .gc-tab--on {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+  font-weight: 600;
+}
+
+.gc-task-page .gc-empty {
+  padding: 48rpx 0;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 26rpx;
+}
+
+/* 任务行 */
+.gc-task-page .gc-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid var(--border);
+}
+
+.gc-task-page .gc-row:last-of-type {
+  border-bottom: none;
+}
+
+.gc-task-page .gc-row-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.gc-task-page .gc-row-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--text-title);
+}
+
+.gc-task-page .gc-row-sub {
+  margin-top: 6rpx;
+  font-size: 24rpx;
+  color: var(--text-secondary);
+}
+
+.gc-task-page .gc-row-err {
+  margin-top: 6rpx;
+  font-size: 24rpx;
+  color: var(--color-danger);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.gc-task-page .gc-row-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8rpx;
+  flex-shrink: 0;
+  margin-left: 16rpx;
+}
+
+.gc-task-page .gc-row-act {
+  font-size: 24rpx;
+  color: var(--color-primary);
+}

@@ -1,0 +1,94 @@
+<view class="page-wrap page-wrap--no-tab pr-page">
+  <view wx:if="{{loading}}" class="list-footer">加载中…</view>
+
+  <block wx:if="{{p}}">
+    <view class="pr-head">
+      <text class="pr-chip">练习 · 演练数据</text>
+      <view class="pr-h1">实物练习：定价 → 上架 → 发货</view>
+      <view class="pr-iso">这是练习：商品是演练的假货，和真实业务完全隔离，点什么都不会发到闲鱼。{{p.left ? '做完这 3 步，真实任务才开放。' : ''}}</view>
+      <view class="pr-retour"><text class="pr-link" bindtap="retour">重看新手导览</text></view>
+    </view>
+
+    <view class="card pr-item">
+      <view class="pr-item__head">
+        <text class="pr-item__name">{{p.item.name}}</text>
+      </view>
+      <view class="pr-facts">
+        <view class="pr-fact"><view class="pr-fact__k">货号</view><view class="pr-fact__v">{{p.item.code}}</view></view>
+        <view class="pr-fact"><view class="pr-fact__k">成本</view><view class="pr-fact__v">¥{{p.item.cost}}</view></view>
+        <view class="pr-fact"><view class="pr-fact__k">最低价</view><view class="pr-fact__v pr-strong">¥{{p.item.floor}}</view><view class="pr-fact__sub">成本 × {{p.item.ratio}}</view></view>
+      </view>
+    </view>
+
+    <view class="pr-steps">
+      <view wx:for="{{p.steps}}" wx:key="no" class="pr-step {{item.no === cur ? 'pr-step--cur' : (item.done ? 'pr-step--done' : '')}}">
+        <text class="pr-step__no">{{item.done && item.no !== cur ? '✓' : item.no}}</text>
+        <text class="pr-step__t">{{item.title}}</text>
+      </view>
+    </view>
+
+    <view wx:if="{{!cur}}" class="card pr-done">
+      <view class="pr-done__ok">✓</view>
+      <view class="pr-done__t">练习做完了</view>
+      <view class="pr-done__s">真实任务已经开放：可以在真货上上架、审批、发货了。</view>
+      <button class="btn btn-primary pr-done__btn" bindtap="goToday">去「今天」</button>
+      <view class="pr-retour"><text class="pr-link" bindtap="again">再练一遍</text></view>
+    </view>
+
+    <view wx:for="{{p.steps}}" wx:key="no" wx:if="{{item.no === cur}}" class="card pr-panel">
+      <view class="card-head card-head--split">
+        <view class="card-head-main">第 {{item.no}} 步 · {{item.title}}</view>
+        <text class="pr-q" bindtap="toggleGuard">?</text>
+      </view>
+      <view class="pr-learn">{{item.learn}}</view>
+      <view wx:if="{{showGuard}}" class="pr-guard">会被拦的情况：{{item.guard}}</view>
+
+      <block wx:if="{{cur === 1}}">
+        <view class="pr-row">
+          <text class="pr-label">{{p.item.shops[0]}} 售价</text>
+          <input class="input pr-price" type="number" placeholder="整数元" value="{{price}}" bindinput="onPrice" />
+          <text>元</text>
+        </view>
+        <view wx:if="{{low}}" class="pr-err">低于最低价 ¥{{p.item.floor}}：写理由，只有管理员能批</view>
+        <view wx:elif="{{high}}" class="pr-warn">高于成本 {{p.item.high_multiple}} 倍，确认没填错</view>
+        <input wx:if="{{low}}" class="input pr-reason" placeholder="为什么要低价（至少 4 个字）" value="{{reason}}" bindinput="onReason" />
+        <view class="pr-label pr-gap">选图（至少 1 张）</view>
+        <view class="pr-imgs">
+          <view wx:for="{{imageOpts}}" wx:for-item="img" wx:key="name" class="pr-img {{img.on ? 'pr-img--on' : ''}}" data-name="{{img.name}}" bindtap="toggleImage">{{img.name}}</view>
+        </view>
+      </block>
+
+      <block wx:if="{{cur === 2}}">
+        <view class="pr-question">{{item.question}}</view>
+        <view wx:for="{{item.options}}" wx:for-item="opt" wx:for-index="i" wx:key="*this" class="pr-opt {{choice === i ? 'pr-opt--on' : ''}}" data-i="{{i}}" bindtap="pickChoice">{{opt}}</view>
+      </block>
+
+      <block wx:if="{{cur === 3}}">
+        <view class="pr-order">演练订单 · 买家已付款 · 货号 {{p.item.code}}</view>
+        <view class="pr-row">
+          <input class="input pr-grow" placeholder="扫货号或手输" value="{{code}}" bindinput="onCode" />
+          <button class="btn btn-sm btn-outline" bindtap="scan">扫码</button>
+        </view>
+        <input class="input pr-gap" placeholder="快递运单号" value="{{trackingNo}}" bindinput="onTracking" />
+      </block>
+
+      <view wx:if="{{err}}" class="pr-err pr-gap">{{err}}</view>
+      <button class="btn btn-primary btn-block pr-gap" loading="{{saving}}" bindtap="submit">{{cur === 1 ? '提交审批' : (cur === 2 ? '确定' : '确认出库')}}</button>
+    </view>
+  </block>
+
+  <view wx:if="{{!loading && !p && err}}" class="pr-err">{{err}}</view>
+
+  <view wx:if="{{isAdmin && admin}}" class="card">
+    <view class="card-head card-head--split">
+      <view class="card-head-main">练习门禁（管理员）</view>
+      <button class="btn btn-sm {{admin.required ? 'btn-outline' : 'btn-primary'}}" bindtap="toggleRequired">{{admin.required ? '关掉' : '打开'}}</button>
+    </view>
+    <view class="pr-learn">{{admin.required ? '开着：没做完的销售不能上架、审批、发货' : '关着：谁都不拦'}}</view>
+    <view wx:for="{{admin.staff}}" wx:key="id" class="pr-staff">
+      <text>{{item.name}}</text>
+      <text class="{{item.done === item.total ? 'pr-ok' : 'pr-muted'}}">{{item.done === item.total ? '做完了' : '第 ' + item.done + '/' + item.total + ' 步'}}</text>
+    </view>
+    <view wx:if="{{!admin.staff.length}}" class="pr-muted">没有在职销售</view>
+  </view>
+</view>

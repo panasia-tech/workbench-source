@@ -1,0 +1,337 @@
+/* 店铺上架（电脑版模板用的补充；通用样式在 src/styles/desktop.css）。
+ * 以前「居中一列」时代给手机模板加的 ≥1024 规则（pk-grid / pk-img / ai-confirm-img）已不需要：电脑上换成了这份模板 */
+
+/* 勾选框：✓ 全选 / – 选了一部分 / 置灰点不动 */
+.lp-dk-check {
+  width: 16px;
+  height: 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 12px;
+  line-height: 1;
+  flex: none;
+  box-sizing: border-box;
+}
+
+.lp-dk-check--on,
+.lp-dk-check--part {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+.lp-dk-check--off {
+  background: #f3f4f6;
+  border-color: #e5e7eb;
+}
+
+.lp-dk-th-check {
+  width: 16px;
+}
+
+.lp-dk-pickall {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  margin-right: 6px;
+}
+
+.lp-dk-picks {
+  gap: 4px 8px;
+}
+
+.dk-table tr.lp-dk-tr--off td {
+  color: #9ca3af;
+}
+
+.lp-dk-err {
+  color: #dc2626;
+  font-size: 12px;
+}
+
+.lp-dk-poll {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #2563eb;
+}
+
+.lp-dk-poll__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #2563eb;
+  animation: lp-dk-blink 1.2s ease-in-out infinite;
+}
+
+@keyframes lp-dk-blink {
+  50% { opacity: 0.25; }
+}
+
+.lp-dk-side {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.lp-dk-big {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.lp-dk-go {
+  height: 38px;
+  font-size: 14px;
+}
+
+/* AI 主图确认 */
+.lp-dk-ai {
+  display: flex;
+  gap: 20px;
+  padding: 16px;
+  border-color: #fcd34d;
+  background: #fffbeb;
+}
+
+.lp-dk-ai__img {
+  width: 200px;
+  height: 200px;
+  flex: none;
+  border-radius: 6px;
+  background: #fff;
+  cursor: zoom-in;
+}
+
+.lp-dk-ai__body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lp-dk-ai__title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #92400e;
+}
+
+.lp-dk-ai__input {
+  max-width: 420px;
+}
+
+/* 第 2 步：左店铺、右挑图 */
+.lp-dk-pick {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.lp-dk-shops {
+  position: sticky;
+  top: 0;
+}
+
+.lp-dk-shop {
+  padding: 10px 16px;
+  border-bottom: 1px solid #f0f1f3;
+  border-left: 3px solid transparent;
+  cursor: pointer;
+}
+
+.lp-dk-shop:hover {
+  background: #f8fafc;
+}
+
+.lp-dk-shop--on,
+.lp-dk-shop--on:hover {
+  background: #eff4ff;
+  border-left-color: #2563eb;
+}
+
+.lp-dk-shop__top {
+  flex-wrap: nowrap;
+}
+
+.lp-dk-shop__thumbs {
+  display: flex;
+  gap: 4px;
+  margin-top: 6px;
+  overflow: hidden;
+}
+
+.lp-dk-mini {
+  width: 28px;
+  height: 28px;
+  flex: none;
+  border-radius: 3px;
+  background: #f3f4f6;
+}
+
+.lp-dk-warn {
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 13px;
+}
+
+.lp-dk-gap {
+  margin: 0 0 10px;
+}
+
+.lp-dk-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.lp-dk-cell {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #f3f4f6;
+  border: 2px solid transparent;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.lp-dk-cell--on {
+  border-color: #2563eb;
+}
+
+.lp-dk-cell--taken {
+  cursor: not-allowed;
+}
+
+.lp-dk-cell--taken .lp-dk-cell__img {
+  opacity: 0.35;
+}
+
+.lp-dk-cell__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* 左上角勾选圈：点图看大图，点这里选中/取消 */
+.lp-dk-select {
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(17, 24, 39, 0.55);
+  border: 2px solid #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.lp-dk-select__mark {
+  font-size: 12px;
+  line-height: 1;
+  color: #fff;
+}
+
+.lp-dk-cell--on .lp-dk-select {
+  background: #2563eb;
+}
+
+.lp-dk-kind {
+  position: absolute;
+  left: 4px;
+  bottom: 4px;
+  padding: 0 5px;
+  border-radius: 3px;
+  background: rgba(17, 24, 39, 0.6);
+  color: #fff;
+  font-size: 11px;
+  line-height: 17px;
+}
+
+.lp-dk-kind--bad {
+  background: rgba(220, 38, 38, 0.85);
+}
+
+.lp-dk-order {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 4px;
+  border-radius: 10px;
+  background: #2563eb;
+  color: #fff;
+  font-size: 12px;
+  line-height: 20px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.lp-dk-taken {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 2px 4px;
+  background: rgba(17, 24, 39, 0.65);
+  color: #fff;
+  font-size: 12px;
+  text-align: center;
+}
+
+.lp-dk-cell__ops {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  left: auto;
+  display: none;
+  gap: 4px;
+}
+
+.lp-dk-cell:hover .lp-dk-cell__ops {
+  display: flex;
+}
+
+.lp-dk-op {
+  padding: 0 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #1f2937;
+  font-size: 11px;
+  line-height: 20px;
+  cursor: pointer;
+}
+
+.lp-dk-op:hover {
+  color: #2563eb;
+}
+
+.lp-dk-op--bad:hover {
+  color: #dc2626;
+}
+
+.lp-dk-bar-tip {
+  margin-right: auto;
+}
+
+/* 内容不满一屏时操作条也贴在底部 */
+.lp-dk-bar {
+  margin-top: auto;
+}

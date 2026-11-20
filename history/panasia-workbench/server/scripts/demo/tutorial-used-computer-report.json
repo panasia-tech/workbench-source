@@ -1,0 +1,50 @@
+{
+  "at": "2026-10-09T07:38:27.957Z",
+  "steps": [
+    {
+      "step": "signIn",
+      "ok": true,
+      "detail": "http://127.0.0.1:8000"
+    },
+    {
+      "step": "清理旧数据",
+      "ok": true,
+      "detail": "无历史版本，跳过"
+    },
+    {
+      "step": "创建教程项目",
+      "ok": true,
+      "detail": "id=7 二手电脑上架"
+    },
+    {
+      "step": "阶段 1",
+      "ok": true,
+      "detail": "id=19 P0 配置单制作（图吧工具箱 + AI 辅助）"
+    },
+    {
+      "step": "阶段 2",
+      "ok": true,
+      "detail": "id=20 P1 闲鱼上架"
+    },
+    {
+      "step": "阶段 3",
+      "ok": true,
+      "detail": "id=21 P2 展示策略思考（衍生任务）"
+    },
+    {
+      "step": "写入步骤与材料",
+      "ok": true,
+      "detail": "stages=3 steps=6 materials=8"
+    },
+    {
+      "step": "创建案例",
+      "ok": true,
+      "detail": "id=14 owner=1871790158440555 status=in_progress"
+    },
+    {
+      "step": "回查",
+      "ok": true,
+      "detail": "project=7 stages=3 cases=1"
+    }
+  ]
+}

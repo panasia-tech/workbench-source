@@ -1,0 +1,107 @@
+<!-- 账号档案（电脑版）：左边员工填写的资料（选项平铺成按钮），右边自动采集的设备与账号（只读）；保存放底部操作条 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-row">
+        <text class="dk-title">账号档案{{info ? ' · ' + info.nick : ''}}</text>
+        <text wx:if="{{info}}" class="dk-tag {{info.status === 'COMPLETE' ? 'tag-success' : 'tag-warning'}}">{{info.status === 'COMPLETE' ? '已初始化' : '待完善'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="dk-split apf-dk-split">
+    <view class="dk-card">
+      <view class="dk-card__head">账号资料(员工填写)</view>
+      <view class="dk-card__body dk-form">
+        <view class="dk-field">
+          <text class="dk-label">闲鱼会员名(tb 开头)</text>
+          <input class="dk-input" placeholder="自动采集,缺了请手动填写" value="{{form.member_name}}" data-field="member_name" bindinput="onInput" />
+        </view>
+        <view class="dk-field">
+          <text class="dk-label dk-label--req">法人名称</text>
+          <input class="dk-input" placeholder="办卡/注册主体的法人姓名" value="{{form.legal_person}}" data-field="legal_person" bindinput="onInput" />
+        </view>
+        <view class="dk-field dk-field--full">
+          <text class="dk-label dk-label--req">运营商</text>
+          <view class="dk-tabs apf-dk-seg">
+            <view
+              wx:for="{{carrierOptions}}"
+              wx:key="*this"
+              class="dk-tab {{form.carrier === item ? 'dk-tab--on' : ''}}"
+              data-index="{{index}}"
+              bindtap="dkPickCarrier"
+            >{{item}}</view>
+          </view>
+        </view>
+        <view class="dk-field dk-field--full">
+          <text class="dk-label dk-label--req">账号种类</text>
+          <view class="dk-tabs apf-dk-seg">
+            <view
+              wx:for="{{typeOptions}}"
+              wx:key="*this"
+              class="dk-tab {{form.account_type === item ? 'dk-tab--on' : ''}}"
+              data-index="{{index}}"
+              bindtap="dkPickType"
+            >{{item}}</view>
+          </view>
+        </view>
+        <view class="dk-field dk-field--full">
+          <text class="dk-label dk-label--req">套餐资费</text>
+          <textarea class="dk-input apf-dk-textarea" placeholder="如:39元/月 100G 通用流量" value="{{form.plan_details}}" data-field="plan_details" bindinput="onInput" maxlength="500" />
+        </view>
+        <view class="dk-field dk-field--full">
+          <text class="dk-label">异常处理策略(多选)</text>
+          <view class="dk-row">
+            <view
+              wx:for="{{strategies}}"
+              wx:key="key"
+              class="apf-dk-chip {{item.checked ? 'apf-dk-chip--on' : ''}}"
+              data-index="{{index}}"
+              bindtap="onStrategyToggle"
+            ><text class="apf-dk-check">{{item.checked ? '✓' : ''}}</text>{{item.label}}</view>
+          </view>
+        </view>
+        <view class="dk-field dk-field--full">
+          <text class="dk-label">备注</text>
+          <textarea class="dk-input apf-dk-textarea" placeholder="备注(选填)" value="{{form.remark}}" data-field="remark" bindinput="onInput" maxlength="500" />
+        </view>
+      </view>
+    </view>
+
+    <view class="dk-card" wx:if="{{info}}">
+      <view class="dk-card__head">设备与账号(自动采集)</view>
+      <view class="dk-card__body dk-desc dk-desc--2">
+        <view class="dk-desc__item">
+          <text class="dk-desc__k">闲鱼昵称</text>
+          <text class="dk-desc__v">{{info.nick}}</text>
+        </view>
+        <view class="dk-desc__item">
+          <text class="dk-desc__k">电话号码</text>
+          <text class="dk-desc__v {{info.phone_number ? '' : 'dk-muted'}}">{{info.phone_number || '未采集'}}</text>
+        </view>
+        <view class="dk-desc__item dk-desc__item--full">
+          <text class="dk-desc__k">设备序列号</text>
+          <text class="dk-desc__v apf-dk-mono {{info.device_serial ? '' : 'dk-muted'}}">{{info.device_serial || '未采集'}}</text>
+        </view>
+        <view class="dk-desc__item">
+          <text class="dk-desc__k">IMEI 1</text>
+          <text class="dk-desc__v apf-dk-mono {{info.imei1 ? '' : 'dk-muted'}}">{{info.imei1 || '未采集'}}</text>
+        </view>
+        <view class="dk-desc__item">
+          <text class="dk-desc__k">IMEI 2</text>
+          <text class="dk-desc__v apf-dk-mono {{info.imei2 ? '' : 'dk-muted'}}">{{info.imei2 || '未采集'}}</text>
+        </view>
+        <view class="dk-desc__item" wx:if="{{info.asset_no}}">
+          <text class="dk-desc__k">关联资产</text>
+          <text class="dk-desc__v">{{info.asset_no}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="dk-actionbar apf-dk-bar">
+    <button class="dk-btn dk-btn--primary apf-dk-btn" bindtap="onSubmit" disabled="{{submitting}}" loading="{{submitting}}">
+      {{submitting ? '提交中…' : '保存'}}
+    </button>
+  </view>
+</view>

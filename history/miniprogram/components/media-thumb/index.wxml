@@ -1,0 +1,27 @@
+<view
+  class="media-thumb media-thumb--{{size}} {{archived ? 'media-thumb--archived' : ''}} {{!hasMedia ? 'media-thumb--empty' : ''}}"
+  catchtap="onTap"
+>
+  <view wx:if="{{archived}}" class="media-thumb__archived">
+    <view class="media-thumb__archived-icon" aria-hidden="true">📦</view>
+    <text class="media-thumb__archived-text">已归档</text>
+    <text class="media-thumb__archived-hint">本地 NAS</text>
+  </view>
+  <view wx:elif="{{isVideo && displayUrl}}" class="media-thumb__video-wrap">
+    <video
+      class="media-thumb__video"
+      src="{{displayUrl}}"
+      controls="{{false}}"
+      show-center-play-btn="{{true}}"
+      object-fit="cover"
+    />
+    <view class="media-thumb__badge">视频</view>
+  </view>
+  <image
+    wx:elif="{{displayUrl}}"
+    class="media-thumb__img"
+    src="{{displayUrl}}"
+    mode="aspectFill"
+  />
+  <view wx:else class="media-thumb__placeholder">—</view>
+</view>

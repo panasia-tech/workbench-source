@@ -1,0 +1,144 @@
+<view class="page-wrap">
+  <view class="card">
+    <view class="card-head">{{isEdit ? '编辑资产' : '新建资产'}}</view>
+
+    <!-- 采购单关联 -->
+    <view class="form-section">
+      <view class="form-section-title">采购单来源（可选）</view>
+      <view wx:if="{{form.purchase_order_id}}" class="po-linked">
+        <text class="po-linked-text">已关联：{{form.purchase_order_no}}</text>
+        <text class="po-clear" bindtap="onClearPurchase">×</text>
+      </view>
+      <view wx:else>
+        <view class="form-field">
+          <input
+            class="form-input"
+            placeholder="搜索采购单号…"
+            value="{{purchaseSearchQ}}"
+            bindinput="onPurchaseSearchInput"
+          />
+        </view>
+        <view wx:if="{{purchaseSearching}}" class="po-searching">搜索中…</view>
+        <view wx:elif="{{purchaseResults.length}}" class="po-results">
+          <view
+            wx:for="{{purchaseResults}}"
+            wx:key="id"
+            class="po-item"
+            data-index="{{index}}"
+            bindtap="onSelectPurchase"
+          >
+            <view class="po-item-main">{{item.order_no}}</view>
+            <view class="po-item-sub">{{item.product_name}}{{item.brand ? ' · ' + item.brand : ''}}{{item.model ? ' ' + item.model : ''}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 基本信息 -->
+    <view class="form-section">
+      <view class="form-section-title">设备信息</view>
+      <view class="form-field">
+        <view class="form-label">设备名称 <text class="form-required">*</text></view>
+        <input class="form-input" placeholder="如 iPhone 14 Pro Max" value="{{form.device_name}}" data-field="device_name" bindinput="onInput" />
+      </view>
+      <view class="form-field">
+        <view class="form-label">资产编号</view>
+        <view class="form-input-scan">
+          <input class="form-input form-input--scan" placeholder="留空自动生成，可扫条码" value="{{form.asset_no}}" data-field="asset_no" bindinput="onInput" />
+          <view class="search-scan-icon" catchtap="onScanAssetNo">
+            <view class="scan-frame"></view>
+            <view class="scan-line"></view>
+          </view>
+        </view>
+      </view>
+      <view class="form-field">
+        <view class="form-label">设备 SN</view>
+        <input class="form-input" placeholder="序列号" value="{{form.device_sn}}" data-field="device_sn" bindinput="onInput" />
+      </view>
+      <view class="form-row">
+        <view class="form-field form-half">
+          <view class="form-label">品牌</view>
+          <input class="form-input" placeholder="品牌" value="{{form.brand}}" data-field="brand" bindinput="onInput" />
+        </view>
+        <view class="form-field form-half">
+          <view class="form-label">型号</view>
+          <input class="form-input" placeholder="型号" value="{{form.model}}" data-field="model" bindinput="onInput" />
+        </view>
+      </view>
+      <view class="form-row">
+        <view class="form-field form-half">
+          <view class="form-label">规格</view>
+          <input class="form-input" placeholder="规格" value="{{form.spec}}" data-field="spec" bindinput="onInput" />
+        </view>
+        <view class="form-field form-half">
+          <view class="form-label">设备类型</view>
+          <input class="form-input" placeholder="如 显示器/手机/电脑" value="{{form.device_type}}" data-field="device_type" bindinput="onInput" />
+        </view>
+      </view>
+      <view class="form-row">
+        <view class="form-field form-half">
+          <view class="form-label">单价</view>
+          <input class="form-input" type="digit" placeholder="0.00" value="{{form.unit_price}}" data-field="unit_price" bindinput="onInput" />
+        </view>
+        <view class="form-field form-half">
+          <view class="form-label">成本</view>
+          <input class="form-input" type="digit" placeholder="0.00" value="{{form.cost}}" data-field="cost" bindinput="onInput" />
+        </view>
+      </view>
+    </view>
+
+    <!-- 归属信息 -->
+    <view class="form-section">
+      <view class="form-section-title">归属信息</view>
+      <view class="form-row">
+        <view class="form-field form-half">
+          <view class="form-label">使用人</view>
+          <input class="form-input" placeholder="姓名" value="{{form.owner_name}}" data-field="owner_name" bindinput="onInput" disabled="{{!isAdmin}}" />
+        </view>
+        <view class="form-field form-half">
+          <view class="form-label">办公地点</view>
+          <input class="form-input" placeholder="如 杭州/深圳" value="{{form.office_site}}" data-field="office_site" bindinput="onInput" />
+        </view>
+      </view>
+      <view class="form-field">
+        <view class="form-label">状态</view>
+        <picker mode="selector" range="{{statusOptions}}" range-key="label" value="{{statusIndex}}" bindchange="onStatusChange">
+          <view class="form-picker">{{statusOptions[statusIndex].label}}</view>
+        </picker>
+      </view>
+      <view class="form-field">
+        <view class="form-label">用途</view>
+        <input class="form-input" placeholder="用途说明" value="{{form.purpose}}" data-field="purpose" bindinput="onInput" />
+      </view>
+      <view class="form-field">
+        <view class="form-label">购入日期</view>
+        <picker mode="date" value="{{form.purchase_date}}" bindchange="onInput" data-field="purchase_date">
+          <view class="form-picker">{{form.purchase_date || '请选择'}}</view>
+        </picker>
+      </view>
+      <view class="form-field">
+        <view class="form-label">备注</view>
+        <textarea class="form-textarea" placeholder="备注" value="{{form.remark}}" data-field="remark" bindinput="onInput" maxlength="500" />
+      </view>
+    </view>
+
+    <!-- 图片 -->
+    <view class="form-section">
+      <view class="form-section-title">设备图片</view>
+      <view class="image-grid">
+        <view wx:for="{{imageDisplays}}" wx:key="index" class="image-item" data-index="{{index}}" bindtap="onRemoveImage">
+          <image src="{{item}}" mode="aspectFill" class="image-thumb" />
+          <view class="image-remove">×</view>
+        </view>
+        <view wx:if="{{form.image_files.length < 9}}" class="image-add" bindtap="onChooseImage">
+          <view class="image-add-icon">+</view>
+          <view class="image-add-text">添加图片</view>
+        </view>
+      </view>
+    </view>
+
+    <button class="btn btn-primary btn-block" bindtap="onSubmit" disabled="{{submitting}}" loading="{{submitting}}">
+      {{submitting ? '提交中…' : (isEdit ? '保存修改' : '创建资产')}}
+    </button>
+  </view>
+</view>

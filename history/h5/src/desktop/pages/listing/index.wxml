@@ -1,0 +1,155 @@
+<wxs module="fmt" src="../../utils/format.wxs" />
+
+<!-- 群控中心（电脑版）：分区 tab + 待上架表格；设备列表 / 任务队列两个面板是组件，照原样挂在卡片里 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">群控中心</view>
+      <view wx:if="{{section === 'listing'}}" class="dk-sub">填写文案 → 店铺多选上架（含已下架重上）；售出后其他店铺自动下架</view>
+      <view wx:elif="{{section === 'device'}}" class="dk-sub">真机与 AdsPower 浏览器环境；点一台设备看这个号发过的商品</view>
+      <view wx:else class="dk-sub">群控任务：进行中 / 待开始，以及已完结的历史任务</view>
+    </view>
+    <view class="dk-row">
+      <view class="dk-tabs">
+        <view
+          wx:for="{{sectionTabs}}"
+          wx:key="key"
+          class="dk-tab {{section === item.key ? 'dk-tab--on' : ''}}"
+          data-section="{{item.key}}"
+          bindtap="switchSection"
+        >{{item.label}}</view>
+      </view>
+    </view>
+  </view>
+
+  <block wx:if="{{section === 'listing'}}">
+    <view class="dk-stats">
+      <view
+        wx:for="{{filterTabs}}"
+        wx:key="key"
+        class="dk-stat dk-stat--click {{listTab === item.key ? 'dk-stat--on' : ''}}"
+        data-tab="{{item.key}}"
+        bindtap="switchTab"
+      >
+        <view class="dk-stat__label">{{item.label}}</view>
+        <view class="dk-stat__value">{{dkCounts[item.key] || 0}}</view>
+      </view>
+    </view>
+
+    <view class="dk-card">
+      <view class="dk-toolbar">
+        <view class="dk-tabs">
+          <view
+            wx:for="{{filterTabs}}"
+            wx:key="key"
+            class="dk-tab {{listTab === item.key ? 'dk-tab--on' : ''}}"
+            data-tab="{{item.key}}"
+            bindtap="switchTab"
+          >{{item.label}} <text class="dk-tab__n">{{dkCounts[item.key] || 0}}</text></view>
+        </view>
+        <input
+          class="dk-input dk-search"
+          placeholder="货号 / 商品名 / 品牌 / 型号 / 库位，空格分词"
+          value="{{q}}"
+          bindinput="onSearchInput"
+          confirm-type="search"
+          bindconfirm="onSearch"
+        />
+        <view class="dk-btn" bindtap="onSearch">搜索</view>
+        <view class="dk-grow"></view>
+        <text class="dk-sub">共 {{list.length}} 条待处理</text>
+        <view wx:if="{{allItems.length}}" class="dk-btn dk-btn--primary" bindtap="processNext">处理下一件</view>
+      </view>
+
+      <view class="dk-table-wrap">
+        <table class="dk-table">
+          <thead>
+            <tr>
+              <th>商品</th>
+              <th>SKU</th>
+              <th>上架编码</th>
+              <th>库位</th>
+              <th>上架状态</th>
+              <th>入库时间</th>
+              <th class="dk-ops">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              wx:for="{{list}}"
+              wx:key="sku_id"
+              class="dk-tr--click"
+              data-code="{{item.sku_code}}"
+              data-page="{{item._actionPage}}"
+              bindtap="openItem"
+            >
+              <td>
+                <view class="dk-media">
+                  <image
+                    wx:if="{{item.cover_url}}"
+                    class="dk-thumb"
+                    src="{{item.cover_url}}"
+                    mode="aspectFill"
+                    data-url="{{item.cover_url}}"
+                    catchtap="dkPreview"
+                  />
+                  <view wx:elif="{{item.location_images[0]}}" class="lc-dk-thumb-wrap">
+                    <image
+                      class="dk-thumb"
+                      src="{{item.location_images[0]}}"
+                      mode="aspectFill"
+                      data-url="{{item.location_images[0]}}"
+                      catchtap="dkPreview"
+                    />
+                    <text class="lc-dk-loc-badge">定位</text>
+                  </view>
+                  <view wx:else class="dk-thumb lc-dk-thumb-empty">{{item.sku_code ? item.sku_code.slice(-2) : '?'}}</view>
+                  <view class="dk-grow">
+                    <view class="dk-cell-main dk-ellipsis" title="{{item.product_name}}">{{item.product_name || '—'}}</view>
+                    <view class="dk-cell-sub dk-ellipsis">{{item.spec || '—'}}</view>
+                  </view>
+                </view>
+              </td>
+              <td class="dk-nowrap">{{item.sku_code}}</td>
+              <td class="dk-nowrap">
+                <text wx:if="{{item.short_code}}" title="将作为标题前缀">#{{item.short_code}}</text>
+                <text wx:else class="dk-muted">—</text>
+              </td>
+              <td class="dk-nowrap">{{item.location_code || '未分配'}}</td>
+              <td class="dk-nowrap">
+                <text class="dk-tag {{fmt.listingStatusTag(item.listing_status)}}">{{fmt.listingStatusLabel(item.listing_status)}}</text>
+              </td>
+              <td class="dk-nowrap">{{fmt.datetime(item.inbound_at)}}</td>
+              <td class="dk-ops">
+                <text
+                  wx:if="{{item.listing_status && item.listing_status !== 'DRAFT'}}"
+                  class="dk-link"
+                  data-code="{{item.sku_code}}"
+                  data-page="form"
+                  catchtap="openItem"
+                >编辑</text>
+                <text
+                  class="dk-link"
+                  data-code="{{item.sku_code}}"
+                  data-page="{{item._actionPage}}"
+                  catchtap="openItem"
+                >{{item._actionLabel}}</text>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </view>
+
+      <view wx:if="{{!list.length && !loading}}" class="dk-empty">{{emptyText}}</view>
+      <view wx:if="{{loading && !list.length}}" class="dk-empty">加载中…</view>
+    </view>
+  </block>
+
+  <!-- 设备 / 任务面板：首次切到才挂载（挂载即自加载），之后用 hidden 保留状态 -->
+  <view wx:if="{{visited.device}}" hidden="{{section !== 'device'}}" class="lc-dk-panel">
+    <gc-device-panel id="gcDevicePanel" />
+  </view>
+  <view wx:if="{{visited.task}}" hidden="{{section !== 'task'}}" class="lc-dk-panel">
+    <gc-task-panel id="gcTaskPanel" />
+  </view>
+</view>

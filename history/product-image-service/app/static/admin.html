@@ -1,0 +1,2700 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>产品图片检索工作台</title>
+  <style>
+    .login-gate {
+      position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center;
+      background: var(--paper);
+    }
+    .login-gate[hidden] { display: none; }
+    .login-gate form {
+      width: 320px; padding: 32px; border: 1px solid var(--line); border-radius: 16px; background: var(--panel);
+      display: flex; flex-direction: column; gap: 14px; box-shadow: 0 12px 32px rgba(23, 32, 51, .08);
+    }
+    .login-gate h2 { margin: 0; font-size: 20px; color: var(--ink); }
+    .login-gate input { padding: 11px 12px; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); font-size: 15px; }
+    .login-gate button { padding: 11px; border: 0; border-radius: var(--radius-sm); background: var(--blue); color: #fff; font-size: 15px; cursor: pointer; }
+    .login-gate .gate-error { min-height: 18px; margin: 0; color: var(--red); font-size: 13px; }
+    :root {
+      --paper: #f5f7fb;
+      --panel: #ffffff;
+      --ink: #172033;
+      --muted: #6e7788;
+      --quiet: #9aa3b2;
+      --line: rgba(23, 32, 51, .10);
+      --line-strong: rgba(23, 32, 51, .18);
+      --blue: #2b6ef3;
+      --blue-dark: #1f58cb;
+      --blue-soft: #edf4ff;
+      --green: #17824f;
+      --orange: #a96208;
+      --red: #b04444;
+      --radius-sm: 9px;
+      --radius-md: 16px;
+      --shadow: 0 16px 40px rgba(34, 52, 84, .08), 0 2px 5px rgba(34, 52, 84, .05);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font: 15px/1.55 -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC",
+        "Microsoft YaHei", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    button:active { transform: scale(.98); }
+    a { color: var(--blue); }
+    .page { max-width: none; margin: 0; padding: 38px 42px 48px; }
+    .masthead {
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 24px;
+      margin-bottom: 28px;
+    }
+    .eyebrow, .section-kicker {
+      color: var(--blue); font-size: 11px; font-weight: 750; letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { margin-bottom: 7px; font-size: clamp(28px, 4vw, 42px); line-height: 1.08; letter-spacing: -.04em; }
+    h2 { margin-bottom: 6px; font-size: 23px; line-height: 1.2; letter-spacing: -.025em; }
+    h3 { margin-bottom: 5px; font-size: 16px; }
+    .masthead p { max-width: 610px; margin-bottom: 0; color: var(--muted); }
+    .mark {
+      display: grid; place-items: center; flex: 0 0 46px; height: 46px; border-radius: 13px;
+      background: var(--ink); color: white; font-size: 16px; font-weight: 800;
+      box-shadow: 0 6px 16px rgba(23, 32, 51, .18);
+    }
+    .workbench, .admin-area {
+      background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius-md);
+      box-shadow: var(--shadow);
+    }
+    .workbench { overflow: hidden; }
+    .search-head { padding: 28px 30px 24px; border-bottom: 1px solid var(--line); }
+    .search-head p { margin-bottom: 20px; color: var(--muted); }
+    .search-form { display: flex; gap: 10px; }
+    .search-form input, .search-form select {
+      min-width: 0; flex: 1; height: 48px; padding: 0 15px; border: 1px solid var(--line-strong);
+      border-radius: var(--radius-sm); background: #fbfcff; color: var(--ink); outline: none;
+    }
+    .search-form select { flex: 0 0 150px; padding-right: 10px; }
+    .search-form #locale, .search-form #result-limit { flex-basis: 150px; }
+    .search-form #result-limit { flex-basis: 112px; }
+    .search-form input::placeholder { color: #a8afbb; }
+    input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(43, 110, 243, .13); }
+    .primary {
+      min-width: 116px; height: 48px; padding: 0 20px; border: 0; border-radius: var(--radius-sm);
+      background: var(--blue); color: white; font-weight: 700;
+      transition: background-color .16s ease, transform .16s ease;
+    }
+    .primary:hover { background: var(--blue-dark); }
+    .primary:disabled { cursor: wait; opacity: .62; }
+    .examples { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 13px; }
+    .examples button, .ghost {
+      padding: 7px 10px; border: 1px solid var(--line); border-radius: 999px; background: white;
+      color: var(--muted); font-size: 12px;
+    }
+    .examples button:hover, .ghost:hover { border-color: var(--blue); color: var(--blue); }
+    .status {
+      min-height: 22px; margin-top: 16px; color: var(--muted); font-size: 13px;
+    }
+    .status.loading { color: var(--blue); }
+    .status.error { color: var(--red); }
+    .queue-panel {
+      margin-top: 18px; padding: 15px; border: 1px solid rgba(43, 110, 243, .18);
+      border-radius: var(--radius-sm); background: #f8faff;
+    }
+    .queue-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 11px; }
+    .queue-head h3 { margin-bottom: 3px; }
+    .queue-head p { margin-bottom: 0; color: var(--muted); font-size: 12px; }
+    .queue-list { display: grid; gap: 8px; }
+    .queue-divider { display: flex; align-items: center; gap: 8px; margin: 3px 2px 1px; color: var(--quiet); font-size: 10px; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; }
+    .queue-divider::before, .queue-divider::after { flex: 1; height: 1px; background: var(--line-strong); content: ""; }
+    .queue-row { padding: 11px 12px; border: 1px solid var(--line); border-radius: 9px; background: white; }
+    .queue-row.current { border-color: rgba(43, 110, 243, .45); box-shadow: 0 0 0 2px rgba(43, 110, 243, .07); }
+    .queue-row-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+    .queue-title { min-width: 0; overflow: hidden; color: var(--ink); font-size: 13px; font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
+    .queue-status { flex: 0 0 auto; padding: 3px 7px; border-radius: 999px; background: var(--blue-soft); color: var(--blue); font-size: 10px; font-weight: 750; }
+    .queue-status.queued { background: #f0f2f7; color: var(--muted); }
+    .queue-status.processing { background: var(--blue-soft); color: var(--blue); }
+    .queue-status.completed { background: #e8f7ef; color: var(--green); }
+    .queue-meta { margin-top: 4px; color: var(--muted); font-size: 11px; }
+    .queue-progress { height: 6px; margin-top: 9px; overflow: hidden; border-radius: 999px; background: #e9edf5; }
+    .queue-progress-bar { height: 100%; border-radius: inherit; background: var(--blue); transition: width .25s ease; }
+    .queue-actions { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 8px; }
+    .queue-message { min-width: 0; overflow: hidden; color: var(--quiet); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+    .cancel-button { height: 28px; padding: 0 9px; border: 1px solid rgba(176, 68, 68, .32); border-radius: 7px; background: white; color: var(--red); font-size: 11px; font-weight: 700; }
+    .cancel-button:hover { border-color: var(--red); background: #fcecec; }
+    .cancel-button:disabled { cursor: wait; opacity: .55; }
+    .queue-empty { padding: 9px 0 2px; color: var(--quiet); font-size: 12px; }
+    .good-completed-section { margin-top: 18px; }
+    .good-section-divider { display: flex; align-items: center; gap: 8px; margin: 3px 2px 9px; color: var(--green); font-size: 10px; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; }
+    .good-section-divider::before, .good-section-divider::after { flex: 1; height: 1px; background: rgba(23, 130, 79, .24); content: ""; }
+    .completed-good-row { border-color: rgba(23, 130, 79, .20); background: #fbfffc; }
+    .unfinished-list { display: grid; gap: 8px; }
+    .unfinished-row { padding: 12px; border: 1px solid rgba(176, 68, 68, .22); border-radius: 9px; background: #fffafa; }
+    .unfinished-row-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+    .unfinished-title { min-width: 0; overflow: hidden; color: var(--ink); font-size: 13px; font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
+    .unfinished-badge { flex: 0 0 auto; padding: 3px 7px; border-radius: 999px; background: #fcecec; color: var(--red); font-size: 10px; font-weight: 750; }
+    .unfinished-reason { margin-top: 6px; color: var(--red); font-size: 11px; line-height: 1.45; }
+    .unfinished-meta { margin-top: 5px; color: var(--muted); font-size: 11px; }
+    .unfinished-actions { display: flex; justify-content: flex-end; gap: 7px; margin-top: 9px; }
+    .unfinished-empty { padding: 12px 0 3px; color: var(--quiet); font-size: 12px; }
+    .history { margin-top: 15px; padding-top: 14px; border-top: 1px solid var(--line); }
+    .history-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 9px; }
+    .history-head h4 { margin: 0 0 3px; font-size: 13px; }
+    .history-head p { margin: 0; color: var(--muted); font-size: 11px; }
+    .history-list { display: grid; gap: 7px; }
+    .history-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 10px; border: 1px solid var(--line); border-radius: 8px; background: white; }
+    .history-row.current { border-color: rgba(43, 110, 243, .45); background: #fbfcff; }
+    .history-info { min-width: 0; }
+    .history-title { overflow: hidden; color: var(--ink); font-size: 12px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+    .history-meta { margin-top: 2px; overflow: hidden; color: var(--muted); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+    .history-actions { flex: 0 0 auto; }
+    .view-button { height: 28px; padding: 0 9px; border: 1px solid rgba(43, 110, 243, .32); border-radius: 7px; background: white; color: var(--blue); font-size: 11px; font-weight: 700; }
+    .view-button:hover { border-color: var(--blue); background: var(--blue-soft); }
+    .view-button:disabled { cursor: wait; opacity: .55; }
+    .history-empty { padding: 7px 0 1px; color: var(--quiet); font-size: 11px; }
+    .batch-panel { margin-top: 15px; padding-top: 14px; border-top: 1px solid var(--line); }
+    .batch-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 9px; }
+    .batch-head h4 { margin: 0 0 3px; font-size: 13px; }
+    .batch-head p { margin: 0; color: var(--muted); font-size: 11px; }
+    .batch-form { display: flex; gap: 8px; align-items: center; }
+    .batch-file { min-width: 0; flex: 1; padding: 5px 7px; border: 1px solid var(--line); border-radius: 7px; background: white; color: var(--muted); font-size: 11px; }
+    .batch-status { min-height: 18px; margin-top: 7px; color: var(--muted); font-size: 11px; }
+    .batch-status.error { color: var(--red); }
+    .batch-list { display: grid; gap: 8px; margin-top: 9px; }
+    .batch-card { padding: 10px; border: 1px solid rgba(43, 110, 243, .20); border-radius: 9px; background: white; }
+    .batch-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+    .batch-title { min-width: 0; overflow: hidden; color: var(--ink); font-size: 12px; font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
+    .batch-status-badge { flex: 0 0 auto; padding: 3px 7px; border-radius: 999px; background: var(--blue-soft); color: var(--blue); font-size: 10px; font-weight: 750; }
+    .batch-status-badge.completed, .batch-status-badge.cancelled { background: #e8f7ef; color: var(--green); }
+    .batch-status-badge.failed, .batch-status-badge.completed_with_issues { background: #fcecec; color: var(--red); }
+    .batch-meta { margin-top: 4px; color: var(--muted); font-size: 11px; }
+    .batch-progress { height: 7px; margin-top: 8px; overflow: hidden; border-radius: 999px; background: #e9edf5; }
+    .batch-progress-bar { height: 100%; border-radius: inherit; background: var(--blue); transition: width .25s ease; }
+    .batch-counts { display: flex; flex-wrap: wrap; gap: 6px 10px; margin-top: 7px; color: var(--quiet); font-size: 10px; }
+    .batch-actions { display: flex; justify-content: flex-end; gap: 7px; margin-top: 8px; }
+    .batch-filter { min-width: 112px; }
+    .batch-filter.completed { border-color: rgba(23, 130, 79, .32); color: var(--green); }
+    .batch-filter.completed:hover { border-color: var(--green); background: #e8f7ef; }
+    .batch-filter.pending { border-color: rgba(169, 98, 8, .32); color: var(--orange); }
+    .batch-filter.pending:hover { border-color: var(--orange); background: #fff6e8; }
+    .batch-filter.active { box-shadow: 0 0 0 2px rgba(43, 110, 243, .12); }
+    .batch-items { display: grid; gap: 5px; margin-top: 9px; padding-top: 8px; border-top: 1px solid var(--line); }
+    .batch-items-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--line-strong); color: var(--ink); font-size: 11px; }
+    .batch-items[data-filter="bad"], .batch-items[data-filter="pending"] { border-top-color: rgba(169, 98, 8, .28); }
+    .batch-items[data-filter="bad"] .batch-items-head, .batch-items[data-filter="pending"] .batch-items-head { border-bottom-color: rgba(169, 98, 8, .28); color: var(--orange); }
+    .batch-items[data-filter="good"] .batch-items-head, .batch-items[data-filter="completed"] .batch-items-head { border-bottom-color: rgba(23, 130, 79, .24); color: var(--green); }
+    .batch-items-head span { color: var(--muted); font-weight: 500; }
+    .batch-item { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 7px; border: 1px solid var(--line); border-radius: 7px; background: #fbfcff; }
+    .batch-item-info { min-width: 0; }
+    .batch-item-actions { display: flex; flex: 0 0 auto; gap: 5px; align-items: center; }
+    .batch-item-title { overflow: hidden; color: var(--ink); font-size: 11px; font-weight: 650; text-overflow: ellipsis; white-space: nowrap; }
+    .batch-item-meta { margin-top: 2px; overflow: hidden; color: var(--muted); font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+    .batch-item-reason { margin-top: 3px; color: var(--red); font-size: 10px; line-height: 1.4; }
+    .batch-empty { padding: 7px 0 1px; color: var(--quiet); font-size: 11px; }
+    .results { padding: 26px 30px 32px; }
+    .result-toolbar {
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; margin-bottom: 18px;
+    }
+    .result-toolbar p { margin-bottom: 0; color: var(--muted); }
+    .toolbar-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+    .summary {
+      display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; margin-bottom: 20px;
+    }
+    .metric { padding: 14px 15px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: #fbfcff; }
+    .metric-label { display: block; margin-bottom: 5px; color: var(--quiet); font-size: 11px; font-weight: 700; letter-spacing: .06em; }
+    .metric-value { display: block; overflow: hidden; font-size: 18px; font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
+    .result-meta {
+      display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(180px, .7fr) minmax(180px, .7fr); gap: 15px; margin-bottom: 22px;
+    }
+    .brief, .classification, .sources { min-width: 0; padding: 15px; border: 1px solid var(--line); border-radius: var(--radius-sm); }
+    .brief { background: var(--blue-soft); }
+    .brief h3, .classification h3, .sources h3 { color: var(--ink); }
+    .brief pre {
+      margin: 0; white-space: pre-wrap; color: #34415b; font: 13px/1.65 ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+    .source-pills { display: flex; flex-wrap: wrap; gap: 7px; }
+    .source-pill { padding: 5px 8px; border-radius: 999px; background: #f1f3f7; color: var(--muted); font-size: 12px; }
+    .class-pill.real_photo { background: #e8f7ef; color: var(--green); }
+    .class-pill.catalog { background: #edf4ff; color: var(--blue); }
+    .class-pill.unknown { background: #f1f3f7; color: var(--muted); }
+    .query-plan {
+      margin-bottom: 22px; padding: 15px; border: 1px solid rgba(43, 110, 243, .18);
+      border-radius: var(--radius-sm); background: #f8faff;
+    }
+    .query-plan h3 { margin-bottom: 5px; }
+    .query-plan > p { margin-bottom: 11px; color: var(--muted); font-size: 12px; }
+    .query-candidates { display: flex; flex-wrap: wrap; gap: 7px; }
+    .query-candidate {
+      max-width: 100%; padding: 6px 10px; overflow: hidden; border: 1px solid var(--line);
+      border-radius: 999px; background: white; color: var(--ink); font-size: 12px;
+      text-align: left; text-overflow: ellipsis; white-space: nowrap;
+      transition: border-color .16s ease, background-color .16s ease, color .16s ease;
+    }
+    .query-candidate:hover, .query-candidate:focus-visible {
+      border-color: var(--blue); background: var(--blue-soft); color: var(--blue); outline: none;
+    }
+    .query-candidate-more { margin-top: 10px; color: var(--muted); font-size: 12px; }
+    .query-candidate-more summary { cursor: pointer; color: var(--blue); }
+    .gallery-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 12px; }
+    .gallery-head span { color: var(--muted); font-size: 12px; }
+    .gallery {
+      display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px;
+    }
+    .image-card {
+      min-width: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 13px; background: white;
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+    .image-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(34, 52, 84, .10); }
+    .image-frame { display: grid; place-items: center; height: 175px; background: #f0f2f6; }
+    .image-frame img { width: 100%; height: 100%; object-fit: contain; }
+    .image-info { padding: 11px 12px 13px; }
+    .image-title { overflow: hidden; margin-bottom: 5px; color: var(--ink); font-size: 13px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+    .image-detail { color: var(--muted); font-size: 11px; }
+    .image-source { display: block; overflow: hidden; margin-top: 8px; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; }
+    .pool-review { margin-bottom: 18px; padding: 14px; border: 1px solid rgba(43, 110, 243, .24); border-radius: var(--radius-sm); background: #f8faff; }
+    .pool-review-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+    .pool-review-head strong { display: block; margin-bottom: 2px; }
+    .pool-review-head span { color: var(--muted); font-size: 12px; }
+    .pool-review-actions { display: flex; flex-wrap: wrap; gap: 7px; }
+    .pool-check { position: absolute; top: 8px; left: 8px; z-index: 1; width: 18px; height: 18px; accent-color: var(--blue); }
+    .pool-card { position: relative; }
+    .pool-card-action { display: inline-block; margin-top: 8px; padding: 5px 8px; border: 1px solid rgba(43, 110, 243, .28); border-radius: 7px; background: white; color: var(--blue); font-size: 11px; font-weight: 700; }
+    .pool-card-action:hover { border-color: var(--blue); background: var(--blue-soft); }
+    .batch-tier-note { margin-top: 8px; color: var(--muted); font-size: 11px; }
+    .batch-tier-note select { margin-left: 4px; padding: 3px 6px; border: 1px solid var(--line); border-radius: 6px; background: white; color: var(--ink); font-size: 11px; }
+    .policy-panel { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line); }
+    .policy-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 12px 0; }
+    .policy-card { padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: #fbfcff; }
+    .policy-card h3 { margin-bottom: 8px; }
+    .policy-card label { display: grid; gap: 3px; margin-top: 7px; color: var(--muted); font-size: 11px; }
+    .policy-card input { width: 100%; height: 32px; padding: 0 8px; border: 1px solid var(--line-strong); border-radius: 6px; background: white; color: var(--ink); }
+    .blocked-domain-form { display: flex; gap: 8px; margin: 12px 0; }
+    .blocked-domain-form input { min-width: 0; flex: 1; height: 34px; padding: 0 9px; border: 1px solid var(--line-strong); border-radius: 7px; background: white; color: var(--ink); }
+    .blocked-domain-list { display: grid; gap: 7px; }
+    .blocked-domain-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 10px; border: 1px solid rgba(176, 68, 68, .18); border-radius: 8px; background: #fffafa; }
+    .blocked-domain-name { color: var(--ink); font-weight: 700; }
+    .blocked-domain-note { margin-left: 8px; color: var(--muted); font-size: 11px; }
+    .blocked-domain-empty { color: var(--quiet); font-size: 12px; }
+    @media (max-width: 900px) { .policy-grid { grid-template-columns: 1fr; } .pool-review-head, .blocked-domain-form { align-items: flex-start; flex-direction: column; } .blocked-domain-form input, .blocked-domain-form button { width: 100%; } }
+    .empty { padding: 28px 12px; border: 1px dashed var(--line-strong); border-radius: var(--radius-sm); color: var(--muted); text-align: center; }
+    .rejected-panel { margin-top: 24px; border: 1px solid rgba(169, 98, 8, .24); border-radius: var(--radius-sm); background: #fffaf2; }
+    .rejected-panel > summary { padding: 14px 15px; cursor: pointer; color: var(--orange); font-weight: 750; }
+    .rejected-panel[open] > summary { border-bottom: 1px solid rgba(169, 98, 8, .18); }
+    .rejected-body { padding: 14px 15px 18px; }
+    .rejected-body p { color: var(--muted); font-size: 12px; }
+    .rejected-card { border-color: rgba(169, 98, 8, .22); }
+    .rejected-reason { margin-top: 7px; color: var(--orange); font-size: 11px; font-weight: 700; }
+    .fuzzy-panel { margin-top: 24px; border: 1px solid rgba(43, 110, 243, .24); border-radius: var(--radius-sm); background: #f8faff; }
+    .fuzzy-panel > summary { padding: 14px 15px; cursor: pointer; color: var(--blue); font-weight: 750; }
+    .fuzzy-panel[open] > summary { border-bottom: 1px solid rgba(43, 110, 243, .18); }
+    .fuzzy-card { border-color: rgba(43, 110, 243, .22); }
+    .fuzzy-reason { margin-top: 7px; color: var(--blue); font-size: 11px; font-weight: 700; }
+    .retry-history-panel { margin-top: 24px; border: 1px solid rgba(98, 83, 158, .24); border-radius: var(--radius-sm); background: #faf9ff; }
+    .retry-history-panel > summary { padding: 14px 15px; cursor: pointer; color: #62539e; font-weight: 750; }
+    .retry-history-panel[open] > summary { border-bottom: 1px solid rgba(98, 83, 158, .18); }
+    .retry-history-body { padding: 14px 15px 18px; }
+    .retry-history-body > p { color: var(--muted); font-size: 12px; }
+    .retry-snapshot { margin-top: 16px; padding-top: 14px; border-top: 1px solid rgba(98, 83, 158, .16); }
+    .retry-snapshot:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+    .retry-snapshot-head { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 10px; color: var(--ink); font-size: 13px; font-weight: 750; }
+    .retry-snapshot-head span { color: var(--muted); font-size: 11px; font-weight: 500; }
+    .retry-snapshot-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+    .retry-snapshot-pool { min-width: 0; }
+    .retry-snapshot-pool > h4 { margin: 0 0 7px; color: var(--muted); font-size: 11px; }
+    .retry-snapshot-gallery { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
+    .retry-history-card .image-frame { height: 96px; }
+    .retry-history-card .image-info { padding: 7px; }
+    .retry-history-card .image-title { font-size: 11px; }
+    .retry-history-card .image-detail { font-size: 10px; }
+    .retry-snapshot-more { margin-top: 7px; color: var(--muted); font-size: 11px; }
+    @media (max-width: 900px) { .retry-snapshot-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 560px) { .retry-snapshot-grid { grid-template-columns: 1fr; } }
+    .strategy-log { margin-top: 20px; padding: 15px; border: 1px solid rgba(43, 110, 243, .18); border-radius: var(--radius-sm); background: #f8faff; }
+    .strategy-log h3 { margin-bottom: 5px; }
+    .strategy-log > p { margin-bottom: 11px; color: var(--muted); font-size: 12px; }
+    .strategy-list { display: grid; gap: 7px; }
+    .strategy-row { display: grid; grid-template-columns: 58px minmax(0, 1fr) auto; gap: 9px; align-items: start; padding: 9px 10px; border: 1px solid var(--line); border-radius: 8px; background: white; }
+    .strategy-id { color: var(--blue); font: 11px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; font-weight: 750; }
+    .strategy-name { font-size: 12px; font-weight: 700; }
+    .strategy-note { margin-top: 2px; color: var(--muted); font-size: 11px; }
+    .strategy-count { color: var(--muted); font-size: 11px; text-align: right; white-space: nowrap; }
+    .admin-area { margin-top: 20px; box-shadow: none; }
+    .admin-area > summary { padding: 18px 22px; color: var(--ink); cursor: pointer; font-weight: 750; list-style: none; }
+    .admin-area > summary::-webkit-details-marker { display: none; }
+    .admin-area > summary::after { float: right; color: var(--quiet); content: "+"; font-size: 20px; font-weight: 400; line-height: 1; }
+    .admin-area[open] > summary { border-bottom: 1px solid var(--line); }
+    .admin-area[open] > summary::after { content: "−"; }
+    .admin-body { padding: 20px 22px 24px; }
+    .login { display: flex; gap: 9px; align-items: center; }
+    .login input { min-width: 260px; height: 40px; padding: 0 11px; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); outline: none; }
+    .login button, .small-button {
+      height: 40px; padding: 0 14px; border: 1px solid var(--line-strong); border-radius: var(--radius-sm);
+      background: white; color: var(--ink); font-weight: 650;
+    }
+    .login button:hover, .small-button:hover { border-color: var(--blue); color: var(--blue); }
+    .admin-content { margin-top: 18px; }
+    .admin-access { margin-left: 8px; color: var(--muted); font-size: 12px; }
+    .admin-actions { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 14px; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .card { padding: 15px; border: 1px solid var(--line); border-radius: var(--radius-sm); }
+    .card p { margin-bottom: 8px; color: var(--muted); font-size: 13px; }
+    .card label { display: block; margin-top: 9px; color: var(--muted); font-size: 12px; }
+    .card input { width: 100%; height: 36px; margin-top: 3px; padding: 0 9px; border: 1px solid var(--line); border-radius: 7px; outline: none; }
+    .state { font-weight: 700; }
+    .healthy { color: var(--green) !important; }
+    .auth_required { color: var(--orange) !important; }
+    .degraded, .unsupported, .temporarily_disabled { color: var(--red) !important; }
+    #admin-result { margin-top: 12px; white-space: pre-wrap; color: var(--muted); font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .orchestration { margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--line); }
+    .orchestration-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
+    .orchestration-head p { max-width: 700px; margin: 5px 0 0; color: var(--muted); font-size: 13px; }
+    .orchestration-summary { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin-bottom: 14px; }
+    .orchestration-summary .metric { background: #f8faff; }
+    .orchestration-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .platform-card { min-width: 0; border: 1px solid var(--line); border-radius: 12px; background: #fff; overflow: hidden; }
+    .platform-card[open] { border-color: rgba(43, 110, 243, .28); box-shadow: 0 8px 22px rgba(34, 52, 84, .07); }
+    .platform-card > summary { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px; cursor: pointer; list-style: none; }
+    .platform-card > summary::-webkit-details-marker { display: none; }
+    .platform-card > summary::after { color: var(--quiet); content: "+"; font-size: 18px; font-weight: 400; }
+    .platform-card[open] > summary::after { content: "−"; }
+    .platform-title { min-width: 0; display: flex; align-items: center; gap: 8px; }
+    .platform-title strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .platform-subtitle { margin-top: 3px; color: var(--muted); font-size: 11px; }
+    .platform-count { flex: 0 0 auto; padding: 4px 7px; border-radius: 999px; background: var(--blue-soft); color: var(--blue); font-size: 11px; font-weight: 750; }
+    .platform-body { padding: 0 14px 14px; }
+    .platform-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 9px; }
+    .platform-toolbar .small-button { height: 32px; padding: 0 9px; font-size: 12px; }
+    .component-list { display: grid; gap: 7px; }
+    .component-row { display: grid; grid-template-columns: 9px minmax(0, 1fr) auto; gap: 9px; align-items: start; padding: 9px 10px; border: 1px solid rgba(23, 32, 51, .07); border-radius: 9px; background: #fbfcff; }
+    .component-dot { width: 8px; height: 8px; margin-top: 5px; border-radius: 50%; background: var(--quiet); }
+    .component-dot.ready { background: var(--green); }
+    .component-dot.reference_only { background: #7386a8; }
+    .component-dot.auth_required, .component-dot.unverified { background: var(--orange); }
+    .component-dot.degraded { background: var(--red); }
+    .component-name { color: var(--ink); font-size: 12px; font-weight: 700; }
+    .component-meta { margin-top: 2px; color: var(--muted); font-size: 11px; line-height: 1.45; }
+    .component-meta a { font-size: 11px; }
+    .component-side { display: flex; align-items: flex-end; flex-direction: column; gap: 5px; }
+    .health-badge, .kind-badge { display: inline-flex; align-items: center; padding: 3px 6px; border-radius: 999px; font-size: 10px; font-weight: 750; white-space: nowrap; }
+    .health-badge { background: #eef1f6; color: var(--muted); }
+    .health-badge.ready { background: #e8f7ef; color: var(--green); }
+    .health-badge.reference_only { background: #edf1f8; color: #61708c; }
+    .health-badge.auth_required, .health-badge.unverified { background: #fff3df; color: var(--orange); }
+    .health-badge.degraded, .health-badge.disabled { background: #fcecec; color: var(--red); }
+    .kind-badge { background: #f0f2f7; color: var(--muted); font-weight: 600; }
+    .component-toggle { height: 28px; padding: 0 8px; border: 1px solid var(--line); border-radius: 7px; background: white; color: var(--muted); font-size: 11px; }
+    .component-toggle:hover { border-color: var(--blue); color: var(--blue); }
+    .manifest-note { margin-top: 11px; color: var(--quiet); font-size: 11px; }
+    .muted { color: var(--muted); }
+
+    /* Console shell: the page is a control surface; each module owns its own workspace. */
+    .page { height: 100vh; display: flex; flex-direction: column; overflow: hidden; padding-top: 22px; padding-bottom: 30px; }
+    .masthead { flex: 0 0 auto; align-items: center; gap: 16px; margin-bottom: 14px; }
+    .masthead > div:first-child { display: flex; align-items: baseline; gap: 12px; min-width: 0; }
+    .masthead .eyebrow { flex: 0 0 auto; margin: 0; font-size: 10px; }
+    .masthead h1 { margin: 0; font-size: clamp(22px, 2.4vw, 28px); line-height: 1.15; }
+    .masthead p { display: none; }
+    .masthead .mark { flex-basis: 38px; height: 38px; border-radius: 10px; box-shadow: none; font-size: 13px; }
+    .employee-link { flex: 0 0 auto; padding: 9px 12px; border: 1px solid var(--line); border-radius: 9px; color: var(--muted); background: #fff; font-size: 12px; font-weight: 700; text-decoration: none; }
+    .employee-link:hover { color: var(--blue); border-color: #b9d0ff; background: var(--blue-wash); }
+    .console-shell { min-height: 0; flex: 1; overflow: hidden; background: transparent; }
+    .console-layout { display: grid; grid-template-columns: 214px minmax(0, 1fr); height: 100%; min-height: 0; }
+    .console-sidebar { display: flex; flex-direction: column; gap: 18px; padding: 18px 12px; border-right: 1px solid var(--line); background: transparent; }
+    .sidebar-brand { padding: 0 10px 3px; }
+    .sidebar-brand strong { display: block; font-size: 13px; letter-spacing: -.01em; }
+    .sidebar-brand span { display: block; margin-top: 3px; color: var(--quiet); font-size: 10px; }
+    .sidebar-label { padding: 0 10px 5px; color: var(--quiet); font-size: 10px; font-weight: 750; letter-spacing: .12em; text-transform: uppercase; }
+    .console-nav { display: grid; gap: 3px; }
+    .nav-button { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; min-height: 40px; padding: 0 10px; border: 1px solid transparent; border-radius: 8px; background: transparent; color: var(--muted); font-size: 12px; font-weight: 650; text-align: left; }
+    .nav-button:hover { background: #f1f5fd; color: var(--blue); }
+    .nav-button.active { border-color: rgba(43, 110, 243, .15); background: var(--blue-soft); color: var(--blue); }
+    .nav-button:focus-visible { outline: 3px solid rgba(43, 110, 243, .16); outline-offset: 1px; }
+    .nav-copy { display: flex; align-items: center; gap: 8px; min-width: 0; }
+    .nav-icon { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 6px; background: #eef1f6; color: var(--muted); font-size: 10px; font-weight: 800; }
+    .nav-button.active .nav-icon { background: white; color: var(--blue); }
+    .nav-badge { min-width: 20px; padding: 2px 5px; border-radius: 999px; background: white; color: var(--quiet); font-size: 10px; font-variant-numeric: tabular-nums; text-align: center; }
+    .sidebar-foot { margin-top: auto; padding: 10px; border-top: 1px solid var(--line); color: var(--quiet); font-size: 10px; line-height: 1.5; }
+    .console-main { min-width: 0; min-height: 0; height: 100%; overflow: auto; overflow-anchor: none; background: transparent; scroll-behavior: auto; }
+    .module-view { display: none; min-height: 100%; padding: 26px 30px 34px; }
+    .module-view.active { display: block; }
+    .module-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; margin-bottom: 22px; }
+    .module-header h2 { margin-bottom: 5px; }
+    .module-header p { max-width: 660px; margin-bottom: 0; color: var(--muted); font-size: 13px; }
+    .module-header-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+    .module-kicker { margin-bottom: 7px; color: var(--blue); font-size: 10px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+    .console-card { padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: #fff; box-shadow: 0 7px 20px rgba(34, 52, 84, .045); }
+    .overview-hero { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; padding: 22px; border: 1px solid rgba(43, 110, 243, .18); border-radius: 13px; background: #f5f8ff; }
+    .overview-hero h3 { margin-bottom: 5px; font-size: 20px; letter-spacing: -.025em; }
+    .overview-hero p { max-width: 560px; margin-bottom: 0; color: var(--muted); font-size: 12px; }
+    .overview-hero-actions { display: flex; flex: 0 0 auto; gap: 8px; }
+    .overview-progress { width: min(520px, 100%); margin-top: 17px; }
+    .overview-progress-line { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 11px; }
+    .overview-progress-line strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+    .overview-progress-track { height: 8px; margin-top: 7px; overflow: hidden; border-radius: 999px; background: #e9edf5; }
+    .overview-progress-bar { height: 100%; border-radius: inherit; background: var(--blue); transition: width .25s ease; }
+    .overview-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(280px, 1fr); gap: 14px; }
+    .overview-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .overview-stat { display: flex; flex-direction: column; justify-content: space-between; min-height: 118px; padding: 15px; border: 1px solid var(--line); border-radius: 11px; background: #fbfcff; }
+    .overview-stat span { color: var(--muted); font-size: 11px; }
+    .overview-stat strong { margin-top: 14px; color: var(--ink); font-size: 25px; font-variant-numeric: tabular-nums; letter-spacing: -.03em; }
+    .overview-stat small { margin-top: 2px; color: var(--quiet); font-size: 10px; }
+    .quick-section { margin-top: 22px; }
+    .quick-section h3 { margin-bottom: 10px; font-size: 14px; }
+    .quick-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .quick-card { display: flex; min-height: 112px; flex-direction: column; align-items: flex-start; justify-content: space-between; padding: 14px; border: 1px solid var(--line); border-radius: 11px; background: white; text-align: left; }
+    .quick-card:hover { border-color: rgba(43, 110, 243, .35); box-shadow: 0 7px 18px rgba(34, 52, 84, .06); }
+    .quick-card strong { font-size: 13px; }
+    .quick-card span { color: var(--muted); font-size: 11px; line-height: 1.45; }
+    .quick-card em { color: var(--blue); font-size: 11px; font-style: normal; font-weight: 700; }
+    .module-view .workbench { overflow: visible; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+    .module-view .search-head { padding: 0; border-bottom: 0; }
+    .module-view .results { padding: 22px 0 34px; }
+    .search-landing { padding: 22px; border: 1px solid var(--line); border-radius: 12px; background: #fbfcff; }
+    .search-landing .search-form { max-width: 960px; }
+    .result-back { margin-bottom: 16px; }
+    .result-insights { margin-bottom: 22px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+    .result-insights > summary { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 14px 16px; cursor: pointer; list-style: none; }
+    .result-insights > summary::-webkit-details-marker { display: none; }
+    .result-insights > summary::after { flex: 0 0 auto; color: var(--quiet); content: "＋"; font-size: 18px; font-weight: 400; }
+    .result-insights[open] > summary { border-bottom: 1px solid var(--line); }
+    .result-insights[open] > summary::after { content: "−"; }
+    .result-insights > summary strong { display: block; color: var(--ink); font-size: 13px; }
+    .result-insights > summary small { display: block; margin-top: 2px; color: var(--muted); font-size: 11px; font-weight: 400; }
+    .result-insights > summary em { flex: 0 0 auto; color: var(--blue); font-size: 11px; font-style: normal; font-weight: 700; }
+    .result-insights[open] > summary em { font-size: 0; }
+    .result-insights[open] > summary em::after { content: "点击收起"; font-size: 11px; }
+    .result-insights-body { padding: 16px; }
+    .result-insights-body .summary { margin-bottom: 18px; }
+    .result-insights-body .result-meta { margin-bottom: 18px; }
+    .result-insights-body .query-plan { margin-bottom: 18px; }
+    .result-insights-body .strategy-log { margin-top: 0; }
+    .fuzzy-query-panel { margin-bottom: 16px; padding: 15px 16px; border: 1px solid rgba(43, 110, 243, .24); border-radius: 12px; background: #f8faff; }
+    .fuzzy-query-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+    .fuzzy-query-head h3 { margin: 0 0 3px; font-size: 14px; }
+    .fuzzy-query-head p { margin: 0; color: var(--muted); font-size: 11px; }
+    .fuzzy-query-note { flex: 0 0 auto; color: var(--blue); font-size: 11px; font-weight: 700; }
+    .fuzzy-query-empty { color: var(--quiet); font-size: 12px; }
+    .module-view .batch-panel, .module-view .queue-panel, .module-view .history { margin-top: 0; }
+    .module-view .batch-panel { padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: #fbfcff; }
+    .module-view .queue-panel { padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: #fbfcff; }
+    .module-view .history { padding-top: 0; border-top: 0; }
+    .module-view .admin-area { margin-top: 0; }
+    .module-note { margin: -11px 0 16px; color: var(--muted); font-size: 12px; }
+    .module-view details { scroll-margin-top: 14px; }
+    .console-main:focus-visible { outline: 3px solid rgba(43, 110, 243, .13); outline-offset: -3px; }
+    @media (max-width: 760px) {
+      .page { height: auto; min-height: 100vh; overflow: visible; padding: 16px 14px 32px; }
+      .masthead { align-items: flex-start; gap: 10px; margin-bottom: 12px; }
+      .masthead > div:first-child { display: block; min-width: 0; }
+      .masthead .eyebrow { margin-bottom: 2px; }
+      .masthead h1 { overflow-wrap: anywhere; font-size: 22px; }
+      .masthead > div:last-child { min-width: 0; }
+      .employee-link { min-height: 40px; padding: 10px 11px; }
+      .console-shell { overflow: visible; }
+      .console-layout { display: block; height: auto; }
+      .console-sidebar { gap: 12px; padding: 10px 8px 12px; border-right: 0; border-bottom: 1px solid var(--line); }
+      .sidebar-brand { display: none; }
+      .console-nav { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .sidebar-label, .sidebar-foot { display: none; }
+      .nav-button { justify-content: center; min-height: 42px; padding: 0 5px; }
+      .nav-copy { gap: 5px; }
+      .nav-icon { display: none; }
+      .console-main { height: auto; overflow: visible; }
+      .module-view { padding: 20px 16px 28px; }
+      .module-header { flex-direction: column; gap: 12px; margin-bottom: 16px; }
+      .module-header h2 { font-size: 21px; }
+      .module-header-actions { width: 100%; justify-content: flex-start; }
+      .module-header-actions .primary, .module-header-actions .ghost { min-height: 42px; }
+      .overview-grid { grid-template-columns: 1fr; }
+      .overview-hero { align-items: flex-start; flex-direction: column; padding: 18px; }
+      .overview-hero-actions { width: 100%; }
+      .overview-hero-actions .primary, .overview-hero-actions .ghost { flex: 1; }
+      .quick-grid { grid-template-columns: 1fr; }
+      .module-view .results { padding-top: 16px; }
+      .result-toolbar { align-items: stretch; flex-direction: column; gap: 12px; }
+      .toolbar-actions { width: 100%; justify-content: flex-start; }
+      .toolbar-actions .ghost { flex: 1 1 calc(50% - 4px); min-height: 42px; }
+      .result-insights > summary { align-items: flex-start; }
+      .search-head, .results { padding-left: 18px; padding-right: 18px; }
+      .search-form { flex-direction: column; }
+      .search-form input, .search-form select, .search-form .primary { width: 100%; min-height: 48px; }
+      .summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .result-meta { grid-template-columns: 1fr; }
+      .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+      .image-frame { height: 130px; }
+      .grid { grid-template-columns: 1fr; }
+      .orchestration-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .orchestration-grid { grid-template-columns: 1fr; }
+      .orchestration-head { align-items: stretch; flex-direction: column; }
+      .login { align-items: stretch; flex-direction: column; }
+      .login input { min-width: 0; width: 100%; }
+      .admin-actions { align-items: flex-start; flex-direction: column; }
+      .queue-head { align-items: stretch; flex-direction: column; }
+      .queue-head .small-button { width: 100%; }
+      .batch-form { align-items: stretch; flex-direction: column; }
+      .batch-form .small-button { width: 100%; }
+      .batch-form .batch-file { width: 100%; min-height: 42px; }
+      .pool-review-actions { width: 100%; }
+      .pool-review-actions .small-button { flex: 1 1 180px; min-height: 42px; }
+      .fuzzy-query-head { align-items: flex-start; flex-direction: column; gap: 5px; }
+      .strategy-row { grid-template-columns: 52px minmax(0, 1fr); }
+      .strategy-count { grid-column: 2; text-align: left; }
+      .component-row { grid-template-columns: 9px minmax(0, 1fr); }
+      .component-side { grid-column: 2; align-items: flex-start; flex-direction: row; flex-wrap: wrap; }
+      .platform-card > summary { min-height: 52px; }
+    }
+    @media (max-width: 480px) {
+      body { overflow-x: hidden; }
+      .page { padding: 12px 10px calc(28px + env(safe-area-inset-bottom)); }
+      .masthead { flex-wrap: wrap; }
+      .masthead > div:first-child { flex: 1 1 100%; }
+      .masthead > div:last-child { display: flex !important; width: 100%; justify-content: space-between; }
+      .masthead h1 { font-size: 21px; }
+      .masthead .mark { flex-basis: 36px; height: 36px; }
+      .console-sidebar { padding-left: 4px; padding-right: 4px; }
+      .console-nav { gap: 2px; }
+      .nav-button { min-height: 40px; font-size: 11px; }
+      .nav-badge { min-width: 18px; padding-left: 4px; padding-right: 4px; }
+      .module-view { padding: 16px 12px 24px; }
+      .overview-hero, .search-landing, .module-view .batch-panel, .module-view .queue-panel { padding: 14px; }
+      .overview-hero h3 { font-size: 18px; }
+      .overview-hero-actions { flex-direction: column; }
+      .overview-hero-actions .primary, .overview-hero-actions .ghost { width: 100%; }
+      .quick-card { min-height: 100px; }
+      .search-head, .results { padding-left: 0; padding-right: 0; }
+      .result-toolbar .toolbar-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .toolbar-actions .ghost { width: 100%; min-width: 0; padding-left: 8px; padding-right: 8px; }
+      .result-back { min-height: 42px; }
+      .result-insights > summary { padding: 13px; }
+      .result-insights-body { padding: 12px; }
+      .summary { gap: 7px; }
+      .metric { min-width: 0; padding: 11px 10px; }
+      .metric-value { font-size: 16px; }
+      .metric-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .gallery { gap: 7px; }
+      .image-frame { height: 116px; }
+      .image-info { padding: 9px 10px 11px; }
+      .pool-review { padding: 12px; }
+      .pool-review-actions { flex-direction: column; }
+      .pool-review-actions .small-button { width: 100%; }
+      .batch-actions { justify-content: stretch; }
+      .batch-actions .batch-filter { flex: 1; min-width: 0; }
+      .login button, .small-button { min-height: 42px; }
+      .orchestration-summary { gap: 7px; }
+      .orchestration-summary .metric { padding: 10px; }
+      .blocked-domain-row { align-items: flex-start; flex-direction: column; }
+      .blocked-domain-note { display: block; margin: 3px 0 0; }
+      .component-side { gap: 6px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="login-gate" class="login-gate" hidden>
+    <form id="gate-form">
+      <h2>登录图片爬虫后台</h2>
+      <input id="gate-password" type="password" placeholder="管理员密码" autocomplete="current-password" required>
+      <button type="submit">登录</button>
+      <p id="gate-error" class="gate-error" aria-live="polite"></p>
+    </form>
+  </div>
+  <main class="page">
+    <header class="masthead">
+      <div>
+        <div class="eyebrow">Image operations console</div>
+        <h1>产品图片资料控制台</h1>
+        <p>从总览进入一个模块，在专注的工作区内完成检索、批处理和结果复核。</p>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px"><a class="employee-link" href="/wallpaper">Wallpaper H5 管理台</a><a class="employee-link" href="/employee">打开员工工作台</a><div class="mark" aria-hidden="true">PI</div></div>
+    </header>
+
+    <section class="console-shell" aria-label="产品图片资料控制台">
+      <div class="console-layout">
+        <aside class="console-sidebar" aria-label="模块导航">
+          <div class="sidebar-brand">
+            <strong>Product Image Ops</strong>
+            <span>本机受控检索环境</span>
+          </div>
+          <div>
+            <div class="sidebar-label">工作台</div>
+            <nav class="console-nav">
+              <button type="button" class="nav-button active" data-module-nav="overview" aria-controls="module-overview" aria-current="page">
+                <span class="nav-copy"><span class="nav-icon">⌂</span>总览</span>
+              </button>
+              <button type="button" class="nav-button" data-module-nav="search" aria-controls="module-search">
+                <span class="nav-copy"><span class="nav-icon">⌕</span>单条检索</span>
+              </button>
+              <button type="button" class="nav-button" data-module-nav="batches" aria-controls="module-batches">
+                <span class="nav-copy"><span class="nav-icon">▦</span>批量任务</span>
+                <span id="nav-batch-count" class="nav-badge">—</span>
+              </button>
+              <button type="button" class="nav-button" data-module-nav="queue" aria-controls="module-queue">
+                <span class="nav-copy"><span class="nav-icon">↯</span>好的列表</span>
+                <span id="nav-queue-count" class="nav-badge">—</span>
+              </button>
+              <button type="button" class="nav-button" data-module-nav="unfinished" aria-controls="module-unfinished">
+                <span class="nav-copy"><span class="nav-icon">!</span>坏的列表</span>
+                <span id="nav-unfinished-count" class="nav-badge">—</span>
+              </button>
+              <button type="button" class="nav-button" data-module-nav="history" aria-controls="module-history">
+                <span class="nav-copy"><span class="nav-icon">↺</span>历史结果</span>
+              </button>
+            </nav>
+          </div>
+          <div>
+            <div class="sidebar-label">系统</div>
+            <nav class="console-nav">
+              <button type="button" class="nav-button" data-module-nav="settings" aria-controls="module-settings">
+                <span class="nav-copy"><span class="nav-icon">⚙</span>管理设置</span>
+              </button>
+            </nav>
+          </div>
+          <div class="sidebar-foot">结果池、候选搜索词和策略记录会跟随当前任务进入结果工作区。</div>
+        </aside>
+
+        <div id="console-main" class="console-main" tabindex="-1">
+          <section id="module-overview" class="module-view active" aria-labelledby="overview-title">
+            <div class="module-header">
+              <div>
+                <div class="module-kicker">Control center</div>
+                <h2 id="overview-title">今天先处理什么？</h2>
+                <p>总览只放最重要的进度和入口；点击模块后，页面会切换成对应的完整工作区。</p>
+              </div>
+              <div class="module-header-actions">
+                <button type="button" class="primary" data-open-module="search">新建单条检索</button>
+                <button type="button" class="ghost" data-open-module="batches">导入 Excel</button>
+              </div>
+            </div>
+            <div class="overview-grid">
+              <article class="overview-hero">
+                <div>
+                  <div class="module-kicker">Active batch</div>
+                  <h3 id="overview-batch-name">正在读取批次…</h3>
+                  <p id="overview-batch-note">批量任务状态会自动刷新。</p>
+                  <div class="overview-progress">
+                    <div class="overview-progress-line"><span id="overview-batch-status">读取中</span><strong id="overview-batch-percent">—</strong></div>
+                    <div class="overview-progress-track"><div id="overview-batch-bar" class="overview-progress-bar" style="width:0%"></div></div>
+                  </div>
+                </div>
+                <div class="overview-hero-actions">
+                  <button type="button" class="ghost" data-open-module="batches">进入批量任务</button>
+                </div>
+              </article>
+              <div class="overview-stats">
+                <article class="overview-stat"><span>当前活动任务</span><strong id="overview-active-count">—</strong><small>处理中 + 排队</small></article>
+                <article class="overview-stat"><span>当前批次已完成</span><strong id="overview-completed-count">—</strong><small id="overview-completed-note">等待批次数据</small></article>
+                <article class="overview-stat"><span>历史结果</span><strong id="overview-history-count">—</strong><small>最近结束任务</small></article>
+                <article class="overview-stat"><span>批次完成率</span><strong id="overview-batch-percent-stat">—</strong><small>只计算已完成子任务</small></article>
+              </div>
+            </div>
+            <div class="quick-section">
+              <h3>常用模块</h3>
+              <div class="quick-grid">
+                <button type="button" class="quick-card" data-open-module="search"><strong>单条检索</strong><span>输入品牌和型号，查看正式图片与候选池。</span><em>开始检索 →</em></button>
+                <button type="button" class="quick-card" data-open-module="batches"><strong>批量任务</strong><span>导入 Excel，在好的列表与坏的列表之间处理。</span><em>管理批次 →</em></button>
+                <button type="button" class="quick-card" data-open-module="history"><strong>历史结果</strong><span>重新打开已经完成的任务和图片池。</span><em>查看历史 →</em></button>
+              </div>
+            </div>
+          </section>
+
+          <section id="module-search" class="module-view" aria-labelledby="search-title">
+            <div class="module-header">
+              <div>
+                <div class="module-kicker">01 / Search</div>
+                <h2 id="search-title">单条图片检索</h2>
+                <p>输入品牌和型号，系统会自动展开品牌别名、型号间隔写法，并按语言和平台市场筛选。</p>
+              </div>
+              <div class="module-header-actions"><button type="button" class="ghost" data-open-module="overview">返回总览</button></div>
+            </div>
+            <section class="workbench" aria-labelledby="search-title">
+              <div class="search-head">
+                <div id="search-landing" class="search-landing">
+                  <div class="module-kicker">New retrieval</div>
+                  <h3>把品牌和型号交给我</h3>
+                  <p>可以直接输入一整句；系统会自动展开品牌别名、型号间隔写法，并按语言和平台市场筛选。</p>
+                  <form id="search-form" class="search-form">
+          <input id="query" type="search" autocomplete="off" placeholder="例如：AOC 24G2" required minlength="2">
+          <select id="locale" aria-label="搜索语言">
+            <option value="" selected>自动多语言</option>
+            <option value="en">英语</option>
+            <option value="zh">中文</option>
+            <option value="es">西班牙语</option>
+            <option value="hi">印地语</option>
+            <option value="ar">阿拉伯语</option>
+            <option value="id">印度尼西亚语</option>
+            <option value="pt">葡萄牙语</option>
+            <option value="fr">法语</option>
+            <option value="ru">俄语</option>
+            <option value="bn">孟加拉语</option>
+            <option value="ja">日语</option>
+            <option value="ur">乌尔都语</option>
+            <option value="de">德语</option>
+            <option value="vi">越南语</option>
+            <option value="tr">土耳其语</option>
+          </select>
+          <select id="image-mode" aria-label="图片类型">
+            <option value="all" selected>全部并分栏</option>
+            <option value="real_photo">只要实拍图</option>
+            <option value="catalog">只要商品图</option>
+          </select>
+          <select id="search-tier" aria-label="首轮检索档位" title="首轮检索档位">
+            <option value="balanced" selected>首轮：平衡</option>
+            <option value="strict">首轮：严格</option>
+            <option value="broad">首轮：宽松</option>
+          </select>
+          <select id="result-limit" aria-label="返回数量">
+            <option value="30" selected>最多 30 张</option>
+            <option value="50">最多 50 张</option>
+            <option value="100">最多 100 张</option>
+            <option value="300">最多 300 张</option>
+            <option value="500">最多 500 张</option>
+          </select>
+          <button id="search-button" class="primary" type="submit">开始检索</button>
+                  </form>
+                  <div class="examples" aria-label="示例搜索">
+          <button type="button" data-query="AOC 24G2">AOC 24G2</button>
+          <button type="button" data-query="Sonos Era 300">Sonos Era 300</button>
+          <button type="button" data-query="ROG XG259CMS">ROG XG259CMS</button>
+                  </div>
+                  <div id="search-status" class="status" aria-live="polite"></div>
+                </div>
+              </div>
+              <div id="results" class="results" data-task-id="" hidden>
+                <button id="back-to-search" class="ghost result-back" type="button">← 返回搜索</button>
+                <div class="result-toolbar">
+                  <div>
+                    <div class="section-kicker">02 / Organized result</div>
+                    <h2 id="result-title">检索结果</h2>
+                    <p id="result-subtitle"></p>
+                  </div>
+                  <div class="toolbar-actions">
+                    <button id="open-pools" class="ghost" type="button" hidden>查看候选池</button>
+                    <button id="retry-result" class="ghost" type="button" hidden>失败后重试</button>
+                    <button id="copy-brief" class="ghost" type="button">复制整理摘要</button>
+                    <button id="refresh-result" class="ghost" type="button">重新检索</button>
+                  </div>
+                </div>
+                <section id="fuzzy-query-panel" class="fuzzy-query-panel" aria-labelledby="fuzzy-query-title">
+                  <div class="fuzzy-query-head">
+                    <div><h3 id="fuzzy-query-title">模糊搜索词</h3><p>这些词实际带来了模糊候选，先放在这里方便快速复用。</p></div>
+                    <span id="fuzzy-query-note" class="fuzzy-query-note"></span>
+                  </div>
+                  <div id="fuzzy-queries" class="query-candidates"></div>
+                </section>
+                <details id="result-insights" class="result-insights">
+                  <summary><span><strong>检索详情</strong><small>整理摘要 · 图片分类 · 来源分布 · 候选搜索词 · 策略记录</small></span><em>点击展开</em></summary>
+                  <div class="result-insights-body">
+                    <div id="summary" class="summary"></div>
+                    <div class="result-meta">
+                      <section class="brief">
+                        <h3>整理好的资料</h3>
+                        <pre id="brief-text"></pre>
+                      </section>
+                      <section class="classification">
+                        <h3>图片分类</h3>
+                        <div id="class-pills" class="source-pills"></div>
+                      </section>
+                      <section class="sources">
+                        <h3>来源分布</h3>
+                        <div id="source-pills" class="source-pills"></div>
+                      </section>
+                    </div>
+                    <section class="query-plan" aria-labelledby="query-plan-title">
+                      <h3 id="query-plan-title">候选搜索词（预选词）</h3>
+                      <p>系统根据品牌、型号、语言和来源自动生成。点击任意词即可带回搜索框并重新检索。</p>
+                      <div id="query-candidates" class="query-candidates"></div>
+                    </section>
+                    <section class="strategy-log" aria-labelledby="strategy-log-title">
+                      <h3 id="strategy-log-title">本次搜索用了哪些小巧思</h3>
+                      <p>每一条新增检索量都会在这里标注，方便下次知道图片数量是怎么增加的。</p>
+                      <div id="strategy-list" class="strategy-list"></div>
+                    </section>
+                  </div>
+                </details>
+                <div class="gallery-head">
+                  <h3>正式图片池</h3>
+                  <span id="gallery-note"></span>
+                </div>
+                <section id="pool-review" class="pool-review" hidden>
+                  <div class="pool-review-head"><div><strong>快速划分图片池</strong><span>勾选图片后批量移动，也可以在卡片上直接操作。</span></div><div class="pool-review-actions"><button id="promote-selected" class="small-button" type="button">选中提升为正式</button><button id="demote-selected" class="small-button" type="button">选中放回备选</button></div></div>
+                  <div id="candidate-review-gallery" class="gallery"></div>
+                </section>
+                <div id="gallery" class="gallery"></div>
+                <details id="fuzzy-panel" class="fuzzy-panel" open hidden>
+                  <summary>查看模糊搜索图片池 <span id="fuzzy-note"></span></summary>
+                  <div class="rejected-body">
+                    <p>这里保留了外观或型号前缀相近、但没有通过正式型号证据的图片。它们可以人工参考，但不会混入正式图片池。</p>
+                    <div id="fuzzy-gallery" class="gallery"></div>
+                  </div>
+                </details>
+                <details id="rejected-panel" class="rejected-panel" open hidden>
+                  <summary>查看淘汰候选图片 <span id="rejected-note"></span></summary>
+                  <div class="rejected-body">
+                    <p>这里仅展示已经安全下载并成功解码、但因型号证据或图片尺寸等原因没有进入正式结果的候选。下载失败、非图片响应和安全拦截项不会伪造预览。</p>
+                    <div id="rejected-gallery" class="gallery"></div>
+                  </div>
+                </details>
+                <details id="retry-history-panel" class="retry-history-panel" hidden>
+                  <summary>历史尝试候选池 <span id="retry-history-note"></span></summary>
+                  <div class="retry-history-body">
+                    <p>重新搜索不会再覆盖上一轮结果。这里保留每次重试前的正式、模糊和淘汰图片，仅供回看，不会混入当前新结果。</p>
+                    <div id="retry-history-content"></div>
+                  </div>
+                </details>
+              </div>
+            </section>
+          </section>
+
+          <section id="module-batches" class="module-view" aria-labelledby="batch-module-title">
+            <div class="module-header">
+              <div><div class="module-kicker">02 / Batches</div><h2 id="batch-module-title">批量任务中心</h2><p>导入表格后，每一行都是可追踪的子任务；只在“好的列表”和“坏的列表”之间流转。</p></div>
+              <div class="module-header-actions"><button type="button" class="ghost" data-open-module="overview">返回总览</button></div>
+            </div>
+            <section class="batch-panel" aria-labelledby="batch-title">
+          <div class="batch-head">
+            <div>
+              <h4 id="batch-title">批量导入 Excel</h4>
+              <p>上传含“品牌+型号 / SPU编码”的 .xlsx 文件，每一行会生成一个可追踪任务。</p>
+            </div>
+          </div>
+          <div class="batch-form">
+            <input id="batch-file" class="batch-file" type="file" accept=".xlsx,.xlsm" aria-label="选择 Excel 文件">
+            <button id="batch-import" class="small-button" type="button">导入并开始</button>
+          </div>
+          <div class="batch-tier-note">首轮检索档位跟随单条检索设置：<select id="batch-search-tier" aria-label="批量首轮检索档位"><option value="balanced" selected>平衡</option><option value="strict">严格</option><option value="broad">宽松</option></select>。正式/备选图片会在结果中继续人工划分。</div>
+          <div id="batch-upload-status" class="batch-status" aria-live="polite"></div>
+          <div id="batch-list" class="batch-list" aria-live="polite"></div>
+            </section>
+          </section>
+
+          <section id="module-queue" class="module-view" aria-labelledby="queue-module-title">
+            <div class="module-header">
+              <div><div class="module-kicker">03 / Good tasks</div><h2 id="queue-module-title">好的列表</h2><p>排队中、处理中和已完成的正常任务都在这里；重试成功后会自动回到这里。</p></div>
+              <div class="module-header-actions"><button type="button" class="ghost" data-open-module="overview">返回总览</button></div>
+            </div>
+            <section class="queue-panel" aria-labelledby="queue-title">
+          <div class="queue-head">
+            <div>
+              <h3 id="queue-title">正常任务</h3>
+              <p id="queue-note">正在加载任务状态…</p>
+            </div>
+            <button id="refresh-queue" class="small-button" type="button">刷新队列</button>
+          </div>
+          <div id="task-queue" class="queue-list" aria-live="polite"></div>
+          <div class="good-completed-section">
+            <div class="good-section-divider"><span>已完成 · 好任务</span></div>
+            <div id="completed-queue" class="queue-list" aria-live="polite"></div>
+          </div>
+            </section>
+          </section>
+
+          <section id="module-unfinished" class="module-view" aria-labelledby="unfinished-module-title">
+            <div class="module-header">
+              <div><div class="module-kicker">04 / Bad tasks</div><h2 id="unfinished-module-title">坏的列表</h2><p>这里只放爬取失败或审核标记“需处理”的任务，显示原因、名称历史和处理入口；修复或审核通过后回到好的列表。</p></div>
+              <div class="module-header-actions"><button id="refresh-unfinished" type="button" class="ghost">刷新异常队列</button><button type="button" class="ghost" data-open-module="overview">返回总览</button></div>
+            </div>
+            <section class="queue-panel" aria-labelledby="unfinished-queue-title">
+              <div class="queue-head"><div><h3 id="unfinished-queue-title">待处理坏任务</h3><p id="unfinished-note">正在加载未完成任务…</p></div></div>
+              <div id="unfinished-queue" class="unfinished-list" aria-live="polite"></div>
+            </section>
+          </section>
+
+          <section id="module-history" class="module-view" aria-labelledby="history-module-title">
+            <div class="module-header">
+              <div><div class="module-kicker">05 / History</div><h2 id="history-module-title">历史结果</h2><p>已完成任务会在这里保留入口，重新打开正式图片池和候选预览池。</p></div>
+              <div class="module-header-actions"><button type="button" class="ghost" data-open-module="overview">返回总览</button></div>
+            </div>
+            <section class="history console-card" aria-labelledby="history-title">
+            <div class="history-head">
+              <div>
+                <h4 id="history-title">历史任务</h4>
+                <p id="history-note">可重新打开已完成任务的图片池。</p>
+              </div>
+              <button id="refresh-history" class="small-button" type="button">刷新历史</button>
+            </div>
+            <div id="task-history" class="history-list" aria-live="polite"></div>
+            </section>
+          </section>
+
+          <section id="module-settings" class="module-view" aria-labelledby="settings-module-title">
+            <div class="module-header">
+              <div><div class="module-kicker">06 / Settings</div><h2 id="settings-module-title">管理设置</h2><p>凭证、Provider 和平台编排都收纳在这里，日常检索不会被配置内容打断。</p></div>
+              <div class="module-header-actions"><button type="button" class="ghost" data-open-module="overview">返回总览</button></div>
+            </div>
+            <details id="admin-panel" class="admin-area console-card">
+              <summary>管理凭证与 Provider</summary>
+              <div class="admin-body">
+        <form id="login" class="login">
+          <input id="password" type="password" placeholder="管理员密码" required>
+          <button type="submit">登录管理区</button>
+          <span id="login-result" class="muted" aria-live="polite"></span>
+        </form>
+        <span id="admin-access" class="admin-access" aria-live="polite"></span>
+          <div id="admin-content" class="admin-content" hidden>
+          <div class="admin-actions">
+            <span id="vault" class="muted"></span>
+            <button id="refresh" class="small-button" type="button">刷新 Provider 状态</button>
+          </div>
+          <div id="providers" class="grid"></div>
+          <div id="admin-result"></div>
+          <section class="policy-panel" aria-labelledby="policy-title">
+            <div class="orchestration-head"><div><div class="section-kicker">02 / Search policy</div><h2 id="policy-title">首轮检索档位</h2><p>三档只控制首轮证据门槛和校验量；任务完成不再由“正式图片必须 20 张”决定。</p></div><button id="refresh-search-policy" class="small-button" type="button">读取策略</button></div>
+            <div id="search-policy-grid" class="policy-grid"></div>
+            <button id="save-search-policy" class="small-button" type="button">保存后台规则</button><span id="search-policy-result" class="muted" aria-live="polite"></span>
+          </section>
+          <section class="policy-panel" aria-labelledby="blocked-domain-title">
+            <div class="orchestration-head"><div><div class="section-kicker">03 / Blocklist</div><h2 id="blocked-domain-title">屏蔽网站</h2><p>命中这些网站及其子域名的图片不会进入新任务的任何图片池；支持填写原因，方便员工理解过滤结果。</p></div><button id="refresh-blocked-domains" class="small-button" type="button">刷新名单</button></div>
+            <div class="blocked-domain-form"><input id="blocked-domain" type="text" placeholder="例如：pinterest.com"><input id="blocked-domain-note" type="text" placeholder="原因（可选）"><button id="add-blocked-domain" class="small-button" type="button">屏蔽网站</button></div>
+            <div id="blocked-domain-list" class="blocked-domain-list"></div>
+          </section>
+          <section class="orchestration" aria-labelledby="orchestration-title">
+            <div class="orchestration-head">
+              <div>
+                <div class="section-kicker">04 / Orchestration</div>
+                <h2 id="orchestration-title">平台编排中心</h2>
+                <p>每个平台由多个可独立检查的项目或内置阶段组成。外部仓库只作为可审计组件显示，启用不等于盲目执行未知命令。</p>
+              </div>
+              <button id="refresh-orchestration" class="small-button" type="button">刷新编排</button>
+            </div>
+            <div id="orchestration-summary" class="orchestration-summary"></div>
+            <div id="orchestration-grid" class="orchestration-grid"></div>
+            <p class="manifest-note">编排配置：config/orchestration.json · 运行状态覆盖：data/orchestration_state.json</p>
+          </section>
+        </div>
+              </div>
+            </details>
+          </section>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({
+      '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+    }[c]));
+    const safeUrl = (url) => /^https?:\/\//i.test(url || '') ? esc(url) : '#';
+    let latestTask = null;
+    let latestBrief = '';
+    let activePollTaskId = null;
+    let activeViewTaskId = null;
+    let viewTaskRequestSeq = 0;
+    let queueRefreshTimer = null;
+    let batchRefreshTimer = null;
+    let unfinishedRefreshTimer = null;
+    let queueRequestSeq = 0;
+    let batchRequestSeq = 0;
+    let unfinishedRequestSeq = 0;
+    let queueRenderSignature = '';
+    let expandedBatch = null;
+    let activeModule = 'overview';
+
+    function activateModule(name, options = {}) {
+      const target = document.getElementById('module-' + name);
+      if (!target) return;
+      activeModule = name;
+      document.querySelectorAll('[data-module-nav]').forEach(button => {
+        const active = button.dataset.moduleNav === name;
+        button.classList.toggle('active', active);
+        if (active) button.setAttribute('aria-current', 'page');
+        else button.removeAttribute('aria-current');
+      });
+      document.querySelectorAll('.module-view').forEach(view => {
+        view.classList.toggle('active', view.id === 'module-' + name);
+      });
+      if (options.scroll !== false) {
+        $('console-main').scrollTo({top: 0, behavior: 'smooth'});
+      }
+    }
+
+    function showSearchLanding() {
+      ++viewTaskRequestSeq;
+      activeViewTaskId = null;
+      activateModule('search');
+      $('search-landing').hidden = false;
+      $('results').hidden = true;
+      $('query').focus({preventScroll: true});
+    }
+
+    function showResultWorkspace() {
+      activateModule('search');
+      $('search-landing').hidden = true;
+      $('results').hidden = false;
+      $('console-main').scrollTo({top: 0, behavior: 'smooth'});
+    }
+
+    const taskStatusLabels = {
+      queued: '排队中',
+      processing: '处理中',
+      completed: '已完成',
+      failed: '检索失败',
+      cancelled: '已取消'
+    };
+    const batchStatusLabels = {
+      queued: '排队中',
+      processing: '处理中',
+      completed: '全部完成',
+      completed_with_issues: '已结束 · 有异常',
+      failed: '全部失败',
+      cancelled: '已取消'
+    };
+    function formatDuration(seconds) {
+      const value = Number(seconds);
+      if (!Number.isFinite(value) || value < 0) return '—';
+      if (value < 60) return Math.max(1, Math.round(value)) + ' 秒';
+      const minutes = Math.round(value / 60);
+      if (minutes < 60) return minutes + ' 分钟';
+      const hours = Math.floor(minutes / 60);
+      const remainder = minutes % 60;
+      return hours + ' 小时' + (remainder ? ' ' + remainder + ' 分钟' : '');
+    }
+    function taskLabel(status) {
+      return taskStatusLabels[status] || status || '未知';
+    }
+    function captureQueueViewport() {
+      if (activeModule !== 'queue') return null;
+      const scroller = $('console-main');
+      const queue = $('task-queue');
+      if (!scroller || !queue) return null;
+      const scrollerRect = scroller.getBoundingClientRect();
+      const anchor = Array.from(queue.querySelectorAll('[data-task-id]')).find(row => {
+        const rect = row.getBoundingClientRect();
+        return rect.bottom >= scrollerRect.top + 8 && rect.top <= scrollerRect.bottom;
+      });
+      const focused = document.activeElement;
+      const focusedRow = focused?.closest?.('[data-task-id]');
+      return {
+        scrollTop: scroller.scrollTop,
+        anchorTaskId: anchor?.dataset.taskId || null,
+        anchorOffset: anchor ? anchor.getBoundingClientRect().top - scrollerRect.top : null,
+        focusedTaskId: focusedRow?.dataset.taskId || null,
+        focusedCancel: Boolean(focused?.matches?.('[data-cancel-task]'))
+      };
+    }
+    function restoreQueueViewport(snapshot) {
+      if (!snapshot) return;
+      const scroller = $('console-main');
+      const queue = $('task-queue');
+      if (!scroller || !queue) return;
+      let restored = false;
+      if (snapshot.anchorTaskId && Number.isFinite(snapshot.anchorOffset)) {
+        const anchor = Array.from(queue.querySelectorAll('[data-task-id]'))
+          .find(row => row.dataset.taskId === snapshot.anchorTaskId);
+        if (anchor) {
+          const scrollerRect = scroller.getBoundingClientRect();
+          const nextOffset = anchor.getBoundingClientRect().top - scrollerRect.top;
+          scroller.scrollTop = Math.max(0, scroller.scrollTop + nextOffset - snapshot.anchorOffset);
+          restored = true;
+        }
+      }
+      if (!restored) scroller.scrollTop = snapshot.scrollTop;
+      if (snapshot.focusedTaskId && snapshot.focusedCancel) {
+        const replacement = Array.from(queue.querySelectorAll('[data-cancel-task]'))
+          .find(button => button.dataset.cancelTask === snapshot.focusedTaskId);
+        replacement?.focus?.({preventScroll: true});
+      }
+    }
+    function isRetryTask(task) {
+      return Number(task.progress?.retry_count || 0) > 0;
+    }
+    function queueTaskView(task) {
+      const progress = task.progress || {};
+      const percent = Math.max(0, Math.min(100, Number(progress.percent || 0)));
+      const phase = progress.phase_label || (task.status === 'queued' ? '排队等待' : '处理中');
+      const position = Number(progress.queue_position || 0);
+      const queueText = task.status === 'queued'
+        ? '排队第 ' + (position || '—') + ' 个 · 本任务预计耗时约 ' + formatDuration(progress.estimated_seconds)
+        : phase + ' · ' + Math.round(percent) + '% · 已用 ' + formatDuration(progress.elapsed_seconds) +
+          ' · 预计还需 ' + formatDuration(progress.eta_seconds);
+      const title = (task.brand + ' ' + (task.model || task.query)).trim() || task.query;
+      return {
+        title,
+        status: String(task.status || ''),
+        statusLabel: taskLabel(task.status),
+        queueText,
+        message: String(progress.message || ''),
+        percent,
+        canCancel: task.status === 'queued' || task.status === 'processing',
+        retry: isRetryTask(task)
+      };
+    }
+    function queueRowMarkup(task) {
+      const view = queueTaskView(task);
+      return '<article class="queue-row ' + (task.task_id === activePollTaskId ? 'current ' : '') + (view.retry ? 'retry' : '') + '" data-task-id="' + esc(task.task_id) + '">' +
+        '<div class="queue-row-head"><div class="queue-title" title="' + esc(view.title) + '">' + esc(view.title) + '</div>' +
+        '<span class="queue-status ' + esc(view.status) + '">' + esc(view.statusLabel) + '</span></div>' +
+        '<div class="queue-meta">' + esc(view.queueText) + '</div>' +
+        '<div class="queue-progress" aria-label="' + esc(Math.round(view.percent) + '%') + '"><div class="queue-progress-bar" style="width:' + view.percent + '%"></div></div>' +
+        '<div class="queue-actions"><span class="queue-message">' + esc(view.message) + '</span>' +
+        (view.canCancel ? '<button type="button" class="cancel-button" data-cancel-task="' + esc(task.task_id) + '">取消任务</button>' : '') +
+        '</div></article>';
+    }
+    function patchQueueRow(row, task) {
+      const view = queueTaskView(task);
+      row.classList.toggle('current', task.task_id === activePollTaskId);
+      row.classList.toggle('retry', view.retry);
+      const title = row.querySelector('.queue-title');
+      if (title && title.textContent !== view.title) title.textContent = view.title;
+      if (title && title.title !== view.title) title.title = view.title;
+      const status = row.querySelector('.queue-status');
+      if (status) {
+        status.className = 'queue-status ' + view.status;
+        if (status.textContent !== view.statusLabel) status.textContent = view.statusLabel;
+      }
+      const meta = row.querySelector('.queue-meta');
+      if (meta && meta.textContent !== view.queueText) meta.textContent = view.queueText;
+      const progress = row.querySelector('.queue-progress');
+      if (progress) progress.setAttribute('aria-label', Math.round(view.percent) + '%');
+      const bar = row.querySelector('.queue-progress-bar');
+      if (bar) {
+        const width = view.percent + '%';
+        if (bar.style.width !== width) bar.style.width = width;
+      }
+      const message = row.querySelector('.queue-message');
+      if (message && message.textContent !== view.message) message.textContent = view.message;
+      const actions = row.querySelector('.queue-actions');
+      let cancel = row.querySelector('[data-cancel-task]');
+      if (view.canCancel) {
+        if (!cancel && actions) {
+          cancel = document.createElement('button');
+          cancel.type = 'button';
+          cancel.className = 'cancel-button';
+          cancel.textContent = '取消任务';
+          actions.appendChild(cancel);
+        }
+        if (cancel) cancel.dataset.cancelTask = String(task.task_id);
+      } else {
+        cancel?.remove();
+      }
+    }
+    function createQueueRow(task) {
+      const template = document.createElement('template');
+      template.innerHTML = queueRowMarkup(task).trim();
+      return template.content.firstElementChild;
+    }
+    function completedQueueMarkup(task) {
+      const title = ((task.brand || '') + ' ' + (task.model || task.query || '')).trim() || task.query || task.task_id;
+      const review = task.review_status === 'approved' ? '已审核通过' : task.review_status === 'needs_changes' ? '需处理' : '待审核';
+      const history = queryHistoryMarkup(task);
+      return '<article class="queue-row completed-good-row" data-completed-task-id="' + esc(task.task_id) + '">' +
+        '<div class="queue-row-head"><div class="queue-title" title="' + esc(title) + '">' + esc(title) + '</div><span class="queue-status completed">' + esc(review) + '</span></div>' +
+        '<div class="queue-meta">爬取完成 · 正式图片 ' + esc(task.count || 0) + ' 张 · ' + esc(historyTime(task)) + '</div>' +
+        (history ? history : '') +
+        '<div class="queue-actions"><span class="queue-message">已进入好的列表，可打开结果继续复核。</span><button type="button" class="view-button" data-view-task="' + esc(task.task_id) + '">查看结果</button></div></article>';
+    }
+    function patchCompletedQueueRow(row, task) {
+      const template = document.createElement('template');
+      template.innerHTML = completedQueueMarkup(task).trim();
+      const next = template.content.firstElementChild;
+      row.className = next.className;
+      row.innerHTML = next.innerHTML;
+    }
+    function renderCompletedQueue(tasks) {
+      const container = $('completed-queue');
+      if (!container) return;
+      const rows = Array.isArray(tasks) ? tasks : [];
+      const existing = new Map(Array.from(container.querySelectorAll('[data-completed-task-id]')).map(row => [row.dataset.completedTaskId, row]));
+      const ids = new Set(rows.map(task => String(task.task_id)));
+      existing.forEach((row, taskId) => { if (!ids.has(taskId)) row.remove(); });
+      container.querySelector('.queue-empty')?.remove();
+      if (!rows.length) {
+        if (!container.querySelector('.queue-empty')) container.insertAdjacentHTML('beforeend', '<div class="queue-empty">还没有完成的好任务。</div>');
+        return;
+      }
+      rows.forEach((task, index) => {
+        const taskId = String(task.task_id);
+        let row = existing.get(taskId);
+        if (!row) { row = document.createElement('template'); row.innerHTML = completedQueueMarkup(task).trim(); row = row.content.firstElementChild; existing.set(taskId, row); }
+        else patchCompletedQueueRow(row, task);
+        const current = container.children[index];
+        if (current !== row) container.insertBefore(row, current || null);
+      });
+    }
+    function renderQueue(data) {
+      const allTasks = Array.isArray(data?.tasks) ? data.tasks : [];
+      const tasks = allTasks.filter(task => taskLane(task) === 'good' && ['queued', 'processing'].includes(task.status));
+      const completedTasks = allTasks.filter(task => taskLane(task) === 'good' && task.status === 'completed');
+      const activeCount = Number(data?.active_count ?? tasks.length) || 0;
+      const retryCount = tasks.filter(isRetryTask).length;
+      $('nav-queue-count').textContent = tasks.length + completedTasks.length;
+      $('overview-active-count').textContent = activeCount;
+      $('queue-note').textContent = tasks.length
+        ? '当前有 ' + tasks.length + ' 个任务处理中；预计时间会随着实际速度自动修正。' +
+          (retryCount ? ' 重试任务 ' + retryCount + ' 个，已置于普通任务之前。' : '')
+        : '当前没有排队或运行中的任务；下方保留已完成的好任务。';
+      const renderSignature = JSON.stringify({
+        activePollTaskId,
+        tasks: allTasks.map(task => ({
+          task_id: task.task_id,
+          status: task.status,
+          brand: task.brand,
+          model: task.model,
+          query: task.query,
+          progress: task.progress || {}
+        }))
+      });
+      if (renderSignature === queueRenderSignature) return;
+      queueRenderSignature = renderSignature;
+      const viewport = captureQueueViewport();
+      const queue = $('task-queue');
+      const processingTasks = tasks.filter(task => task.status === 'processing');
+      const queuedRetryTasks = tasks.filter(task => task.status !== 'processing' && isRetryTask(task));
+      const queuedRegularTasks = tasks.filter(task => task.status !== 'processing' && !isRetryTask(task));
+      const orderedTasks = [...queuedRetryTasks, ...processingTasks, ...queuedRegularTasks];
+      queue.querySelector('[data-queue-divider]')?.remove();
+      const rows = new Map(Array.from(queue.querySelectorAll('[data-task-id]')).map(row => [row.dataset.taskId, row]));
+      const taskIds = new Set(orderedTasks.map(task => String(task.task_id)));
+      rows.forEach((row, taskId) => {
+        if (!taskIds.has(taskId)) row.remove();
+      });
+      queue.querySelector('.queue-empty')?.remove();
+      if (!tasks.length) {
+        if (!queue.querySelector('.queue-empty')) {
+          queue.insertAdjacentHTML('beforeend', '<div class="queue-empty">队列空闲，可以开始新的检索。</div>');
+        }
+        renderCompletedQueue(completedTasks);
+        restoreQueueViewport(viewport);
+        return;
+      }
+      orderedTasks.forEach((task, index) => {
+        const taskId = String(task.task_id);
+        let row = rows.get(taskId);
+        if (!row) {
+          row = createQueueRow(task);
+          rows.set(taskId, row);
+        } else {
+          patchQueueRow(row, task);
+        }
+        const current = queue.children[index];
+        if (current !== row) queue.insertBefore(row, current || null);
+      });
+      if (queuedRetryTasks.length) {
+        const divider = document.createElement('div');
+        divider.className = 'queue-divider';
+        divider.dataset.queueDivider = 'normal';
+        const hasFollowingTasks = processingTasks.length + queuedRegularTasks.length > 0;
+        divider.textContent = hasFollowingTasks
+          ? '后续任务（重试任务在上方）'
+          : '重试任务（优先处理）';
+        const dividerIndex = hasFollowingTasks ? queuedRetryTasks.length : 0;
+        queue.insertBefore(divider, queue.children[dividerIndex] || null);
+      }
+      renderCompletedQueue(completedTasks);
+      restoreQueueViewport(viewport);
+    }
+    async function loadQueue() {
+      const requestSeq = ++queueRequestSeq;
+      try {
+        const response = await fetch('/v1/images/tasks?bucket=good&limit=200');
+        if (!response.ok) throw new Error('队列查询失败');
+        const data = await response.json();
+        if (requestSeq !== queueRequestSeq) return null;
+        renderQueue(data);
+        clearTimeout(queueRefreshTimer);
+        clearTimeout(unfinishedRefreshTimer);
+        if (data.active_count > 0) {
+          queueRefreshTimer = setTimeout(loadQueue, 1800);
+          unfinishedRefreshTimer = setTimeout(loadUnfinishedQueue, 1800);
+        } else await loadUnfinishedQueue();
+        return data;
+      } catch (error) {
+        $('queue-note').textContent = error.message || '暂时无法读取任务队列。';
+        return null;
+      }
+    }
+    function historyTime(task) {
+      const value = task.finished_at || task.updated_at || task.created_at;
+      if (!value) return '时间未知';
+      const date = new Date(value);
+      return Number.isNaN(date.getTime()) ? '时间未知' : date.toLocaleString();
+    }
+    function queryHistoryMarkup(task) {
+      const names = (Array.isArray(task.query_history) ? task.query_history : [task.original_query, task.query])
+        .map(name => String(name || '').trim()).filter((name, index, items) => name && items.indexOf(name) === index);
+      if (names.length < 2) return '';
+      return '<div class="history-meta">名称历史：' + names.map(esc).join(' → ') + '</div>';
+    }
+    function renderHistory(data) {
+      const tasks = (Array.isArray(data?.tasks) ? data.tasks : [])
+        .filter(task => task.status === 'cancelled' || (taskLane(task) === 'good' && task.status === 'completed'))
+        .sort((a, b) => new Date(b.updated_at || b.created_at || 0) - new Date(a.updated_at || a.created_at || 0))
+        .slice(0, 12);
+      $('overview-history-count').textContent = tasks.length;
+      $('history-note').textContent = tasks.length
+        ? '显示最近 ' + tasks.length + ' 个已归档好任务；坏任务统一在“坏的列表”处理。'
+        : '暂无已归档任务。';
+      if (!tasks.length) {
+        $('task-history').innerHTML = '<div class="history-empty">完成或取消任务后，会在这里保留归档入口；失败任务请到坏的列表处理。</div>';
+        return;
+      }
+      $('task-history').innerHTML = tasks.map(task => {
+        const title = (task.brand + ' ' + (task.model || task.query)).trim() || task.query;
+        const progress = task.progress || {};
+        const count = task.status === 'completed'
+          ? '已完成 · 正式图片 ' + Number(task.count || 0) + ' 张'
+          : task.status === 'cancelled' ? '已取消 · 没有最终候选池' : '任务失败';
+        const action = task.status === 'completed' ? '查看结果' : '查看详情';
+        const retry = task.status === 'failed'
+          ? '<button type="button" class="view-button retry-button" data-retry-task="' + esc(task.task_id) + '" data-retry-query="' + esc(task.query) + '">重新搜索</button>' : '';
+        return '<article class="history-row ' + (task.task_id === latestTask?.task_id ? 'current' : '') + '">' +
+          '<div class="history-info"><div class="history-title" title="' + esc(title) + '">' + esc(title) +
+          '</div><div class="history-meta">' + esc(count + ' · ' + historyTime(task)) +
+          (progress.elapsed_seconds ? ' · 用时 ' + esc(formatDuration(progress.elapsed_seconds)) : '') +
+          '</div>' + queryHistoryMarkup(task) + '</div><div class="history-actions">' + retry + '<button type="button" class="view-button" data-view-task="' +
+          esc(task.task_id) + '">' + action + '</button></div></article>';
+      }).join('');
+    }
+    async function loadHistory() {
+      try {
+        const response = await fetch('/v1/images/tasks?include_history=true&limit=100');
+        if (!response.ok) throw new Error('历史任务查询失败');
+        const data = await response.json();
+        renderHistory(data);
+        return data;
+      } catch (error) {
+        $('history-note').textContent = error.message || '暂时无法读取历史任务。';
+        $('task-history').innerHTML = '';
+        return null;
+      }
+    }
+    function batchLabel(status) {
+      return batchStatusLabels[status] || status || '未知';
+    }
+    function renderOverviewBatch(batches) {
+      const list = Array.isArray(batches) ? batches : [];
+      const active = list.filter(batch => ['queued', 'processing'].includes(batch.status)).length;
+      $('nav-batch-count').textContent = list.length;
+      if (!list.length) {
+        $('overview-batch-name').textContent = '暂无批量任务';
+        $('overview-batch-note').textContent = '导入 Excel 后，批次进度会在这里持续更新。';
+        $('overview-batch-status').textContent = '空闲';
+        $('overview-batch-percent').textContent = '—';
+        $('overview-batch-bar').style.width = '0%';
+        $('overview-completed-count').textContent = '—';
+        $('overview-completed-note').textContent = '尚未导入批次';
+        $('overview-batch-percent-stat').textContent = '—';
+        return;
+      }
+      const batch = list[0];
+      const completed = Number(batch.completed || 0);
+      const total = Number(batch.total || 0);
+      const percent = Math.max(0, Math.min(100, Number(batch.percent || 0)));
+      $('overview-batch-name').textContent = batch.filename || '最近批量任务';
+      $('overview-batch-note').textContent = '已完成 ' + completed + ' / ' + total + ' 条' +
+        (active ? ' · 任务仍在处理中' : ' · 批次已结束');
+      $('overview-batch-status').textContent = batchLabel(batch.status);
+      $('overview-batch-percent').textContent = percent + '%';
+      $('overview-batch-bar').style.width = percent + '%';
+      $('overview-completed-count').textContent = completed + ' / ' + total;
+      $('overview-completed-note').textContent = '已完成子任务';
+      $('overview-batch-percent-stat').textContent = percent + '%';
+    }
+    function setBatchStatus(message, state = '') {
+      $('batch-upload-status').className = 'batch-status ' + state;
+      $('batch-upload-status').textContent = message;
+    }
+    function renderBatchItems(card, items, filter) {
+      const container = card.querySelector('.batch-items');
+      container.hidden = false;
+      container.dataset.filter = filter;
+      const normalisedFilter = filter === 'pending' ? 'bad' : filter;
+      const title = normalisedFilter === 'completed' || normalisedFilter === 'good'
+        ? '好的列表' : normalisedFilter === 'bad' ? '坏的列表' : '全部任务列表';
+      if (!items.length) {
+        container.innerHTML = '<div class="batch-items-head"><strong>' + title + '</strong><span>0 条</span></div>' +
+          '<div class="batch-empty">这个列表暂时没有任务。</div>';
+        return;
+      }
+      container.innerHTML = '<div class="batch-items-head"><strong>' + title + '</strong><span>' + items.length + ' 条</span></div>' +
+        items.map(item => {
+        const action = item.status === 'completed' ? '查看结果' : '查看详情';
+        const spu = item.spu ? ' · SPU ' + esc(item.spu) : '';
+        const progress = item.status === 'processing' && item.progress
+          ? ' · ' + Math.round(Number(item.progress.percent || 0)) + '%'
+          : '';
+        const reason = item.status === 'completed' && item.review_status === 'needs_changes'
+          ? String(item.review_note || '已标记需处理，等待人工复核').trim()
+          : item.status !== 'completed'
+            ? String(item.error || item.progress?.message || '').trim()
+            : '';
+        const itemLabel = item.status === 'completed' && item.review_status === 'needs_changes' ? '需处理' : taskLabel(item.status);
+        const names = (Array.isArray(item.query_history) ? item.query_history : [item.original_query, item.query])
+          .map(name => String(name || '').trim()).filter((name, index, items) => name && items.indexOf(name) === index);
+        const nameHistory = names.length > 1
+          ? '<div class="batch-item-reason">名称历史：' + names.map(esc).join(' → ') + '</div>' : '';
+        return '<div class="batch-item"><div class="batch-item-info"><div class="batch-item-title">第 ' +
+          esc(item.row_number) + ' 行 · ' + esc(item.query) + '</div><div class="batch-item-meta">' +
+          esc(itemLabel) + progress + spu + ' · 正式图片 ' + esc(item.count || 0) + ' 张</div>' +
+          nameHistory + (reason ? '<div class="batch-item-reason">未完成原因：' + esc(reason) + '</div>' : '') + '</div>' +
+          '<div class="batch-item-actions">' +
+          (item.status === 'failed' ? '<button type="button" class="view-button retry-button" data-retry-task="' + esc(item.task_id) + '" data-retry-query="' + esc(item.query) + '">重新搜索</button>' : '') +
+          '<button type="button" class="view-button" data-view-task="' + esc(item.task_id) + '">' +
+          action + '</button></div></div>';
+      }).join('');
+    }
+    function batchCardMarkup(batch) {
+      const percent = Math.max(0, Math.min(100, Number(batch.percent || 0)));
+      const active = ['queued', 'processing'].includes(batch.status);
+      const selected = expandedBatch?.batchId === String(batch.batch_id) ? expandedBatch.filter : '';
+      const completedClass = selected === 'good' ? ' active' : '';
+      const pendingClass = selected === 'bad' ? ' active' : '';
+      const timing = Number(batch.eta_seconds || 0) > 0
+        ? ' · 已用 ' + formatDuration(batch.elapsed_seconds) + ' · 预计还需 ' + formatDuration(batch.eta_seconds)
+        : (Number(batch.elapsed_seconds || 0) > 0 ? ' · 已用 ' + formatDuration(batch.elapsed_seconds) : '');
+      const cancel = active
+        ? '<button type="button" class="cancel-button" data-cancel-batch="' + esc(batch.batch_id) + '">取消批次</button>'
+        : '';
+      const retry = Number(batch.failed || 0) > 0
+        ? '<button type="button" class="view-button retry-button" data-retry-batch="' + esc(batch.batch_id) + '">重试失败任务（' + esc(batch.failed) + '）</button>'
+        : '';
+      const badCount = Number(batch.failed || 0) + Number(batch.needs_changes || 0);
+      return '<article class="batch-card" data-batch-card="' + esc(batch.batch_id) + '">' +
+        '<div class="batch-card-head"><div class="batch-title" title="' + esc(batch.filename) + '">' +
+        esc(batch.filename) + '</div><span class="batch-status-badge ' + esc(batch.status) + '">' +
+        esc(batchLabel(batch.status)) + '</span></div>' +
+        '<div class="batch-meta">已完成 <strong>' + esc(batch.completed) + ' / ' + esc(batch.total) +
+        '</strong>（' + esc(percent) + '%） · 已处理 ' + esc(batch.settled_percent) + '%' + timing + '</div>' +
+        '<div class="batch-progress" aria-label="已完成 ' + esc(percent) + '%"><div class="batch-progress-bar" style="width:' +
+        percent + '%"></div></div><div class="batch-counts"><span>处理中 ' + esc(batch.processing) +
+        '</span><span>排队 ' + esc(batch.queued) + '</span><span>坏任务 ' + esc(badCount) + '（失败 ' + esc(batch.failed) + ' · 需处理 ' + esc(batch.needs_changes || 0) + ')' +
+        '</span><span>取消 ' + esc(batch.cancelled) + '</span></div><div class="batch-actions">' +
+        '<button type="button" class="view-button batch-filter completed' + completedClass + '" aria-pressed="' + (selected === 'good') + '" data-view-batch="' + esc(batch.batch_id) + '" data-batch-filter="good">好的列表（' + esc(batch.completed) + '）</button>' +
+        '<button type="button" class="view-button batch-filter pending' + pendingClass + '" aria-pressed="' + (selected === 'bad') + '" data-view-batch="' + esc(batch.batch_id) + '" data-batch-filter="bad">坏的列表（' + esc(badCount) + '）</button>' +
+        retry + cancel + '</div><div class="batch-items" hidden></div></article>';
+    }
+    function createBatchCard(batch) {
+      const template = document.createElement('template');
+      template.innerHTML = batchCardMarkup(batch).trim();
+      return template.content.firstElementChild;
+    }
+    function patchBatchCard(card, batch) {
+      const template = document.createElement('template');
+      template.innerHTML = batchCardMarkup(batch).trim();
+      const next = template.content.firstElementChild;
+      ['.batch-card-head', '.batch-meta', '.batch-progress', '.batch-counts', '.batch-actions'].forEach(selector => {
+        const current = card.querySelector(selector);
+        const replacement = next.querySelector(selector);
+        if (current && replacement) current.replaceWith(replacement);
+      });
+    }
+    function renderBatches(data) {
+      const batches = Array.isArray(data?.batches) ? data.batches : [];
+      const list = $('batch-list');
+      if (!batches.length) {
+        if (!list.querySelector('.batch-empty') || list.querySelector('[data-batch-card]')) {
+          list.innerHTML = '<div class="batch-empty">还没有批量导入记录。</div>';
+        }
+        expandedBatch = null;
+        return;
+      }
+      list.querySelector('.batch-empty')?.remove();
+      const cards = new Map(Array.from(list.querySelectorAll('[data-batch-card]')).map(card => [card.dataset.batchCard, card]));
+      const batchIds = new Set(batches.map(batch => String(batch.batch_id)));
+      cards.forEach((card, batchId) => {
+        if (!batchIds.has(batchId)) card.remove();
+      });
+      batches.forEach((batch, index) => {
+        const batchId = String(batch.batch_id);
+        let card = cards.get(batchId);
+        if (!card) {
+          card = createBatchCard(batch);
+          cards.set(batchId, card);
+        } else {
+          patchBatchCard(card, batch);
+        }
+        const current = list.children[index];
+        if (current !== card) list.insertBefore(card, current || null);
+      });
+      if (expandedBatch && !batchIds.has(expandedBatch.batchId)) expandedBatch = null;
+    }
+    async function loadBatches() {
+      const requestSeq = ++batchRequestSeq;
+      try {
+        const response = await fetch('/v1/images/batches?limit=20');
+        if (!response.ok) throw new Error('批量任务查询失败');
+        const data = await response.json();
+        if (requestSeq !== batchRequestSeq) return null;
+        renderOverviewBatch(data.batches || []);
+        renderBatches(data);
+        clearTimeout(batchRefreshTimer);
+        if ((data.batches || []).some(batch => ['queued', 'processing'].includes(batch.status))) {
+          batchRefreshTimer = setTimeout(loadBatches, 1800);
+        }
+        return data;
+      } catch (error) {
+        $('batch-list').innerHTML = '<div class="batch-empty">' + esc(error.message || '暂时无法读取批量任务。') + '</div>';
+        return null;
+      }
+    }
+    function unfinishedTaskTitle(task) {
+      return ((task.brand || '') + ' ' + (task.model || task.query || '')).trim() || task.query || task.task_id;
+    }
+    function taskLane(task) {
+      if (['good', 'bad', 'history'].includes(task?.lane)) return task.lane;
+      if (task?.status === 'failed' || (task?.status === 'completed' && task?.review_status === 'needs_changes')) return 'bad';
+      if (task?.status === 'cancelled') return 'history';
+      return 'good';
+    }
+    function isNeedsChangesTask(task) {
+      return taskLane(task) === 'bad' && task.status === 'completed' && task.review_status === 'needs_changes';
+    }
+    function isBadTask(task) {
+      return taskLane(task) === 'bad';
+    }
+    function unfinishedTaskReason(task) {
+      return String(task.error || task.review_note || task.progress?.message || '未记录具体失败原因').trim();
+    }
+    function captureUnfinishedViewport() {
+      if (activeModule !== 'unfinished') return null;
+      const scroller = $('console-main');
+      const container = $('unfinished-queue');
+      if (!scroller || !container) return null;
+      const scrollerRect = scroller.getBoundingClientRect();
+      const anchor = Array.from(container.querySelectorAll('[data-unfinished-task]')).find(row => {
+        const rect = row.getBoundingClientRect();
+        return rect.bottom >= scrollerRect.top + 8 && rect.top <= scrollerRect.bottom;
+      });
+      return {
+        scrollTop: scroller.scrollTop,
+        anchorTaskId: anchor?.dataset.unfinishedTask || null,
+        anchorOffset: anchor ? anchor.getBoundingClientRect().top - scrollerRect.top : null,
+      };
+    }
+    function restoreUnfinishedViewport(snapshot) {
+      if (!snapshot) return;
+      const scroller = $('console-main');
+      const container = $('unfinished-queue');
+      if (!scroller || !container) return;
+      if (snapshot.anchorTaskId && Number.isFinite(snapshot.anchorOffset)) {
+        const anchor = Array.from(container.querySelectorAll('[data-unfinished-task]'))
+          .find(row => row.dataset.unfinishedTask === snapshot.anchorTaskId);
+        if (anchor) {
+          const scrollerRect = scroller.getBoundingClientRect();
+          const nextOffset = anchor.getBoundingClientRect().top - scrollerRect.top;
+          scroller.scrollTop = Math.max(0, scroller.scrollTop + nextOffset - snapshot.anchorOffset);
+          return;
+        }
+      }
+      scroller.scrollTop = snapshot.scrollTop;
+    }
+    function unfinishedTaskMarkup(task) {
+      const progress = task.progress || {};
+      const names = (Array.isArray(task.query_history) ? task.query_history : [task.original_query, task.query])
+        .map(name => String(name || '').trim()).filter((name, index, items) => name && items.indexOf(name) === index);
+      const history = names.length > 1 ? '<div class="unfinished-meta">名称历史：' + names.map(esc).join(' → ') + '</div>' : '';
+      const retry = Number(progress.retry_count || 0);
+      const badge = isNeedsChangesTask(task) ? '需处理' : '未完成';
+      const action = isNeedsChangesTask(task)
+        ? '<button type="button" class="view-button" data-view-task="' + esc(task.task_id) + '">查看详情</button>'
+        : '<button type="button" class="view-button retry-button" data-retry-task="' + esc(task.task_id) + '" data-retry-query="' + esc(task.query) + '">重新搜索</button><button type="button" class="view-button" data-view-task="' + esc(task.task_id) + '">查看详情</button>';
+      return '<article class="unfinished-row" data-unfinished-task="' + esc(task.task_id) + '">' +
+        '<div class="unfinished-row-head"><div class="unfinished-title" title="' + esc(unfinishedTaskTitle(task)) + '">' + esc(unfinishedTaskTitle(task)) + '</div><span class="unfinished-badge">' + badge + '</span></div>' +
+        '<div class="unfinished-reason">未完成原因：' + esc(unfinishedTaskReason(task)) + '</div>' +
+        '<div class="unfinished-meta">正式图片 ' + esc(task.count || 0) + ' 张 · 已重试 ' + retry + ' 次 · ' + esc(historyTime(task)) + '</div>' +
+        history + '<div class="unfinished-actions">' + action + '</div></article>';
+    }
+    function patchUnfinishedRow(row, task) {
+      const template = document.createElement('template');
+      template.innerHTML = unfinishedTaskMarkup(task).trim();
+      const next = template.content.firstElementChild;
+      row.className = next.className;
+      row.innerHTML = next.innerHTML;
+    }
+    function renderUnfinishedQueue(data) {
+      const tasks = (Array.isArray(data?.tasks) ? data.tasks : [])
+        .filter(isBadTask)
+        .sort((a, b) => {
+          const retryOrder = Number(isRetryTask(b)) - Number(isRetryTask(a));
+          if (retryOrder) return retryOrder;
+          return new Date(b.updated_at || b.created_at || 0) - new Date(a.updated_at || a.created_at || 0);
+        });
+      $('nav-unfinished-count').textContent = tasks.length;
+      $('unfinished-note').textContent = tasks.length
+        ? '当前有 ' + tasks.length + ' 个坏任务；保留原因和名称历史，失败项可重新搜索，需处理项可打开详情修复后审核通过。'
+        : '当前没有坏任务。';
+      const container = $('unfinished-queue');
+      const viewport = captureUnfinishedViewport();
+      const existing = new Map(Array.from(container.querySelectorAll('[data-unfinished-task]')).map(row => [row.dataset.unfinishedTask, row]));
+      const taskIds = new Set(tasks.map(task => String(task.task_id)));
+      existing.forEach((row, taskId) => { if (!taskIds.has(taskId)) row.remove(); });
+      container.querySelector('.unfinished-empty')?.remove();
+      if (!tasks.length) {
+        container.insertAdjacentHTML('beforeend', '<div class="unfinished-empty">没有需要处理的坏任务。</div>');
+        restoreUnfinishedViewport(viewport);
+        return;
+      }
+      tasks.forEach((task, index) => {
+        const taskId = String(task.task_id);
+        let row = existing.get(taskId);
+        if (!row) {
+          const template = document.createElement('template');
+          template.innerHTML = unfinishedTaskMarkup(task).trim();
+          row = template.content.firstElementChild;
+          existing.set(taskId, row);
+        } else patchUnfinishedRow(row, task);
+        const current = container.children[index];
+        if (current !== row) container.insertBefore(row, current || null);
+      });
+      restoreUnfinishedViewport(viewport);
+    }
+    async function loadUnfinishedQueue() {
+      const requestSeq = ++unfinishedRequestSeq;
+      try {
+        const response = await fetch('/v1/images/tasks?bucket=bad&limit=200');
+        if (!response.ok) throw new Error('异常队列查询失败');
+        const data = await response.json();
+        if (requestSeq !== unfinishedRequestSeq) return null;
+        renderUnfinishedQueue(data);
+        return data;
+      } catch (error) {
+        if (requestSeq === unfinishedRequestSeq) {
+          $('unfinished-note').textContent = error.message || '暂时无法读取异常队列。';
+        }
+        return null;
+      }
+    }
+    async function viewBatch(batchId, button, filter = 'all') {
+      expandedBatch = {batchId: String(batchId), filter};
+      if (button) {
+        button.disabled = true;
+        button.dataset.viewLabel = button.textContent;
+        button.textContent = '加载中…';
+      }
+      try {
+        const response = await fetch('/v1/images/batches/' + encodeURIComponent(batchId));
+        if (!response.ok) throw new Error((await response.text()) || '批量任务查询失败');
+        const data = await response.json();
+        const card = Array.from(document.querySelectorAll('[data-batch-card]'))
+          .find(item => item.dataset.batchCard === batchId);
+        if (card) {
+          const items = filter === 'completed' || filter === 'good'
+            ? (data.items || []).filter(item => taskLane(item) === 'good' && item.status === 'completed')
+            : filter === 'bad' || filter === 'pending'
+              ? (data.items || []).filter(item => taskLane(item) === 'bad')
+              : (data.items || []);
+          renderBatchItems(card, items, filter === 'pending' ? 'bad' : filter);
+          if (button) card.querySelector('.batch-items').scrollIntoView({behavior: 'smooth', block: 'nearest'});
+        }
+      } catch (error) {
+        setBatchStatus(error.message || '批量任务查询失败。', 'error');
+      } finally {
+        if (button) {
+          button.disabled = false;
+          button.textContent = button.dataset.viewLabel || '查看列表';
+        }
+      }
+    }
+    async function cancelBatch(batchId, button) {
+      if (!window.confirm('确定取消这个批次吗？已完成的子任务不会被删除。')) return;
+      button.disabled = true;
+      button.textContent = '取消中…';
+      try {
+        const response = await fetch('/v1/images/batches/' + encodeURIComponent(batchId) + '/cancel', {method: 'POST'});
+        if (!response.ok) throw new Error((await response.text()) || '批次取消失败');
+        expandedBatch = null;
+        setBatchStatus('批次已取消，未开始的子任务已停止。');
+        await loadBatches();
+      } catch (error) {
+        button.disabled = false;
+        button.textContent = '取消批次';
+        setBatchStatus(error.message || '批次取消失败。', 'error');
+      }
+    }
+    async function retrySearchTask(taskId, button, currentQuery = '') {
+      const originModule = activeModule;
+      const initialQuery = String(currentQuery || button?.dataset.retryQuery || latestTask?.query || '').trim();
+      const editedQuery = window.prompt('重新搜索名称（可修改）', initialQuery);
+      if (editedQuery === null) return;
+      const query = editedQuery.trim().replace(/\s+/g, ' ');
+      if (query.length < 2) {
+        setBatchStatus('名称至少需要 2 个字符。', 'error');
+        return;
+      }
+      if (!window.confirm('确定用“' + query + '”重新搜索吗？当前结果会作为历史尝试保留，新的搜索会单独生成。')) return;
+      button.disabled = true;
+      button.dataset.retryLabel = button.textContent;
+      button.textContent = '重新排队…';
+      try {
+        const response = await fetch('/v1/images/tasks/' + encodeURIComponent(taskId) + '/retry', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({query})
+        });
+        if (!response.ok) {
+          const detail = await response.json().catch(() => ({}));
+          throw new Error(detail.detail || '任务重试失败');
+        }
+        if (activeViewTaskId === String(taskId)) {
+          $('retry-result').hidden = true;
+          setStatus('已重新排队，稍后会自动开始检索。', 'loading');
+        }
+        setBatchStatus('任务已重新排队，稍后会自动开始检索。');
+        // When retrying from the bad lane, keep the operator there so the
+        // remaining exceptions and their scroll position stay actionable.
+        // Other entry points open the good lane where the retry is prioritised.
+        activateModule(originModule === 'unfinished' ? 'unfinished' : 'queue', {scroll: false});
+        await loadQueue();
+        await loadUnfinishedQueue();
+        await loadHistory();
+        await loadBatches();
+      } catch (error) {
+        button.disabled = false;
+        button.textContent = button.dataset.retryLabel || '重新搜索';
+        setBatchStatus(error.message || '任务重试失败。', 'error');
+      }
+    }
+    async function retryFailedBatch(batchId, button) {
+      if (!window.confirm('确定重新搜索这个批次中所有未完成任务吗？已完成任务不会重复执行。')) return;
+      button.disabled = true;
+      button.dataset.retryLabel = button.textContent;
+      button.textContent = '重新排队…';
+      try {
+        const response = await fetch('/v1/images/batches/' + encodeURIComponent(batchId) + '/retry-failed', {method: 'POST'});
+        if (!response.ok) {
+          const detail = await response.json().catch(() => ({}));
+          throw new Error(detail.detail || '批量重试失败');
+        }
+        const data = await response.json();
+        const remaining = Number(data.failed || 0);
+        setBatchStatus(remaining ? '可重试任务已重新排队，仍有 ' + remaining + ' 个任务达到上限或未能入队。' : '失败任务已全部重新排队，稍后会自动开始检索。', remaining ? 'error' : '');
+        activateModule('queue');
+        await loadQueue();
+        await loadUnfinishedQueue();
+        await loadHistory();
+        await loadBatches();
+      } catch (error) {
+        button.disabled = false;
+        button.textContent = button.dataset.retryLabel || '重试失败任务';
+        setBatchStatus(error.message || '批量重试失败。', 'error');
+      }
+    }
+    async function importBatch() {
+      const file = $('batch-file').files[0];
+      if (!file) {
+        setBatchStatus('请先选择一个 .xlsx 或 .xlsm 文件。', 'error');
+        return;
+      }
+      const button = $('batch-import');
+      button.disabled = true;
+      button.textContent = '导入中…';
+      setBatchStatus('正在读取 Excel 并创建批量任务…');
+      try {
+        const params = new URLSearchParams({filename: file.name, limit: $('result-limit').value, search_tier: $('batch-search-tier').value});
+        const response = await fetch('/v1/images/batches/import?' + params.toString(), {
+          method: 'POST',
+          headers: {
+            'Content-Type': file.type || 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'X-Filename': file.name
+          },
+          body: file
+        });
+        if (!response.ok) throw new Error((await response.text()) || 'Excel 导入失败');
+        const data = await response.json();
+        $('batch-file').value = '';
+        setBatchStatus('已导入 ' + data.total + ' 个任务，批次已开始排队。');
+        await loadBatches();
+      } catch (error) {
+        setBatchStatus(error.message || 'Excel 导入失败。', 'error');
+      } finally {
+        button.disabled = false;
+        button.textContent = '导入并开始';
+      }
+    }
+    async function viewTask(taskId, button) {
+      const selectedTaskId = String(taskId);
+      const requestSeq = ++viewTaskRequestSeq;
+      activeViewTaskId = selectedTaskId;
+      if (button) {
+        button.disabled = true;
+        button.textContent = '加载中…';
+      }
+      showResultWorkspace();
+      latestTask = null;
+      $('results').dataset.taskId = selectedTaskId;
+      $('result-title').textContent = '正在加载任务…';
+      $('result-subtitle').textContent = '正在读取任务 ' + selectedTaskId;
+      $('gallery').innerHTML = '<div class="empty">正在读取该任务的结果…</div>';
+      try {
+        const response = await fetch('/v1/images/tasks/' + encodeURIComponent(taskId));
+        if (!response.ok) throw new Error((await response.text()) || '任务详情查询失败');
+        const data = await response.json();
+        if (requestSeq !== viewTaskRequestSeq || activeViewTaskId !== selectedTaskId) return;
+        if (String(data.task_id || '') !== selectedTaskId) {
+          throw new Error('任务明细与所选任务不一致');
+        }
+        renderTask(data);
+        const diagnostics = data.diagnostics || {};
+        const rejected = Array.isArray(diagnostics.rejected_previews) ? diagnostics.rejected_previews : [];
+        const fuzzy = Array.isArray(diagnostics.fuzzy_previews) ? diagnostics.fuzzy_previews : [];
+        const retrySnapshots = Array.isArray(data.retry_snapshots) ? data.retry_snapshots : [];
+        if (retrySnapshots.length) {
+          setStatus('已打开任务：历史尝试候选池已保留，可先预览再决定是否重新搜索。', '');
+        } else if (data.status === 'completed' && (rejected.length || fuzzy.length)) {
+          setStatus('已打开历史结果：淘汰预览 ' + rejected.length + ' 张 · 模糊候选 ' + fuzzy.length + ' 张。需要时点击“查看候选池”。', '');
+        } else if (data.status === 'completed') {
+          setStatus('已打开历史结果，但该任务没有可预览的候选池。', '');
+        } else if (data.status === 'cancelled') {
+          setStatus('该任务已取消，未生成最终候选池。', '');
+        } else if (data.status === 'failed') {
+          setStatus(data.error || '该任务检索失败，请稍后重试。', 'error');
+        } else {
+          setStatus('该任务没有可展示的结果。', '');
+        }
+      } catch (error) {
+        if (requestSeq === viewTaskRequestSeq && activeViewTaskId === selectedTaskId) {
+          setStatus(error.message || '任务详情查询失败。', 'error');
+        }
+      } finally {
+        if (button) {
+          button.disabled = false;
+          button.textContent = button.dataset.viewLabel || '查看结果';
+        }
+      }
+    }
+    async function cancelQueueTask(taskId, button) {
+      if (!window.confirm('确定取消这个检索任务吗？已下载的安全预览不会被删除。')) return;
+      button.disabled = true;
+      button.textContent = '取消中…';
+      try {
+        const response = await fetch('/v1/images/tasks/' + encodeURIComponent(taskId) + '/cancel', {method: 'POST'});
+        if (!response.ok) throw new Error((await response.text()) || '取消失败');
+        const data = await response.json();
+        if (activePollTaskId === taskId && data.status === 'cancelled') {
+          setStatus('已取消该检索任务。', '');
+        }
+        await loadQueue();
+        await loadUnfinishedQueue();
+        await loadHistory();
+      } catch (error) {
+        button.disabled = false;
+        button.textContent = '取消任务';
+        setStatus(error.message || '取消失败，请稍后重试。', 'error');
+      }
+    }
+
+    function setStatus(message, state = '') {
+      $('search-status').className = 'status ' + state;
+      $('search-status').textContent = message;
+    }
+    function metric(label, value) {
+      return '<div class="metric"><span class="metric-label">' + esc(label) +
+        '</span><span class="metric-value">' + esc(value) + '</span></div>';
+    }
+    function renderBreakdown(images) {
+      const classCounts = {};
+      const sourceCounts = {};
+      images.forEach(image => {
+        const className = image.image_class || 'unknown';
+        classCounts[className] = (classCounts[className] || 0) + 1;
+        const source = image.platform || image.provider || 'web_search';
+        sourceCounts[source] = (sourceCounts[source] || 0) + 1;
+      });
+      const classLabels = {real_photo: '实拍图', catalog: '商品图', unknown: '未分类'};
+      $('class-pills').innerHTML = Object.entries(classCounts).length
+        ? Object.entries(classCounts).map(([key, count]) =>
+          '<span class="source-pill class-pill ' + esc(key) + '">' +
+          esc(classLabels[key] || key) + ' ' + count + '</span>').join('')
+        : '<span class="muted">没有可用图片</span>';
+      $('source-pills').innerHTML = Object.entries(sourceCounts).length
+        ? Object.entries(sourceCounts).map(([key, count]) =>
+          '<span class="source-pill">' + esc(key) + ' ' + count + '</span>').join('')
+        : '<span class="muted">没有可用来源</span>';
+    }
+    function renderImages(images) {
+      if (!images.length) {
+        $('gallery').innerHTML = '<div class="empty">暂时没有通过品牌、型号和图片质量校验的结果。系统不会用相似型号填充。</div>';
+        return;
+      }
+      $('gallery').innerHTML = images.map((image, index) => {
+        const source = safeUrl(image.source_url);
+        const key = esc(image.url || image.source_url || '');
+        const confidence = Math.round((image.product_confidence || 0) * 100);
+        return '<article class="image-card pool-card" data-pool-card="formal" data-image-key="' + key + '">' +
+          '<input class="pool-check" type="checkbox" data-pool-check="formal" data-image-key="' + key + '" aria-label="选择正式图片 ' + (index + 1) + '">' +
+          '<div class="image-frame"><img src="' + safeUrl(image.url) + '" alt="' +
+          esc(latestTask.brand + ' ' + latestTask.model + ' 图片 ' + (index + 1)) + '" loading="lazy"></div>' +
+          '<div class="image-info"><div class="image-title">' + esc(image.source_domain || '未知来源') +
+          '</div><div class="image-detail">' + esc(image.width) + ' × ' + esc(image.height) +
+          ' · 型号置信度 ' + confidence + '% · ' + esc(image.provider) +
+          (image.image_class ? ' · ' + esc({real_photo: '实拍图', catalog: '商品图', unknown: '未分类'}[image.image_class] || image.image_class) : '') +
+          (image.platform ? ' · ' + esc(image.platform) : '') +
+          '<button type="button" class="pool-card-action" data-move-pool="candidate" data-image-key="' + key + '">移到备选池</button>' +
+          '</div><a class="image-source" href="' + source +
+          '" target="_blank" rel="noopener noreferrer">查看来源页面 ↗</a></div></article>';
+      }).join('');
+    }
+    function rejectionLabel(reason) {
+      return ({
+        insufficient_model_evidence: '型号证据不足',
+        'image long edge is below minimum': '图片尺寸低于最低要求',
+        'candidate is not classified as a real photo': '未确认是实拍图',
+        'candidate is classified as a real photo': '被商品图模式排除'
+      }[reason] || reason || '未通过校验');
+    }
+    function renderRejectedCandidates(items) {
+      const panel = $('rejected-panel');
+      if (!items.length) {
+        panel.hidden = true;
+        panel.open = false;
+        $('rejected-gallery').innerHTML = '';
+        return;
+      }
+      panel.hidden = false;
+      panel.open = true;
+      $('rejected-note').textContent = '（可预览 ' + items.length + ' 张）';
+      $('rejected-gallery').innerHTML = items.map((image, index) => {
+        const source = safeUrl(image.source_url);
+        return '<article class="image-card rejected-card">' +
+          '<div class="image-frame"><img src="' + safeUrl(image.url) + '" alt="淘汰候选图片 ' + (index + 1) + '" loading="lazy"></div>' +
+          '<div class="image-info"><div class="image-title">' + esc(image.source_domain || '未知来源') +
+          '</div><div class="image-detail">' + esc(image.width) + ' × ' + esc(image.height) +
+          ' · ' + esc(image.provider || '') + (image.query ? ' · ' + esc(image.query) : '') +
+          '</div><div class="rejected-reason">淘汰原因：' + esc(rejectionLabel(image.reason)) + '</div>' +
+          '<a class="image-source" href="' + source + '" target="_blank" rel="noopener noreferrer">查看来源页面 ↗</a></div></article>';
+      }).join('');
+    }
+    function renderFuzzyCandidates(items) {
+      const panel = $('fuzzy-panel');
+      if (!items.length) {
+        panel.hidden = true;
+        panel.open = false;
+        $('fuzzy-gallery').innerHTML = '';
+        return;
+      }
+      panel.hidden = false;
+      panel.open = true;
+      $('fuzzy-note').textContent = '（可参考 ' + items.length + ' 张，不进入正式池）';
+      $('fuzzy-gallery').innerHTML = items.map((image, index) => {
+        const source = safeUrl(image.source_url);
+        const key = esc(image.url || image.source_url || '');
+        return '<article class="image-card fuzzy-card pool-card" data-pool-card="candidate" data-image-key="' + key + '">' +
+          '<input class="pool-check" type="checkbox" data-pool-check="candidate" data-image-key="' + key + '" aria-label="选择模糊候选图片 ' + (index + 1) + '">' +
+          '<div class="image-frame"><img src="' + safeUrl(image.url) + '" alt="模糊候选图片 ' + (index + 1) + '" loading="lazy"></div>' +
+          '<div class="image-info"><div class="image-title">' + esc(image.title || image.source_domain || '近邻型号候选') +
+          '</div><div class="image-detail">' + esc(image.width) + ' × ' + esc(image.height) +
+          ' · ' + esc(image.source_domain || '未知来源') + (image.query ? ' · ' + esc(image.query) : '') +
+          '</div><div class="fuzzy-reason">模糊原因：型号证据不足，可能是地区 SKU 或近邻型号</div>' +
+          '<button type="button" class="pool-card-action" data-move-pool="formal" data-image-key="' + key + '">提升为正式图</button>' +
+          '<a class="image-source" href="' + source + '" target="_blank" rel="noopener noreferrer">查看来源页面 ↗</a></div></article>';
+        }).join('');
+    }
+    function renderReviewCandidates(items) {
+      const panel = $('pool-review');
+      if (!items.length) { panel.hidden = true; $('candidate-review-gallery').innerHTML = ''; return; }
+      panel.hidden = false;
+      $('candidate-review-gallery').innerHTML = items.map((image, index) => {
+        const key = esc(image.url || image.source_url || '');
+        const source = safeUrl(image.source_url);
+        return '<article class="image-card fuzzy-card pool-card" data-pool-card="candidate" data-image-key="' + key + '">' +
+          '<input class="pool-check" type="checkbox" data-pool-check="candidate" data-image-key="' + key + '" aria-label="选择备选图片 ' + (index + 1) + '">' +
+          '<div class="image-frame"><img src="' + safeUrl(image.url) + '" alt="备选图片 ' + (index + 1) + '" loading="lazy"></div>' +
+          '<div class="image-info"><div class="image-title">' + esc(image.title || image.source_domain || '备选图片') + '</div>' +
+          '<div class="image-detail">' + esc(image.width || 0) + ' × ' + esc(image.height || 0) + ' · ' + esc(image.source_domain || '未知来源') + '</div>' +
+          '<div class="fuzzy-reason">' + esc(rejectionLabel(image.reason || '待人工判断')) + '</div>' +
+          '<button type="button" class="pool-card-action" data-move-pool="formal" data-image-key="' + key + '">提升为正式图</button>' +
+          '<a class="image-source" href="' + source + '" target="_blank" rel="noopener noreferrer">查看来源页面 ↗</a></div></article>';
+      }).join('');
+    }
+    async function savePoolDecisions(decisions) {
+      if (!latestTask || !decisions.length) return;
+      const response = await fetch('/v1/images/tasks/' + encodeURIComponent(latestTask.task_id) + '/pool-decisions', {
+        method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({decisions})
+      });
+      if (!response.ok) throw new Error((await response.text()) || '图片池划分失败');
+      const data = await response.json();
+      renderTask(data);
+      setStatus('已保存 ' + decisions.length + ' 张图片的池子划分。', '');
+    }
+    async function movePool(imageKey, pool) {
+      try { await savePoolDecisions([{image_key: imageKey, pool}]); }
+      catch (error) { setStatus(error.message || '图片池划分失败。', 'error'); }
+    }
+    async function moveSelected(pool) {
+      const decisions = [...document.querySelectorAll('[data-pool-check]:checked')]
+        .map(input => ({image_key: input.dataset.imageKey, pool})).filter(item => item.image_key);
+      if (!decisions.length) { setStatus('请先勾选要移动的图片。', ''); return; }
+      await movePoolBatch(decisions);
+    }
+    async function movePoolBatch(decisions) {
+      try { await savePoolDecisions(decisions); }
+      catch (error) { setStatus(error.message || '图片池划分失败。', 'error'); }
+    }
+    function retrySnapshotPool(snapshot, key) {
+      const items = Array.isArray(snapshot?.[key]) ? snapshot[key] : [];
+      return items.filter(item => item && typeof item === 'object');
+    }
+    function retrySnapshotCard(image, index, label) {
+      const source = safeUrl(image.source_url);
+      return '<article class="image-card retry-history-card">' +
+        '<div class="image-frame"><img src="' + safeUrl(image.url) + '" alt="历史' + esc(label) + ' ' + (index + 1) + '" loading="lazy"></div>' +
+        '<div class="image-info"><div class="image-title">' + esc(image.source_domain || '未知来源') +
+        '</div><div class="image-detail">' + esc(image.width || 0) + ' × ' + esc(image.height || 0) +
+        (image.query ? ' · ' + esc(image.query) : '') + '</div>' +
+        '<a class="image-source" href="' + source + '" target="_blank" rel="noopener noreferrer">查看来源页面 ↗</a></div></article>';
+    }
+    function renderRetrySnapshots(snapshots) {
+      const panel = $('retry-history-panel');
+      const content = $('retry-history-content');
+      const valid = (Array.isArray(snapshots) ? snapshots : []).filter(item => item && typeof item === 'object');
+      if (!valid.length) {
+        panel.hidden = true;
+        panel.open = false;
+        content.innerHTML = '';
+        return;
+      }
+      panel.hidden = false;
+      panel.open = true;
+      const total = valid.reduce((sum, item) => sum + retrySnapshotPool(item, 'formal_images').length + retrySnapshotPool(item, 'fuzzy_previews').length + retrySnapshotPool(item, 'rejected_previews').length, 0);
+      $('retry-history-note').textContent = '（' + valid.length + ' 次尝试 · ' + total + ' 张历史图片）';
+      content.innerHTML = valid.slice().reverse().map((snapshot) => {
+        const pools = [
+          ['正式图片', retrySnapshotPool(snapshot, 'formal_images')],
+          ['模糊候选', retrySnapshotPool(snapshot, 'fuzzy_previews')],
+          ['淘汰候选', retrySnapshotPool(snapshot, 'rejected_previews')]
+        ];
+        const attempt = Number(snapshot.attempt || 0) || '—';
+        const query = String(snapshot.query || '').trim() || '未记录名称';
+        const captured = snapshot.captured_at ? new Date(snapshot.captured_at).toLocaleString() : '时间未知';
+        return '<section class="retry-snapshot"><div class="retry-snapshot-head"><div>第 ' + esc(attempt) + ' 次重试前 · ' + esc(query) + '</div><span>' + esc(captured) + '</span></div><div class="retry-snapshot-grid">' + pools.map(([label, items]) => {
+          const visible = items.slice(0, 300);
+          return '<div class="retry-snapshot-pool"><h4>' + esc(label) + ' · ' + items.length + ' 张</h4>' +
+            (visible.length ? '<div class="retry-snapshot-gallery">' + visible.map((image, index) => retrySnapshotCard(image, index, label)).join('') + '</div>' : '<div class="muted">没有图片</div>') +
+            (items.length > visible.length ? '<div class="retry-snapshot-more">另有 ' + (items.length - visible.length) + ' 张未在页面展开</div>' : '') + '</div>';
+        }).join('') + '</div></section>';
+      }).join('');
+    }
+    function openCandidatePools() {
+      const diagnostics = latestTask?.diagnostics || {};
+      const rejected = Array.isArray(diagnostics.rejected_previews) ? diagnostics.rejected_previews : [];
+      const fuzzy = Array.isArray(diagnostics.fuzzy_previews) ? diagnostics.fuzzy_previews : [];
+      const candidates = Array.isArray(latestTask?.candidate_images) ? latestTask.candidate_images : [...fuzzy, ...rejected];
+      const snapshots = Array.isArray(latestTask?.retry_snapshots) ? latestTask.retry_snapshots : [];
+      if (!candidates.length && !snapshots.length) {
+        setStatus('当前任务没有可预览的候选池。请等待任务完成，或打开一个已完成任务。', '');
+        return;
+      }
+      if (rejected.length) $('rejected-panel').open = true;
+      if (fuzzy.length) $('fuzzy-panel').open = true;
+      if (snapshots.length) $('retry-history-panel').open = true;
+      const target = candidates.length ? $('pool-review') : $('retry-history-panel');
+      target.scrollIntoView({behavior: 'smooth', block: 'start'});
+    }
+    function queryCandidateButton(query) {
+      return '<button type="button" class="query-candidate" data-query-candidate="' + esc(query) +
+        '" title="点击检索：' + esc(query) + '">' + esc(query) + '</button>';
+    }
+    function renderFuzzyQueries(items) {
+      const container = $('fuzzy-queries');
+      const queries = [...new Set((Array.isArray(items) ? items : [])
+        .map(item => String(item?.query || '').trim()).filter(Boolean))];
+      const visible = queries.slice(0, 32);
+      $('fuzzy-query-note').textContent = queries.length ? '命中 ' + queries.length + ' 个词' : '';
+      if (!queries.length) {
+        container.innerHTML = '<span class="fuzzy-query-empty">本次没有安全模糊候选，因此没有可展示的模糊词。</span>';
+        return;
+      }
+      container.innerHTML = visible.map(queryCandidateButton).join('') +
+        (queries.length > visible.length
+          ? '<span class="fuzzy-query-empty">另有 ' + (queries.length - visible.length) + ' 个模糊词未展开</span>'
+          : '');
+    }
+    function renderQueryCandidates(plan) {
+      const container = $('query-candidates');
+      const queries = Array.isArray(plan?.queries)
+        ? [...new Set(plan.queries.map(query => String(query || '').trim()).filter(Boolean))]
+        : [];
+      if (!queries.length) {
+        container.innerHTML = '<span class="muted">本次没有可展示的候选搜索词。</span>';
+        return;
+      }
+      const primary = queries.filter(query => !/^site:/i.test(query));
+      const visible = (primary.length ? primary : queries).slice(0, 24);
+      const hidden = queries.filter(query => !visible.includes(query));
+      let html = visible.map(queryCandidateButton).join('');
+      if (hidden.length) {
+        html += '<details class="query-candidate-more"><summary>展开其余 ' + hidden.length + ' 个候选词</summary>' +
+          '<div class="query-candidates">' + hidden.map(queryCandidateButton).join('') + '</div></details>';
+      }
+      container.innerHTML = html;
+    }
+    function renderStrategyLog(items) {
+      const list = $('strategy-list');
+      if (!items.length) {
+        list.innerHTML = '<span class="muted">没有记录到检索策略。</span>';
+        return;
+      }
+      list.innerHTML = items.map(strategy => {
+        const queries = Number(strategy.queries || 0);
+        const candidates = Number(strategy.candidates || strategy.added_candidates || 0);
+        const validated = Number(strategy.validated_images || 0);
+        const fuzzy = Number(strategy.fuzzy_previews || 0);
+        const extra = ['S-05', 'S-09', 'S-10'].includes(strategy.id)
+          ? '新增页面图片候选 ' + Number(strategy.added_candidates || 0) + ' 个'
+          : '新增查询 ' + queries + ' 条 · 候选 ' + candidates + ' 个';
+        return '<div class="strategy-row">' +
+          '<div class="strategy-id">' + esc(strategy.id) + '</div>' +
+          '<div><div class="strategy-name">' + esc(strategy.name) + '</div>' +
+          '<div class="strategy-note">' + esc(strategy.note || '') + '</div></div>' +
+          '<div class="strategy-count">' + extra + '<br>有效 ' + validated + ' 张' +
+          (fuzzy ? ' · 模糊池 ' + fuzzy + ' 张' : '') + '</div>' +
+          '</div>';
+      }).join('');
+    }
+    function renderTask(data) {
+      if (activeViewTaskId && String(data?.task_id || '') !== activeViewTaskId) return;
+      showResultWorkspace();
+      $('result-insights').open = false;
+      latestTask = data;
+      const images = data.images || [];
+      const diagnostics = data.diagnostics || {};
+      const rejectedPreviews = Array.isArray(diagnostics.rejected_previews) ? diagnostics.rejected_previews : [];
+      const fuzzyPreviews = Array.isArray(diagnostics.fuzzy_previews) ? diagnostics.fuzzy_previews : [];
+      const candidateImages = Array.isArray(data.candidate_images) ? data.candidate_images : [...fuzzyPreviews, ...rejectedPreviews];
+      const retrySnapshots = Array.isArray(data.retry_snapshots) ? data.retry_snapshots : [];
+      const note = diagnostics.quality_note || '仅展示通过校验的图片。';
+      $('results').hidden = false;
+      $('results').dataset.taskId = String(data.task_id || '');
+      $('result-title').textContent = (data.brand + ' ' + (data.model || data.query)).trim();
+      $('result-subtitle').textContent = data.status === 'completed'
+        ? '任务已完成 · ' + (data.updated_at ? new Date(data.updated_at).toLocaleString() : '')
+        : '任务状态：' + taskLabel(data.status) + (data.error ? ' · ' + data.error : '');
+      $('summary').innerHTML = [
+        metric('品牌', data.brand || '未识别'),
+        metric('型号', data.model || '未识别'),
+        metric('有效图片', (data.count || 0) + ' 张'),
+        metric('模糊图片池', (diagnostics.fuzzy_preview_count || 0) + ' 张'),
+        metric('淘汰预览池', (diagnostics.rejected_preview_count || 0) + ' 张'),
+        metric('候选淘汰', (diagnostics.rejected || 0) + ' 个'),
+        metric('屏蔽来源', (diagnostics.blocked_candidate_count || 0) + ' 个'),
+        metric('目标上限', (data.limit || 20) + ' 张'),
+        metric('首轮档位', ({strict: '严格', balanced: '平衡', broad: '宽松'}[data.search_tier] || '平衡')),
+        metric('图片模式', data.image_mode === 'real_photo' ? '实拍图' : data.image_mode === 'catalog' ? '商品图' : '全部并分栏'),
+        metric('搜索语言', diagnostics.locale || '自动多语言'),
+        metric('任务进度', Math.round(Number((data.progress || {}).percent || (data.status === 'completed' ? 100 : 0))) + '%'),
+        metric('已用时间', formatDuration((data.progress || {}).elapsed_seconds)),
+        metric('预计剩余', data.status === 'completed' || data.status === 'cancelled' || data.status === 'failed' ? '—' : formatDuration((data.progress || {}).eta_seconds)),
+        ...(data.error ? [metric('任务提示', data.error)] : [])
+      ].join('');
+      const historicalPoolCount = retrySnapshots.reduce((sum, snapshot) => sum + retrySnapshotPool(snapshot, 'formal_images').length + retrySnapshotPool(snapshot, 'fuzzy_previews').length + retrySnapshotPool(snapshot, 'rejected_previews').length, 0);
+      const poolCount = candidateImages.length + historicalPoolCount;
+      $('open-pools').hidden = poolCount === 0;
+      $('open-pools').textContent = poolCount
+        ? '查看候选池（' + poolCount + ' 张）'
+        : '查看候选池';
+      $('retry-result').hidden = data.status !== 'failed';
+      $('retry-result').dataset.retryTask = String(data.task_id || '');
+      const classCounts = {};
+      images.forEach(image => {
+        const key = image.image_class || 'unknown';
+        classCounts[key] = (classCounts[key] || 0) + 1;
+      });
+      latestBrief = [
+        '产品：' + (data.brand + ' ' + (data.model || data.query)).trim(),
+        '检索状态：' + data.status,
+        '有效图片：' + (data.count || 0) + ' 张',
+        '图片分类：实拍图 ' + (classCounts.real_photo || 0) + ' / 商品图 ' + (classCounts.catalog || 0) + ' / 未分类 ' + (classCounts.unknown || 0),
+        '查询语言：' + (diagnostics.locale || '自动多语言') + ' · 已规划 ' + (diagnostics.query_plan ? diagnostics.query_plan.query_count : 0) + ' 条',
+        '候选淘汰：' + (diagnostics.rejected || 0) + ' 个',
+        '屏蔽来源：' + (diagnostics.blocked_candidate_count || 0) + ' 个' +
+          (Object.keys(diagnostics.blocked_domain_hits || {}).length
+            ? ' · ' + Object.entries(diagnostics.blocked_domain_hits).map(([domain, count]) => domain + ' ' + count).join('、')
+            : ''),
+        '说明：' + note
+      ].join('\n');
+      $('brief-text').textContent = latestBrief;
+      $('gallery-note').textContent = images.length
+        ? '已整理 ' + images.length + ' 张，可点击来源回看原页面' : '暂无结果';
+      renderBreakdown(images);
+      renderImages(images);
+      renderFuzzyQueries(fuzzyPreviews);
+      renderQueryCandidates(diagnostics.query_plan || {});
+      renderStrategyLog(diagnostics.search_strategy_log || []);
+      renderFuzzyCandidates(fuzzyPreviews);
+      renderRejectedCandidates(rejectedPreviews);
+      renderReviewCandidates(candidateImages);
+      renderRetrySnapshots(retrySnapshots);
+    }
+    async function pollTask(taskId) {
+      const polledTaskId = String(taskId);
+      const pollRequestSeq = ++viewTaskRequestSeq;
+      activeViewTaskId = polledTaskId;
+      activePollTaskId = polledTaskId;
+      try {
+        for (;;) {
+          const queueData = await loadQueue();
+          const response = await fetch('/v1/images/tasks/' + encodeURIComponent(taskId));
+          if (!response.ok) throw new Error('任务查询失败');
+          const data = await response.json();
+          if (pollRequestSeq !== viewTaskRequestSeq || activeViewTaskId !== polledTaskId) return;
+          const progress = data.progress || {};
+          const queueTask = queueData?.tasks?.find(item => item.task_id === taskId);
+          if (data.status === 'queued' || data.status === 'processing') {
+            const position = progress.queue_position || queueTask?.progress?.queue_position;
+            const statusText = data.status === 'queued'
+              ? '任务排队中' + (position ? '（第 ' + position + ' 个）' : '') +
+                ' · 本任务预计耗时约 ' + formatDuration(progress.estimated_seconds)
+              : (progress.phase_label || '正在处理') + ' · ' + Math.round(Number(progress.percent || 0)) +
+                '% · 已用 ' + formatDuration(progress.elapsed_seconds) +
+                ' · 预计还需 ' + formatDuration(progress.eta_seconds);
+            setStatus(statusText, 'loading');
+            await new Promise(resolve => setTimeout(resolve, 1200));
+            continue;
+          }
+          if (data.status === 'failed') throw new Error(data.error || '检索任务失败');
+          if (data.status === 'cancelled') {
+            renderTask(data);
+            setStatus('已取消该检索任务。', '');
+            return;
+          }
+          renderTask(data);
+          setStatus('完成：已为你整理 ' + (data.count || 0) + ' 张图片。', '');
+          return;
+        }
+      } finally {
+        if (activePollTaskId === polledTaskId) activePollTaskId = null;
+        await loadQueue();
+        await loadUnfinishedQueue();
+        await loadHistory();
+      }
+    }
+    async function startSearch(query) {
+      const button = $('search-button');
+      ++viewTaskRequestSeq;
+      activeViewTaskId = null;
+      activateModule('search');
+      $('search-landing').hidden = false;
+      button.disabled = true;
+      $('results').hidden = true;
+      setStatus('正在创建检索任务…', 'loading');
+      try {
+        const response = await fetch('/v1/images/search', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            query,
+            limit: Number($('result-limit').value),
+            image_mode: $('image-mode').value,
+            locale: $('locale').value || null,
+            search_tier: $('search-tier').value,
+            refresh: true
+          })
+        });
+        if (!response.ok) throw new Error(await response.text() || '无法创建检索任务');
+        const accepted = await response.json();
+        await loadQueue();
+        await pollTask(accepted.task_id);
+      } catch (error) {
+        setStatus(error.message || '检索失败，请稍后重试。', 'error');
+      } finally {
+        button.disabled = false;
+      }
+    }
+    $('search-form').onsubmit = (event) => {
+      event.preventDefault();
+      const query = $('query').value.trim();
+      if (query) startSearch(query);
+    };
+    document.querySelectorAll('[data-query]').forEach(button => {
+      button.onclick = () => {
+        $('query').value = button.dataset.query;
+        startSearch(button.dataset.query);
+      };
+    });
+    function handleQueryCandidate(event) {
+      const button = event.target.closest('[data-query-candidate]');
+      if (!button) return;
+      const query = button.dataset.queryCandidate?.trim();
+      if (!query) return;
+      $('query').value = query;
+      startSearch(query);
+    }
+    $('fuzzy-queries').addEventListener('click', handleQueryCandidate);
+    $('query-candidates').addEventListener('click', handleQueryCandidate);
+    document.addEventListener('click', (event) => {
+      const button = event.target.closest('[data-move-pool]');
+      if (button) movePool(button.dataset.imageKey || '', button.dataset.movePool || 'candidate');
+    });
+    $('promote-selected').onclick = () => moveSelected('formal');
+    $('demote-selected').onclick = () => moveSelected('candidate');
+    document.querySelectorAll('[data-module-nav]').forEach(button => {
+      button.onclick = () => {
+        const module = button.dataset.moduleNav;
+        if (module === 'search') showSearchLanding();
+        else activateModule(module);
+      };
+    });
+    document.querySelectorAll('[data-open-module]').forEach(button => {
+      button.onclick = () => {
+        const module = button.dataset.openModule;
+        if (module === 'search') showSearchLanding();
+        else activateModule(module);
+      };
+    });
+    $('back-to-search').onclick = showSearchLanding;
+    $('task-queue').addEventListener('click', (event) => {
+      const button = event.target.closest('[data-cancel-task]');
+      if (button) cancelQueueTask(button.dataset.cancelTask, button);
+    });
+    $('completed-queue').addEventListener('click', (event) => {
+      const button = event.target.closest('[data-view-task]');
+      if (!button) return;
+      button.dataset.viewLabel = button.textContent;
+      viewTask(button.dataset.viewTask, button);
+    });
+    $('task-history').addEventListener('click', (event) => {
+      const retryButton = event.target.closest('[data-retry-task]');
+      if (retryButton) {
+        retrySearchTask(retryButton.dataset.retryTask, retryButton, retryButton.dataset.retryQuery);
+        return;
+      }
+      const button = event.target.closest('[data-view-task]');
+      if (!button) return;
+      button.dataset.viewLabel = button.textContent;
+      viewTask(button.dataset.viewTask, button);
+    });
+    $('unfinished-queue').addEventListener('click', (event) => {
+      const retryButton = event.target.closest('[data-retry-task]');
+      if (retryButton) {
+        retrySearchTask(retryButton.dataset.retryTask, retryButton, retryButton.dataset.retryQuery);
+        return;
+      }
+      const button = event.target.closest('[data-view-task]');
+      if (!button) return;
+      button.dataset.viewLabel = button.textContent;
+      viewTask(button.dataset.viewTask, button);
+    });
+    $('batch-list').addEventListener('click', (event) => {
+      const retryTaskButton = event.target.closest('[data-retry-task]');
+      if (retryTaskButton) {
+        retrySearchTask(retryTaskButton.dataset.retryTask, retryTaskButton, retryTaskButton.dataset.retryQuery);
+        return;
+      }
+      const retryBatchButton = event.target.closest('[data-retry-batch]');
+      if (retryBatchButton) {
+        retryFailedBatch(retryBatchButton.dataset.retryBatch, retryBatchButton);
+        return;
+      }
+      const taskButton = event.target.closest('[data-view-task]');
+      if (taskButton) {
+        taskButton.dataset.viewLabel = taskButton.textContent;
+        viewTask(taskButton.dataset.viewTask, taskButton);
+        return;
+      }
+      const batchButton = event.target.closest('[data-view-batch]');
+      if (batchButton) {
+        viewBatch(batchButton.dataset.viewBatch, batchButton, batchButton.dataset.batchFilter || 'all');
+        return;
+      }
+      const cancelButton = event.target.closest('[data-cancel-batch]');
+      if (cancelButton) cancelBatch(cancelButton.dataset.cancelBatch, cancelButton);
+    });
+    $('refresh-queue').onclick = loadQueue;
+    $('refresh-unfinished').onclick = loadUnfinishedQueue;
+    $('refresh-history').onclick = loadHistory;
+    $('batch-import').onclick = importBatch;
+    $('open-pools').onclick = openCandidatePools;
+    $('retry-result').onclick = () => {
+      const taskId = $('retry-result').dataset.retryTask;
+      if (taskId) retrySearchTask(taskId, $('retry-result'), latestTask?.query);
+    };
+    $('refresh-result').onclick = () => {
+      if ($('query').value.trim()) startSearch($('query').value.trim());
+    };
+    $('copy-brief').onclick = async () => {
+      if (!latestBrief) return;
+      try {
+        await navigator.clipboard.writeText(latestBrief);
+        $('copy-brief').textContent = '已复制';
+        setTimeout(() => $('copy-brief').textContent = '复制整理摘要', 1400);
+      } catch {
+        setStatus('浏览器不允许自动复制，请手动选择摘要文本。', 'error');
+      }
+    };
+
+    async function loadProviders() {
+      const response = await fetch('/admin/providers');
+      if (!response.ok) { $('admin-content').hidden = true; return; }
+      const data = await response.json();
+      $('admin-content').hidden = false;
+      $('vault').textContent = data.vault_enabled ? '凭证加密存储已启用' : '未配置加密密钥，暂不能保存凭证';
+      $('vault').className = data.vault_enabled ? 'healthy' : 'degraded';
+      $('providers').innerHTML = data.providers.map(provider => {
+        const fields = (provider.schema.fields || []).map(field =>
+          '<label>' + esc(field) + '<input data-provider="' + esc(provider.name) +
+          '" data-key="' + esc(field) + '" type="password" placeholder="留空表示不修改"></label>'
+        ).join('');
+        const state = provider.status.state || 'not_checked';
+        return '<div class="card"><h3>' + esc(provider.name) + '</h3><p>' +
+          esc(provider.schema.description || '') + '</p><p class="state ' + esc(state) + '">' +
+          esc(state) + ' ' + esc(provider.status.message || '') + '</p>' + fields +
+          '<button class="small-button" onclick="saveProvider(\'' + esc(provider.name) +
+          '\')">保存凭证</button> <button class="small-button" onclick="checkProvider(\'' +
+          esc(provider.name) + '\')">健康检查</button></div>';
+      }).join('');
+    }
+    async function loadAdminAccess() {
+      const response = await fetch('/admin/access');
+      if (!response.ok) return;
+      const access = await response.json();
+      if (!access.auth_required) {
+        $('admin-panel').open = true;
+        $('login').hidden = true;
+        $('login-result').textContent = '本机测试免登录';
+        $('admin-access').textContent = '仅本机可用 · 远程环境仍需管理员密码';
+        await loadProviders();
+        await loadSearchPolicy();
+        await loadBlockedDomains();
+        await loadOrchestration();
+      } else {
+        $('admin-access').textContent = '远程访问需要管理员密码';
+      }
+    }
+    const healthLabels = {
+      ready: '就绪',
+      reference_only: '参考项目',
+      auth_required: '需凭证',
+      unverified: '待验证',
+      degraded: '降级',
+      disabled: '已停用'
+    };
+    const kindLabels = {
+      external_project: '外部项目',
+      builtin_stage: '内置阶段'
+    };
+    function orchestrationMetric(label, value) {
+      return '<div class="metric"><span class="metric-label">' + esc(label) +
+        '</span><span class="metric-value">' + esc(value) + '</span></div>';
+    }
+    function platformHealth(platform) {
+      const counts = platform.health_counts || {};
+      if (!platform.enabled) return ['disabled', '已停用'];
+      if ((counts.degraded || 0) > 0) return ['degraded', '有降级'];
+      if ((counts.auth_required || 0) > 0 || (counts.unverified || 0) > 0) return ['auth_required', '待配置'];
+      if ((counts.ready || 0) > 0) return ['ready', '运行中'];
+      return ['reference_only', '参考'];
+    }
+    function renderOrchestration(data) {
+      const summary = data.summary || {};
+      $('orchestration-summary').innerHTML = [
+        orchestrationMetric('平台总数', summary.platform_count || 0),
+        orchestrationMetric('已启用平台', summary.enabled_platform_count || 0),
+        orchestrationMetric('组件总数', summary.component_count || 0),
+        orchestrationMetric('内置就绪', summary.ready_count || 0),
+        orchestrationMetric('需处理', summary.attention_count || 0)
+      ].join('');
+      $('orchestration-grid').innerHTML = (data.platforms || []).map(platform => {
+        const [health, healthLabel] = platformHealth(platform);
+        const components = (platform.components || []).map(component => {
+          const repo = component.repo
+            ? '<a href="' + safeUrl(component.repo) + '" target="_blank" rel="noopener noreferrer">查看仓库 ↗</a>'
+            : '<span>服务内置</span>';
+          return '<div class="component-row">' +
+            '<span class="component-dot ' + esc(component.health) + '" aria-hidden="true"></span>' +
+            '<div><div class="component-name">' + esc(component.name) + '</div>' +
+            '<div class="component-meta">' + esc(component.role || '') + ' · ' +
+            esc(component.runtime || '') + ' · ' + repo + '</div></div>' +
+            '<div class="component-side"><span class="kind-badge">' +
+            esc(kindLabels[component.kind] || component.kind) + '</span><span class="health-badge ' +
+            esc(component.health) + '">' + esc(healthLabels[component.health] || component.health) +
+            '</span><button class="component-toggle" type="button" data-toggle-component="' +
+            esc(platform.id) + '" data-component-id="' + esc(component.id) + '" data-enabled="' +
+            String(!component.enabled) + '">' + (component.enabled ? '停用' : '启用') +
+            '</button></div></div>';
+        }).join('');
+        return '<details class="platform-card"><summary><span><span class="platform-title"><strong>' +
+          esc(platform.name) + '</strong><span class="platform-count">' + esc(platform.component_count) +
+          ' 个组件</span></span><span class="platform-subtitle">' + esc(platform.region || '') +
+          ' · ' + esc(platform.group || '') + ' · 已启用 ' + esc(platform.enabled_component_count) +
+          '</span></span><span class="health-badge ' + health + '">' + healthLabel +
+          '</span></summary><div class="platform-body"><div class="platform-toolbar"><span class="muted">' +
+          esc((platform.health_counts && platform.health_counts.ready) || 0) + ' 个内置阶段就绪</span>' +
+          '<span><button class="small-button" type="button" data-healthcheck="' + esc(platform.id) +
+          '">检查</button> <button class="small-button" type="button" data-toggle-platform="' +
+          esc(platform.id) + '" data-enabled="' + String(!platform.enabled) + '">' +
+          (platform.enabled ? '停用平台' : '启用平台') + '</button></span></div>' +
+          '<div class="component-list">' + components + '</div></div></details>';
+      }).join('');
+      document.querySelectorAll('[data-toggle-platform]').forEach(button => {
+        button.onclick = () => togglePlatform(button.dataset.togglePlatform, button.dataset.enabled === 'true');
+      });
+      document.querySelectorAll('[data-toggle-component]').forEach(button => {
+        button.onclick = () => toggleComponent(
+          button.dataset.toggleComponent, button.dataset.componentId, button.dataset.enabled === 'true'
+        );
+      });
+      document.querySelectorAll('[data-healthcheck]').forEach(button => {
+        button.onclick = () => checkOrchestration(button.dataset.healthcheck);
+      });
+    }
+    async function loadOrchestration() {
+      const response = await fetch('/admin/orchestration');
+      if (!response.ok) return;
+      renderOrchestration(await response.json());
+    }
+    async function togglePlatform(platform, enabled) {
+      const response = await fetch('/admin/orchestration/' + encodeURIComponent(platform), {
+        method: 'PUT', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({enabled})
+      });
+      $('admin-result').textContent = await response.text();
+      if (response.ok) loadOrchestration();
+    }
+    async function toggleComponent(platform, component, enabled) {
+      const response = await fetch('/admin/orchestration/' + encodeURIComponent(platform) + '/' + encodeURIComponent(component), {
+        method: 'PUT', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({enabled})
+      });
+      $('admin-result').textContent = await response.text();
+      if (response.ok) loadOrchestration();
+    }
+    async function checkOrchestration(platform) {
+      const response = await fetch('/admin/orchestration/' + encodeURIComponent(platform) + '/healthcheck', {method: 'POST'});
+      $('admin-result').textContent = await response.text();
+      if (response.ok) loadOrchestration();
+    }
+    async function saveProvider(provider) {
+      const values = {};
+      document.querySelectorAll('[data-provider="' + provider + '"]').forEach(input => {
+        if (input.value) values[input.dataset.key] = input.value;
+      });
+      const response = await fetch('/admin/providers/' + encodeURIComponent(provider) + '/credentials', {
+        method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({values})
+      });
+      $('admin-result').textContent = await response.text();
+      if (response.ok) {
+        loadProviders();
+        loadSearchPolicy();
+        loadOrchestration();
+      }
+    }
+    async function checkProvider(provider) {
+      const response = await fetch('/admin/providers/' + encodeURIComponent(provider) + '/healthcheck', {method: 'POST'});
+      $('admin-result').textContent = await response.text();
+      loadProviders();
+    }
+    function renderSearchPolicy(policy) {
+      const labels = {strict: '严格', balanced: '平衡', broad: '宽松'};
+      const tiers = policy?.tiers || {};
+      $('search-policy-grid').innerHTML = ['strict', 'balanced', 'broad'].map(tier => {
+        const item = tiers[tier] || {};
+        return '<div class="policy-card" data-policy-tier="' + tier + '"><h3>' + labels[tier] + '</h3>' +
+          '<label>型号证据门槛（0–1）<input type="number" min="0" max="1" step="0.01" data-policy-confidence value="' + esc(item.confidence_threshold ?? '') + '"></label>' +
+          '<label>首轮校验倍数<input type="number" min="1" max="50" step="1" data-policy-multiplier value="' + esc(item.first_pass_multiplier ?? '') + '"></label></div>';
+      }).join('');
+      $('search-policy-grid').dataset.policyVersion = policy?.version || '1';
+    }
+    async function loadSearchPolicy() {
+      const response = await fetch('/admin/search-policy');
+      if (!response.ok) return;
+      renderSearchPolicy(await response.json());
+    }
+    async function saveSearchPolicy() {
+      const tiers = {};
+      document.querySelectorAll('[data-policy-tier]').forEach(card => {
+        const tier = card.dataset.policyTier;
+        tiers[tier] = {
+          label: card.querySelector('h3').textContent,
+          confidence_threshold: Number(card.querySelector('[data-policy-confidence]').value),
+          first_pass_multiplier: Number(card.querySelector('[data-policy-multiplier]').value)
+        };
+      });
+      const response = await fetch('/admin/search-policy', {
+        method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({tiers})
+      });
+      $('search-policy-result').textContent = response.ok ? '已保存；新任务会使用新规则。' : ((await response.text()) || '保存失败');
+      if (response.ok) renderSearchPolicy(await response.json());
+    }
+    function renderBlockedDomains(data) {
+      const items = Array.isArray(data?.domains) ? data.domains : [];
+      $('blocked-domain-list').innerHTML = items.length ? items.map(item =>
+        '<div class="blocked-domain-row"><div><span class="blocked-domain-name">' + esc(item.domain) + '</span>' +
+        (item.note ? '<span class="blocked-domain-note">' + esc(item.note) + '</span>' : '') +
+        '</div><button type="button" class="cancel-button" data-remove-blocked="' + esc(item.domain) + '">取消屏蔽</button></div>'
+      ).join('') : '<div class="blocked-domain-empty">还没有屏蔽网站。发现无关来源时，在这里添加域名即可。</div>';
+    }
+    async function loadBlockedDomains() {
+      const response = await fetch('/admin/blocked-domains');
+      if (!response.ok) return;
+      renderBlockedDomains(await response.json());
+    }
+    async function addBlockedDomain() {
+      const domain = $('blocked-domain').value.trim();
+      if (!domain) { $('blocked-domain').focus(); return; }
+      const response = await fetch('/admin/blocked-domains', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({domain, note: $('blocked-domain-note').value.trim()})
+      });
+      if (!response.ok) { $('admin-result').textContent = await response.text(); return; }
+      $('blocked-domain').value = ''; $('blocked-domain-note').value = '';
+      await loadBlockedDomains();
+      $('admin-result').textContent = '已加入屏蔽名单；新任务会跳过该网站。';
+    }
+    async function removeBlockedDomain(domain) {
+      const response = await fetch('/admin/blocked-domains/' + encodeURIComponent(domain), {method: 'DELETE'});
+      if (!response.ok) { $('admin-result').textContent = await response.text(); return; }
+      await loadBlockedDomains();
+      $('admin-result').textContent = '已取消屏蔽 ' + domain;
+    }
+    $('login').onsubmit = async (event) => {
+      event.preventDefault();
+      const response = await fetch('/admin/login', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({password: $('password').value})
+      });
+      $('login-result').textContent = response.ok ? '登录成功' : '密码不正确';
+      if (response.ok) {
+        loadProviders();
+        loadBlockedDomains();
+        loadOrchestration();
+      }
+    };
+    $('refresh').onclick = loadProviders;
+    $('refresh-search-policy').onclick = loadSearchPolicy;
+    $('save-search-policy').onclick = saveSearchPolicy;
+    $('refresh-blocked-domains').onclick = loadBlockedDomains;
+    $('add-blocked-domain').onclick = addBlockedDomain;
+    $('blocked-domain-list').addEventListener('click', (event) => {
+      const button = event.target.closest('[data-remove-blocked]');
+      if (button) removeBlockedDomain(button.dataset.removeBlocked);
+    });
+    $('refresh-orchestration').onclick = loadOrchestration;
+    // 没登录时接口全是 401,页面只会显示一排「—」;先拦下来要密码,登录过期也弹回这里
+    const rawFetch = window.fetch.bind(window);
+    window.fetch = async (...args) => {
+      const response = await rawFetch(...args);
+      if (response.status === 401 && !String(args[0]).startsWith('/admin/login')) $('login-gate').hidden = false;
+      return response;
+    };
+    function loadAll() {
+      loadQueue();
+      loadUnfinishedQueue();
+      loadHistory();
+      loadBatches();
+      loadAdminAccess();
+    }
+    $('gate-form').onsubmit = async (event) => {
+      event.preventDefault();
+      const response = await rawFetch('/admin/login', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({password: $('gate-password').value})
+      });
+      if (!response.ok) { $('gate-error').textContent = '密码不对'; return; }
+      $('gate-password').value = '';
+      $('gate-error').textContent = '';
+      $('login-gate').hidden = true;
+      loadAll();
+    };
+    (async () => {
+      const probe = await rawFetch('/v1/images/tasks?limit=1');
+      if (probe.status === 401) { $('login-gate').hidden = false; $('gate-password').focus(); return; }
+      loadAll();
+    })();
+  </script>
+</body>
+</html>

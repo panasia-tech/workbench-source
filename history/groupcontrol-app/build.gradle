@@ -1,0 +1,5 @@
+// 顶层构建文件。版本对齐仓库内 PDA/android(AGP 8.1.4 / Gradle 8.14)，额外加 Kotlin。
+plugins {
+    id 'com.android.application' version '8.1.4' apply false
+    id 'org.jetbrains.kotlin.android' version '1.9.22' apply false
+}

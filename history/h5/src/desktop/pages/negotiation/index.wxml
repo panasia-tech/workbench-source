@@ -1,0 +1,183 @@
+<wxs module="fmt" src="../../utils/format.wxs" />
+
+<!-- 待议价（电脑版）：数字卡片切换两类 + 筛选平铺 + 表格；待召回快递按页码翻页 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">待议价</view>
+      <view class="dk-sub">{{tab === 'recall' ? '议价已提交，补传顺丰改派 / 再次派件截图完成召回，凭证补齐后归入议价记录' : '入库后待与卖家议定实收金额的商品'}}</view>
+    </view>
+    <view class="dk-row">
+      <view class="dk-btn" bindtap="openHistory">议价记录</view>
+    </view>
+  </view>
+
+  <view class="dk-stats">
+    <view class="dk-stat dk-stat--click {{tab === 'pending' ? 'dk-stat--on' : ''}}" data-tab="pending" bindtap="switchTab">
+      <view class="dk-stat__label">待议价</view>
+      <view class="dk-stat__value">{{total}}</view>
+      <view class="dk-stat__hint">{{tab === 'pending' ? '当前筛选下的件数' : '点开查看'}}</view>
+    </view>
+    <view class="dk-stat dk-stat--click {{tab === 'recall' ? 'dk-stat--on' : ''}}" data-tab="recall" bindtap="switchTab">
+      <view class="dk-stat__label">待召回快递</view>
+      <view class="dk-stat__value {{recallTotal ? 'neg-dk-warn' : ''}}">{{recallTotal}}</view>
+      <view class="dk-stat__hint">{{recallTotal ? '要补传改派截图' : '没有待召回'}}</view>
+    </view>
+  </view>
+
+  <view class="dk-card">
+    <view class="dk-toolbar">
+      <view class="dk-tabs">
+        <view class="dk-tab {{tab === 'pending' ? 'dk-tab--on' : ''}}" data-tab="pending" bindtap="switchTab">待议价</view>
+        <view class="dk-tab {{tab === 'recall' ? 'dk-tab--on' : ''}}" data-tab="recall" bindtap="switchTab">待召回快递<text wx:if="{{recallTotal}}" class="dk-tab__n">{{recallTotal}}</text></view>
+      </view>
+      <input
+        class="dk-input dk-search"
+        placeholder="货号 / 商品名 / 品牌型号 / 采购单号 / 库位"
+        value="{{q}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+        bindconfirm="onSearch"
+      />
+      <view class="dk-btn" bindtap="onScanSearch">扫码搜</view>
+      <view class="dk-btn dk-btn--primary" bindtap="onSearch">搜索</view>
+    </view>
+    <view class="dk-toolbar neg-dk-toolbar2">
+      <text class="dk-label">{{tab === 'recall' ? '议价日期' : '入库日期'}}</text>
+      <view class="dk-tabs">
+        <view class="dk-tab {{preset === 'today' ? 'dk-tab--on' : ''}}" data-preset="today" bindtap="pickPreset">今天</view>
+        <view class="dk-tab {{preset === 'yesterday' ? 'dk-tab--on' : ''}}" data-preset="yesterday" bindtap="pickPreset">昨天</view>
+        <view class="dk-tab {{preset === '7d' ? 'dk-tab--on' : ''}}" data-preset="7d" bindtap="pickPreset">近7天</view>
+      </view>
+      <picker mode="date" value="{{dateFrom}}" end="{{dateTo || ''}}" bindchange="onDateFromChange">
+        <view class="dk-select {{dateFrom ? '' : 'dk-muted'}}">{{dateFrom || '开始日'}}</view>
+      </picker>
+      <text class="dk-muted">至</text>
+      <picker mode="date" value="{{dateTo}}" start="{{dateFrom || ''}}" bindchange="onDateToChange">
+        <view class="dk-select {{dateTo ? '' : 'dk-muted'}}">{{dateTo || '结束日'}}</view>
+      </picker>
+      <text wx:if="{{dateFrom || dateTo}}" class="dk-link" bindtap="clearDate">清除日期</text>
+    </view>
+
+    <!-- 待议价 -->
+    <view wx:if="{{tab === 'pending'}}" class="dk-table-wrap">
+      <table class="dk-table">
+        <thead>
+          <tr>
+            <th>商品</th>
+            <th>货号</th>
+            <th>成色</th>
+            <th>库位</th>
+            <th>入库时间</th>
+            <th class="dk-num">采购成本</th>
+            <th>状态</th>
+            <th class="dk-ops">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr wx:for="{{list}}" wx:key="sku_id" class="dk-tr--click" data-code="{{item.sku_code}}" bindtap="openForm">
+            <td>
+              <view class="dk-media">
+                <image
+                  wx:if="{{item.cover_thumb_url || item.cover_url}}"
+                  class="dk-thumb"
+                  src="{{item.cover_thumb_url || item.cover_url}}"
+                  mode="aspectFill"
+                  data-url="{{item.cover_url || item.cover_thumb_url}}"
+                  catchtap="dkPreview"
+                />
+                <view wx:elif="{{item.location_images[0]}}" class="neg-dk-thumb-wrap">
+                  <image class="dk-thumb" src="{{item.location_images[0]}}" mode="aspectFill" data-url="{{item.location_images[0]}}" catchtap="dkPreview" />
+                  <text class="neg-dk-loc-badge">定位</text>
+                </view>
+                <view wx:else class="dk-thumb neg-dk-thumb-empty">{{item.product_name[0] || '议'}}</view>
+                <view class="dk-grow">
+                  <view class="dk-cell-main dk-ellipsis" title="{{item.product_name}}">{{item.product_name}}</view>
+                  <view class="dk-cell-sub dk-ellipsis">{{item.spec || '—'}}</view>
+                </view>
+              </view>
+            </td>
+            <td class="dk-nowrap">{{item.sku_code}}</td>
+            <td class="dk-nowrap">{{item.condition_grade || '—'}}</td>
+            <td class="dk-nowrap">{{item.location_code || '—'}}</td>
+            <td class="dk-nowrap">{{fmt.datetime(item.inbound_at)}}</td>
+            <td class="dk-num">¥{{fmt.money(item.cost_price)}}</td>
+            <td class="dk-nowrap">
+              <text class="dk-tag tag-warning">待议价</text>
+              <text wx:if="{{item.condition_warning}}" class="dk-tag tag-danger neg-dk-gap" title="实拍图含「{{item.condition_warning_text || '全新'}}」字样，重点核对货况">⚠ {{item.condition_warning_text || '全新'}}</text>
+            </td>
+            <td class="dk-ops">
+              <text class="dk-link" data-code="{{item.sku_code}}" catchtap="openForm">议价</text>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <view wx:if="{{!list.length && !loading}}" class="dk-empty">暂无待议价商品</view>
+      <view wx:if="{{loading && !list.length}}" class="dk-empty">加载中…</view>
+    </view>
+
+    <!-- 待召回快递 -->
+    <view wx:else class="dk-table-wrap">
+      <table class="dk-table">
+        <thead>
+          <tr>
+            <th>商品</th>
+            <th>货号</th>
+            <th>成色</th>
+            <th>库位</th>
+            <th>议价时间</th>
+            <th>议价人</th>
+            <th class="dk-num">实收金额</th>
+            <th>状态</th>
+            <th class="dk-ops">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr wx:for="{{recallList}}" wx:key="sku_id" class="dk-tr--click" data-code="{{item.sku_code}}" bindtap="openRecall">
+            <td>
+              <view class="dk-media">
+                <image
+                  wx:if="{{item.cover_thumb_url || item.cover_url}}"
+                  class="dk-thumb"
+                  src="{{item.cover_thumb_url || item.cover_url}}"
+                  mode="aspectFill"
+                  data-url="{{item.cover_url || item.cover_thumb_url}}"
+                  catchtap="dkPreview"
+                />
+                <view wx:elif="{{item.location_images[0]}}" class="neg-dk-thumb-wrap">
+                  <image class="dk-thumb" src="{{item.location_images[0]}}" mode="aspectFill" data-url="{{item.location_images[0]}}" catchtap="dkPreview" />
+                  <text class="neg-dk-loc-badge">定位</text>
+                </view>
+                <view wx:else class="dk-thumb neg-dk-thumb-empty">{{item.product_name[0] || '召'}}</view>
+                <view class="dk-grow">
+                  <view class="dk-cell-main dk-ellipsis" title="{{item.product_name}}">{{item.product_name}}</view>
+                  <view class="dk-cell-sub dk-ellipsis">{{item.spec || '—'}}</view>
+                </view>
+              </view>
+            </td>
+            <td class="dk-nowrap">{{item.sku_code}}</td>
+            <td class="dk-nowrap">{{item.condition_grade || '—'}}</td>
+            <td class="dk-nowrap">{{item.location_code || '—'}}</td>
+            <td class="dk-nowrap">{{fmt.datetime(item.negotiated_at)}}</td>
+            <td class="dk-nowrap">{{item.negotiator_name || '—'}}</td>
+            <td class="dk-num">¥{{fmt.money(item.final_price)}}</td>
+            <td class="dk-nowrap"><text class="dk-tag tag-warning">待召回</text></td>
+            <td class="dk-ops">
+              <text class="dk-link" data-code="{{item.sku_code}}" catchtap="openRecall">补传改派截图</text>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <view wx:if="{{!recallList.length && !loading}}" class="dk-empty">暂无待召回快递</view>
+      <view wx:if="{{loading && !recallList.length}}" class="dk-empty">加载中…</view>
+      <view wx:if="{{recallTotal > dkPageSize}}" class="dk-pager">
+        <text>共 {{recallTotal}} 条，每页 {{dkPageSize}} 条</text>
+        <view class="dk-row">
+          <view class="dk-btn dk-btn--sm {{dkRecallPage <= 1 ? 'dk-btn--disabled' : ''}}" bindtap="dkRecallPrev">上一页</view>
+          <text>第 {{dkRecallPage}} / {{dkRecallPages}} 页</text>
+          <view class="dk-btn dk-btn--sm {{dkRecallPage >= dkRecallPages ? 'dk-btn--disabled' : ''}}" bindtap="dkRecallNext">下一页</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

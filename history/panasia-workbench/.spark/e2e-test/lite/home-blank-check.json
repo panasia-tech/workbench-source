@@ -1,0 +1,1 @@
+{"cases":[{"id":1,"priority":"p0","description":"打开首页 /，等待 3 秒，断言：页面非完全空白——出现顶部 Header 文案「泛亚工作台」与底部五 Dock 导航（任务/项目/工作/绩效/我的），内容区有任务页内容（KPI 薄横条或任务列表卡片或「请先绑定员工身份」引导卡任一即可）"},{"id":2,"priority":"p0","description":"打开 / 后截图记录浏览器 console 报错，断言：无红色未捕获异常（Uncaught error / 白屏渲染崩溃）"},{"id":3,"priority":"p1","description":"打开 /tasks 等待 3 秒，断言：与首页 / 渲染一致（同样出现 Header 与底部导航，任务页内容非空白）"}]}

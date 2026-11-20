@@ -1,0 +1,153 @@
+.payslip-page {
+  padding-bottom: 40rpx;
+}
+
+/* 周期选择 */
+.ps-period-card {
+  padding: 24rpx 28rpx;
+}
+.ps-period-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+.ps-period-pill {
+  padding: 10rpx 24rpx;
+  background: #F5F7FA;
+  border: 1rpx solid var(--border);
+  border-radius: 32rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #4B5563;
+}
+.ps-period-pill.active {
+  background: #2563EB;
+  border-color: #2563EB;
+  color: #fff;
+}
+.ps-range {
+  margin-top: 16rpx;
+  font-size: 22rpx;
+  color: #6B7280;
+}
+
+/* 合计 */
+.ps-total-card {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 28rpx 32rpx;
+}
+.ps-total-label {
+  font-size: 26rpx;
+  color: #6B7280;
+  font-weight: 600;
+}
+.ps-total-amt {
+  font-size: 44rpx;
+  font-weight: 800;
+  color: #111827;
+}
+
+.ps-loading {
+  text-align: center;
+  color: #9CA3AF;
+  font-size: 24rpx;
+  padding: 24rpx 0;
+}
+
+/* 角色明细块 */
+.ps-section {
+  padding: 24rpx 28rpx;
+}
+.ps-sec-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+.ps-sec-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #111827;
+}
+.ps-sec-total {
+  font-size: 30rpx;
+  font-weight: 800;
+  color: #2563EB;
+}
+.ps-sec-note {
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: #9CA3AF;
+  line-height: 1.5;
+}
+.ps-sec-overdue {
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #DC2626;
+}
+.ps-sec-empty {
+  padding: 24rpx 0;
+  text-align: center;
+  font-size: 24rpx;
+  color: #9CA3AF;
+}
+
+/* 逐笔 */
+.ps-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16rpx;
+  padding: 20rpx 0;
+  border-top: 1rpx solid #F0F2F5;
+}
+.ps-item-main {
+  flex: 1;
+  min-width: 0;
+}
+.ps-item-title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #1F2937;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ps-item-sub {
+  margin-top: 4rpx;
+  font-size: 22rpx;
+  color: #9CA3AF;
+}
+.ps-item-amt {
+  flex-shrink: 0;
+  text-align: right;
+}
+.ps-amt {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #059669;
+}
+.ps-amt--zero {
+  color: #9CA3AF;
+  text-decoration: line-through;
+}
+.ps-item-margin {
+  margin-top: 4rpx;
+  font-size: 22rpx;
+  color: #9CA3AF;
+}
+.ps-badge {
+  display: inline-block;
+  margin-top: 6rpx;
+  padding: 2rpx 12rpx;
+  background: #FEF2F2;
+  color: #DC2626;
+  border-radius: 16rpx;
+  font-size: 20rpx;
+  font-weight: 600;
+}
+.ps-item.is-overdue .ps-item-title {
+  color: #6B7280;
+}

@@ -1,0 +1,30 @@
+{
+  "at": "2026-10-01T06:44:38.326Z",
+  "steps": [
+    {
+      "step": "signIn",
+      "ok": true,
+      "detail": "http://127.0.0.1:8000"
+    },
+    {
+      "step": "清理旧案例 #9",
+      "ok": true,
+      "detail": "何春荣 submissions 已删"
+    },
+    {
+      "step": "清理孤儿提交",
+      "ok": true,
+      "detail": "case_id 为空的提交"
+    },
+    {
+      "step": "创建案例",
+      "ok": true,
+      "detail": "id=10 client=从零到一 status=in_progress 进度=0%"
+    },
+    {
+      "step": "回查",
+      "ok": true,
+      "detail": "case=in_progress submissions=0 approved=0"
+    }
+  ]
+}

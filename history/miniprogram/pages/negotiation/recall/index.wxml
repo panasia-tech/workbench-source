@@ -1,0 +1,69 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<view class="page-wrap page-wrap--no-tab neg-recall-page">
+  <view class="card">
+    <view class="card-head"><view class="card-head-main">商品信息</view></view>
+    <view class="neg-product">
+      <media-thumb
+        wx:if="{{detail.cover_thumb_url || detail.cover_url}}"
+        url="{{detail.cover_thumb_url || detail.cover_url}}"
+        preview-url="{{detail.cover_url}}"
+        size="medium"
+      />
+      <view class="neg-product-info">
+        <view class="neg-title">{{detail.product_name}}</view>
+        <view class="neg-sub">{{detail.sku_code}}</view>
+        <view class="neg-sub">成色 {{detail.condition_grade || '—'}} · 库位 {{detail.location_code || '—'}}</view>
+        <view class="neg-sub">议价时间 {{fmt.datetime(detail.negotiated_at)}}{{detail.negotiator_name ? ' · ' + detail.negotiator_name : ''}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-head"><view class="card-head-main">议价结果</view></view>
+    <view class="recall-result">
+      <text class="recall-result-label">实收金额</text>
+      <text class="recall-result-amount">¥{{fmt.money(detail.final_price)}}</text>
+    </view>
+    <view class="neg-sub" wx:if="{{detail.negotiation_remark}}">备注：{{detail.negotiation_remark}}</view>
+    <view class="pd-media-block" wx:if="{{detail.negotiation_media.length}}">
+      <view class="form-note">议价证据</view>
+      <media-gallery urls="{{detail.negotiation_media}}" thumb-size="medium" />
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-head"><view class="card-head-main">召回快递</view></view>
+    <view class="form-note">召回已发出的快递后，上传顺丰改派 / 再次派件截图，凭证补齐后议价流程才算完成。</view>
+    <view class="form-group">
+      <text class="form-label">顺丰改派 / 再次派件截图<text class="req">*</text><text class="label-hint"> 图片/视频</text></text>
+      <view class="evidence-grid">
+        <view
+          wx:for="{{media}}"
+          wx:key="*this"
+          class="evidence-item"
+        >
+          <media-thumb
+            url="{{mediaDisplayUrls[index] || item}}"
+            preview-url="{{mediaDisplayUrls[index] || item}}"
+            size="fill"
+            preview="{{true}}"
+          />
+          <view class="evidence-del" catchtap="removeMedia" data-index="{{index}}">×</view>
+        </view>
+        <view class="evidence-add" bindtap="addMedia">
+          <view class="evidence-add-plus">+</view>
+          <view class="evidence-add-text">图片 / 视频</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<view class="neg-form-footer">
+  <view class="neg-form-footer-sum">
+    <text class="neg-form-footer-label">已传凭证</text>
+    <text class="neg-form-footer-amount {{media.length ? '' : 'is-empty'}}">{{media.length ? media.length + ' 张' : '待上传'}}</text>
+  </view>
+  <button class="btn btn-primary neg-form-submit" loading="{{submitting}}" bindtap="onSubmit">确认已召回</button>
+</view>

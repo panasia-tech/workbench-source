@@ -1,0 +1,31 @@
+{
+  "id": "panya_workbench_ai_assistant_1",
+  "pluginKey": "@official-plugins/ai-text-generate",
+  "pluginVersion": "1.0.21",
+  "name": "泛亚工作台智能助手",
+  "description": "员工工作台应用内嵌聊天面板，结合系统人设、员工任务上下文与对话历史，流式生成任务答疑、操作指导等智能回复，主动询问员工想完成的任务",
+  "icon": "",
+  "paramsSchema": {
+    "type": "object",
+    "properties": {
+      "full_prompt": {
+        "type": "string",
+        "description": "组装完成的完整提示词，包含系统人设、员工今日任务上下文、多轮对话历史和用户当前问题"
+      }
+    },
+    "required": [
+      "full_prompt"
+    ]
+  },
+  "formValue": {
+    "prompt": "{{input.full_prompt}}",
+    "modelID": "2015",
+    "modelParams": {
+      "temperature": 0.5,
+      "maxTokens": 8192
+    }
+  },
+  "createdAt": 1790935778664,
+  "updatedAt": 1790935778664,
+  "createdBy": 7524277620780171283
+}

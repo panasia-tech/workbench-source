@@ -1,0 +1,38 @@
+/* 工资单明细（电脑版模板用；类名 ps-dk-*） */
+.ps-dk-total {
+  background: #ecfdf5;
+  border-color: #a7f3d0;
+}
+
+.ps-dk-total .dk-stat__value {
+  color: #047857;
+}
+
+.ps-dk-note {
+  font-weight: 400;
+}
+
+.ps-dk-sectotal {
+  color: #047857;
+  font-variant-numeric: tabular-nums;
+}
+
+.ps-dk-overdue {
+  padding: 8px 16px;
+  background: #fff7ed;
+  color: #c2410c;
+  font-size: 13px;
+}
+
+.ps-dk-amt {
+  font-weight: 600;
+  color: #047857;
+}
+
+.ps-dk-zero {
+  color: #9ca3af;
+}
+
+.ps-dk-tr--overdue td {
+  background: #fffbf5;
+}

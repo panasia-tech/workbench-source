@@ -1,0 +1,17 @@
+fastapi>=0.115
+uvicorn[standard]>=0.32
+sqlalchemy>=2.0
+pydantic-settings>=2.6
+aiomqtt>=2.3
+# 流程引擎 app/flow/ 的服务端 OCR(截图锚点定位)
+# 版本对齐 automation 旧原型已验证组合(Python 3.13 / mac arm 可跑);勿升 1.4+(改名 rapidocr,API 变)
+rapidocr-onnxruntime==1.2.3
+opencv-python-headless>=4.9
+numpy>=2.0
+# 生产 MySQL(与 ERP 同实例,dev 仍用 SQLite)
+PyMySQL>=1.1
+# 异常截图上传 OSS(未配 oss_* 则存本地 ./shots)
+oss2>=2.18
+# 验主 ERP 签发的登录 JWT(chat 路由鉴权)
+python-jose[cryptography]>=3.3
+python-multipart==0.0.20  # 日志包上传（UploadFile/Form 依赖它）

@@ -1,0 +1,24 @@
+<view class="ptc">
+  <view wx:if="{{hasData}}" class="ptc-stage-wrap">
+    <view
+      id="ptc-stage"
+      class="ptc-stage"
+      bindtouchstart="onTouchStart"
+      catchtouchmove="onTouchMove"
+      bindtouchend="onTouchEnd"
+      bindtouchcancel="onTouchCancel"
+    >
+      <image class="ptc-img" src="{{uri}}" mode="widthFix" />
+      <view wx:if="{{tip.show}}" class="ptc-cross" style="{{lineStyle}}"></view>
+      <view wx:if="{{tip.show}}" class="ptc-dot-ring" style="{{dotStyle}}"></view>
+      <view wx:if="{{tip.show}}" class="ptc-dot" style="{{dotStyle}}"></view>
+      <view wx:if="{{tip.show}}" class="ptc-tip" style="{{tipStyle}}">
+        <view class="ptc-tip-date">{{tip.date}}</view>
+        <view class="ptc-tip-price"><text class="ptc-tip-yen">¥</text>{{tip.price}}</view>
+        <view wx:if="{{tip.count}}" class="ptc-tip-count">{{tip.count}}</view>
+      </view>
+      <view wx:if="{{!tip.show && !hinted}}" class="ptc-hint">左右滑动看每日行情</view>
+    </view>
+  </view>
+  <view wx:else class="ptc-empty">{{emptyText || '近30天数据不足，暂不能画出走势'}}</view>
+</view>

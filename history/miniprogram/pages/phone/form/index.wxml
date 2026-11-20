@@ -1,0 +1,52 @@
+<view class="page-wrap">
+  <view class="card">
+    <view class="card-head">{{isEdit ? '编辑手机号' : '新建手机号'}}</view>
+
+    <view class="form-field">
+      <view class="form-label">姓名 <text class="form-required">*</text></view>
+      <input class="form-input" placeholder="姓名" value="{{form.name}}" data-field="name" bindinput="onInput" />
+    </view>
+    <view class="form-field">
+      <view class="form-label">号码 <text class="form-required">*</text></view>
+      <input class="form-input" type="number" placeholder="手机号" value="{{form.phone_number}}" data-field="phone_number" bindinput="onInput" />
+    </view>
+    <view class="form-field">
+      <view class="form-label">ICCID <text class="form-required">*</text></view>
+      <view class="form-input-scan">
+        <input class="form-input form-input--scan" placeholder="扫条形码或手动输入" value="{{form.iccid}}" data-field="iccid" bindinput="onInput" maxlength="50" />
+        <view class="search-scan-icon" catchtap="onScanIccid">
+          <view class="scan-frame"></view>
+          <view class="scan-line"></view>
+        </view>
+      </view>
+    </view>
+    <view class="form-field">
+      <view class="form-label">运营商</view>
+      <picker mode="selector" range="{{carrierOptions}}" value="{{carrierIndex}}" bindchange="onCarrierChange">
+        <view class="form-picker">{{form.carrier || '请选择运营商'}}</view>
+      </picker>
+    </view>
+    <view class="form-field">
+      <view class="form-label">开通时间</view>
+      <picker mode="date" value="{{form.activation_date}}" bindchange="onDateChange">
+        <view class="form-picker">{{form.activation_date || '请选择'}}</view>
+      </picker>
+    </view>
+    <view class="form-field">
+      <view class="form-label">套餐详情</view>
+      <textarea class="form-textarea" placeholder="套餐内容、月租等" value="{{form.plan_details}}" data-field="plan_details" bindinput="onInput" maxlength="500" />
+    </view>
+    <view class="form-field">
+      <view class="form-label">闲鱼会员名</view>
+      <input class="form-input" placeholder="闲鱼会员名" value="{{form.xianyu_member_name}}" data-field="xianyu_member_name" bindinput="onInput" />
+    </view>
+    <view class="form-field">
+      <view class="form-label">备注</view>
+      <textarea class="form-textarea" placeholder="备注（选填）" value="{{form.remark}}" data-field="remark" bindinput="onInput" maxlength="500" />
+    </view>
+
+    <button class="btn btn-primary btn-block" bindtap="onSubmit" disabled="{{submitting}}" loading="{{submitting}}">
+      {{submitting ? '提交中…' : (isEdit ? '保存修改' : '创建')}}
+    </button>
+  </view>
+</view>

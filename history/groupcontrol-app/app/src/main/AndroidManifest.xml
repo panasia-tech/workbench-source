@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- 自检页「电池优化白名单」直接弹系统授权框(ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)所需 -->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <!-- 看门狗 setExactAndAllowWhileIdle 精确 alarm(Android 12- 声明即授权;
+         Android 14+ 默认拒绝,代码里已按 canScheduleExactAlarms 退化非精确 alarm 兜底) -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <!-- launch_app 原语要从后台前台化闲鱼:Android 10+ 后台活动启动(BAL)受限,持悬浮窗权限即豁免;
+         MIUI 另需「后台弹出界面」。否则 startActivity 被系统 abort(Abort background activity starts)且不抛异常。 -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <!-- push_media 写相册:Android 9 及以下需此权限;10+ 用 MediaStore RELATIVE_PATH 免声明 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
+
+    <!-- 账号初始化档案采集(SN/双IMEI/本机号码):运行时权限,启动引导链里弹框请求;
+         Android 10+ 普通应用仍读不到 IMEI(仅系统/运营商应用可读),读不到由 PC adb 兜底 -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <!-- Android 11+ 包可见性:launch_app/force_stop 原语要能看到闲鱼包,否则 getLaunchIntentForPackage 返回 null(报「未安装」) -->
+    <queries>
+        <package android:name="com.taobao.idlefish" />
+    </queries>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
+        android:theme="@style/Theme.GroupControl">
+
+        <activity
+            android:name=".ui.MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- 自检探针:实测「后台弹出界面」是否被 MIUI 放行;透明、立即自杀、不进任务栈 -->
+        <activity
+            android:name=".gc.BackgroundStartProbeActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <!-- 常驻前台服务：持有与调度中心的长连接 -->
+        <service
+            android:name=".gc.GcService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
+
+        <!-- 开机自启，保证执行端常驻 -->
+        <receiver
+            android:name=".gc.BootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- 20 分钟看门狗：AlarmManager 显式 PendingIntent 触发(无 intent-filter)，
+             负责服务拉起 / MQTT 假活重连 / 无障碍断链告警 -->
+        <receiver
+            android:name=".gc.WatchdogReceiver"
+            android:exported="false" />
+
+        <!-- 无障碍服务：操作闲鱼 App（上下架/发布） -->
+        <service
+            android:name=".auto.XianyuAccessibilityService"
+            android:exported="false"
+            android:label="@string/accessibility_label"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility_service_config" />
+        </service>
+
+        <!-- 微型输入法(无键盘面板):Flutter 输入框的文本注入通道,配合 ImeInjector 临时切换使用 -->
+        <service
+            android:name=".inputmethod.GcInputMethodService"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_INPUT_METHOD">
+            <intent-filter>
+                <action android:name="android.view.InputMethod" />
+            </intent-filter>
+            <meta-data
+                android:name="android.view.im"
+                android:resource="@xml/inputmethod" />
+        </service>
+
+    </application>
+</manifest>

@@ -1,0 +1,72 @@
+/* 页框：整页不滚，内容自己滚。
+ *
+ * # 为什么要有这一份
+ *
+ * 老板 2026-09-16：「页面太长了，找东西很费劲。」查下来主要不是内容多，是**表格没有
+ * 高度上限**：环境/任务越多页越长，工具条、筛选、分页被推出视口，于是找东西要反复
+ * 上下卷。外壳（Console.vue 的 .main）本来就 overflow:auto，页面只要不超过它的高度，
+ * 滚动就发生在该滚的那一小块里。
+ *
+ * 在这之前有人是靠 `height: calc(100vh - 455px)` 这种魔法数字撑高表格的。那个数字
+ * 绑着它上面所有东西的高度：上面加一行说明就得回来改数字，不改就露出双滚动条。
+ * 这份工具类用 flex 算，改上面不用回来改下面。
+ *
+ * # 用法
+ *
+ *   <div class="page">
+ *     <header class="page-head">工具条：搜索、筛选、刷新</header>
+ *     <div class="page-body">会滚的那部分（表格/列表）</div>
+ *     <footer class="page-foot">分页、汇总、主操作按钮</footer>
+ *   </div>
+ *
+ * 三条硬规矩：
+ *   - 每一层 flex 容器都要 `min-height: 0`，否则子元素撑破父容器，滚动条跑到外面去；
+ *   - 会滚的只能有一个（.page-body），出现第二个滚动条就是布局错了；
+ *   - 主操作按钮放 .page-foot，它永远在视口里——「找不到按钮」和「页面太长」是同一个病。
+ */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  /* 填满外壳给的高度。外壳没给确定高度时退化成按内容撑开，不会塌成 0。 */
+  height: 100%;
+  min-height: 0;
+}
+
+.page-head,
+.page-foot {
+  flex: none;
+}
+
+.page-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* Element Plus 的表格要撑满 .page-body 得自己也是 flex 列：
+   表头固定、只有行区域滚。给表格加 .fill 即可。 */
+.page-body > .fill,
+.page-body.fill {
+  height: 100%;
+}
+
+/* el-tabs 放进页框时，让标签页内容也继承这套高度，
+   否则标签一多整页又开始滚（运维页四个标签就是这种情况）。 */
+.page-tabs {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+.page-tabs > .el-tabs__header {
+  flex: none;
+}
+.page-tabs > .el-tabs__content {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+.page-tabs > .el-tabs__content > .el-tab-pane {
+  height: 100%;
+}

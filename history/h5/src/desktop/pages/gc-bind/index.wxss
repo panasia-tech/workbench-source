@@ -1,0 +1,96 @@
+/* 设备账号对账（电脑版模板用的补充） */
+.gb-dk-ok {
+  color: #047857;
+}
+
+.gb-dk-warn {
+  color: #c2410c;
+}
+
+.gb-dk-err {
+  color: #dc2626;
+  margin-bottom: 12px;
+}
+
+.gb-dk-retry {
+  display: inline-flex;
+}
+
+.gb-dk-kind {
+  margin-left: 6px;
+}
+
+.gb-dk-hint {
+  color: #6b7280;
+  font-size: 12px;
+  max-width: 420px;
+}
+
+.gb-dk-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.45);
+}
+
+.gb-dk-dialog {
+  width: 640px;
+  max-width: calc(100vw - 48px);
+  max-height: calc(100vh - 64px);
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.25);
+}
+
+.gb-dk-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.gb-dk-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 16px;
+  border-top: 1px solid #f0f1f3;
+}
+
+.gb-dk-unbind {
+  margin-right: auto;
+}
+
+.gb-dk-x {
+  font-size: 20px;
+  font-weight: 400;
+  color: #9ca3af;
+  cursor: pointer;
+}
+
+.gb-dk-x:hover {
+  color: #1f2937;
+}
+
+.gb-dk-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: #9ca3af;
+  vertical-align: middle;
+}
+
+.gb-dk-dot--on {
+  background: #10b981;
+}
+
+.gb-dk-cur {
+  color: #047857;
+  font-weight: 600;
+}

@@ -1,0 +1,97 @@
+<wxs module="fmt" src="../../utils/format.wxs" />
+
+<!-- 起诉记录（电脑版）：状态 tab + 搜索 + 表格 + 页码；新建在右上角，删除在操作列 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">起诉记录</view>
+      <view class="dk-sub">共 {{total}} 单</view>
+    </view>
+    <view class="dk-row">
+      <view class="dk-btn dk-btn--primary" bindtap="onCreate">新建起诉单</view>
+    </view>
+  </view>
+
+  <view class="dk-card">
+    <view class="dk-toolbar">
+      <view class="dk-tabs">
+        <view
+          wx:for="{{statusTabs}}"
+          wx:key="key"
+          class="dk-tab {{status === item.key ? 'dk-tab--on' : ''}}"
+          data-key="{{item.key}}"
+          bindtap="switchStatus"
+        >{{item.label}}</view>
+      </view>
+      <input
+        class="dk-input dk-search"
+        placeholder="起诉单号 / 采购单号…"
+        value="{{q}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+        bindconfirm="onSearch"
+      />
+      <view class="dk-btn dk-btn--primary" bindtap="onSearch">搜索</view>
+    </view>
+
+    <view class="dk-table-wrap">
+      <table class="dk-table">
+        <thead>
+          <tr>
+            <th>商品</th>
+            <th>起诉单号</th>
+            <th>采购单号</th>
+            <th class="dk-num">采购单价</th>
+            <th>状态</th>
+            <th>建单人</th>
+            <th>创建时间</th>
+            <th class="dk-ops">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr wx:for="{{list}}" wx:key="id" class="dk-tr--click" data-id="{{item.id}}" bindtap="openDetail">
+            <td>
+              <view class="dk-media">
+                <image
+                  wx:if="{{item.product_image_thumb}}"
+                  class="dk-thumb"
+                  src="{{item.product_image_thumb}}"
+                  mode="aspectFill"
+                  data-url="{{item.product_image || item.product_image_thumb}}"
+                  catchtap="dkPreview"
+                />
+                <view wx:else class="dk-thumb law-dk-thumb-empty">{{item.product_name[0] || '诉'}}</view>
+                <view class="dk-grow">
+                  <view class="dk-cell-main dk-ellipsis" title="{{item.product_name}}">{{item.product_name || item.lawsuit_no}}</view>
+                  <view class="dk-cell-sub dk-ellipsis">{{item.brand || ''}}{{item.model ? ' ' + item.model : ''}}{{(item.brand || item.model) && item.spec ? ' · ' : ''}}{{item.spec || ''}}</view>
+                </view>
+              </view>
+            </td>
+            <td class="dk-nowrap">{{item.lawsuit_no}}</td>
+            <td class="dk-nowrap">{{item.order_no || '—'}}</td>
+            <td class="dk-num">{{item.unit_price != null ? '¥' + fmt.money(item.unit_price) : '—'}}</td>
+            <td class="dk-nowrap"><text class="dk-tag {{item.statusCls}}">{{item.statusText}}</text></td>
+            <td class="dk-nowrap">{{item.created_by_name || '—'}}</td>
+            <td class="dk-nowrap">{{fmt.datetime(item.created_at)}}</td>
+            <td class="dk-ops">
+              <text class="dk-link" data-id="{{item.id}}" catchtap="openDetail">详情</text>
+              <text class="dk-link dk-link--danger" data-id="{{item.id}}" data-no="{{item.lawsuit_no}}" catchtap="onDeleteItem">删除</text>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </view>
+
+    <view wx:if="{{!list.length && !loading}}" class="dk-empty">暂无起诉记录</view>
+    <view wx:if="{{loading && !list.length}}" class="dk-empty">加载中…</view>
+
+    <view wx:if="{{total > dkPageSize}}" class="dk-pager">
+      <text>共 {{total}} 单，每页 {{dkPageSize}} 条</text>
+      <view class="dk-row">
+        <view class="dk-btn dk-btn--sm {{dkPage <= 1 ? 'dk-btn--disabled' : ''}}" bindtap="dkPrev">上一页</view>
+        <text>第 {{dkPage}} / {{dkPages}} 页</text>
+        <view class="dk-btn dk-btn--sm {{dkPage >= dkPages ? 'dk-btn--disabled' : ''}}" bindtap="dkNext">下一页</view>
+      </view>
+    </view>
+  </view>
+</view>

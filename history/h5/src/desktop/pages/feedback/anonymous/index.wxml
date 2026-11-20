@@ -1,0 +1,108 @@
+<!-- 匿名反馈（电脑版）：左边填写表单，右边参考示例（点一下带入）。数据、方法和手机版是同一套 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">匿名反馈</view>
+      <view class="dk-sub">匿名保存，后台可查。你可以在这里提交流程返工、ERP 使用反馈，或向管理层提出投诉与建议。内容不会展示提交人身份，只会进入后台统一处理。</view>
+    </view>
+  </view>
+
+  <view class="dk-split fb-dk-split">
+    <view class="dk-card">
+      <view class="dk-card__head">匿名内容</view>
+      <view class="dk-card__body">
+        <view class="dk-form">
+          <view class="dk-field dk-field--full">
+            <text class="dk-label dk-label--req">反馈类型</text>
+            <view class="dk-row">
+              <view class="dk-tabs">
+                <view
+                  wx:for="{{categoryOptions}}"
+                  wx:key="key"
+                  class="dk-tab {{form.category === item.key ? 'dk-tab--on' : ''}}"
+                  data-key="{{item.key}}"
+                  bindtap="switchCategory"
+                >{{item.label}}</view>
+              </view>
+              <text class="dk-help">{{currentHint}}</text>
+            </view>
+          </view>
+          <view class="dk-field">
+            <text class="dk-label dk-label--req">标题</text>
+            <input
+              class="dk-input"
+              placeholder="一句话概括问题，例如：物流驳回缺少闭环"
+              value="{{form.title}}"
+              bindinput="onTitleInput"
+              maxlength="128"
+            />
+          </view>
+          <view class="dk-field">
+            <text class="dk-label">涉及模块 / 对象</text>
+            <input
+              class="dk-input"
+              placeholder="例如：议价模块 / 仓库流程 / 管理层沟通"
+              value="{{form.target}}"
+              bindinput="onTargetInput"
+              maxlength="128"
+            />
+          </view>
+          <view class="dk-field dk-field--full">
+            <text class="dk-label dk-label--req">详细内容</text>
+            <textarea
+              class="dk-input fb-dk-textarea"
+              maxlength="4000"
+              placeholder="详细写清楚问题经过、影响、建议动作，方便后台接手处理。"
+              value="{{form.content}}"
+              bindinput="onContentInput"
+            />
+          </view>
+          <view class="dk-field dk-field--full">
+            <text class="dk-label">附件</text>
+            <text class="dk-help">可选上传聊天截图、流程截图、照片或视频作为补充证据。</text>
+            <view class="dk-gallery fb-dk-gallery">
+              <view wx:for="{{form.attachments}}" wx:key="*this" class="fb-dk-item">
+                <media-thumb
+                  url="{{attachmentDisplayUrls[index] || item}}"
+                  preview-url="{{attachmentDisplayUrls[index] || item}}"
+                  size="fill"
+                  preview="{{true}}"
+                />
+                <view class="fb-dk-del" catchtap="removeAttachment" data-index="{{index}}">×</view>
+              </view>
+              <view class="fb-dk-add" bindtap="addAttachment">
+                <text class="fb-dk-add__plus">+</text>
+                <text class="dk-help">图片 / 视频</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="dk-toolbar fb-dk-foot">
+        <view class="dk-grow"></view>
+        <button class="dk-btn dk-btn--primary fb-dk-btn" loading="{{submitting}}" bindtap="onSubmit">匿名提交</button>
+      </view>
+    </view>
+
+    <view class="dk-card">
+      <view class="dk-card__head">
+        <text>参考示例</text>
+        <text class="dk-sub fb-dk-tip">点一下直接带入</text>
+      </view>
+      <view
+        wx:for="{{samples}}"
+        wx:key="title"
+        class="fb-dk-sample"
+        data-index="{{index}}"
+        bindtap="applySample"
+      >
+        <view class="dk-row">
+          <text class="dk-grow dk-cell-main">{{item.title}}</text>
+          <text class="dk-link">套用</text>
+        </view>
+        <view class="dk-cell-sub">{{item.target}}</view>
+        <view class="fb-dk-sample__text">{{item.content}}</view>
+      </view>
+    </view>
+  </view>
+</view>

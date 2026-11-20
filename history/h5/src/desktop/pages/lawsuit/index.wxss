@@ -1,0 +1,8 @@
+/* 起诉记录（电脑版模板 index.wxml 用的补充；通用样式在 src/styles/desktop.css） */
+.law-dk-thumb-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  font-size: 13px;
+}

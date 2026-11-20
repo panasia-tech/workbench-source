@@ -1,0 +1,94 @@
+<!-- 收货核对（电脑版）：退回商品一行 + 两栏表单（序列号/状态/库位/备注，照片和异常说明占满一行）+ 底部确认 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">收货核对</view>
+      <view class="dk-sub">请核对实物后填写，全部信息将写入退货记录，原出库记录不受影响。</view>
+    </view>
+  </view>
+
+  <view class="dk-card">
+    <view class="dk-card__head">退回商品</view>
+    <view class="dk-card__body">
+      <view class="dk-desc">
+        <view class="dk-desc__item">
+          <view class="dk-desc__k">商品</view>
+          <view class="dk-desc__v">{{productName || '—'}}</view>
+        </view>
+        <view class="dk-desc__item">
+          <view class="dk-desc__k">货号</view>
+          <view class="dk-desc__v">{{skuCode || '—'}}</view>
+        </view>
+        <view class="dk-desc__item">
+          <view class="dk-desc__k">退货单号</view>
+          <view class="dk-desc__v">{{returnNo || '—'}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="dk-card">
+    <view class="dk-card__head">收货核对</view>
+    <view class="dk-card__body">
+      <view class="dk-form">
+        <view class="dk-field">
+          <text class="dk-label dk-label--req">商品序列号</text>
+          <view class="dk-row rr-dk-nowrap">
+            <input class="dk-input dk-grow" placeholder="扫码或手动输入，需与出库商品一致" value="{{serialNumber}}" bindinput="onSerialInput" />
+            <view class="dk-btn" bindtap="onScanSerial">扫码</view>
+          </view>
+        </view>
+
+        <view class="dk-field">
+          <text class="dk-label dk-label--req">当前库位</text>
+          <picker range="{{locations}}" range-key="label" value="{{locationIndex}}" bindchange="onLocationChange">
+            <view class="dk-select {{locationIndex >= 0 ? '' : 'dk-muted'}}">{{locationIndex >= 0 ? locations[locationIndex].label : '请选择退回后的存放库位'}}</view>
+          </picker>
+        </view>
+
+        <view class="dk-field dk-field--full">
+          <text class="dk-label dk-label--req">商品状态</text>
+          <view class="dk-tabs rr-dk-tabs">
+            <view
+              wx:for="{{conditionOptions}}"
+              wx:key="key"
+              class="dk-tab {{conditionIndex === index ? 'dk-tab--on' : ''}} {{item.key === 'ABNORMAL' && conditionIndex === index ? 'rr-dk-tab--bad' : ''}}"
+              data-index="{{index}}"
+              bindtap="dkPickCondition"
+            >{{item.label}}</view>
+          </view>
+        </view>
+
+        <view class="dk-field dk-field--full">
+          <text class="dk-label dk-label--req">退回照片（商品 / 包装 / 铭牌，最多 9 张）</text>
+          <view class="dk-gallery">
+            <view wx:for="{{mediaDisplays}}" wx:key="index" class="rr-dk-cell">
+              <image src="{{item}}" mode="aspectFill" class="rr-dk-img" data-url="{{item}}" data-urls="{{mediaDisplays}}" bindtap="dkPreview" />
+              <view class="rr-dk-del" data-index="{{index}}" catchtap="onRemoveImage" title="删除">×</view>
+            </view>
+            <view wx:if="{{media.length < 9}}" class="rr-dk-add" bindtap="onAddImages">
+              <text class="rr-dk-add__plus">+</text>
+              <text>商品/包装/铭牌</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="dk-field dk-field--full" wx:if="{{markAbnormal || (conditionIndex >= 0 && conditionOptions[conditionIndex].key === 'ABNORMAL')}}">
+          <text class="dk-label dk-label--req">异常说明</text>
+          <textarea class="dk-input rr-dk-ta" placeholder="损坏部位 / 缺失配件 / 序列号情况等" value="{{abnormalReason}}" bindinput="onAbnormalInput" maxlength="200" />
+          <text class="rr-dk-warn">异常件将挂起等管理员裁决，暂不恢复库存。</text>
+        </view>
+
+        <view class="dk-field dk-field--full">
+          <text class="dk-label">备注</text>
+          <textarea class="dk-input rr-dk-ta" placeholder="选填" value="{{remark}}" bindinput="onRemarkInput" maxlength="200" />
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="dk-actionbar">
+    <text wx:if="{{markAbnormal}}" class="rr-dk-warn rr-dk-grow">序列号不符，已标记为「退回异常」挂起，填好异常说明后再次提交</text>
+    <view class="dk-btn dk-btn--primary {{submitting ? 'dk-btn--disabled' : ''}}" bindtap="onSubmit">{{submitting ? '提交中…' : '确认收货'}}</view>
+  </view>
+</view>

@@ -1,0 +1,48 @@
+<wxs module="fmt" src="../../utils/format.wxs" />
+
+<view class="gc-device-page">
+  <view class="card">
+    <view class="card-head">群控设备</view>
+    <view wx:if="{{!loading && !error}}" class="gc-summary">
+      共 {{total}} 台 · <text class="gc-summary-ok">在线 {{onlineCount}}</text>
+    </view>
+    <view wx:if="{{!loading && !error && total}}" class="gc-kind-tabs">
+      <view class="gc-kind-tab {{kindFilter === 'all' ? 'gc-kind-tab--on' : ''}}" data-kind="all" bindtap="setKindFilter">全部 {{total}}</view>
+      <view class="gc-kind-tab {{kindFilter === 'android' ? 'gc-kind-tab--on' : ''}}" data-kind="android" bindtap="setKindFilter">手机 {{androidCount}}</view>
+      <view class="gc-kind-tab {{kindFilter === 'browser' ? 'gc-kind-tab--on' : ''}}" data-kind="browser" bindtap="setKindFilter">浏览器 {{browserCount}}</view>
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="card"><view class="gc-empty">加载中…</view></view>
+
+  <view wx:elif="{{error}}" class="card">
+    <view class="gc-empty gc-empty--err">{{error}}</view>
+    <button class="btn btn-outline btn-block" bindtap="load">重试</button>
+  </view>
+
+  <view wx:elif="{{!devices.length}}" class="card">
+    <view class="gc-empty">暂无设备，请先在群控端注册真机或启动 AdsPower 执行端</view>
+  </view>
+
+  <view wx:elif="{{!filtered.length}}" class="card">
+    <view class="gc-empty">该分类下暂无设备</view>
+  </view>
+
+  <view wx:else class="card">
+    <view wx:for="{{filtered}}" wx:key="id" class="gc-row">
+      <view class="gc-row-main" data-id="{{item.id}}" bindtap="openAccount">
+        <view class="gc-row-title">
+          <text class="gc-dot {{item._dot}}"></text>{{item.name}}
+          <text class="gc-kind gc-kind--{{item.kind}}">{{item._kindLabel}}</text>
+        </view>
+        <view class="gc-row-sub">{{item._sub}}</view>
+        <view class="gc-row-sub">闲鱼：{{item._nick}}{{item.account_nick ? ' · 账号 ' + item.account_nick : ''}}<text wx:if="{{item.account_id}}" class="gc-row-link">发过的商品 ›</text></view>
+        <view class="gc-row-hint">最近心跳 {{fmt.datetime(item.last_heartbeat_at) || '—'}}{{item.app_version ? ' · v' + item.app_version : ''}}</view>
+      </view>
+      <view class="gc-row-right">
+        <view class="tag {{item._readyTag}}">{{item._readyLabel}}</view>
+        <text wx:if="{{isAdmin}}" class="gc-row-act" data-id="{{item.id}}" catchtap="openActions">操作</text>
+      </view>
+    </view>
+  </view>
+</view>

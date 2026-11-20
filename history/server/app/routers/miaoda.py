@@ -1,0 +1,98 @@
+"""给员工工作台（妙搭）服务端调用的接口。
+
+工作台工作页的采购 / 仓库 / 销售三个工作台在自己页面上显示 ERP 的计数；工作台原生页调 ERP 业务接口时，
+先用 employee-token 换该员工的登录令牌再转发。员工真要操作手机上那套，还是 iframe 免登进 H5
+（routers/auth.py 的 miaoda_*）。计数接口只读、全公司口径、只出数量不出金额，口径和
+routers/dashboard.py 里管理员看到的一致。
+
+鉴权是 .env 的 MIAODA_API_KEY（Authorization: Bearer）。这把 key 只认本文件里的接口，ERP 别的
+接口照常要员工登录——要加数据就在这里加接口，别给这把 key 开别的门。
+
+⚠️ employee-token 让这把 key 能换任意在职真人员工的登录令牌（ERP 角色权限照常按这个员工算），
+保护级别等同 ERP 管理员密码：只放工作台服务端的环境变量，别进浏览器、别进日志。
+"""
+import hmac
+from datetime import datetime
+
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from sqlalchemy.orm import Session
+
+from app.config import settings
+from app.database import get_db
+from app.deps import create_access_token
+from app.enums import HUMAN_ROLES, InspectionStatus, SkuStatus, StaffStatus
+from app.models import Inspection, PurchaseOrder, SalesOutbound, Sku, Staff
+from app.schemas._tz import utc_to_cn_iso
+from app.schemas.miaoda import MiaodaEmployeeTokenIn, MiaodaEmployeeTokenOut, MiaodaOverview
+from app.services.asset_intake import not_asset_intake_inspection, not_asset_intake_po
+from app.services.purchase_pieces import not_missing_piece
+from app.services.finance import cn_today_start_utc
+
+router = APIRouter(prefix="/api/miaoda", tags=["miaoda"])
+_bearer = HTTPBearer(auto_error=False)
+
+
+def require_miaoda_key(credentials: HTTPAuthorizationCredentials | None = Depends(_bearer)) -> None:
+    expected = settings.miaoda_api_key
+    if not expected:
+        raise HTTPException(status_code=503, detail="MIAODA_API_KEY 没配置")
+    given = credentials.credentials if credentials else ""
+    if not hmac.compare_digest(given.encode(), expected.encode()):
+        raise HTTPException(status_code=401, detail="工作台凭证无效")
+
+
+@router.get(
+    "/overview",
+    summary="员工工作台用的 ERP 今日计数（只读、全公司、不含金额）",
+    response_model=MiaodaOverview,
+    dependencies=[Depends(require_miaoda_key)],
+)
+def overview(db: Session = Depends(get_db)):
+    start = cn_today_start_utc()
+    return MiaodaOverview(
+        generated_at=utc_to_cn_iso(datetime.utcnow()),
+        today_purchase=db.query(PurchaseOrder)
+        .filter(PurchaseOrder.created_at >= start, not_asset_intake_po())
+        .count(),
+        pending_inspect=db.query(Inspection)
+        .filter(Inspection.status == InspectionStatus.PENDING, Inspection.deleted_at.is_(None))
+        .count(),
+        today_inspected=db.query(Inspection)
+        .filter(
+            Inspection.status == InspectionStatus.DONE,
+            Inspection.inspected_at >= start,
+            Inspection.deleted_at.is_(None),
+            not_asset_intake_inspection(),
+            not_missing_piece(),
+        )
+        .count(),
+        today_inbound=db.query(Sku).filter(Sku.inbound_at >= start).count(),
+        today_outbound=db.query(SalesOutbound).filter(SalesOutbound.created_at >= start).count(),
+        in_stock=db.query(Sku).filter(Sku.status == SkuStatus.IN_STOCK).count(),
+        reserved=db.query(Sku).filter(Sku.status == SkuStatus.RESERVED).count(),
+    )
+
+
+@router.post(
+    "/employee-token",
+    summary="换指定员工的登录令牌（工作台服务端代理员工调 ERP 接口用）",
+    response_model=MiaodaEmployeeTokenOut,
+    dependencies=[Depends(require_miaoda_key)],
+)
+def employee_token(body: MiaodaEmployeeTokenIn, db: Session = Depends(get_db)):
+    # 只放真人：设备账号不是人，工作台那头坐的是员工（get_current_user 还会再挡一次停用/删除，
+    # 这里先挡是少签一张注定要失败的令牌）
+    staff = db.get(Staff, body.staff_id)
+    if not staff or staff.deleted_at:
+        raise HTTPException(status_code=404, detail="员工不存在")
+    if staff.status != StaffStatus.ACTIVE:
+        raise HTTPException(status_code=403, detail="员工已停用")
+    if staff.role not in HUMAN_ROLES:
+        raise HTTPException(status_code=403, detail="设备账号不能换员工令牌")
+    return MiaodaEmployeeTokenOut(
+        token=create_access_token(staff.id, staff.role),
+        role=staff.role,
+        name=staff.name,
+        expires_in=settings.jwt_expire_minutes * 60,
+    )

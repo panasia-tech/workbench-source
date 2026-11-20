@@ -1,0 +1,156 @@
+<!-- 填写上架信息（电脑版）：左边文案表单 + 商品图，右边主图 AI 生图和重绘记录；保存按钮在底部操作条 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">填写上架信息</view>
+      <view class="dk-sub">SKU {{skuCode || '—'}} · 标题和售价必填，保存后去店铺上架</view>
+    </view>
+  </view>
+
+  <view class="dk-split lf-dk-split">
+    <view class="lf-dk-col">
+      <view class="dk-card">
+        <view class="dk-card__head">上架信息</view>
+        <view class="dk-card__body">
+          <view class="dk-form dk-form--3">
+            <view class="dk-field dk-field--full">
+              <text class="dk-label dk-label--req">标题</text>
+              <input class="dk-input" data-key="title" value="{{form.title}}" bindinput="onInput" placeholder="闲鱼商品标题" />
+            </view>
+            <view class="dk-field">
+              <text class="dk-label">闲鱼成色</text>
+              <picker mode="selector" range="{{stuffOptions}}" range-key="label" value="{{stuffIndex}}" bindchange="onStuffPick">
+                <view class="dk-select">{{stuffLabel || '请选择成色'}}</view>
+              </picker>
+            </view>
+            <view class="dk-field">
+              <text class="dk-label dk-label--req">售价 ¥</text>
+              <input class="dk-input" type="digit" data-key="price" value="{{form.price}}" bindinput="onInput" />
+            </view>
+            <view class="dk-field">
+              <text class="dk-label">原价 ¥</text>
+              <input class="dk-input" type="digit" data-key="original_price" value="{{form.original_price}}" bindinput="onInput" />
+            </view>
+            <view class="dk-field">
+              <text class="dk-label">快递费 ¥（选填）</text>
+              <input class="dk-input" type="digit" data-key="express_fee" value="{{form.express_fee}}" bindinput="onInput" placeholder="不填按 0 元运费" />
+            </view>
+            <view class="dk-field dk-field--full">
+              <text class="dk-label">描述</text>
+              <textarea class="dk-input lf-dk-ta lf-dk-desc" auto-height="{{true}}" data-key="desc" value="{{form.desc}}" bindinput="onInput" maxlength="-1" />
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="dk-card">
+        <view class="dk-card__head">
+          <text>商品图 <text class="dk-sub">{{form.images.length}} / 9 · 第 1 张是主图</text></text>
+          <view wx:if="{{form.images.length < 9}}" class="dk-btn dk-btn--sm" bindtap="addImage">添加图片</view>
+        </view>
+        <view class="dk-card__body">
+          <view class="dk-gallery lf-dk-gallery">
+            <view wx:for="{{form.images}}" wx:key="*this" class="lf-dk-img">
+              <image
+                class="dk-gallery__item lf-dk-img__pic"
+                src="{{imageDisplayUrls[index] || item}}"
+                mode="aspectFill"
+                data-url="{{imageDisplayUrls[index] || item}}"
+                data-urls="{{imageDisplayUrls}}"
+                bindtap="dkPreview"
+              />
+              <text wx:if="{{index === 0}}" class="lf-dk-img__first">主图</text>
+              <text class="lf-dk-img__x" data-index="{{index}}" catchtap="dkRemoveImage" title="拿掉这张">×</text>
+            </view>
+            <view wx:if="{{form.images.length < 9}}" class="lf-dk-add" bindtap="addImage">
+              <text class="lf-dk-add__plus">+</text>
+              <text>添加图片</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="lf-dk-col">
+      <view wx:if="{{productTypeOptions.length}}" class="dk-card">
+        <view class="dk-card__head">主图 AI 生图</view>
+        <view class="dk-card__body lf-dk-ai">
+          <view class="dk-field">
+            <text class="dk-label">种类类型</text>
+            <picker mode="selector" range="{{productTypeOptions}}" range-key="name" value="{{productTypeIndex}}" bindchange="onProductTypePick">
+              <view class="dk-select">{{productTypeLabel || '请选择'}}</view>
+            </picker>
+          </view>
+          <view class="dk-field">
+            <text class="dk-label">AI 提示词（按种类默认，可修改）</text>
+            <textarea
+              class="dk-input lf-dk-ta"
+              auto-height="{{true}}"
+              placeholder="选择种类后自动带出提示词，也可手动修改"
+              value="{{t2iPrompt}}"
+              bindinput="onT2iPromptInput"
+            />
+          </view>
+          <view class="lf-dk-slots">
+            <view class="lf-dk-slot" wx:for="{{[0, 1]}}" wx:key="*this">
+              <image
+                wx:if="{{form.images[item]}}"
+                class="lf-dk-slot__pic"
+                src="{{imageDisplayUrls[item] || form.images[item]}}"
+                mode="aspectFill"
+                data-url="{{imageDisplayUrls[item] || form.images[item]}}"
+                bindtap="dkPreview"
+              />
+              <view wx:else class="lf-dk-slot__pic lf-dk-slot__empty">主图 {{item + 1}}</view>
+              <view
+                class="dk-btn dk-btn--sm {{submittingRedraw || !form.images[item] || !t2iPrompt ? 'dk-btn--disabled' : ''}}"
+                data-slot="{{item}}"
+                bindtap="dkRedraw"
+              >{{form.images[item] ? '重绘主图 ' + (item + 1) : '请先上传主图'}}</view>
+            </view>
+          </view>
+          <view
+            class="dk-btn {{submittingRedraw || !t2iPrompt ? 'dk-btn--disabled' : ''}}"
+            bindtap="dkTextToImage"
+          >{{submittingRedraw ? '提交中…' : '文字生图（无需原图）'}}</view>
+          <view class="dk-help">有原图点「重绘主图」按原图改，无原图点「文字生图」直接生成。结果在下方记录里看，点「应用」换到主图位置。</view>
+        </view>
+      </view>
+
+      <view wx:if="{{redrawJobs.length}}" class="dk-card">
+        <view class="dk-card__head">重绘记录 <text class="dk-sub">{{redrawJobs.length}} 条，生成中的每 5 秒自动刷新</text></view>
+        <view class="lf-dk-jobs">
+          <view wx:for="{{redrawJobs}}" wx:key="id" class="lf-dk-job">
+            <image
+              wx:if="{{item.status === 'SUCCEEDED' && item.result_url}}"
+              class="dk-thumb dk-thumb--lg lf-dk-job__pic"
+              src="{{item.result_url}}"
+              mode="aspectFill"
+              data-url="{{item.result_url}}"
+              bindtap="previewRedraw"
+            />
+            <view wx:elif="{{item.status === 'PENDING' || item.status === 'RUNNING'}}" class="dk-thumb dk-thumb--lg lf-dk-job__ph">生成中…</view>
+            <view wx:else class="dk-thumb dk-thumb--lg lf-dk-job__ph lf-dk-job__ph--bad">失败</view>
+            <view class="dk-grow">
+              <view class="dk-row">
+                <text class="dk-cell-main">{{item.tag_name || '—'}}</text>
+                <text class="dk-tag {{item.status === 'SUCCEEDED' ? 'tag-success' : (item.status === 'FAILED' ? 'tag-danger' : 'tag-info')}}">{{item.status}}</text>
+              </view>
+              <view class="dk-cell-sub">{{item.created_at}}</view>
+              <view wx:if="{{item.error_message}}" class="lf-dk-err">{{item.error_message}}</view>
+              <view wx:if="{{item.status === 'SUCCEEDED'}}" class="dk-row lf-dk-job__ops">
+                <view class="dk-btn dk-btn--sm" data-id="{{item.id}}" data-slot="0" bindtap="applyJobToSlot">应用主图1</view>
+                <view class="dk-btn dk-btn--sm" data-id="{{item.id}}" data-slot="1" bindtap="applyJobToSlot">应用主图2</view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="dk-actionbar lf-dk-bar">
+    <view class="dk-btn" bindtap="saveOnly">保存</view>
+    <view class="dk-btn dk-btn--primary" bindtap="submit">保存并去上架</view>
+  </view>
+</view>

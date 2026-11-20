@@ -1,0 +1,89 @@
+<!-- 账号档案（电脑版）：状态 tab + 搜索 + 同步平铺在工具栏，表格 + 页码。数据、方法和手机版是同一套 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">账号档案</view>
+      <view class="dk-sub">共 {{total}} 个{{pendingCount ? ' · ' + pendingCount + ' 个待完善' : ''}}</view>
+    </view>
+    <view class="dk-btn {{syncing ? 'dk-btn--disabled' : ''}}" bindtap="onSync">{{syncing ? '同步中…' : '从群控同步'}}</view>
+  </view>
+
+  <view class="dk-card">
+    <view class="dk-toolbar">
+      <view class="dk-tabs">
+        <view class="dk-tab {{status === '' ? 'dk-tab--on' : ''}}" data-status="" bindtap="onStatusFilter">全部</view>
+        <view class="dk-tab {{status === 'PENDING' ? 'dk-tab--on' : ''}}" data-status="PENDING" bindtap="onStatusFilter">
+          待完善<text wx:if="{{pendingCount}}" class="ap-dk-badge">{{pendingCount}}</text>
+        </view>
+        <view class="dk-tab {{status === 'COMPLETE' ? 'dk-tab--on' : ''}}" data-status="COMPLETE" bindtap="onStatusFilter">已初始化</view>
+      </view>
+      <input
+        class="dk-input dk-search"
+        placeholder="昵称 / 会员名 / 手机号 / SN / IMEI…"
+        value="{{q}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+        bindconfirm="onSearch"
+      />
+      <view class="dk-btn dk-btn--primary" bindtap="onSearch">搜索</view>
+    </view>
+
+    <view class="dk-table-wrap">
+      <table class="dk-table">
+        <thead>
+          <tr>
+            <th>闲鱼昵称 / 会员名</th>
+            <th>状态</th>
+            <th>手机号</th>
+            <th>设备 SN / 关联资产</th>
+            <th>运营商 / 法人 / 种类</th>
+            <th>异常策略</th>
+            <th class="dk-ops">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr wx:for="{{list}}" wx:key="id" class="dk-tr--click" data-id="{{item.id}}" bindtap="openForm">
+            <td class="dk-nowrap">
+              <view class="dk-media">
+                <view class="ap-dk-ico">{{item.nick[0] || '档'}}</view>
+                <view>
+                  <view class="dk-cell-main">{{item.nick}}</view>
+                  <view class="dk-cell-sub">{{item.member_name || '会员名未采集'}}</view>
+                </view>
+              </view>
+            </td>
+            <td class="dk-nowrap">
+              <text class="dk-tag {{item.status === 'COMPLETE' ? 'tag-success' : 'tag-warning'}}">{{item.status === 'COMPLETE' ? '已初始化' : '待完善'}}</text>
+              <text wx:if="{{item.missingCollect}}" class="dk-tag dk-tag--orange ap-dk-gap">采集不全</text>
+            </td>
+            <td class="dk-nowrap {{item.phone_number ? '' : 'dk-muted'}}">{{item.phone_number || '未采集'}}</td>
+            <td class="dk-nowrap">
+              <view class="ap-dk-mono {{item.device_serial ? '' : 'dk-muted'}}">{{item.device_serial || '未采集'}}</view>
+              <view wx:if="{{item.asset_no}}" class="dk-cell-sub">资产 {{item.asset_no}}</view>
+            </td>
+            <td class="dk-nowrap">
+              <view>{{item.carrier || '—'}}</view>
+              <view class="dk-cell-sub">{{item.legal_person || '法人未填'}} · {{item.account_type || '种类未填'}}</view>
+            </td>
+            <td><view class="dk-ellipsis ap-dk-strategy">{{item.strategyText || '—'}}</view></td>
+            <td class="dk-ops">
+              <text class="dk-link" data-id="{{item.id}}" catchtap="openForm">{{item.status === 'COMPLETE' ? '编辑' : '去完善'}}</text>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </view>
+
+    <view wx:if="{{!list.length && !loading}}" class="dk-empty">暂无档案，点右上角「从群控同步」拉取</view>
+    <view wx:if="{{loading && !list.length}}" class="dk-empty">加载中…</view>
+
+    <view wx:if="{{total > dkPageSize}}" class="dk-pager">
+      <text>共 {{total}} 个，每页 {{dkPageSize}} 个</text>
+      <view class="dk-row">
+        <view class="dk-btn dk-btn--sm {{dkPage <= 1 ? 'dk-btn--disabled' : ''}}" bindtap="dkPrev">上一页</view>
+        <text>第 {{dkPage}} / {{dkPages}} 页</text>
+        <view class="dk-btn dk-btn--sm {{dkPage >= dkPages ? 'dk-btn--disabled' : ''}}" bindtap="dkNext">下一页</view>
+      </view>
+    </view>
+  </view>
+</view>

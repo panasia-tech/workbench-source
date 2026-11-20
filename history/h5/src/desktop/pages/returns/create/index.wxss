@@ -1,0 +1,77 @@
+/* 创建退货单（电脑版模板 index.wxml 用的补充；通用样式在 src/styles/desktop.css） */
+.rc-dk-search {
+  flex: 1;
+  min-width: 200px;
+  max-width: 360px;
+}
+
+.rc-dk-name {
+  max-width: 160px;
+}
+
+.rc-dk-split {
+  grid-template-columns: minmax(0, 1fr) 300px;
+}
+
+/* 右侧退货信息跟着页面滚动停在顶部，长表格翻到下面也能直接提交。
+ * 卡片还带着 ret-submit-card：选中后 selectSku 会 pageScrollTo 到它（找不到会报错），手机样式里的下边距去掉 */
+.rc-dk-side {
+  position: sticky;
+  top: 0;
+}
+
+.rc-dk-side.ret-submit-card {
+  margin-bottom: 0;
+}
+
+.rc-dk-hint {
+  padding: 32px 8px;
+}
+
+.rc-dk-form {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.rc-dk-code {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.rc-dk-ta {
+  width: 100%;
+}
+
+.rc-dk-radio-th,
+.rc-dk-radio-td {
+  width: 16px;
+  padding-right: 0;
+}
+
+.rc-dk-radio {
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+.rc-dk-radio--on {
+  border: 4px solid #2563eb;
+}
+
+.rc-dk-radio--off {
+  background: #f3f4f6;
+}
+
+.dk-table tr.rc-dk-tr--off td {
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.rc-dk-thumb-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  font-size: 13px;
+}

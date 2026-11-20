@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>闲鱼服务器控制台</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section id="login" class="card">
+        <h1>闲鱼服务器控制台</h1>
+        <p>员工通过 H5 访问，浏览器账号和任务在公司服务器运行。</p>
+        <form id="login-form"><label>账号<input id="username" autocomplete="username" required /></label><label>密码<input id="password" type="password" autocomplete="current-password" required /></label><button>登录</button></form>
+        <p id="login-error" class="error" role="alert"></p>
+      </section>
+      <section id="console" class="hidden">
+        <header class="topbar"><div><h1>任务控制台</h1><p id="user"></p></div><button id="logout" class="secondary">退出</button></header>
+        <section class="card"><h2>创建任务</h2><form id="job-form"><label>类型<select id="job-type"><option value="market_snapshot">行情快照</option><option value="seller_snapshot">卖家主页</option></select></label><label>Profile<select id="job-profile"></select></label><label>任务参数（JSON）<textarea id="job-payload">{"keyword":"测试"}</textarea></label><button>提交任务</button></form><p id="job-error" class="error" role="alert"></p></section>
+        <section class="card"><h2>浏览器账号 Profile</h2><form id="profile-form"><label>底座<select id="profile-provider"><option value="adspower">AdsPower</option><option value="camoufox">Camoufox</option><option value="fake">Fake（仅测试）</option></select></label><label>厂商 Profile ID<input id="vendor-profile-id" required /></label><label>显示名称<input id="profile-label" /></label><button>保存 Profile</button></form><ul id="profiles"></ul><p id="profile-error" class="error" role="alert"></p></section>
+        <section class="card"><h2>服务器定时调度</h2><form id="schedule-form"><label>名称<input id="schedule-name" required /></label><label>任务间隔（秒）<input id="schedule-interval" type="number" min="1" value="3600" required /></label><label>Profile<select id="schedule-profile"></select></label><label>任务参数（JSON）<textarea id="schedule-payload">{"keyword":"测试"}</textarea></label><button>创建调度</button></form><ul id="schedules"></ul><p id="schedule-error" class="error" role="alert"></p></section>
+        <section class="card"><div class="row"><h2>任务列表</h2><button id="refresh" class="secondary">刷新</button></div><ul id="jobs"></ul></section>
+        <section class="card"><h2>服务器文件</h2><form id="artifact-form"><input id="artifact-file" type="file" required /><button>上传</button></form><ul id="artifacts"></ul><p id="artifact-error" class="error" role="alert"></p></section>
+        <section class="card"><h2>实时事件</h2><pre id="events" aria-live="polite"></pre></section>
+      </section>
+    </main>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

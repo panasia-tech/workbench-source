@@ -1,0 +1,15 @@
+/* 资产管理（电脑版模板用；类名 as-dk-*） */
+.as-dk-thumb-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6d28d9;
+  background: #f5f3ff;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.as-dk-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+}

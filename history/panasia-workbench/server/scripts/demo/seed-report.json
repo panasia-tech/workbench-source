@@ -1,0 +1,165 @@
+{
+  "startedAt": "2026-09-28T11:49:52.589Z",
+  "memberPath": "B（fallback）",
+  "planeMemberIds": {
+    "zhangsan": "a87f9e39-f55f-458c-9d1f-944b5cd397bb",
+    "lisi": null,
+    "wangzhuguan": null
+  },
+  "plane": {
+    "projects": {
+      "p1": "6d8028bc-2c9c-4e0b-b454-f2ad3ccbe0b5",
+      "p2": "48152aea-04ca-431a-ae6c-0289554ba69c",
+      "p3": "45fe3411-2de5-40eb-b751-ef1200c7c5cc"
+    },
+    "invited": [],
+    "issueIds": {
+      "p1": [],
+      "p2": [],
+      "p3": []
+    }
+  },
+  "frappe": {
+    "company": null,
+    "employees": {
+      "DEMO-001": "HR-EMP-00001",
+      "DEMO-002": "HR-EMP-00002",
+      "DEMO-003": "HR-EMP-00003"
+    },
+    "appraisal": "HR-APR-2026-00001",
+    "goal": "HR-GOAL-2026-0009",
+    "salaryStructure": "采购专员-月度",
+    "salarySlip": null,
+    "leaveApplication": null,
+    "created": {
+      "company": null,
+      "departments": [],
+      "designations": [],
+      "leaveType": "事假",
+      "salaryComponents": [
+        "绩效奖金",
+        "全勤奖",
+        "其他奖励"
+      ],
+      "appraisalCycle": "Demo 2026-09",
+      "payrollPeriod": "Demo Payroll Period",
+      "member": null,
+      "kras": [],
+      "courses": [],
+      "quizzes": [],
+      "salaryStructure": "采购专员-月度"
+    },
+    "appraisalTable": {
+      "table": "appraisal_kras",
+      "scoreField": "goal_score"
+    },
+    "goalNames": [
+      "HR-GOAL-2026-0001",
+      "HR-GOAL-2026-0002",
+      "HR-GOAL-2026-0003",
+      "HR-GOAL-2026-0004",
+      "HR-GOAL-2026-0005",
+      "HR-GOAL-2026-0006",
+      "HR-GOAL-2026-0007",
+      "HR-GOAL-2026-0008",
+      "HR-GOAL-2026-0009"
+    ],
+    "attendanceNames": [
+      "HR-ATT-2026-00001",
+      "HR-ATT-2026-00002",
+      "HR-ATT-2026-00003",
+      "HR-ATT-2026-00004",
+      "HR-ATT-2026-00005",
+      "HR-ATT-2026-00006",
+      "HR-ATT-2026-00007",
+      "HR-ATT-2026-00008",
+      "HR-ATT-2026-00009",
+      "HR-ATT-2026-00010",
+      "HR-ATT-2026-00011",
+      "HR-ATT-2026-00012",
+      "HR-ATT-2026-00013",
+      "HR-ATT-2026-00014",
+      "HR-ATT-2026-00015",
+      "HR-ATT-2026-00016",
+      "HR-ATT-2026-00017",
+      "HR-ATT-2026-00018"
+    ],
+    "attendanceCount": 18
+  },
+  "fallbacks": [
+    "Plane 成员邀请未生效 → 路径 B：张三=现有成员 a87f9e39-f55f-458c-9d1f-944b5cd397bb（演示业务负责人）；李四/王主管无成员，子任务A assignees:[]",
+    "Appraisal total_score 未能调到 86（当前=0）→ 补建 8 条 Goal fallback"
+  ],
+  "notes": [
+    "① 首页计数当前后端不过滤子任务，张三 BLOCKED 实际显示 2（腾讯行情价字段确认 + 子任务B「确认腾讯缺失字段」），接口改造时处理",
+    "② Attendance 覆盖 2026-09-01~09-26 共 19 个工作日（周一~周五），其中 09-22 status=Late，其余 Present",
+    "③ 「采购岗位基础培训」target=2026-09-28（不能是 09-27：逾期会破坏张三任务及时率 92% = 24/26）"
+  ],
+  "failures": [
+    {
+      "step": "invitation zhangsan",
+      "error": "HTTP 400: {\"non_field_errors\":[\"Email already invited\"]}"
+    },
+    {
+      "step": "invitation lisi",
+      "error": "HTTP 400: {\"non_field_errors\":[\"Email already invited\"]}"
+    },
+    {
+      "step": "invitation wangzhuguan",
+      "error": "HTTP 400: {\"non_field_errors\":[\"Email already invited\"]}"
+    },
+    {
+      "step": "KRA 采购任务及时率",
+      "error": "HTTP 403: {\"exc_type\":\"PermissionError\",\"_server_messages\":\"[\\\"{\\\\\\\"message\\\\\\\":\\\\\\\"角色权限管理中未授权用户 <strong>dade2cfbb3@example.invalid</strong> 访问 <strong>关键绩效领域</strong>\\\\\\\",\\\\\\\"as_table\\\\\\\":false,\\\\\\\"title\\\\\\\":\\\\\\\"信息\\\\\\\"}\\\"]\",\"_error_message\":\"无权限操作关键绩效领域\"}"
+    },
+    {
+      "step": "KRA 项目任务完成率",
+      "error": "HTTP 403: {\"exc_type\":\"PermissionError\",\"_server_messages\":\"[\\\"{\\\\\\\"message\\\\\\\":\\\\\\\"角色权限管理中未授权用户 <strong>dade2cfbb3@example.invalid</strong> 访问 <strong>关键绩效领域</strong>\\\\\\\",\\\\\\\"as_table\\\\\\\":false,\\\\\\\"title\\\\\\\":\\\\\\\"信息\\\\\\\"}\\\"]\",\"_error_message\":\"无权限操作关键绩效领域\"}"
+    },
+    {
+      "step": "KRA 一次验收通过率",
+      "error": "HTTP 403: {\"exc_type\":\"PermissionError\",\"_server_messages\":\"[\\\"{\\\\\\\"message\\\\\\\":\\\\\\\"角色权限管理中未授权用户 <strong>dade2cfbb3@example.invalid</strong> 访问 <strong>关键绩效领域</strong>\\\\\\\",\\\\\\\"as_table\\\\\\\":false,\\\\\\\"title\\\\\\\":\\\\\\\"信息\\\\\\\"}\\\"]\",\"_error_message\":\"无权限操作关键绩效领域\"}"
+    },
+    {
+      "step": "KRA 平均响应时间（11 分钟）",
+      "error": "HTTP 403: {\"exc_type\":\"PermissionError\",\"_server_messages\":\"[\\\"{\\\\\\\"message\\\\\\\":\\\\\\\"角色权限管理中未授权用户 <strong>dade2cfbb3@example.invalid</strong> 访问 <strong>关键绩效领域</strong>\\\\\\\",\\\\\\\"as_table\\\\\\\":false,\\\\\\\"title\\\\\\\":\\\\\\\"信息\\\\\\\"}\\\"]\",\"_error_message\":\"无权限操作关键绩效领域\"}"
+    },
+    {
+      "step": "KRA 阻塞升级次数（2）",
+      "error": "HTTP 403: {\"exc_type\":\"PermissionError\",\"_server_messages\":\"[\\\"{\\\\\\\"message\\\\\\\":\\\\\\\"角色权限管理中未授权用户 <strong>dade2cfbb3@example.invalid</strong> 访问 <strong>关键绩效领域</strong>\\\\\\\",\\\\\\\"as_table\\\\\\\":false,\\\\\\\"title\\\\\\\":\\\\\\\"信息\\\\\\\"}\\\"]\",\"_error_message\":\"无权限操作关键绩效领域\"}"
+    },
+    {
+      "step": "KRA 必修课程完成率（100）",
+      "error": "HTTP 403: {\"exc_type\":\"PermissionError\",\"_server_messages\":\"[\\\"{\\\\\\\"message\\\\\\\":\\\\\\\"角色权限管理中未授权用户 <strong>dade2cfbb3@example.invalid</strong> 访问 <strong>关键绩效领域</strong>\\\\\\\",\\\\\\\"as_table\\\\\\\":false,\\\\\\\"title\\\\\\\":\\\\\\\"信息\\\\\\\"}\\\"]\",\"_error_message\":\"无权限操作关键绩效领域\"}"
+    },
+    {
+      "step": "KRA 考试平均分（92）",
+      "error": "HTTP 403: {\"exc_type\":\"PermissionError\",\"_server_messages\":\"[\\\"{\\\\\\\"message\\\\\\\":\\\\\\\"角色权限管理中未授权用户 <strong>dade2cfbb3@example.invalid</strong> 访问 <strong>关键绩效领域</strong>\\\\\\\",\\\\\\\"as_table\\\\\\\":false,\\\\\\\"title\\\\\\\":\\\\\\\"信息\\\\\\\"}\\\"]\",\"_error_message\":\"无权限操作关键绩效领域\"}"
+    },
+    {
+      "step": "Submit Salary Structure 采购专员-月度",
+      "error": "HTTP 500: {\"exception\":\"TypeError: submit() missing 1 required positional argument: 'doc'\",\"exc_type\":\"TypeError\",\"exc\":\"[\\\"Traceback (most recent call last):\\\\n File \\\\\\\"apps/frappe/frappe/app.py\\\\\\\", line 158, in application\\\\n response = frappe.api.handle(request)\\\\n File \\\\\\\"apps/frappe/frappe/api/__"
+    },
+    {
+      "step": "Salary Slip（不阻塞）",
+      "error": "HTTP 417: {\"exception\":\"frappe.exceptions.ValidationError: No Holiday List was found for Employee <strong>HR-EMP-00001</strong> or their company <strong>杭州泛亚电子</strong> for date <strong>2026-09-28</strong>. Please assign through <a href=\\\"http://127.0.0.1:8000">Holiday List Assi"
+    },
+    {
+      "step": "Attendance 2026-09-22 Late",
+      "error": "HTTP 417: {\"exception\":\"frappe.exceptions.ValidationError: 状态必须是'Present', 'Absent', 'On Leave', 'Half Day'或'Work From Home'中的一个\",\"exc_type\":\"ValidationError\",\"_exc_source\":\"hrms (app)\",\"exc\":\"[\\\"Traceback (most recent call last):\\\\n File \\\\\\\"apps/frappe/frappe/app.py\\\\\\\", line 158, in application\\\\n resp"
+    },
+    {
+      "step": "Leave Application",
+      "error": "HTTP 417: {\"exception\":\"frappe.exceptions.ValidationError: 申请周期不可超出假期分配期间\",\"exc_type\":\"ValidationError\",\"_exc_source\":\"hrms (app)\",\"exc\":\"[\\\"Traceback (most recent call last):\\\\n File \\\\\\\"apps/frappe/frappe/app.py\\\\\\\", line 158, in application\\\\n response = frappe.api.handle(request)\\\\n File \\\\\\\"apps/fra"
+    },
+    {
+      "step": "FATAL",
+      "error": "HTTP ?: LMS Course DEMO-REQUIRED-01 全部尝试均失败：HTTP 500: {\"exception\":\"AttributeError: 'NoneType' object has no attribute 'lower'\",\"exc_type\":\"AttributeError\",\"_exc_source\":\"lms (app)\",\"exc\":\"[\\\"Traceback (most recent call last):\\\\n File \\\\\\\"apps/frappe/frappe/app.py\\\\\\\", line 158, in application\\\\n response ="
+    }
+  ],
+  "verification": {
+    "appraisalTotalScore": 0
+  },
+  "salaryStructureSubmitted": false,
+  "finishedAt": "2026-09-28T11:53:37.579Z"
+}

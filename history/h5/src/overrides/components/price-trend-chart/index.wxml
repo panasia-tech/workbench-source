@@ -1,0 +1,6 @@
+<view class="ptc ptc--h5">
+  <view class="ptc-canvas-wrap">
+    <view id="ptc-echart" class="ptc-canvas"></view>
+    <view wx:if="{{!hasData}}" class="ptc-empty">{{emptyText || '近30天数据不足，暂不能画出走势'}}</view>
+  </view>
+</view>

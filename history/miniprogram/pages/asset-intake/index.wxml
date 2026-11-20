@@ -1,0 +1,60 @@
+<wxs module="fmt" src="../../utils/format.wxs" />
+
+<view class="page-wrap page-wrap--no-tab intake-list-page">
+  <view class="search-bar">
+    <view class="search-input-wrap">
+      <input
+        class="search-input"
+        placeholder="序列号 / 型号 / 货号 / 来源编号"
+        value="{{q}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+        bindconfirm="onSearch"
+      />
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-head card-head--split">
+      <view class="card-head-main">
+        {{isAdmin ? '全部录入' : '我录入的'}}
+        <view class="tag tag-info head-extra">{{total}} 台</view>
+      </view>
+    </view>
+
+    <view wx:if="{{!list.length && !loading}}" class="empty">
+      <view class="e-icon">—</view>
+      <view class="e-text">还没有录入的资产</view>
+    </view>
+
+    <view
+      wx:for="{{list}}"
+      wx:key="sku_code"
+      class="list-item list-item--stacked"
+      data-code="{{item.sku_code}}"
+      bindtap="openItem"
+    >
+      <view class="list-item__main">
+        <view class="li-thumb-wrap">
+          <media-thumb wx:if="{{item.cover_url}}" url="{{item.cover_url}}" size="small" />
+          <view wx:else class="li-icon">{{item.product_name[0] || '资'}}</view>
+        </view>
+        <view class="li-info">
+          <view class="li-title">{{item.product_name}}</view>
+          <view class="li-sub">{{item.spec ? item.spec + ' · ' : ''}}SN {{item.serial_number}}</view>
+          <view class="li-sub li-sub--muted">{{item.sku_code}}{{item.source_asset_no ? ' · 来源 ' + item.source_asset_no : ''}}{{isAdmin && item.entered_by_name ? ' · ' + item.entered_by_name : ''}}</view>
+        </view>
+        <view class="li-meta">
+          <view class="tag {{item.statusCls}} li-tag">{{item.status_label}}</view>
+          <view wx:if="{{item.price}}" class="intake-price">¥{{fmt.money(item.price)}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{loading}}" class="intake-loading">加载中…</view>
+  </view>
+</view>
+
+<view class="intake-fab" bindtap="onCreate">
+  <text class="intake-fab-plus">+</text>
+</view>
