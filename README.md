@@ -18,3 +18,12 @@ ERP 共用底座负责登录、共用组件、数据库和跨模块集成。本�
 - **可检索文字规格**：`demo-v5.2/docs/SPEC-采购工作台全量研发规格-v5.2.md`
 - **运行与 43 项回归验收说明**：`demo-v5.2/docs/RUNBOOK-Demo运行与回归验收说明-v5.2.md`
 - **GUI 页面与组件源码**：`demo-v5.2/源码/src/` 及闲鱼内嵌扩展 `demo-v5.2/AdsPower扩展-采购Copilot/`
+
+---
+
+## v6.0 全栈闲鱼监控融合迭代交付（2026-11-20）
+
+- **全栈源码根目录**：`demo-v6.0/`（Node.js 24 原生 `node:sqlite` WAL 服务端 + Vue 3 编译前端 + 闲鱼监控过滤引擎 `shared/` & Electron 桥接 `electron/`）
+- **可检索全量研发规格**：`demo-v6.0/docs/SPEC-采购工作台全量研发规格-v6.0.md`
+- **运行与 27 组 E2E 验收说明**：`demo-v6.0/docs/RUNBOOK-Demo运行与回归验收说明-v6.0.md`
+- **核心界面源码**：`demo-v6.0/web/src/views/XianyuMonitorView.vue`、`TodayHomeView.vue`、`CaseDetailView.vue`、`TutorialCenterView.vue`

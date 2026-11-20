@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>闲鱼</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      #guest {
+        flex: 1;
+        width: 100%;
+        min-height: 0;
+        border: none;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      ;(function () {
+        const params = new URLSearchParams(window.location.search)
+        const STORAGE_PARTITION = (params.get('partition') || '').trim()
+        let initUrl = ''
+        try {
+          const raw = params.get('init')
+          if (raw) initUrl = decodeURIComponent(raw)
+        } catch (_) {
+          initUrl = ''
+        }
+
+        function guestWebContents(wv) {
+          return wv.webContents || (typeof wv.getWebContents === 'function' ? wv.getWebContents() : null)
+        }
+
+        function navigateGuest(wv, url) {
+          const u = String(url || '').trim()
+          if (!u || !wv) return
+          if (typeof wv.loadURL === 'function') {
+            wv.loadURL(u).catch(function () {
+              wv.src = u
+            })
+          } else {
+            wv.src = u
+          }
+        }
+
+        function attachBlockNewWindows(wv) {
+          function bindOnce() {
+            const wc = guestWebContents(wv)
+            if (!wc) return
+            if (typeof wc.isDestroyed === 'function' && wc.isDestroyed()) return
+            if (typeof wc.setWindowOpenHandler !== 'function') return
+            wc.setWindowOpenHandler(function (details) {
+              const raw = String((details && details.url) || '').trim()
+              if (!raw) return { action: 'deny' }
+              try {
+                const p = new URL(raw)
+                if (p.protocol !== 'http:' && p.protocol !== 'https:') return { action: 'deny' }
+              } catch (_) {
+                return { action: 'deny' }
+              }
+              navigateGuest(wv, raw)
+              return { action: 'deny' }
+            })
+          }
+          wv.addEventListener('dom-ready', bindOnce, { once: true })
+        }
+
+        let mounted = false
+        let preloadWait = 0
+        function mountGoofishShell() {
+          if (mounted) return
+          if (!STORAGE_PARTITION) return
+          if (!window.goofishTabShell) {
+            preloadWait += 1
+            if (preloadWait < 100) setTimeout(mountGoofishShell, 30)
+            return
+          }
+          mounted = true
+
+          const wv = document.createElement('webview')
+          wv.id = 'guest'
+          wv.setAttribute('partition', STORAGE_PARTITION)
+          wv.setAttribute('allowpopups', 'true')
+          document.body.appendChild(wv)
+
+          attachBlockNewWindows(wv)
+
+          wv.addEventListener('page-title-updated', function (e) {
+            const t = (e.title || '').trim()
+            if (t) document.title = t
+          })
+
+          window.goofishTabShell.subscribeOpenTab(function (url) {
+            navigateGuest(wv, url)
+          })
+
+          if (initUrl) navigateGuest(wv, initUrl)
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', mountGoofishShell)
+        } else {
+          mountGoofishShell()
+        }
+      })()
+    </script>
+  </body>
+</html>
