@@ -1,0 +1,33 @@
+[
+  {
+    "id": "g-delta",
+    "name": "三角洲行动",
+    "img": "demo-source.svg",
+    "pid": "v-game",
+    "note": "已有服务：游戏报错处理"
+  },
+  {
+    "id": "g-gp",
+    "name": "和平精英",
+    "img": "demo-source.svg",
+    "note": "线索：游戏服务还没调研"
+  },
+  {
+    "id": "g-pvp",
+    "name": "王者荣耀",
+    "img": "demo-source.svg",
+    "note": "线索：游戏服务还没调研"
+  },
+  {
+    "id": "g-ys",
+    "name": "原神",
+    "img": "demo-source.svg",
+    "note": "线索：游戏服务还没调研"
+  },
+  {
+    "id": "g-lol",
+    "name": "英雄联盟",
+    "img": "demo-source.svg",
+    "note": "线索：游戏服务还没调研"
+  }
+]

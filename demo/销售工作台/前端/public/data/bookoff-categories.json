@@ -1,0 +1,34 @@
+{
+  "categoryCount": 4,
+  "leafCount": 2,
+  "categories": [
+    {
+      "code": "demo-book",
+      "name": "本・デモ",
+      "depth": 0,
+      "parent": null,
+      "count": 3
+    },
+    {
+      "code": "demo-mag",
+      "name": "雑誌・デモ",
+      "depth": 0,
+      "parent": null,
+      "count": 1
+    },
+    {
+      "code": "demo-tech",
+      "name": "技術書",
+      "depth": 1,
+      "parent": "demo-book",
+      "count": 3
+    },
+    {
+      "code": "demo-hobby",
+      "name": "趣味",
+      "depth": 1,
+      "parent": "demo-mag",
+      "count": 1
+    }
+  ]
+}

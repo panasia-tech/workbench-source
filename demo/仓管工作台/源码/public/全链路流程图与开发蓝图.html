@@ -1,0 +1,573 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>泛亚仓管工作台 · 终极版全链路流程图与程序员开发蓝图</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --panel: #ffffff;
+      --soft: #f1f5f9;
+      --ink: #0f172a;
+      --mute: #526077;
+      --line: #dbe3ee;
+      --acc: #1366d6;
+      --acc-soft: #eaf2ff;
+      --grn: #0f8a5f;
+      --grn-soft: #ecfdf5;
+      --amb: #b96a09;
+      --amb-soft: #fffbeb;
+      --red: #c93b2b;
+      --red-soft: #fef2f2;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.55;
+    }
+    .top {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--line);
+      padding: 12px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 16px; }
+    .brand i {
+      width: 28px; height: 28px; border-radius: 7px; background: var(--acc); color: #fff;
+      display: grid; place-items: center; font-style: normal; font-size: 14px;
+    }
+    .nav { display: flex; gap: 8px; flex-wrap: wrap; }
+    .nav a, .btn {
+      padding: 6px 12px;
+      border-radius: 7px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      text-decoration: none;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .nav a:hover, .btn:hover { border-color: var(--acc); color: var(--acc); background: var(--acc-soft); }
+    .btn.pri { background: var(--acc); border-color: var(--acc); color: #fff; }
+    .btn.pri:hover { background: #0f56b8; color: #fff; }
+    .wrap { max-width: 1360px; margin: 0 auto; padding: 24px 28px 64px; display: grid; gap: 20px; }
+    .hero {
+      background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
+      border: 1px solid #bfdbfe;
+      border-radius: 14px;
+      padding: 22px 26px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .hero h1 { margin: 6px 0 8px; font-size: 24px; }
+    .hero p { margin: 0; color: var(--mute); font-size: 13.5px; max-width: 920px; }
+    .tag {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 9px; border-radius: 999px; font-size: 12px; font-weight: 700;
+      background: var(--soft); color: var(--ink);
+    }
+    .tag.acc { background: var(--acc-soft); color: var(--acc); }
+    .tag.grn { background: var(--grn-soft); color: var(--grn); }
+    .tag.amb { background: var(--amb-soft); color: var(--amb); }
+    .tag.red { background: var(--red-soft); color: var(--red); }
+
+    .sec {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      padding: 20px 24px;
+      display: grid;
+      gap: 14px;
+    }
+    .sec-hd {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 10px;
+    }
+    .sec-hd h2 { margin: 0; font-size: 18px; display: flex; align-items: center; gap: 8px; }
+    .sec-sub { margin: 0; color: var(--mute); font-size: 13px; }
+
+    /* 标准化泳道/节点流程图样式（纯原生渲染，离线100%清晰） */
+    .flow-lanes { display: grid; gap: 12px; }
+    .lane {
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: grid;
+      grid-template-columns: 165px 1fr;
+      gap: 14px;
+      align-items: center;
+    }
+    .lane-ttl {
+      font-weight: 800;
+      font-size: 13.5px;
+      padding-right: 12px;
+      border-right: 2px solid var(--acc);
+    }
+    .lane-ttl small { display: block; font-weight: 500; color: var(--mute); font-size: 11.5px; margin-top: 3px; }
+    .nodes {
+      display: flex;
+      align-items: stretch;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .nd {
+      flex: 1;
+      min-width: 175px;
+      background: #fff;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 9px;
+      padding: 9px 11px;
+      font-size: 12.5px;
+      display: grid;
+      gap: 4px;
+      align-content: start;
+    }
+    .nd b { font-size: 13px; color: var(--ink); }
+    .nd span { color: var(--mute); font-size: 11.5px; line-height: 1.4; }
+    .nd.acc { border-color: #60a5fa; background: #f8fbff; }
+    .nd.grn { border-color: #34d399; background: #f2fbf7; }
+    .nd.amb { border-color: #fbbf24; background: #fffdf4; }
+    .nd.red { border-color: #f87171; background: #fff5f5; }
+    .arr { display: grid; place-items: center; color: #64748b; font-weight: 900; font-size: 16px; padding: 0 2px; }
+
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .grid4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+    .box {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 13px 15px;
+      background: #fcfdff;
+      font-size: 13px;
+    }
+    .box h3 { margin: 0 0 6px; font-size: 14.5px; }
+    .box ul { margin: 6px 0 0 18px; padding: 0; font-size: 12.5px; color: #334155; }
+    .box li { margin-bottom: 4px; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+    th, td { border: 1px solid var(--line); padding: 9px 11px; text-align: left; vertical-align: top; }
+    th { background: #f1f5f9; font-weight: 700; color: #1e293b; }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      background: #f1f5f9;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    pre {
+      margin: 0;
+      padding: 14px 16px;
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: 10px;
+      overflow-x: auto;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+    @media (max-width: 1024px) {
+      .lane { grid-template-columns: 1fr; }
+      .lane-ttl { border-right: 0; border-bottom: 2px solid var(--acc); padding-bottom: 6px; }
+      .grid2, .grid4 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <i>仓</i>
+      <span>泛亚仓管工作台 · 终极版全链路流程图与开发蓝图（v5 Ultimate）</span>
+    </div>
+    <nav class="nav">
+      <a href="#sec-e2e">1. 全仓主链路泳道图</a>
+      <a href="#sec-courier">2. 快递100m拒签与10m企微召回</a>
+      <a href="#sec-ahs">3. 爱回收转仓管验货流</a>
+      <a href="#sec-wash">4. 历史库存四关清洗流</a>
+      <a href="#sec-wave">5. 抓单波次与红屏拦截归架</a>
+      <a href="#sec-blind">6. 货架盲盘与WIP暂借</a>
+      <a href="#sec-db">7. 管理员边界与 MySQL 蓝图</a>
+      <a href="./index.html" class="btn pri">返回工作台交付总入口 ›</a>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <span class="tag acc">架构选型定案：自研内聚扩表（拒绝双系统割裂）</span>
+          <span class="tag grn">终端形态：电脑宽屏工位 H5 + iData 50 走动手持 H5 共码</span>
+          <span class="tag amb">供程序员直接参考落地</span>
+        </div>
+        <h1>全链路业务闭环流程图 & FastAPI + MySQL 8 开发落地蓝图</h1>
+        <p>
+          本蓝图完整串起<b>标准化日常 WMS 底座</b>与<b>二手 3C 非标防呆闭环</b>，可直接作为后端建表、状态机硬门禁校验与前后端接口联调的唯一工程依据。
+        </p>
+      </div>
+      <div style="display:grid;gap:8px;min-width:220px">
+        <a class="btn pri" style="text-align:center" href="./index.html#/today">打开终极版 H5 工作台实测 ›</a>
+        <button class="btn" onclick="window.print()">打印 / 导出 PDF 给开发组</button>
+      </div>
+    </section>
+
+    <!-- 1. 全仓端到端四阶段主干泳道流程图 -->
+    <section id="sec-e2e" class="sec">
+      <div class="sec-hd">
+        <h2>1. 全仓端到端主干泳道流程图（从采购在途包裹到顺丰揽收回写）</h2>
+        <span class="tag acc">对应路由：#/asn → #/inspect → #/locations → #/legacy-wash → #/orders → #/outbound</span>
+      </div>
+      <div class="flow-lanes">
+        <div class="lane">
+          <div class="lane-ttl">阶段 ① 到货签收建档<small>收货台宽屏 + 激光枪 / PDA</small></div>
+          <div class="nodes">
+            <div class="nd acc"><b>1. 采购下单同步 ASN</b><span>生成在途预报单，带运单号、卖家手机后4位、期望 SPU</span></div>
+            <div class="arr">→</div>
+            <div class="nd"><b>2. 扫快递面单/尾号签收</b><span>查无此单包裹严禁私拆，打标入 <code>UNCLAIMED-01</code> 推采购认领</span></div>
+            <div class="arr">→</div>
+            <div class="nd amb"><b>3. SPU 防混匹配</b><span>强提示近似尾缀（如 H4 vs H4 Pro），防绑错标准机型池</span></div>
+            <div class="arr">→</div>
+            <div class="nd grn"><b>4. 打印一机三码</b><span>主机唯一码 + <code>#BAG</code> 附件袋副码 + <code>#BOX</code> 原盒副码</span></div>
+          </div>
+        </div>
+
+        <div class="lane">
+          <div class="lane-ttl">阶段 ② 爱回收式验货<small>高拍仪工位 (#/inspect)</small></div>
+          <div class="nodes">
+            <div class="nd acc"><b>1. 首步拆封状态分流</b><span>区分「全新原封未拆」独立分支 vs「二手已使用」分级分支</span></div>
+            <div class="arr">→</div>
+            <div class="nd"><b>2. 渐进折叠问卷+图例</b><span>去估价纯客观分级；每步配高清判别图例弹窗；坏货强制全检</span></div>
+            <div class="arr">→</div>
+            <div class="nd amb"><b>3. 多选暗病显式确认</b><span>末步多选细分功能异常或显式点「确认无异常」，禁留空偷懒</span></div>
+            <div class="arr">→</div>
+            <div class="nd grn"><b>4. 3图+可读视频分位</b><span>合格转待上架；严重不符锁入 C 区并触发 10 分钟货钱双轨</span></div>
+          </div>
+        </div>
+
+        <div class="lane">
+          <div class="lane-ttl">阶段 ③ 库位·清洗·暂借<small>巷道 PDA + 清洗画廊</small></div>
+          <div class="nodes">
+            <div class="nd acc"><b>1. 双扫码防混上架</b><span>扫商品码+库位码 <code>LOC-*</code>；小件与附件袋入 <code>LPN-BOX-*</code> 分格箱</span></div>
+            <div class="arr">→</div>
+            <div class="nd red"><b>2. 售前四关+锂电30天统筹</b><span>缺全检/视频/实拍当日必清；内置锂电每 30 天补至 55% 半电并<b>强制彻底关机</b>（原封禁拆）</span></div>
+            <div class="arr">→</div>
+            <div class="nd amb"><b>3. WIP 工位扫码暂借</b><span>摄影/测试/防爆补电车挂名 <code>WIP-*</code>，用毕扫原库位码归架销账</span></div>
+            <div class="arr">→</div>
+            <div class="nd grn"><b>4. 10分钟单排货架盲盘</b><span>盲盘隐藏账面数；WIP自动豁免；串位一键扫码纠偏对齐</span></div>
+          </div>
+        </div>
+
+        <div class="lane">
+          <div class="lane-ttl">阶段 ④ 抓单·波次·出库<small>订单池 + 打包复核台</small></div>
+          <div class="nodes">
+            <div class="nd acc"><b>1. 5店抓单+同客合单</b><span>外部单号幂等防重；通卖指定唯一SKU锁库；同买家同址一键合单</span></div>
+            <div class="arr">→</div>
+            <div class="nd"><b>2. 最优动线波次拣货</b><span>按 A区→B区→LPN箱→E区原盒升序生成波次路径单</span></div>
+            <div class="arr">→</div>
+            <div class="nd red"><b>3. 拣后紧急拦截分流</b><span>若拣出后买家退单/改址，打包扫码红屏蜂鸣锁死→双扫码退回原架</span></div>
+            <div class="arr">→</div>
+            <div class="nd grn"><b>4. 四码扫绿打单发货</b><span>主机+<code>#BAG</code>+<code>#BOX</code>+原厂SN全绿 → 扣包材 → 打三段码面单回传</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 新增核心防损闭环：到货快递驻点协调三道硬时效与企微微信群直连 -->
+    <section id="sec-courier" class="sec">
+      <div class="sec-hd">
+        <h2>2. 到货快递驻点协调「三道硬时效红线」与企微×微信互通群直连流程（# /courier）</h2>
+        <span class="tag red">防卖家收钱后反手操控退回导致钱货两空 · 微信群免装软件直连顺丰/京东/圆通业务员</span>
+      </div>
+      <div class="flow-lanes">
+        <div class="lane">
+          <div class="lane-ttl">时效红线 ①<br/>10×N分钟挂拒签<small>例：10票=100分钟</small></div>
+          <div class="nodes">
+            <div class="nd acc"><b>1. 批次到仓开表</b><span>快递员一次送 N 票（如10票），自动开启 <code>10×N=100分钟</code> 死线并推企微群禁提前扫妥投</span></div>
+            <div class="arr">→</div>
+            <div class="nd amb"><b>2. 检出瑕疵推群挂拒签</b><span>高拍仪检出问题一键发企微群 <code>@驻点小哥</code> 巴枪挂「拒签·留站暂缓发车」</span></div>
+            <div class="arr">→</div>
+            <div class="nd grn"><b>3. 轨迹显示拒签供议价</b><span>官方物流轨迹显示「拒签」后，我方采购才有主动权去向上游卖家压价议价</span></div>
+          </div>
+        </div>
+
+        <div class="lane">
+          <div class="lane-ttl">时效红线 ②<br/>10分钟生死召回<small>防钱货两空最高红线</small></div>
+          <div class="nodes">
+            <div class="nd red"><b>1. 采购议妥触发10m锁</b><span>原待退/已在站点的快件谈妥留货 → 启动 10 分钟倒计时，<b>同时硬锁死采购打款开关！</b></span></div>
+            <div class="arr">→</div>
+            <div class="nd amb"><b>2. 企微群强@快递员拦截</b><span>1秒推微信互通群强提醒（超3分钟未回自动拨语音电话），快递员群内回「已拦下」自动回调写单</span></div>
+            <div class="arr">→</div>
+            <div class="nd grn"><b>3. 实物回仓才解锁打款</b><span>仓管扫码确认实物回到仓内且撤回退件后，才放行打款入卖家个人账户，杜绝卖家收钱又退走货</span></div>
+          </div>
+        </div>
+
+        <div class="lane">
+          <div class="lane-ttl">时效红线 ③<br/>17:00 去留清零<small>晚班发车截单红线</small></div>
+          <div class="nodes">
+            <div class="nd acc"><b>1. 16:30 未决件催办</b><span>汇总当日所有挂拒签待议价快件，强催采购拍板最终去留</span></div>
+            <div class="arr">→</div>
+            <div class="nd amb"><b>2. 逐票定案禁隔夜</b><span>明确勾选「议妥改签留仓」或「谈崩确认退回发走」，未清零锁死日结</span></div>
+            <div class="arr">→</div>
+            <div class="nd grn"><b>3. 17:00 企微清场对账单</b><span>一键往微信快递群下发《今日快件最终去留总单》，驻点业务员按单装车零差错</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 锂电池商品 30 天通电补电与保持彻底关机统筹 -->
+    <section id="sec-battery" class="sec">
+      <div class="sec-hd">
+        <h2>2B. 锂电池在库商品「每 30 天通一次电 + 强制保持彻底关机」统筹闭环（# /battery）</h2>
+        <span class="tag acc">防过放饿死锁保护板 · 防仅合盖/息屏待机 3 天跑干 · 原封机硬锁禁撕封条充电</span>
+      </div>
+      <div class="flow-lanes">
+        <div class="lane">
+          <div class="lane-ttl">1. 入库自动分流<small>带锂电 vs 纯插电 vs 原封</small></div>
+          <div class="nodes">
+            <div class="nd"><b>纯插电设备自动豁免</b><span>台式显示器 / Mac mini 等无内置锂电，不派无效补电工单</span></div>
+            <div class="arr">｜</div>
+            <div class="nd amb"><b>全新原封机防误拆锁</b><span><code>SEALED_NEW</code> 硬锁死拆封补电按钮，满 30 天改推销售优先快出</span></div>
+            <div class="arr">｜</div>
+            <div class="nd red"><b>已拆封锂电 30 天红线</b><span>25~29天黄灯临期推车补电；≥30天红灯必办且出库自动挂发前通电复测锁</span></div>
+          </div>
+        </div>
+        <div class="lane">
+          <div class="lane-ttl">2. 防爆车补电关机<small>四步硬防呆归架</small></div>
+          <div class="nodes">
+            <div class="nd acc"><b>① 扫入防爆补电车</b><span>挂入 <code>WIP-CHARGE-01</code> 阻燃柜，禁在纸箱货架私拉排插</span></div>
+            <div class="arr">→</div>
+            <div class="nd"><b>② 补至 50%~65% 半电</b><span>拦截 &lt;45% 欠充与 &gt;80% 满电鼓包风险；遇鼓包/0%饿死直转 D-02 待修</span></div>
+            <div class="arr">→</div>
+            <div class="nd red"><b>③ 强制核验彻底关机</b><span>拔线后必须滑动/菜单<b>彻底关机</b>（禁仅息屏或合盖休眠），复检无余温鼓包</span></div>
+            <div class="arr">→</div>
+            <div class="nd grn"><b>④ 双扫归架重置周期</b><span>扫回原储位 <code>LOC-*</code>，<code>days_since_power_on</code> 归零顺延 +30 天</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 爱回收转仓管验货决策树与 1042 超集归并 -->
+    <section id="sec-ahs" class="sec">
+      <div class="sec-hd">
+        <h2>2. 爱回收客户回收流程 → 泛亚仓管分级验货改造逻辑（# /inspect & # /standards）</h2>
+        <span class="tag grn">已剥离全部回收报价/估价字段 · 保留分步折叠、图例弹窗与多选暗病精髓</span>
+      </div>
+      <div class="grid2">
+        <div class="box">
+          <h3>A. 分步渐进决策树双分支机制</h3>
+          <ul>
+            <li><b>分支 1 · 全新原封未拆封（<code>SEALED_NEW</code>）：</b>当第 1 步选「全新包装未拆封」时，系统自动隐藏开机屏幕/账号/按键通电项，切换为<b>「原厂封条防后封核验 → 六面盒况挤压定级 → 外盒三码官网核对」</b>3 步专属树，严防仓管误拆原封机导致贬值数千元。</li>
+            <li><b>分支 2 · 二手已拆封分级全检（<code>USED_OK / BROKEN</code>）：</b>按「拆封开机 → 外观成色 → 屏幕显示 → 屏幕外观 → 维修拆修史 → 账号ID锁 → 多选功能暗病」逐题推进；已选题自动折叠为单行摘要并支持点 <code>✎ 修改</code>。</li>
+            <li><b>坏货全检硬铁律：</b>即使第 1 步选「碎屏/黑屏不开机」，除确因不通电无法点亮的项目选「受阻无法检测」外，其余中框弯曲、镜头破裂、尾插松动等物理安全项<b>必须 100% 逐项测完</b>，为向卖家索赔议价锁定一次性完整证据。</li>
+          </ul>
+        </div>
+        <div class="box">
+          <h3>B. 1,042 个机型树超集归并与版本防串版（禅道 WH02）</h3>
+          <ul>
+            <li><b>同品类同拆封状态最长超集：</b>后台归并脚本按品类（手机/显示器/音频/相机）提取步骤最多的机型路径作为主骨架，并将折叠屏铰链、OLED 老化烙印、高刷闪烁等独有项<b>并集补入</b>（非该机型特有项允许勾选「本机无此项」）。</li>
+            <li><b>主管人工审核发版 + 在途单锁旧版：</b>任何标准超集的增删改先存为 <code>DRAFT</code>，须经<b>仓管主管（周卫东）</b>审核发布为 <code>v2.5</code> 后对新签收单生效；已开检在途单严格绑定 <code>ahs_template_ver = v2.4</code>，绝不中途变题串版。</li>
+            <li><b>自动生成售前客观披露摘要：</b>提交时由选项自动汇总为<code>「共 X 项明显瑕疵：屏幕轻微划痕；底座支架磕碰」</code>直接同步给销售工作台，无需仓管手敲长篇作文。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. 历史库存阻塞清洗 Gallery 四道关卡 -->
+    <section id="sec-wash" class="sec">
+      <div class="sec-hd">
+        <h2>3. 历史库存阻塞清洗 Gallery · 红黄绿售前四道放行关卡（# /legacy-wash）</h2>
+        <span class="tag red">对标销售工作台红黄绿 · 不设每日上限 · 当天阻塞当天清零</span>
+      </div>
+      <p class="sec-sub">为什么客服和销售在卖之前卡住卖不了？系统对每一件在库及老系统迁入库存（400 票历史批次）实时计算以下 4 道关卡：</p>
+      <div class="grid4">
+        <div class="box" style="border-top:3px solid var(--red)">
+          <h3>关卡 ① 结构化全检</h3>
+          <p style="margin:4px 0;color:var(--mute);font-size:12px">老库存仅有一句模糊备注（如“95新能亮”）或外修取回未复检，销售不敢向买家承诺。</p>
+          <span class="tag red">未过 = 红灯禁售</span>
+          <p style="margin:8px 0 0;font-size:12px"><b>闭环动作：</b>卡片点「去补爱回收全检」直达问卷补齐分级结论。</p>
+        </div>
+        <div class="box" style="border-top:3px solid var(--red)">
+          <h3>关卡 ② 完整实测视频</h3>
+          <p style="margin:4px 0;color:var(--mute);font-size:12px">缺通电点亮/按键接口实测完整视频，或历史视频黑屏坏片，客服发不出验机视频。</p>
+          <span class="tag red">未过 = 红灯禁售</span>
+          <p style="margin:8px 0 0;font-size:12px"><b>闭环动作：</b>现场补录通电视频并强制勾选「已回放3秒确认画面声音清晰可读」。</p>
+        </div>
+        <div class="box" style="border-top:3px solid var(--red)">
+          <h3>关卡 ③ 本机实拍+库位图</h3>
+          <p style="margin:4px 0;color:var(--mute);font-size:12px">严禁拿网图或上一台同型号旧图顶替本机！缺本机实拍 = 红灯；仅缺库位同框图 = 黄灯。</p>
+          <span class="tag red">缺实拍=红 / 缺库位=黄</span>
+          <p style="margin:8px 0 0;font-size:12px"><b>闭环动作：</b>一键当场补拍本机多角度实拍图与储位铭牌同框照。</p>
+        </div>
+        <div class="box" style="border-top:3px solid var(--amb)">
+          <h3>关卡 ④ SPU与子母副码</h3>
+          <p style="margin:4px 0;color:var(--mute);font-size:12px">老系统迁入件未绑标准 SPU 导致通卖池漏算库存，未贴 <code>#BAG</code> 附件袋副码极易漏发配件。</p>
+          <span class="tag amb">未过 = 黄灯当日必补</span>
+          <p style="margin:8px 0 0;font-size:12px"><b>闭环动作：</b>弹窗选定标准 SPU 并一键补打绑定 <code>#BAG / #BOX</code> 子母码。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. 波次子母四码复核 + 拣货后紧急拦截归架 -->
+    <section id="sec-wave" class="sec">
+      <div class="sec-hd">
+        <h2>4. 打包台「一机四码逐一扫绿」与「拣货后紧急拦截红屏归架」双闭环（# /outbound）</h2>
+        <span class="tag red">彻底堵住二手 3C 漏发电源线/附件袋与退单件塞桌底变成黑货两大顽疾</span>
+      </div>
+      <div class="grid2">
+        <div class="box">
+          <h3>闭环 ①：主码 + #BAG + #BOX + 原厂 SN 四码防漏防串</h3>
+          <ul>
+            <li><b>痛点：</b>二手 3C 主机放 A 区货架、专用电源线/遥控器装附件袋放 <code>LPN-BOX-01</code> 分格箱、原装彩盒扁平化存 E 区大件层，单靠人工勾选极易漏拿附件袋或拿错隔壁同款机器。</li>
+            <li><b>系统硬锁：</b>打包复核台生成 4 枚待扫胶囊——<code>910000000001</code>（主机码）、<code>910000000001#BAG</code>（附件袋副码）、<code>910000000001#BOX</code>（原盒/合单副码）、<code>DEMO-SN-0172540025</code>（机身铭牌原厂 SN）。</li>
+            <li><b>放行条件：</b>激光扫码枪逐一扫绿全部 4 码（扫错非本单码立即触发 250Hz 红闪蜂鸣硬拦截），4 码全绿后才解锁热敏电子面单打印与发货放行按钮。</li>
+          </ul>
+        </div>
+        <div class="box" style="background:#fffafa;border-color:#fecaca">
+          <h3 style="color:#991b1b">闭环 ②：拣货后买家突然退单/改址 → 红屏锁死 + 双扫码退回原储位</h3>
+          <ul>
+            <li><b>触发时机：</b>拣货员已把商品从货架拣出送到打包台，此时买家在闲鱼发起仅退款或修改收货地址，订单池自动将该出库单置为 <code>emergencyIntercept = true</code>。</li>
+            <li><b>红屏蜂鸣阻断：</b>打包员拿激光枪扫该商品任一条码瞬间，全屏弹出红色高危拦截横幅并鸣响三连警报音，电子面单打印通道立即锁死。</li>
+            <li><b>强制归架销账：</b>系统自动生成<b>待归架任务单</b>，要求仓管员将该实物送回原库位（如 <code>LOC-A-10</code>），<b>先扫商品码、再扫原货架库位码</b>完成双码核验后，系统才解除订单锁库恢复可售并记入移库归位流水，彻底消灭打包台桌底无账积压件！</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. 权责分离货架盲盘 + WIP 工位暂借 -->
+    <section id="sec-blind" class="sec">
+      <div class="sec-hd">
+        <h2>5. 权责分离「10 分钟货架循环盲盘 + 串位一键纠偏 + WIP 工位暂借豁免」（# /stocktake & # /locations）</h2>
+        <span class="tag acc">解决库存破千、三岗拆分后「货架找不到货互相扯皮」与「抄账式假盘点」</span>
+      </div>
+      <div class="flow-lanes">
+        <div class="lane">
+          <div class="lane-ttl">WIP 工位暂借流<small>货动码必动 (#/locations)</small></div>
+          <div class="nodes">
+            <div class="nd acc"><b>1. 借出登记挂名</b><span>销售/摄影/测试从货架拿货前，扫商品码 + 工位码（如 <code>WIP-CS-01</code>），实时挂在借用人名下</span></div>
+            <div class="arr">→</div>
+            <div class="nd amb"><b>2. 储位矩阵实时透出</b><span>原货架格显示「⇄ 暂借中：陈小满@客服复核台」，找货 1 秒定位不翻箱</span></div>
+            <div class="arr">→</div>
+            <div class="nd grn"><b>3. 扫原库位码归架</b><span>用毕必须扫回原储位码 <code>LOC-A-05</code> 销账（扫错其他格触发防串位拦截）</span></div>
+          </div>
+        </div>
+        <div class="lane">
+          <div class="lane-ttl">货架循环盲盘流<small>权责分离 (#/stocktake)</small></div>
+          <div class="nodes">
+            <div class="nd acc"><b>1. 盲盘隐藏账面数</b><span>按单排货架（如 A2排 3 格）发起微盘，界面隐藏系统账面数，防仓管点勾敷衍</span></div>
+            <div class="arr">→</div>
+            <div class="nd"><b>2. 先扫格口再扫实物</b><span>扫 <code>LOC-A-04</code> 后连扫格内全部机器提交快照，系统解封账面自动四分类比对</span></div>
+            <div class="arr">→</div>
+            <div class="nd amb"><b>3. 串位纠偏 & WIP豁免</b><span>B-02 货放错在 A-04 识别为「串位」一键改库位；挂在 WIP 工位件自动对冲免判盘亏</span></div>
+            <div class="arr">→</div>
+            <div class="nd red"><b>4. 真盈亏强制主管调账</b><span>唯有真盘亏/账外盘盈才锁死普通仓管权限，交仓管主管审批写调整流水</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. 数据库扩表与接口契约 -->
+    <section id="sec-db" class="sec">
+      <div class="sec-hd">
+        <h2>6. 程序员数据库建表扩展蓝图（直接对接现有 FastAPI + MySQL 8 生产库）</h2>
+        <button class="btn" onclick="copySql()">复制 SQL 扩表语句</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:190px">表名</th>
+            <th style="width:150px">性质</th>
+            <th>核心职责与关键唯一索引 / 后端硬防呆校验</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>sku</code></td>
+            <td><span class="tag amb">原表原位扩充</span></td>
+            <td>新增 <code>spu_code</code>, <code>location_code</code>, <code>bag_sub_code</code>, <code>box_sub_code</code>, <code>lpn_code</code>, <code>seal_branch</code>, <code>ahs_template_ver</code>, <code>ahs_answers_json</code> 及售前四关布尔/计数字段（<code>inspect_complete</code>, <code>full_video_ready</code>, <code>real_img_count</code>, <code>loc_img_count</code>, <code>sub_codes_bound</code>）。</td>
+          </tr>
+          <tr>
+            <td><code>wms_location</code></td>
+            <td><span class="tag acc">新增标准表</span></td>
+            <td>四级库位字典（仓-库区-排架-层格），唯一键 <code>uk_bin_code</code>；后端硬校验：<code>occupied_count &gt; 0</code> 时禁止停用；跨状态属性移库（如把异常隔离件移入 A 区可售格）直接 <code>400 Bad Request</code> 阻断。</td>
+          </tr>
+          <tr>
+            <td><code>wms_container_lpn</code></td>
+            <td><span class="tag acc">新增标准表</span></td>
+            <td>分格周转箱/零件盒表（<code>LPN-BOX-01</code>），绑定母储位 <code>bind_bin_code</code>，防止耳机、镜头盖及专用 <code>#BAG</code> 附件袋散落货架遗失。</td>
+          </tr>
+          <tr>
+            <td><code>wms_wip_borrow</code></td>
+            <td><span class="tag acc">新增标准表</span></td>
+            <td>库内摄影/测试/客服工位暂借登记表；同一 <code>sku_code</code> 最多允许 1 条 <code>status='BORROWED'</code> 记录；归架接口强制比对 <code>scanned_bin == from_bin</code>。</td>
+          </tr>
+          <tr>
+            <td><code>wms_inbound_asn</code></td>
+            <td><span class="tag acc">新增标准表</span></td>
+            <td>采购在途预报与无主包裹认领表；支持按运单号或手机号后 4 位检索；查无此单自动落 <code>UNCLAIMED_HOLD</code> 并分配 <code>UNCLAIMED-01</code> 暂存格。</td>
+          </tr>
+          <tr>
+            <td><code>oms_order_pool</code></td>
+            <td><span class="tag acc">新增标准表</span></td>
+            <td>多店订单抓取与合单池；唯一索引 <code>uk_ext_order_no</code> 保证 API 推送与 10 分钟 RPA 补抓绝对幂等不重单；通过 <code>merge_group_key</code> 聚合可合单包裹。</td>
+          </tr>
+          <tr>
+            <td><code>wms_picking_wave</code><br/><code>wms_outbound_scan</code></td>
+            <td><span class="tag acc">新增标准表</span></td>
+            <td>波次路径单与打包四码复核表；记录 <code>host_scanned / bag_scanned / box_scanned / sn_scanned</code> 与 <code>emergency_intercept / return_shelf_done</code>，后端强校验四码全绿且无拦截才允许调用顺丰云打印出单接口。</td>
+          </tr>
+          <tr>
+            <td><code>wms_blind_cycle</code></td>
+            <td><span class="tag acc">新增标准表</span></td>
+            <td>货架循环盲盘与差异处理表；<code>phase='BLIND_SCANNING'</code> 期间查询接口物理剔除账面数量字段；提交时服务端联合 <code>sku</code> 与 <code>wms_wip_borrow</code> 计算 <code>MATCH / MISPLACED / WIP_EXEMPT / SHORTAGE / SURPLUS</code>。</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <pre id="sql-block">-- 泛亚二手3C仓管工作台 v5 终极版核心扩表示例（MySQL 8.0）
+ALTER TABLE sku
+  ADD COLUMN spu_code VARCHAR(64) NULL COMMENT '标准SPU编码',
+  ADD COLUMN location_code VARCHAR(32) NOT NULL DEFAULT 'WAIT-PUTAWAY' COMMENT '当前四级库位编码',
+  ADD COLUMN bag_sub_code VARCHAR(64) NULL COMMENT '专用附件袋副码(#BAG)',
+  ADD COLUMN box_sub_code VARCHAR(64) NULL COMMENT '原盒/彩盒副码(#BOX)',
+  ADD COLUMN lpn_code VARCHAR(32) NULL COMMENT '所属分格容器箱LPN',
+  ADD COLUMN seal_branch VARCHAR(24) NOT NULL DEFAULT 'USED_OK' COMMENT 'SEALED_NEW / USED_OK / BROKEN_FULL_CHECK',
+  ADD COLUMN ahs_template_ver VARCHAR(24) NULL COMMENT '锁定的验货标准版本防串版',
+  ADD COLUMN ahs_answers_json JSON NULL COMMENT '爱回收式逐题分级答案与多选暗病',
+  ADD COLUMN inspect_complete TINYINT(1) NOT NULL DEFAULT 0,
+  ADD COLUMN full_video_ready TINYINT(1) NOT NULL DEFAULT 0,
+  ADD COLUMN real_img_count INT NOT NULL DEFAULT 0,
+  ADD COLUMN loc_img_count INT NOT NULL DEFAULT 0,
+  ADD COLUMN sub_codes_bound TINYINT(1) NOT NULL DEFAULT 0,
+  ADD INDEX idx_sku_location (location_code),
+  ADD INDEX idx_sku_spu (spu_code);</pre>
+    </section>
+  </main>
+
+  <script>
+    function copySql() {
+      const text = document.getElementById('sql-block').innerText;
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => alert('已复制 SQL 扩表语句到剪贴板！'));
+      }
+    }
+  </script>
+</body>
+</html>

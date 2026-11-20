@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>销售工作台</title>
+    <script>
+      window.__REAL__ = false
+      window.SNAP_ON = false
+      ;(function () {
+        var as = new URLSearchParams(location.search).get('as')
+        var cur = localStorage.getItem('erp_user') || ''
+        var want = as || cur || 'chenxm'
+        if (want === cur && localStorage.getItem('erp_token')) return
+        try {
+          var x = new XMLHttpRequest()
+          x.open('POST', '/api/auth/h5-login', false)
+          x.setRequestHeader('Content-Type', 'application/json')
+          x.send(JSON.stringify({ username: want, password: 'demo1234' }))
+          if (x.status === 200) {
+            var d = JSON.parse(x.responseText)
+            localStorage.setItem('erp_token', d.token)
+            localStorage.setItem('erp_user', want)
+            localStorage.setItem('erp_staff', JSON.stringify(d.staff))
+          }
+        } catch (e) {}
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
