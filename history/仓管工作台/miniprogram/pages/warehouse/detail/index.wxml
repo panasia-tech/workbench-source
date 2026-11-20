@@ -1,0 +1,602 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<view class="page-wrap page-wrap--no-tab pd-detail-page {{priceItemUrl ? 'pd-detail-page--jump' : ''}}" wx:if="{{detail}}">
+  <!-- 老系统迁入且关键资料缺失:提示实物核验+补录,资料补齐后自动消失 -->
+  <view wx:if="{{fmt.legacyPendingVerify(detail)}}" class="pd-legacy-banner">
+    <view class="pd-legacy-banner-title">历史迁移商品 · 待核验</view>
+    <view class="pd-legacy-banner-text">缺少序列号 / 实拍图 / 定位图 / 库位等关键资料。请先找到实物核对铭牌序列号，补拍照片并补录信息后再换新货号标签。</view>
+  </view>
+
+  <!-- 顶部摘要：大图 + 名称/型号 + 成色/行情 + 前往闲鱼（见效果图） -->
+  <view class="card pd-sum">
+    <view class="pd-sum-top">
+      <image wx:if="{{galleryUrls.length && !coverError}}" class="pd-sum-img" src="{{galleryUrls[0]}}" mode="aspectFill" bindtap="previewCover" binderror="onCoverError" />
+      <view wx:else class="pd-sum-img pd-sum-img--ph">{{coverError ? '图片加载失败' : '无图'}}</view>
+      <view class="pd-sum-info">
+        <view class="pd-sum-name">{{detail.product_name || '—'}}</view>
+        <view class="pd-sum-sub" wx:if="{{detail.brand || detail.model}}">{{detail.brand || ''}} {{detail.model || ''}}</view>
+        <view class="pd-sum-sub" wx:elif="{{price && ((price.spu && price.spu.name) || price.market_name)}}">{{(price.spu && price.spu.name) || price.market_name}}</view>
+        <view class="pd-sum-pills">
+          <text class="pd-sum-pill pd-sum-pill--grade">{{detail.condition_grade || '未定级'}}</text>
+          <text wx:if="{{price && price.market_name}}" class="pd-sum-pill pd-sum-pill--market">
+            <text class="pd-sum-pill-dot"></text>行情监控中
+          </text>
+        </view>
+      </view>
+      <view class="pd-sum-side">
+        <view class="pd-sum-cta {{priceItemUrl ? '' : 'pd-sum-cta--off'}}" catchtap="openProductXianyu">
+          前往闲鱼 <text class="pd-sum-cta-arrow">↗</text>
+        </view>
+      </view>
+    </view>
+    <view class="pd-sum-meta">
+      <view class="pd-sum-meta-i">货号 <text class="pd-sum-meta-v">{{detail.sku_code}}</text></view>
+      <view class="pd-sum-meta-i">库位 <text class="pd-sum-meta-v">{{detail.location_code || '未分配'}}</text></view>
+      <view class="pd-sum-meta-i">状态 <text class="pd-sum-meta-v pd-sum-meta-v--state">{{fmt.warehouseItemLabel(detail)}}</text></view>
+      <view wx:if="{{detail.short_code}}" class="pd-sum-meta-i">上架编码 <text class="pd-sum-meta-v">#{{detail.short_code}}</text></view>
+      <view wx:if="{{price && price.market_name}}" class="pd-sum-meta-i">行情 <text class="pd-sum-meta-v">{{price.market_name}}</text></view>
+    </view>
+  </view>
+
+  <!-- 库存库龄 -->
+  <view class="card pd-age" wx:if="{{age && (detail.status === 'IN_STOCK' || detail.status === 'RESERVED')}}">
+    <view class="pd-age-head">
+      <view class="gc-ic gc-ic--age-clock pd-age-head-ic"></view>
+      <text class="pd-age-title">库存库龄</text>
+      <text class="pd-age-sub">（从入库开始）</text>
+      <view class="gc-ic gc-ic--info pd-age-help" data-topic="age" bindtap="showAgeHelp"></view>
+      <view class="pd-age-days">在库 <text class="pd-age-days-n pd-age-c--{{age.stage}}">{{age.days}}</text> 天</view>
+      <view class="pd-age-cal" bindtap="openAgeSheet"><view class="gc-ic gc-ic--age-calendar pd-age-cal-ic"></view></view>
+    </view>
+
+    <view class="pd-age-cards">
+      <view class="pd-age-card">
+        <view class="pd-age-card-top">
+          <view class="pd-age-card-badge pd-age-card-badge--target"><view class="gc-ic gc-ic--age-target pd-age-card-ic"></view></view>
+          <view>
+            <view class="pd-age-card-k">目标周转</view>
+            <view class="pd-age-card-v pd-age-c--target">{{age.target_days}} <text class="pd-age-card-u">天</text></view>
+          </view>
+        </view>
+        <view class="pd-age-card-d">建议 {{age.target_days}} 天内售出</view>
+      </view>
+      <view class="pd-age-card">
+        <view class="pd-age-card-top">
+          <view class="pd-age-card-badge pd-age-card-badge--clearance"><view class="gc-ic gc-ic--age-flag pd-age-card-ic"></view></view>
+          <view>
+            <view class="pd-age-card-k">清仓启动</view>
+            <view class="pd-age-card-v pd-age-c--clearance">{{age.clearance_days}} <text class="pd-age-card-u">天</text></view>
+          </view>
+        </view>
+        <view class="pd-age-card-d">满 {{age.clearance_days}} 天该清仓</view>
+      </view>
+      <view class="pd-age-card">
+        <view class="pd-age-card-top">
+          <view class="pd-age-card-badge pd-age-card-badge--stale"><view class="gc-ic gc-ic--age-alert pd-age-card-ic"></view></view>
+          <view>
+            <view class="pd-age-card-k">最长库龄</view>
+            <view class="pd-age-card-v pd-age-c--stale">{{age.max_days}} <text class="pd-age-card-u">天</text></view>
+          </view>
+        </view>
+        <view class="pd-age-card-d">超过 {{age.max_days}} 天算滞销</view>
+      </view>
+    </view>
+
+    <view class="pd-age-scale">
+      <view class="pd-age-flag pd-age-flag--target" style="left: 22%">{{age.target_days}}天<view>目标周转</view></view>
+      <view class="pd-age-flag pd-age-flag--clearance" style="left: 50%">{{age.clearance_days}}天<view>清仓启动</view></view>
+      <view class="pd-age-flag pd-age-flag--stale" style="left: 72%">{{age.max_days}}天<view>最长库龄</view></view>
+      <view class="pd-age-bar">
+        <view class="pd-age-now" style="left: {{age.barPct}}%"></view>
+      </view>
+      <view class="pd-age-ticks">
+        <view class="pd-age-tick" style="left: 0"><view>0天</view><view>新入库</view></view>
+        <view class="pd-age-tick" style="left: 22%"><view>{{age.target_days}}天</view><view>健康周转</view></view>
+        <view class="pd-age-tick" style="left: 50%"><view>{{age.clearance_days}}天</view><view>关注清仓</view></view>
+        <view class="pd-age-tick" style="left: 72%"><view>{{age.max_days}}天</view><view>滞销预警</view></view>
+        <view class="pd-age-tick pd-age-tick--end"><view>>{{age.max_days}}天</view><view>严重滞销</view></view>
+      </view>
+    </view>
+
+    <view class="pd-age-state">
+      <view class="pd-age-state-left">
+        <view class="pd-age-state-head">
+          <view class="gc-ic gc-ic--age-trend pd-age-state-ic"></view>
+          <text>当前库存状态</text>
+        </view>
+        <view class="pd-age-state-n">{{age.days}} <text class="pd-age-state-u">天</text></view>
+        <view class="pd-age-state-k">已在库时长</view>
+      </view>
+      <view class="pd-age-state-right">
+        <view class="pd-age-stage pd-age-stage--{{age.stage}}">{{age.stage_label}}</view>
+        <view class="pd-age-state-k">{{age.goalText}}</view>
+        <view class="pd-age-goal">
+          <view class="pd-age-goal-n pd-age-c--{{age.stage === 'normal' ? 'clearance' : 'stale'}}">{{age.goalDays}} <text class="pd-age-state-u">天</text></view>
+          <view class="pd-age-goal-track"><view class="pd-age-goal-fill pd-age-goal-fill--{{age.stage}}" style="width: {{age.goalPct}}%"></view></view>
+          <text class="pd-age-goal-end">{{age.goalEnd}} 天</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 自动上架 = 链接焕新 -->
+  <view class="card pd-auto" wx:if="{{auto && detail.status === 'IN_STOCK' && !detail.reserve_source}}">
+    <view class="pd-age-head">
+      <view class="gc-ic gc-ic--age-refresh pd-age-head-ic"></view>
+      <text class="pd-age-title">自动上架</text>
+      <text class="pd-age-sub">（每 {{auto.cycle_days}} 天）</text>
+      <view class="gc-ic gc-ic--info pd-age-help" data-topic="auto" bindtap="showAgeHelp"></view>
+      <view class="pd-auto-switch">
+        <switch color="#2563EB" checked="{{!auto.paused}}" disabled="{{!canManageListing || autoSaving}}" bindchange="onAutoSwitch" />
+        <text class="pd-auto-switch-t">{{auto.paused ? '已暂停' : '已开启'}}</text>
+      </view>
+    </view>
+    <view class="pd-auto-cards">
+      <view class="pd-auto-card">
+        <view class="pd-age-card-k">上架周期</view>
+        <view class="pd-auto-card-v pd-age-c--target">{{auto.cycle_days}}天</view>
+        <view class="pd-age-card-d">固定每 {{auto.cycle_days}} 天</view>
+      </view>
+      <view class="pd-auto-card">
+        <view class="pd-age-card-k">下次上架</view>
+        <view class="pd-auto-card-v">{{auto.nextText}}</view>
+        <view class="pd-age-card-d">{{auto.nextHint}}</view>
+      </view>
+      <view class="pd-auto-card">
+        <view class="pd-age-card-k">上次上架</view>
+        <view class="pd-auto-card-v">{{auto.last_at || '—'}}</view>
+        <view class="pd-age-card-d">{{auto.lastHint}}</view>
+      </view>
+    </view>
+    <view class="pd-auto-actions" wx:if="{{canManageListing}}">
+      <view class="pd-auto-btn pd-auto-btn--pri {{refreshing ? 'pd-auto-btn--off' : ''}}" bindtap="onRefreshAll">{{refreshing ? '提交中…' : '立即重新上架'}}</view>
+      <picker class="pd-auto-picker" mode="date" value="{{auto.pickerValue}}" start="{{auto.pickerStart}}" end="{{auto.pickerEnd}}" bindchange="onPostpone">
+        <view class="pd-auto-btn">调整排程</view>
+      </picker>
+      <view class="pd-auto-btn pd-auto-btn--danger" bindtap="onAutoToggle">{{auto.paused ? '恢复自动上架' : '暂停自动上架'}}</view>
+    </view>
+    <view class="pd-auto-hold" wx:if="{{auto.not_before}}">
+      <text>排到 {{auto.not_before}} 再上架</text>
+      <text wx:if="{{canManageListing}}" class="pd-auto-hold-x" bindtap="onClearPostpone">取消</text>
+    </view>
+  </view>
+
+  <!-- 价格历史 / 行情价 -->
+  <view class="card pd-price">
+    <view class="pd-price-head">
+      <view class="pd-price-title">价格历史 / 行情价</view>
+      <view class="pd-price-src" bindtap="showPriceSources">
+        <view class="gc-ic gc-ic--info pd-price-src-ic"></view>
+        <text>数据来源</text>
+        <view class="gc-ic gc-ic--chevron-right pd-price-src-ic"></view>
+      </view>
+    </view>
+
+    <view wx:if="{{priceLoading}}" class="pd-price-skeleton">
+      <view class="pd-skel-tabs">
+        <view wx:for="{{priceTabs}}" wx:key="key" class="pd-skel-pill"></view>
+      </view>
+      <view class="pd-skel-hero">
+        <view class="pd-skel-col">
+          <view class="pd-skel-line pd-skel-line--sm"></view>
+          <view class="pd-skel-line pd-skel-line--xl"></view>
+        </view>
+        <view class="pd-skel-col pd-skel-col--right">
+          <view class="pd-skel-line pd-skel-line--sm"></view>
+          <view class="pd-skel-line pd-skel-line--md"></view>
+        </view>
+      </view>
+      <view class="pd-skel-chart">
+        <view class="pd-skel-shimmer"></view>
+      </view>
+      <view class="pd-skel-row">
+        <view class="pd-skel-avatar"></view>
+        <view class="pd-skel-lines">
+          <view class="pd-skel-line pd-skel-line--md"></view>
+          <view class="pd-skel-line pd-skel-line--sm"></view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:elif="{{!price}}" class="pd-price-state pd-price-state--error">
+      <text>{{priceError || '没有行情数据'}}</text>
+      <view wx:if="{{priceError}}" class="pd-price-retry" catchtap="loadPrice">重新加载</view>
+    </view>
+
+    <block wx:else>
+      <view class="pd-price-tabs">
+        <view
+          wx:for="{{priceTabs}}"
+          wx:key="key"
+          class="pd-price-tab {{priceTab === item.key ? 'pd-price-tab--on' : ''}}"
+          data-key="{{item.key}}"
+          bindtap="switchPriceTab"
+        >{{item.label}}</view>
+      </view>
+
+      <view class="pd-hero" wx:if="{{priceSummary}}">
+        <view class="pd-hero-main">
+          <view class="pd-hero-k">近7日成交均价</view>
+          <view class="pd-hero-v"><text class="pd-hero-yen">¥</text>{{priceSummary.avg7}}</view>
+          <view wx:if="{{priceSummary.change_text}}" class="pd-hero-delta {{priceSummary.change_up ? 'pd-hero-delta--up' : 'pd-hero-delta--down'}}">
+            {{priceSummary.change_text}} <text class="pd-hero-delta-k">较前7日</text>
+          </view>
+          <view wx:else class="pd-hero-delta pd-hero-delta--muted">前7日样本较少</view>
+        </view>
+        <view class="pd-hero-band">
+          <view class="pd-hero-k">近期成交区间</view>
+          <view class="pd-hero-band-v">¥{{priceSummary.low}} – ¥{{priceSummary.high}}</view>
+          <view class="pd-hero-band-d">{{priceSummary.listings}} 条闲鱼记录 · {{priceSummary.days}} 天有数据</view>
+        </view>
+      </view>
+      <view wx:else class="pd-price-summary-empty">近7日同款记录不足，暂不能统计成交均价</view>
+
+      <view class="pd-market-panel">
+        <view class="pd-chart-stage">
+          <price-trend-chart
+            points="{{priceSeries}}"
+            band="{{priceBand}}"
+            empty-text="{{priceChartNote}}"
+          />
+        </view>
+        <view wx:if="{{priceTabNote}}" class="pd-price-note">{{priceTabNote}}</view>
+
+        <view class="pd-senti" wx:if="{{priceSentiment && priceSentiment.up_pct !== null}}">
+          <view class="pd-senti-top">
+            <text class="pd-senti-up-t">{{priceSentiment.up_pct}}%</text>
+            <text class="pd-senti-down-t">{{priceSentiment.down_pct}}%</text>
+          </view>
+          <view class="pd-senti-bar">
+            <view class="pd-senti-up" style="width: {{priceSentiment.up_pct}}%"></view>
+            <view class="pd-senti-down" style="width: {{priceSentiment.down_pct}}%"></view>
+          </view>
+          <view class="pd-senti-actions">
+            <view class="pd-senti-btn pd-senti-btn--up">
+              <view class="pd-senti-ic pd-senti-ic--up"></view>
+              <text>价格看涨</text>
+            </view>
+            <view class="pd-senti-btn pd-senti-btn--down">
+              <text>价格看跌</text>
+              <view class="pd-senti-ic pd-senti-ic--down"></view>
+            </view>
+          </view>
+        </view>
+        <view wx:else class="pd-senti-empty">价格涨跌样本不足，暂不能计算看涨/看跌</view>
+      </view>
+
+      <view class="pd-insight" wx:if="{{priceInsight}}">
+        <view class="pd-insight-head">
+          <text class="pd-insight-badge">✦ AI 解读</text>
+          <text class="pd-insight-sub">根据行情数据自动生成</text>
+        </view>
+        <view class="pd-insight-text">{{priceInsight}}</view>
+      </view>
+
+      <view class="pd-mstats" wx:if="{{priceStats && priceStats.points}}">
+        <view class="pd-mstat">
+          <view class="pd-mstat-k">最新行情价</view>
+          <view class="pd-mstat-v">¥{{priceStats.latest}}</view>
+          <view wx:if="{{priceStats.latestChange}}" class="pd-mstat-d {{priceStats.latestUp ? 'pd-mstat-d--up' : 'pd-mstat-d--down'}}">{{priceStats.latestChange}}<text class="pd-mstat-dk">较上月</text></view>
+          <view wx:else class="pd-mstat-d">{{priceStats.latestDate}}</view>
+        </view>
+        <view class="pd-mstat">
+          <view class="pd-mstat-k">30天均价</view>
+          <view class="pd-mstat-v">{{priceStats.avg30 ? '¥' + priceStats.avg30 : '—'}}</view>
+          <view wx:if="{{priceStats.avgChange}}" class="pd-mstat-d {{priceStats.avgUp ? 'pd-mstat-d--up' : 'pd-mstat-d--down'}}">{{priceStats.avgChange}}<text class="pd-mstat-dk">较上月</text></view>
+          <view wx:else class="pd-mstat-d">{{priceStats.points}} 天数据</view>
+        </view>
+        <view class="pd-mstat">
+          <view class="pd-mstat-k">历史最高</view>
+          <view class="pd-mstat-v">¥{{priceStats.high}}</view>
+          <view class="pd-mstat-d">{{priceStats.highDate}}</view>
+        </view>
+        <view class="pd-mstat">
+          <view class="pd-mstat-k">历史最低</view>
+          <view class="pd-mstat-v">¥{{priceStats.low}}</view>
+          <view class="pd-mstat-d">{{priceStats.lowDate}}</view>
+        </view>
+      </view>
+
+      <view class="pd-rec-head">
+        <text class="pd-rec-title">近期闲鱼价格记录</text>
+        <text wx:if="{{priceRecordsAll.length > priceRecords.length}}" class="pd-rec-more" bindtap="showAllRecords">查看全部 {{priceRecordsAll.length}} 条 ›</text>
+        <text wx:elif="{{priceRecordsAll.length > recordsFoldLimit}}" class="pd-rec-more" bindtap="foldRecords">收起 ‹</text>
+      </view>
+      <view wx:if="{{!priceRecords.length}}" class="pd-price-state">这个成色还没有在售和成交记录</view>
+      <view wx:else class="pd-rec-list">
+        <view wx:for="{{priceRecords}}" wx:key="_k" class="pd-rec-item" data-index="{{index}}" bindtap="openRecord">
+          <image wx:if="{{item.image && !item._imgError}}" class="pd-rec-img" src="{{item.image}}" mode="aspectFill" lazy-load data-index="{{index}}" binderror="onRecordImageError" />
+          <view wx:else class="pd-rec-img pd-rec-img--none">{{item._imgError ? '加载失败' : (item._sold ? '无图' : '闲鱼')}}</view>
+          <view class="pd-rec-main">
+            <view class="pd-rec-name">{{item._title}}</view>
+            <view class="pd-rec-sub">{{item._grade}}<text wx:if="{{item._channel}}"> · {{item._channel}}</text></view>
+            <view class="pd-rec-tags">
+              <text class="pd-rec-tag {{item._sold ? 'pd-rec-tag--sold' : 'pd-rec-tag--on'}}">{{item._status}}</text>
+              <text wx:if="{{item._publish}}" class="pd-rec-tag">{{item._publish}}</text>
+            </view>
+            <view class="pd-rec-when {{item._sold ? '' : 'pd-rec-on'}}">{{item._when}}</view>
+          </view>
+          <view class="pd-rec-side">
+            <view class="pd-rec-label">{{item._priceLabel}}</view>
+            <view class="pd-rec-price {{item._sold ? 'pd-rec-price--sold' : ''}}">¥{{item._price}}</view>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <view class="card">
+    <view class="card-head card-head--split">
+      <view class="card-head-main">商品图片</view>
+      <view
+        class="head-extra pd-edit-link"
+        wx:if="{{canEditSku && (detail.status === 'IN_STOCK' || detail.status === 'RESERVED')}}"
+        bindtap="goEdit"
+      >编辑 / 补图 ›</view>
+    </view>
+
+    <view class="pd-img-label">产品实拍图</view>
+    <scroll-view scroll-x class="pd-gallery" wx:if="{{galleryUrls.length}}">
+      <view class="pd-gallery-inner">
+        <media-thumb
+          wx:for="{{galleryUrls}}"
+          wx:key="*this"
+          url="{{item}}"
+          preview-url="{{item}}"
+          size="large"
+        />
+      </view>
+    </scroll-view>
+    <view class="pd-img-empty" wx:else bindtap="goEdit">暂无实拍图，点击补图</view>
+
+    <view class="pd-img-label">仓库定位图</view>
+    <scroll-view scroll-x class="pd-gallery pd-gallery--last" wx:if="{{detail.location_images && detail.location_images.length}}">
+      <view class="pd-gallery-inner">
+        <media-thumb
+          wx:for="{{detail.location_images}}"
+          wx:key="*this"
+          url="{{item}}"
+          preview-url="{{item}}"
+          size="large"
+        />
+      </view>
+    </scroll-view>
+    <view class="pd-img-empty" wx:else bindtap="goEdit">暂无定位图，点击补图</view>
+  </view>
+
+  <!-- 上架图片（客户展示）：各号挂到闲鱼上的图，点进去按账号管理（禅道 #102） -->
+  <view class="card pd-lim" wx:if="{{limCard}}" bindtap="goListingImages">
+    <view class="pd-lim-head">
+      <text class="pd-lim-title">上架图片（客户展示）</text>
+      <view class="gc-ic gc-ic--info pd-lim-help" catchtap="showLimHelp"></view>
+      <text class="pd-lim-meta">{{limCard.meta}} ›</text>
+    </view>
+    <view class="pd-lim-strip" wx:if="{{limCard.thumbs.length}}">
+      <view wx:for="{{limCard.thumbs}}" wx:key="*this" class="pd-lim-cell">
+        <image class="pd-lim-img" src="{{item}}" mode="aspectFill" />
+        <view wx:if="{{index === limCard.thumbs.length - 1 && limCard.more}}" class="pd-lim-more">+{{limCard.more}}</view>
+      </view>
+    </view>
+    <view wx:else class="pd-img-empty">还没有上架图</view>
+  </view>
+
+  <view class="card">
+    <view class="pd-section">
+      <view class="pd-title">基本信息</view>
+      <view class="pd-info-grid">
+        <view class="pd-info-item">
+          <view class="pdi-label">商品名称</view>
+          <view class="pdi-value">{{detail.product_name || '—'}}</view>
+        </view>
+        <view class="pd-info-item">
+          <view class="pdi-label">规格</view>
+          <view class="pdi-value">{{detail.spec || '—'}}</view>
+        </view>
+        <view class="pd-info-item">
+          <view class="pdi-label">货号 SKU</view>
+          <view class="pdi-value">{{detail.sku_code || '—'}}</view>
+        </view>
+        <view class="pd-info-item">
+          <view class="pdi-label">69码</view>
+          <view class="pdi-value">{{detail.barcode || '—'}}</view>
+        </view>
+        <view class="pd-info-item">
+          <view class="pdi-label">条码库信息</view>
+          <view class="pdi-value">{{spuText || '—'}}</view>
+        </view>
+        <view class="pd-info-item" wx:if="{{canEditSku}}" bindtap="goSpuMatch">
+          <view class="pdi-label">所属商品</view>
+          <view class="pdi-value pdi-value--link">去核对匹配 ›</view>
+        </view>
+        <view class="pd-info-item" wx:if="{{detail.short_code}}">
+          <view class="pdi-label">上架编码</view>
+          <view class="pdi-value pdi-value--success">#{{detail.short_code}}（订单标题前缀）</view>
+        </view>
+        <view class="pd-info-item">
+          <view class="pdi-label">库位</view>
+          <view class="pdi-value">{{detail.location_code || '未分配'}}</view>
+        </view>
+        <view class="pd-info-item">
+          <view class="pdi-label">成色</view>
+          <view class="pdi-value">{{detail.condition_grade || '—'}}</view>
+        </view>
+        <view class="pd-info-item">
+          <view class="pdi-label">仓库状态</view>
+          <view class="pdi-value pdi-value--success">{{fmt.warehouseItemLabel(detail)}}</view>
+        </view>
+        <view class="pd-info-item" wx:if="{{detail.listing_status}}">
+          <view class="pdi-label">上架进度</view>
+          <view class="pdi-value">{{fmt.listingStatusLabel(detail.listing_status)}}</view>
+        </view>
+      </view>
+      <button
+        class="btn btn-outline btn-block"
+        wx:if="{{canEditSku && detail.barcode && !detail.spu}}"
+        bindtap="onLookupBarcode"
+        disabled="{{barcodeLoading}}"
+      >{{barcodeLoading ? '查询中…' : '69码信息未查到，点击重试'}}</button>
+      <button
+        class="btn btn-outline btn-block pd-edit-btn"
+        wx:if="{{canEditSku && (detail.status === 'IN_STOCK' || detail.status === 'RESERVED')}}"
+        bindtap="goEdit"
+      >编辑商品信息</button>
+    </view>
+
+    <view class="pd-section">
+      <view class="pd-title">财务信息</view>
+      <view class="pd-finance">
+        <view class="pd-fn" wx:if="{{detail.cost_price != null}}">
+          <view class="fn-label">采购成本</view>
+          <view class="fn-val fn-val--pri">¥{{fmt.money(detail.cost_price)}}</view>
+        </view>
+      </view>
+      <view
+        class="pd-split-entry"
+        wx:if="{{canEditSku && detail.status === 'IN_STOCK' && !detail.reserve_source && listedCount === 0}}"
+        hover-class="pd-split-entry--hover"
+        bindtap="goSplit"
+      >
+        <view class="pd-split-icon">拆</view>
+        <view class="pd-split-text">
+          <view class="pd-split-title">拆分库存</view>
+          <view class="pd-split-hint">一对 / 多件误录成一条时，拆成多个独立货号</view>
+        </view>
+        <text class="pd-split-arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{listing}}">
+    <view class="card-head">上架信息</view>
+    <view class="pd-docs">
+      <view class="doc-row">
+        <text class="doc-label">标题</text>
+        <text class="doc-val">{{listing.title || '—'}}</text>
+      </view>
+      <view class="doc-row">
+        <text class="doc-label">上架状态</text>
+        <text class="doc-val">{{fmt.listingStatusLabel(listing.status)}}</text>
+      </view>
+    </view>
+    <button
+      class="btn btn-outline btn-block"
+      wx:if="{{detail.status === 'IN_STOCK' && !detail.reserve_source}}"
+      bindtap="goListingEdit"
+    >编辑上架信息</button>
+  </view>
+
+  <view class="card pd-shop-card" wx:if="{{shops.length}}">
+    <view class="pd-shop-top">
+      <view class="gc-ic gc-ic--age-shop pd-age-head-ic"></view>
+      <text class="pd-age-title">各店铺状态</text>
+      <view class="pd-shop-sync" bindtap="onSyncShops">{{syncing ? '同步中…' : '一键同步状态'}}</view>
+    </view>
+    <view class="pd-shop-meta">共 {{shops.length}} 个店铺 · 在架 {{listedCount}} · 下架 {{delistedCount}}</view>
+    <view class="pd-shop-list">
+      <view wx:for="{{shops}}" wx:key="shop_id" class="pd-shop-row">
+        <view class="pd-shop-main">
+          <view class="pd-shop-body">
+            <view class="pd-shop-name">{{item.shop_label}}</view>
+            <view class="pd-shop-code">{{item.shop_code}}</view>
+          </view>
+          <view class="tag pd-shop-tag {{item.publish_status === 'LISTED' && !item.gc_pending ? 'tag-success' : (item.publish_status === 'FAILED' ? 'tag-danger' : 'tag-pending')}}">
+            {{fmt.shopStateLabel(item.publish_status, item.gc_pending)}}
+          </view>
+          <view
+            class="gc-ic gc-ic--more pd-shop-more"
+            wx:if="{{canManageListing && detail.status === 'IN_STOCK' && !detail.reserve_source}}"
+            data-index="{{index}}"
+            bindtap="onShopMore"
+          ></view>
+        </view>
+        <view class="pd-shop-times">
+          <view class="pd-shop-time">
+            <text class="pd-shop-time-k">{{item.age.last_label || '上次上架'}}</text>
+            <text class="pd-shop-time-v">{{item.age.last_at || '—'}}</text>
+          </view>
+          <view class="pd-shop-next">
+            <text class="pd-shop-time-k">下次上架</text>
+            <text class="{{item.age.next_at ? 'pd-shop-next-v' : 'pd-shop-time-v'}}">{{item.nextText}}</text>
+          </view>
+        </view>
+        <view wx:if="{{item.last_error}}" class="pd-shop-err">{{item.last_error}}</view>
+      </view>
+    </view>
+    <view
+      class="pd-shop-actions"
+      wx:if="{{detail.status === 'IN_STOCK' && !detail.reserve_source}}"
+    >
+      <button class="btn-primary pd-shop-action-btn" bindtap="goPublish">店铺上架</button>
+      <button class="btn btn-outline pd-shop-action-btn" bindtap="goDelist">店铺下架</button>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-head">流转记录</view>
+    <view wx:if="{{!detail.stock_events || !detail.stock_events.length}}" class="empty">
+      <view class="e-icon">—</view>
+      <view class="e-text">暂无流转记录</view>
+    </view>
+    <view class="pd-timeline">
+      <view wx:for="{{detail.stock_events}}" wx:key="id" class="pd-tl-item">
+        <view class="tl-title">{{fmt.stockEventLabel(item.event_type)}}{{item.ref_no ? ' · ' + item.ref_no : ''}}</view>
+        <view class="tl-time">{{fmt.datetime(item.created_at)}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="card-head">关联单号</view>
+    <view class="pd-docs">
+      <view class="doc-row">
+        <text class="doc-label">采购单号</text>
+        <text class="doc-val">{{detail.purchase_order_no || detail.purchase_order_id || '—'}}</text>
+      </view>
+      <view class="doc-row">
+        <text class="doc-label">快递单号</text>
+        <text class="doc-val">{{detail.tracking_no || '—'}}</text>
+      </view>
+      <view class="doc-row">
+        <text class="doc-label">SKU 货号</text>
+        <text class="doc-val">{{detail.sku_code || '—'}}</text>
+      </view>
+      <view class="doc-row" wx:if="{{detail.serial_number}}">
+        <text class="doc-label">序列号</text>
+        <text class="doc-val">{{detail.serial_number}}</text>
+      </view>
+      <view class="doc-row" wx:if="{{detail.operator_name}}">
+        <text class="doc-label">操作人</text>
+        <text class="doc-val">{{detail.operator_name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部常驻入口：闲鱼商品链接按商品 ID 关联，点开直达对应商品而不是首页 -->
+  <view class="pd-xianyu-bar" wx:if="{{priceItem && priceItemUrl}}">
+    <view class="pd-xianyu-bar-info">
+      <view class="pd-xianyu-bar-t">同款商品与更多历史记录</view>
+      <view class="pd-xianyu-bar-d">{{priceItem.title || '闲鱼商品'}}</view>
+    </view>
+    <view class="pd-xianyu-bar-btn" catchtap="openProductXianyu">立即跳转闲鱼 <text class="pd-xianyu-bar-arrow">↗</text></view>
+  </view>
+
+  <!-- 库龄设置：入库时间，管理员可改三条线 -->
+  <view wx:if="{{ageSheet}}" class="pd-age-mask" bindtap="closeAgeSheet" catchtouchmove="noop">
+    <view class="pd-age-sheet" catchtap="noop">
+      <view class="pd-age-sheet-title">库龄设置</view>
+      <view class="pd-age-sheet-row">
+        <text class="pd-age-sheet-k">入库时间</text>
+        <text class="pd-age-sheet-v">{{age.inbound_at || '没有记录'}}</text>
+      </view>
+      <view class="pd-age-sheet-row" wx:for="{{ageFields}}" wx:key="key">
+        <text class="pd-age-sheet-k">{{item.label}}（天）</text>
+        <input wx:if="{{isAdmin}}" class="pd-age-sheet-input" type="number" value="{{ageForm[item.key]}}" data-key="{{item.key}}" bindinput="onAgeInput" />
+        <text wx:else class="pd-age-sheet-v">{{ageForm[item.key]}}</text>
+      </view>
+      <view class="pd-age-sheet-actions">
+        <view class="pd-auto-btn" bindtap="closeAgeSheet">{{isAdmin ? '取消' : '关闭'}}</view>
+        <view wx:if="{{isAdmin}}" class="pd-auto-btn pd-auto-btn--pri" bindtap="saveAgeThresholds">保存（全部商品）</view>
+      </view>
+    </view>
+  </view>
+</view>

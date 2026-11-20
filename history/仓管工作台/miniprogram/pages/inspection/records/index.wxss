@@ -1,0 +1,172 @@
+/* 验货记录页 — 仅 stacked 列表与物流块覆盖（公共样式见 app.wxss .record-page） */
+
+.ir-page .list-item--stacked {
+  padding: 32rpx 0;
+  border-bottom: 1rpx solid #E5E7EB;
+}
+
+.ir-page .list-item--stacked:last-child {
+  border-bottom: none;
+}
+
+.ir-page .list-item__main .li-title {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.ir-page .list-item__main .li-sub--extra {
+  color: #9CA3AF;
+  font-size: 20rpx;
+}
+
+.ir-page .li-express-zone {
+  margin-top: 20rpx;
+  padding: 20rpx 24rpx;
+  border-radius: 16rpx;
+  background: #EFF6FF;
+  border: 1rpx solid #BFDBFE;
+}
+
+.ir-page .li-express-zone--readonly {
+  background: #F9FAFB;
+}
+
+.ir-page .li-express-zone-label {
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #6B7280;
+  background: #F9FAFB;
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+}
+
+.ir-page .li-express-zone-no {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #1F2937;
+  letter-spacing: 0.5rpx;
+}
+
+.ir-page .li-express-zone-action {
+  padding: 8rpx 18rpx;
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #2563EB;
+  background: #EFF6FF;
+  border-radius: 24rpx;
+  border: none;
+}
+
+.ir-page .li-express-zone-body {
+  font-size: 24rpx;
+  line-height: 1.55;
+  color: #6B7280;
+}
+
+.ir-page .li-express-zone-hint {
+  font-size: 22rpx;
+  color: #9CA3AF;
+  margin-top: 8rpx;
+}
+
+.ir-page .li-amount-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-top: 8rpx;
+  font-size: 22rpx;
+}
+
+.ir-page .li-amount-label {
+  color: #6B7280;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.ir-page .li-amount-value {
+  font-weight: 700;
+  color: #DC2626;
+  font-size: 24rpx;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* 空间不足时次要标签截断，避免整行被迫折行 */
+.ir-page .li-amount-tag {
+  color: #9CA3AF;
+  font-size: 20rpx;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.ir-page .li-amount-edit {
+  margin-left: auto;
+  white-space: nowrap;
+  flex-shrink: 0;
+  padding: 6rpx 16rpx;
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #2563EB;
+  background: #EFF6FF;
+  border-radius: 24rpx;
+}
+
+/* 搜索框内嵌扫码图标 */
+.ir-page .search-input-wrap {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.ir-page .search-input--with-scan {
+  flex: 1;
+  width: 100%;
+  padding-right: 84rpx;
+}
+
+.ir-page .search-scan-icon {
+  position: absolute;
+  right: 8rpx;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 64rpx;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ir-page .search-scan-icon:active {
+  opacity: 0.6;
+}
+
+.ir-page .search-scan-icon .scan-frame {
+  position: relative;
+  width: 34rpx;
+  height: 34rpx;
+  background:
+    linear-gradient(#2563EB, #2563EB) left top,
+    linear-gradient(#2563EB, #2563EB) left top,
+    linear-gradient(#2563EB, #2563EB) right top,
+    linear-gradient(#2563EB, #2563EB) right top,
+    linear-gradient(#2563EB, #2563EB) left bottom,
+    linear-gradient(#2563EB, #2563EB) left bottom,
+    linear-gradient(#2563EB, #2563EB) right bottom,
+    linear-gradient(#2563EB, #2563EB) right bottom;
+  background-repeat: no-repeat;
+  background-size: 12rpx 3rpx, 3rpx 12rpx;
+}
+
+.ir-page .search-scan-icon .scan-line {
+  position: absolute;
+  left: 15rpx;
+  right: 15rpx;
+  height: 3rpx;
+  background: #2563EB;
+  border-radius: 2rpx;
+}

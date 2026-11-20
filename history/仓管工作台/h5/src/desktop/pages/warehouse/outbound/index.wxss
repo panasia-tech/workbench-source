@@ -1,0 +1,9 @@
+/* 手动出库（电脑版模板用；wob-dk- 开头，手机模板里不出现） */
+.wob-dk-scan {
+  display: flex;
+  gap: 8px;
+}
+
+.wob-dk-bar {
+  margin-top: auto;
+}

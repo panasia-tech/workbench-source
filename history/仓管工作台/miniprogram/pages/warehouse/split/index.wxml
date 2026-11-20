@@ -1,0 +1,68 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<view class="page-wrap page-wrap--no-tab split-page" wx:if="{{!loading && source}}">
+  <view class="card">
+    <view class="card-head">拆分库存</view>
+    <view class="split-source">
+      <view class="ss-name">{{source.product_name}}</view>
+      <view class="ss-meta">{{source.sku_code}} · 成本 ¥{{fmt.money(source.cost_price)}}</view>
+    </view>
+    <view class="form-note">把这条库存拆成多件独立商品（如一对喇叭录成了一条）。各件金额之和须等于原成本 ¥{{fmt.money(source.cost_price)}}；提交后原货号退役、生成 N 个新货号。</view>
+
+    <view wx:for="{{items}}" wx:key="index" class="multi-item-card">
+      <view class="multi-item-head">
+        <text class="multi-item-badge">件 {{index + 1}}</text>
+        <text wx:if="{{items.length > 2}}" class="multi-remove" data-index="{{index}}" bindtap="removeItem">删除</text>
+      </view>
+
+      <view class="form-row form-row--short">
+        <view class="form-group form-group--compact">
+          <text class="form-label">品牌<text class="req">*</text></text>
+          <input class="input input--compact" placeholder="如 漫步者" data-index="{{index}}" data-field="brand" value="{{item.brand}}" bindinput="onItemInput" />
+        </view>
+        <view class="form-group form-group--compact">
+          <text class="form-label">型号<text class="req">*</text></text>
+          <input class="input input--compact" placeholder="型号" data-index="{{index}}" data-field="model" value="{{item.model}}" bindinput="onItemInput" />
+        </view>
+      </view>
+
+      <view class="form-row form-row--short">
+        <view class="form-group form-group--compact">
+          <text class="form-label">金额<text class="req">*</text></text>
+          <input class="input input--price input--compact" placeholder="0.00" type="digit" data-index="{{index}}" data-field="amount" value="{{item.amount}}" bindinput="onItemInput" />
+        </view>
+        <view class="form-group form-group--compact">
+          <text class="form-label">成色</text>
+          <picker range="{{grades}}" value="{{item.gradeIndex}}" data-index="{{index}}" bindchange="pickGrade">
+            <view class="input input--compact picker-field {{item.condition_grade ? '' : 'picker-field--placeholder'}}">{{item.condition_grade || '选择成色'}}</view>
+          </picker>
+        </view>
+      </view>
+
+      <view class="form-group form-group--compact">
+        <text class="form-label">库位</text>
+        <picker range="{{locations}}" range-key="label" value="{{item.locationIndex}}" data-index="{{index}}" bindchange="pickLocation">
+          <view class="input input--compact picker-field {{item.location_code ? '' : 'picker-field--placeholder'}}">{{item.location_code || '选择库位'}}</view>
+        </picker>
+      </view>
+
+      <view class="form-group form-group--compact">
+        <text class="form-label">序列号</text>
+        <input class="input input--compact" placeholder="选填" data-index="{{index}}" data-field="serial_number" value="{{item.serial_number}}" bindinput="onItemInput" />
+      </view>
+    </view>
+
+    <button class="btn btn-outline btn-block multi-add" bindtap="addItem">+ 添加一件</button>
+
+    <view class="split-sum {{matched ? 'split-sum--ok' : 'split-sum--warn'}}">
+      合计 ¥{{sumText}} / 原 ¥{{fmt.money(source.cost_price)}}
+      <text class="split-sum-flag">{{matched ? '✓ 匹配' : '✗ 不匹配'}}</text>
+    </view>
+
+    <button class="btn-primary btn-block submit-btn" bindtap="submit" loading="{{submitting}}" disabled="{{!matched}}">确认拆分</button>
+  </view>
+</view>
+
+<view wx:elif="{{loading}}" class="page-wrap page-wrap--no-tab">
+  <view class="list-footer">加载中…</view>
+</view>

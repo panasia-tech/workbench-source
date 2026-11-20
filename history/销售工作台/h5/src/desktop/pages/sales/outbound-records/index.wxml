@@ -1,0 +1,114 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<!-- 出库记录（电脑版，我经手的出库，默认今天）：筛选工具栏 + 表格 + 页码 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">出库记录</view>
+      <view class="dk-sub">我经手的出库 · 共 {{total}} 条</view>
+    </view>
+  </view>
+
+  <view class="dk-card">
+    <view class="dk-toolbar">
+      <view class="dk-tabs">
+        <view
+          wx:for="{{typeTabs}}"
+          wx:key="key"
+          class="dk-tab {{typeKey === item.key ? 'dk-tab--on' : ''}}"
+          data-key="{{item.key}}"
+          bindtap="onTypeTab"
+        >{{item.label}}</view>
+      </view>
+      <input
+        class="dk-input dk-search"
+        placeholder="搜索货号 / 商品 / 买家 / 出库单号"
+        value="{{q}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+        bindconfirm="onSearch"
+      />
+      <picker mode="date" value="{{dateFrom}}" bindchange="onDateFromChange">
+        <view class="dk-select {{dateFrom ? '' : 'dk-muted'}}">{{dateFrom || '开始日期'}}</view>
+      </picker>
+      <text class="dk-muted">至</text>
+      <picker mode="date" value="{{dateTo}}" bindchange="onDateToChange">
+        <view class="dk-select {{dateTo ? '' : 'dk-muted'}}">{{dateTo || '结束日期'}}</view>
+      </picker>
+      <text wx:if="{{dateFrom || dateTo}}" class="dk-link" bindtap="dkClearDates">清除日期</text>
+      <view class="dk-btn dk-btn--primary" bindtap="onSearch">搜索</view>
+    </view>
+
+    <view class="dk-table-wrap">
+      <table class="dk-table">
+        <thead>
+          <tr>
+            <th>商品</th>
+            <th>货号 / 出库单号</th>
+            <th>类型</th>
+            <th>买家</th>
+            <th>经办人</th>
+            <th class="dk-num">售价</th>
+            <th class="dk-num">闲鱼服务费</th>
+            <th>出库时间</th>
+            <th class="dk-ops">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr wx:for="{{list}}" wx:key="id" class="dk-tr--click" data-code="{{item.sku_code}}" bindtap="openDetail">
+            <td>
+              <view class="dk-media">
+                <image
+                  wx:if="{{item.cover_thumb_url || item.cover_url}}"
+                  class="dk-thumb"
+                  src="{{item.cover_thumb_url || item.cover_url}}"
+                  mode="aspectFill"
+                  data-url="{{item.cover_url || item.cover_thumb_url}}"
+                  catchtap="dkPreview"
+                />
+                <view wx:elif="{{item.location_images[0]}}" class="obr-dk-thumb-wrap">
+                  <image class="dk-thumb" src="{{item.location_images[0]}}" mode="aspectFill" data-url="{{item.location_images[0]}}" catchtap="dkPreview" />
+                  <text class="obr-dk-loc-badge">定位</text>
+                </view>
+                <view wx:else class="dk-thumb obr-dk-thumb-empty">{{fmt.iconChar(item.product_name || item.buyer_name)}}</view>
+                <view class="dk-grow">
+                  <view class="dk-cell-main dk-ellipsis obr-dk-name" title="{{item.product_name}}">{{item.product_name || item.outbound_no}}</view>
+                  <view class="dk-cell-sub dk-ellipsis obr-dk-name">{{item.product_spec || '—'}}</view>
+                </view>
+              </view>
+            </td>
+            <td class="dk-nowrap">
+              <view>{{item.sku_code}}</view>
+              <view class="dk-cell-sub">{{item.outbound_no || '—'}}</view>
+            </td>
+            <td class="dk-nowrap"><text class="dk-tag {{item.typeTag}}">{{item.typeLabel}}</text></td>
+            <td class="dk-nowrap">{{item.buyer_name || '—'}}</td>
+            <td class="dk-nowrap">{{item.operator_name || '—'}}</td>
+            <td class="dk-num">¥{{fmt.money(item.sale_price)}}</td>
+            <td class="dk-num">
+              <text wx:if="{{!item.fee_editable}}" class="dk-muted">{{item.platform_fee == null ? '—' : '¥' + fmt.money(item.platform_fee)}}</text>
+              <text wx:else class="dk-link" catchtap="editFee" data-index="{{index}}">{{item.platform_fee == null ? '补填' : '¥' + fmt.money(item.platform_fee)}}</text>
+            </td>
+            <td class="dk-nowrap"><text title="{{fmt.datetime(item.created_at)}}">{{fmt.datetime(item.created_at).slice(5, 16)}}</text></td>
+            <td class="dk-ops">
+              <text wx:if="{{item.has_return}}" class="dk-tag tag-warning">已退/退货中</text>
+              <text wx:else class="dk-link" data-code="{{item.sku_code}}" catchtap="goReturn">商品退回</text>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </view>
+
+    <view wx:if="{{!list.length && !loading}}" class="dk-empty">暂无出库记录</view>
+    <view wx:if="{{loading && !list.length}}" class="dk-empty">加载中…</view>
+
+    <view wx:if="{{total > dkPageSize}}" class="dk-pager">
+      <text>共 {{total}} 条，每页 {{dkPageSize}} 条</text>
+      <view class="dk-row">
+        <view class="dk-btn dk-btn--sm {{dkPage <= 1 ? 'dk-btn--disabled' : ''}}" bindtap="dkPrev">上一页</view>
+        <text>第 {{dkPage}} / {{dkPages}} 页</text>
+        <view class="dk-btn dk-btn--sm {{dkPage >= dkPages ? 'dk-btn--disabled' : ''}}" bindtap="dkNext">下一页</view>
+      </view>
+    </view>
+  </view>
+</view>

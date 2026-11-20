@@ -1,0 +1,29 @@
+/* 盘点结果（电脑版模板用；wsd-dk- 开头，手机模板里不出现） */
+.wsd-dk-warn {
+  padding: 10px 16px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 13px;
+}
+
+.wsd-dk-n--matched {
+  color: #047857;
+}
+
+.wsd-dk-n--missing {
+  color: #dc2626;
+}
+
+.wsd-dk-n--surplus {
+  color: #c2410c;
+}
+
+.wsd-dk-noimg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  font-size: 12px;
+}

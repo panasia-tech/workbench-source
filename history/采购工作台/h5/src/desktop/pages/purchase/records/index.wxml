@@ -1,0 +1,100 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<!-- 采购记录（电脑版）：筛选平铺 + 表格 + 页码。搜索、日期、点行看详情都调手机版同一套方法 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">采购记录</view>
+      <view class="dk-sub">共 {{total}} 条{{dateFrom || dateTo ? '（' + (dateFrom || '…') + ' 至 ' + (dateTo || '…') + '）' : ''}}</view>
+    </view>
+  </view>
+
+  <view class="dk-card">
+    <view class="dk-toolbar">
+      <input
+        class="dk-input dk-search"
+        placeholder="单号 / 流水 / 物流 / 商品 / 卖家"
+        value="{{q}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+        bindconfirm="onSearch"
+      />
+      <text class="dk-label">日期</text>
+      <picker mode="date" value="{{dateFrom}}" bindchange="onDateFromChange">
+        <view class="dk-select {{dateFrom ? '' : 'dk-muted'}}">{{dateFrom || '开始日期'}}</view>
+      </picker>
+      <text class="dk-muted">至</text>
+      <picker mode="date" value="{{dateTo}}" bindchange="onDateToChange">
+        <view class="dk-select {{dateTo ? '' : 'dk-muted'}}">{{dateTo || '结束日期'}}</view>
+      </picker>
+      <text wx:if="{{dateFrom || dateTo}}" class="dk-link" bindtap="dkClearDates">清除日期</text>
+      <view class="dk-btn dk-btn--primary" bindtap="onSearch">搜索</view>
+    </view>
+
+    <view class="dk-table-wrap">
+      <table class="dk-table">
+        <thead>
+          <tr>
+            <th>商品</th>
+            <th>闲鱼订单号</th>
+            <th>卖家 / 采购员</th>
+            <th>录入时间 / 下单时间</th>
+            <th class="dk-num">成交金额</th>
+            <th>状态</th>
+            <th class="dk-ops">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr wx:for="{{list}}" wx:key="id" class="dk-tr--click" data-id="{{item.id}}" bindtap="openDetail">
+            <td>
+              <view class="dk-media">
+                <image
+                  wx:if="{{item.product_image_thumb && !fmt.isArchived(item.product_image_thumb)}}"
+                  class="dk-thumb"
+                  src="{{item.product_image_thumb}}"
+                  mode="aspectFill"
+                  data-url="{{item.product_image || item.product_image_thumb}}"
+                  catchtap="dkPreview"
+                />
+                <view wx:else class="dk-thumb dk-row" style="justify-content: center; color: #9ca3af;">{{item.product_name ? item.product_name[0] : '?'}}</view>
+                <view class="dk-grow">
+                  <view class="dk-cell-main dk-ellipsis" title="{{item.product_name}}">{{item.product_name}}</view>
+                  <view class="dk-cell-sub">{{item.order_no}}</view>
+                </view>
+              </view>
+            </td>
+            <td class="dk-nowrap">{{item.external_order_no || '—'}}</td>
+            <td>
+              <view class="dk-ellipsis" style="max-width: 160px;">{{item.seller_name || '—'}}</view>
+              <view class="dk-cell-sub">{{item.operator_name || '—'}}</view>
+            </td>
+            <td class="dk-nowrap">
+              <view>{{fmt.datetime(item.created_at)}}</view>
+              <view class="dk-cell-sub">下单 {{item.order_time ? fmt.datetime(item.order_time) : '—'}}</view>
+            </td>
+            <td class="dk-num">¥{{fmt.money(item.unit_price)}}</td>
+            <td class="dk-nowrap">
+              <text class="dk-tag {{fmt.statusTag(item.status)}}">{{fmt.statusLabel(item.status)}}</text>
+              <text wx:if="{{item.is_overdue}}" class="dk-tag tag-danger" style="margin-left: 4px;">逾期采购</text>
+            </td>
+            <td class="dk-ops">
+              <text class="dk-link" data-id="{{item.id}}" catchtap="openDetail">详情</text>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </view>
+
+    <view wx:if="{{!list.length && !loading}}" class="dk-empty">暂无采购记录</view>
+    <view wx:if="{{loading && !list.length}}" class="dk-empty">加载中…</view>
+
+    <view wx:if="{{total > dkPageSize}}" class="dk-pager">
+      <text>共 {{total}} 条，每页 {{dkPageSize}} 条</text>
+      <view class="dk-row">
+        <view class="dk-btn dk-btn--sm {{dkPage <= 1 ? 'dk-btn--disabled' : ''}}" bindtap="dkPrev">上一页</view>
+        <text>第 {{dkPage}} / {{dkPages}} 页</text>
+        <view class="dk-btn dk-btn--sm {{dkPage >= dkPages ? 'dk-btn--disabled' : ''}}" bindtap="dkNext">下一页</view>
+      </view>
+    </view>
+  </view>
+</view>

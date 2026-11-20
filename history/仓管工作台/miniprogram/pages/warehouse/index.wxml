@@ -1,0 +1,229 @@
+<wxs module="fmt" src="../../utils/format.wxs" />
+
+<view class="page-wrap page-wrap--no-tab wh-page record-page">
+  <view wx:if="{{canViewSkuMigration}}" class="entry-row">
+    <view class="entry-chip" hover-class="entry-chip--hover" bindtap="goSkuMigration">
+      <text class="entry-chip__dot"></text>
+      <text class="entry-chip__label">货号更换</text>
+      <text class="entry-chip__arrow">›</text>
+    </view>
+    <view class="entry-chip" hover-class="entry-chip--hover" bindtap="goBarcodeMigration">
+      <text class="entry-chip__dot"></text>
+      <text class="entry-chip__label">69码更换</text>
+      <text class="entry-chip__arrow">›</text>
+    </view>
+    <view class="entry-chip" hover-class="entry-chip--hover" bindtap="goSpuMatch">
+      <text class="entry-chip__dot"></text>
+      <text class="entry-chip__label">商品匹配</text>
+      <text class="entry-chip__arrow">›</text>
+    </view>
+  </view>
+  <view wx:if="{{gapTodo !== null}}" class="gaps-entry" hover-class="entry-chip--hover" bindtap="goGaps">
+    <text class="gaps-entry__label">库存缺口</text>
+    <text class="gaps-entry__count {{gapTodo ? '' : 'gaps-entry__count--zero'}}">{{gapTodo ? '要人补 ' + gapTodo + ' 件' : '没有要补的'}}</text>
+    <text class="gaps-entry__arrow">›</text>
+  </view>
+  <view class="w-stats">
+    <view class="w-stat-card" wx:if="{{!isSales}}">
+      <view class="ws-label">库存成本</view>
+      <view class="ws-num {{fmt.numScale('¥' + fmt.statMoney(summary.total_cost))}}">¥{{fmt.statMoney(summary.total_cost)}}</view>
+    </view>
+    <view class="w-stat-card">
+      <view class="ws-label">在库数量</view>
+      <view class="ws-num {{fmt.numScale(summary.total_count)}}">{{summary.total_count || 0}}</view>
+    </view>
+    <view class="w-stat-card">
+      <view class="ws-label">在售 / 锁单</view>
+      <view class="ws-num {{fmt.numScale((summary.on_sale_count || 0) + '/' + (summary.locked_count || 0))}}">{{summary.on_sale_count || 0}}/{{summary.locked_count || 0}}</view>
+    </view>
+  </view>
+
+  <view class="card filter-card">
+    <view class="search-bar">
+      <view class="search-input-wrap">
+        <input
+          class="search-input search-input--with-scan"
+          placeholder="货号 / 序列号 / 物流单号 / 商品名称..."
+          value="{{q}}"
+          bindinput="onSearchInput"
+          confirm-type="search"
+          bindconfirm="onSearch"
+        />
+        <view class="search-scan-icon" catchtap="onScanSearch" aria-role="button">
+          <view class="scan-frame"></view>
+          <view class="scan-line"></view>
+        </view>
+      </view>
+    </view>
+
+    <scroll-view class="wh-phase-scroll" scroll-x enable-flex>
+      <view class="status-segment wh-list-tabs">
+        <text
+          wx:for="{{filterTabs}}"
+          wx:key="key"
+          class="status-seg {{listTab === item.key ? 'active' : ''}}"
+          data-tab="{{item.key}}"
+          bindtap="switchListTab"
+        >{{item.label}}</text>
+      </view>
+    </scroll-view>
+
+    <view class="wh-filter-row">
+      <view wx:if="{{tagOptions.length}}" class="wh-tag-trigger" bindtap="openTagSheet">
+        <text class="wh-tag-trigger-label">标签筛选</text>
+        <text class="wh-tag-trigger-value {{selectedTags.length ? '' : 'wh-tag-trigger-value--empty'}}">
+          {{selectedTags.length ? (selectedTagsText || selectedTags.join(' / ')) : '全部（点击多选）'}}
+        </text>
+        <text class="wh-tag-trigger-arrow">▾</text>
+      </view>
+      <button class="btn search-btn wh-search-btn" bindtap="onSearch">搜索</button>
+    </view>
+
+    <view class="filter-meta">
+      <text>共 {{total}} 条在库</text>
+      <text class="form-note wh-filter-hint" wx:if="{{listTab === 'all'}}">含待上架、在售、锁单；标签见各行状态</text>
+      <text class="form-note wh-filter-hint" wx:elif="{{listTab === 'locked'}}">发货请在销售 Tab</text>
+    </view>
+
+    <view class="action-bar wh-action-bar">
+      <button class="btn btn-primary btn-sm" wx:if="{{canViewStocktake}}" bindtap="goManualInbound">手动入库</button>
+      <button class="btn btn-outline btn-sm" wx:if="{{!isSales}}" bindtap="goOutbound">手动出库</button>
+      <button class="btn btn-outline btn-sm" wx:if="{{canViewStocktake}}" bindtap="goStocktake">扫码盘点</button>
+      <button class="btn btn-outline btn-sm" wx:if="{{canViewStocktake}}" bindtap="goStocktakeRecords">盘点记录</button>
+    </view>
+  </view>
+
+  <view class="card list-card">
+    <view wx:if="{{!list.length && !loading}}" class="empty">
+      <view class="e-icon">—</view>
+      <view class="e-text">{{emptyText}}</view>
+    </view>
+
+    <!-- 搜索兜底:新系统无在库结果,但老系统快照有匹配记录(仅供核对,不代表在库) -->
+    <view wx:if="{{!list.length && !loading && legacyMatches.length}}" class="wh-legacy-block">
+      <view class="wh-legacy-head">
+        <text class="wh-legacy-title">老系统历史记录</text>
+        <text class="wh-legacy-note">仅供核对，不代表当前在库</text>
+      </view>
+      <view wx:for="{{legacyMatches}}" wx:key="goods_no" class="wh-item wh-legacy-item">
+        <view class="wh-item__main">
+          <view class="wh-thumb-wrap">
+            <image wx:if="{{item.cover_url}}" class="wh-legacy-thumb" src="{{item.cover_url}}" mode="aspectFill" />
+            <view wx:else class="wh-thumb">老</view>
+          </view>
+          <view class="wh-body">
+            <view class="wh-head">
+              <view class="wh-name">{{item.product_name || '—'}}</view>
+              <view class="tag wh-tag {{item.status === 'IN_STOCK' ? 'tag-warning' : 'tag-pending'}}">
+                {{item.migrated_sku_code ? '已迁移' : (item.status === 'IN_STOCK' ? '老系统在库' : '老系统已出库')}}
+              </view>
+            </view>
+            <view class="wh-sub">老货号: {{item.goods_no || '—'}}</view>
+            <view class="wh-sub" wx:if="{{item.barcode || item.serial_no}}">序列号: {{item.barcode || item.serial_no}}</view>
+            <view class="wh-sub" wx:if="{{item.migrated_sku_code}}">新系统 SKU: {{item.migrated_sku_code}}</view>
+            <view class="wh-foot">
+              <text class="wh-loc">老库位 {{item.location || '未记录'}}<text wx:if="{{item.legacy_tag}}"> · {{item.legacy_tag}}</text></text>
+            </view>
+          </view>
+        </view>
+        <view class="wh-legacy-tip">查不到在库记录时请先按老系统资料实物核验，再补录 / 手动入库，勿直接判定无货</view>
+        <button
+          wx:if="{{canViewStocktake && !item.migrated_sku_code}}"
+          class="btn btn-primary btn-block wh-item__action"
+          data-index="{{index}}"
+          catchtap="goLegacyInbound"
+        >实物已核验，转手动入库</button>
+      </view>
+    </view>
+
+    <view wx:for="{{list}}" wx:key="id" class="wh-item">
+      <view class="wh-item__main" data-code="{{item.sku_code}}" bindtap="openDetail">
+        <view class="wh-thumb-wrap">
+          <media-thumb
+            wx:if="{{item.cover_thumb_url || item.cover_url}}"
+            url="{{item.cover_thumb_url || item.cover_url}}"
+            preview-url="{{item.cover_url}}"
+            size="small"
+          />
+          <!-- 没有产品图时,退而显示仓库定位图(找货/盘点用),角标区分 -->
+          <block wx:elif="{{item.location_images[0]}}">
+            <media-thumb
+              url="{{item.location_images[0]}}"
+              preview-url="{{item.location_images[0]}}"
+              size="small"
+            />
+            <view class="wh-loc-badge">定位</view>
+          </block>
+          <view wx:else class="wh-thumb">{{item.sku_code ? item.sku_code.slice(-2) : '?'}}</view>
+        </view>
+
+        <view class="wh-body">
+          <view class="wh-head">
+            <view class="wh-name">{{item.product_name}}</view>
+            <view wx:if="{{fmt.legacyPendingVerify(item)}}" class="tag wh-tag tag-warning">待核验</view>
+            <view class="tag wh-tag {{fmt.warehouseItemTag(item)}}">{{fmt.warehouseItemLabel(item)}}</view>
+          </view>
+          <view class="wh-sub">SKU: {{item.sku_code}} · {{item.spec || '—'}}</view>
+          <view class="wh-sub wh-sub--time">{{item.outbound_at ? '出库时间 ' + fmt.datetime(item.outbound_at) : '入库时间 ' + fmt.datetime(item.inbound_at || item.created_at)}}</view>
+          <view class="wh-foot">
+            <text class="wh-loc">{{item.condition_grade || '—'}} · 库位 {{item.location_code || '未分配'}}<text wx:if="{{item.on_shelf_count > 0}}"> · {{item.on_shelf_count}}店在售</text></text>
+            <view class="wh-price" wx:if="{{item.cost_price != null}}">¥{{fmt.money(item.cost_price)}}</view>
+          </view>
+        </view>
+      </view>
+
+      <button
+        wx:if="{{item.reserve_source}}"
+        class="btn btn-primary btn-block wh-item__action"
+        catchtap="goShip"
+        data-code="{{item.sku_code}}"
+      >去销售发货</button>
+      <button
+        wx:elif="{{item.warehouse_phase === 'pending_create'}}"
+        class="btn-primary btn-block wh-item__action"
+        data-code="{{item.sku_code}}"
+        catchtap="goPublish"
+      >店铺上架</button>
+      <block wx:elif="{{item.warehouse_phase === 'on_sale' || item.on_shelf_count > 0}}">
+        <button
+          class="btn-primary btn-block wh-item__action"
+          data-code="{{item.sku_code}}"
+          catchtap="goPublish"
+        >店铺上架</button>
+        <button
+          class="btn btn-outline btn-block wh-item__action"
+          data-code="{{item.sku_code}}"
+          catchtap="goDelist"
+        >店铺下架</button>
+      </block>
+    </view>
+
+    <view wx:if="{{loading}}" class="list-footer">加载中…</view>
+    <view wx:elif="{{noMore && list.length}}" class="list-footer">没有更多了</view>
+  </view>
+
+  <view wx:if="{{tagSheetVisible}}" class="wh-tag-mask" bindtap="closeTagSheet" catchtouchmove="true">
+    <view class="wh-tag-sheet" catchtap="">
+      <view class="wh-tag-sheet-head">
+        <text class="wh-tag-sheet-cancel" bindtap="closeTagSheet">取消</text>
+        <text class="wh-tag-sheet-title">选择标签</text>
+        <text class="wh-tag-sheet-confirm" bindtap="confirmTagSheet">确定</text>
+      </view>
+      <view class="wh-tag-sheet-body">
+        <view class="tag-chip-group">
+          <text
+            wx:for="{{tagOptions}}"
+            wx:key="id"
+            class="tag-chip {{tagSheetDraft.indexOf(item.name) >= 0 ? 'tag-chip--active' : ''}}"
+            data-name="{{item.name}}"
+            bindtap="toggleTagDraft"
+          >{{item.label || item.name}}</text>
+        </view>
+        <view class="wh-tag-sheet-hint">支持单选或多选，多选为「满足任意一个」</view>
+      </view>
+      <view class="wh-tag-sheet-foot">
+        <button class="btn btn-outline btn-block" bindtap="clearTagDraft">清空</button>
+      </view>
+    </view>
+  </view>
+</view>

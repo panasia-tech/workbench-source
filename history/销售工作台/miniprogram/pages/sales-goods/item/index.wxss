@@ -1,0 +1,139 @@
+/* 一件货：照交付包（浅色）——首屏图、问题箱、四个价；更多详情折叠；横排五步 + 当前步的面板。红 = 现在动手，黄 = 注意 */
+.si-page .si-card { margin-top: 20rpx; padding: 24rpx; border-radius: 24rpx; background: #FFFFFF; box-shadow: 0 2rpx 12rpx rgba(15, 23, 42, 0.06); }
+.si-page .si-muted { color: #9CA3AF; font-size: 22rpx; }
+.si-page .si-link { color: #2563EB; font-size: 24rpx; font-weight: 600; }
+.si-page .si-green { color: #059669; }
+.si-page .si-q { flex: none; width: 40rpx; height: 40rpx; line-height: 40rpx; text-align: center; border-radius: 50%; border: 1rpx solid #D1D5DB; color: #6B7280; font-size: 22rpx; }
+.si-page .si-help { margin-top: 12rpx; padding: 14rpx 18rpx; border-radius: 12rpx; background: #F9FAFB; font-size: 24rpx; color: #4B5563; line-height: 1.6; }
+
+/* 首屏 */
+.si-page .si-hero { padding: 24rpx; border-radius: 28rpx; background: #FFFFFF; box-shadow: 0 2rpx 12rpx rgba(15, 23, 42, 0.06); }
+.si-page .si-pic { position: relative; width: 100%; aspect-ratio: 1 / 1; border-radius: 22rpx; overflow: hidden; background: #F3F4F6; border: 5rpx solid transparent; box-sizing: border-box; }
+.si-page .si-pic--red { border-color: #EF4444; }
+.si-page .si-pic--yellow { border-color: #FCD34D; }
+.si-page .si-pic__img { width: 100%; height: 100%; display: block; }
+.si-page .si-pic__none { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8rpx; padding: 24rpx; text-align: center; color: #92400E; font-size: 22rpx; background: repeating-linear-gradient(45deg, #FEF3C7, #FEF3C7 12px, #F9FAFB 12px, #F9FAFB 24px); }
+.si-page .si-pic__none-t { font-size: 36rpx; font-weight: 800; }
+.si-page .si-pic__kind { position: absolute; left: 14rpx; bottom: 14rpx; padding: 2rpx 14rpx; border-radius: 999rpx; font-size: 20rpx; background: rgba(17, 24, 39, 0.6); color: #FFFFFF; }
+.si-page .si-thumbs { display: flex; flex-wrap: wrap; gap: 10rpx; margin-top: 14rpx; }
+.si-page .si-thumb { width: 84rpx; height: 84rpx; border-radius: 12rpx; background: #F3F4F6; border: 3rpx solid transparent; opacity: 0.7; }
+.si-page .si-thumb.is-on { border-color: #2563EB; opacity: 1; }
+.si-page .si-info { margin-top: 22rpx; min-width: 0; }
+.si-page .si-tags { display: flex; flex-wrap: wrap; align-items: center; gap: 10rpx; }
+.si-page .si-badge { padding: 6rpx 20rpx; border-radius: 999rpx; font-size: 24rpx; font-weight: 800; color: #FFFFFF; }
+.si-page .si-badge--red { background: #DC2626; }
+.si-page .si-badge--yellow { background: #F59E0B; color: #3B2600; }
+.si-page .si-badge--green { background: #059669; }
+.si-page .si-tag { padding: 4rpx 14rpx; border-radius: 10rpx; font-size: 22rpx; font-weight: 600; background: #F3F4F6; color: #374151; }
+.si-page .si-tag--dark { background: #111827; color: #FFFFFF; }
+.si-page .si-name { margin-top: 14rpx; font-size: 38rpx; font-weight: 800; color: #111827; line-height: 1.3; }
+.si-page .si-codes { margin-top: 8rpx; font-size: 24rpx; color: #6B7280; }
+.si-page .si-b { color: #374151; font-weight: 700; }
+
+.si-page .si-issues { margin-top: 20rpx; padding: 20rpx 22rpx; border-radius: 20rpx; border-left: 10rpx solid #059669; background: #ECFDF5; }
+.si-page .si-issues--red { border-left-color: #DC2626; background: #FEF2F2; }
+.si-page .si-issues--yellow { border-left-color: #F59E0B; background: #FFFBEB; }
+.si-page .si-issues__t { font-size: 28rpx; font-weight: 800; color: #111827; }
+.si-page .si-issue { display: flex; align-items: center; gap: 12rpx; padding: 14rpx 0 4rpx; }
+.si-page .si-issue__text { flex: 1; min-width: 0; font-size: 25rpx; color: #1F2937; line-height: 1.5; }
+.si-page .si-dot { flex: none; width: 14rpx; height: 14rpx; border-radius: 50%; }
+.si-page .si-dot--red { background: #DC2626; }
+.si-page .si-dot--yellow { background: #F59E0B; }
+.si-page .si-ok { margin-top: 8rpx; font-size: 24rpx; color: #065F46; }
+
+.si-page .si-facts { display: grid; grid-template-columns: repeat(auto-fill, minmax(190rpx, 1fr)); gap: 12rpx; margin-top: 18rpx; }
+.si-page .si-fact { padding: 16rpx 18rpx; border-radius: 16rpx; background: #F9FAFB; border: 1rpx solid #F3F4F6; }
+.si-page .si-fact__k { font-size: 22rpx; color: #6B7280; }
+.si-page .si-fact__v { margin-top: 4rpx; font-size: 34rpx; font-weight: 800; color: #111827; }
+.si-page .si-fact__v.si-muted { font-size: 30rpx; color: #9CA3AF; }
+.si-page .si-fact__s { margin-top: 4rpx; font-size: 20rpx; color: #9CA3AF; }
+
+/* 更多详情 */
+.si-page .si-more__head { display: flex; flex-wrap: wrap; align-items: center; gap: 10rpx; }
+.si-page .si-more__t { font-size: 28rpx; font-weight: 800; color: #111827; margin-right: 6rpx; }
+.si-page .si-more__arrow { margin-left: auto; }
+.si-page .si-chip { padding: 4rpx 14rpx; border-radius: 999rpx; font-size: 22rpx; font-weight: 600; background: #F3F4F6; color: #374151; }
+.si-page .si-chip--normal { background: #D1FAE5; color: #065F46; }
+.si-page .si-chip--clearance { background: #FEF3C7; color: #92400E; }
+.si-page .si-chip--stale { background: #FEE2E2; color: #B91C1C; }
+.si-page .si-more__body { margin-top: 14rpx; }
+.si-page .si-row { display: flex; justify-content: space-between; gap: 16rpx; padding: 14rpx 0; border-top: 1rpx solid #F3F4F6; font-size: 24rpx; color: #1F2937; }
+.si-page .si-row__k { color: #6B7280; }
+
+/* 五步 */
+.si-page .si-flow__head { display: flex; align-items: center; gap: 12rpx; flex-wrap: wrap; }
+.si-page .si-flow__t { font-size: 32rpx; font-weight: 800; color: #111827; }
+.si-page .si-flow__s { flex: 1; font-size: 22rpx; color: #9CA3AF; }
+.si-page .si-steps { position: relative; display: flex; justify-content: space-between; margin: 26rpx 0 6rpx; }
+.si-page .si-steps::before { content: ''; position: absolute; left: 10%; right: 10%; top: 26rpx; height: 3rpx; background: #E5E7EB; }
+.si-page .si-st { position: relative; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8rpx; }
+.si-page .si-st__i { width: 52rpx; height: 52rpx; line-height: 52rpx; text-align: center; border-radius: 50%; font-size: 24rpx; font-weight: 800; background: #F3F4F6; color: #9CA3AF; border: 3rpx solid #E5E7EB; box-sizing: border-box; }
+.si-page .si-st__t { font-size: 22rpx; font-weight: 600; color: #9CA3AF; text-align: center; }
+.si-page .si-st--done .si-st__i { background: #059669; border-color: #059669; color: #FFFFFF; }
+.si-page .si-st--done .si-st__t { color: #059669; }
+.si-page .si-st--current .si-st__i { background: #2563EB; border-color: #2563EB; color: #FFFFFF; box-shadow: 0 0 0 8rpx rgba(37, 99, 235, 0.15); }
+.si-page .si-st--current .si-st__t { color: #2563EB; }
+.si-page .si-st--skip .si-st__i { border-style: dashed; background: #FFFFFF; }
+.si-page .si-st.is-sel .si-st__t { text-decoration: underline; text-underline-offset: 6rpx; }
+
+.si-page .si-pn { margin-top: 22rpx; padding: 22rpx; border-radius: 20rpx; background: #F9FAFB; }
+.si-page .si-pn__t { font-size: 30rpx; font-weight: 800; color: #111827; }
+.si-page .si-skip, .si-page .si-done { margin-left: 12rpx; padding: 2rpx 12rpx; border-radius: 8rpx; font-size: 20rpx; font-weight: 600; background: #E5E7EB; color: #6B7280; }
+.si-page .si-done { background: #D1FAE5; color: #065F46; }
+.si-page .si-pn__n { margin-top: 8rpx; font-size: 25rpx; color: #374151; line-height: 1.5; }
+.si-page .si-pn__n--lock { color: #6B7280; }
+.si-page .si-pn__rule { margin-top: 8rpx; font-size: 23rpx; color: #6B7280; line-height: 1.6; }
+.si-page .si-pn__empty { margin-top: 14rpx; }
+.si-page .si-pn__acts { display: flex; gap: 12rpx; margin-top: 18rpx; }
+
+.si-page .si-shops { display: grid; grid-template-columns: repeat(auto-fill, minmax(300rpx, 1fr)); gap: 14rpx; margin-top: 16rpx; }
+.si-page .si-shop { padding: 18rpx; border-radius: 18rpx; background: #FFFFFF; border: 2rpx solid #E5E7EB; }
+.si-page .si-shop--red { border-color: #FCA5A5; }
+.si-page .si-shop--green { border-color: #A7F3D0; }
+.si-page .si-shop__h { display: flex; justify-content: space-between; align-items: center; gap: 10rpx; }
+.si-page .si-shop__n { font-size: 27rpx; font-weight: 800; color: #111827; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.si-page .si-stag { flex: none; padding: 2rpx 12rpx; border-radius: 8rpx; font-size: 20rpx; font-weight: 700; }
+.si-page .si-stag--red { background: #FEE2E2; color: #B91C1C; }
+.si-page .si-stag--yellow { background: #FEF3C7; color: #92400E; }
+.si-page .si-stag--green { background: #D1FAE5; color: #065F46; }
+.si-page .si-shop__p { margin-top: 10rpx; font-size: 25rpx; font-weight: 700; color: #111827; }
+.si-page .si-warn-red { color: #DC2626; font-size: 22rpx; }
+.si-page .si-warn-y { color: #B45309; font-size: 22rpx; }
+.si-page .si-shop__imgs { display: flex; align-items: center; gap: 8rpx; margin-top: 10rpx; min-height: 72rpx; }
+.si-page .si-shop__img { width: 72rpx; height: 72rpx; border-radius: 10rpx; background: #F3F4F6; }
+.si-page .si-shop__note { margin-top: 8rpx; font-size: 22rpx; color: #B91C1C; line-height: 1.5; }
+.si-page .si-shop__by { margin-top: 6rpx; }
+.si-page .si-shop__acts { display: flex; gap: 10rpx; margin-top: 12rpx; }
+
+.si-page .si-btn { padding: 12rpx 28rpx; border-radius: 999rpx; background: #2563EB; color: #FFFFFF; font-size: 25rpx; font-weight: 700; }
+.si-page .si-btn--ok { background: #059669; }
+.si-page .si-btn--plain { background: #EFF6FF; color: #1D4ED8; }
+.si-page .si-btn--off { background: #E5E7EB; color: #9CA3AF; }
+
+/* 电脑上首屏左右两栏，对齐交付包 */
+@media (min-width: 1024px) {
+  .si-page .si-hero { display: flex; gap: 28px; padding: 22px; border-radius: 22px; }
+  .si-page .si-gal { flex: none; width: 220px; }
+  .si-page .si-info { flex: 1; margin-top: 0; }
+  .si-page .si-thumb { width: 44px; height: 44px; cursor: pointer; }
+  .si-page .si-name { font-size: 26px; }
+  .si-page .si-codes { font-size: 13.5px; }
+  .si-page .si-issue { cursor: pointer; }
+  .si-page .si-issue__text { font-size: 14px; }
+  .si-page .si-issues__t { font-size: 16px; }
+  .si-page .si-facts { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .si-page .si-fact__v { font-size: 20px; }
+  .si-page .si-card { padding: 18px 22px; border-radius: 18px; }
+  .si-page .si-st { cursor: pointer; }
+  .si-page .si-st__i { width: 34px; height: 34px; line-height: 30px; font-size: 14px; }
+  .si-page .si-steps::before { top: 17px; }
+  .si-page .si-st__t { font-size: 13.5px; }
+  .si-page .si-pn { padding: 18px 20px; }
+  .si-page .si-pn__t { font-size: 17px; }
+  .si-page .si-pn__n, .si-page .si-pn__rule { font-size: 14px; }
+  .si-page .si-shops { grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
+  .si-page .si-shop__n { font-size: 15px; }
+  .si-page .si-shop__p { font-size: 14px; }
+  .si-page .si-shop__img { width: 48px; height: 48px; }
+  .si-page .si-btn { cursor: pointer; font-size: 14px; padding: 6px 16px; }
+}

@@ -1,0 +1,72 @@
+<view class="page-wrap page-wrap--no-tab rv-page" wx:if="{{loaded}}">
+  <view class="card">
+    <view class="rv-title">{{d.sku.product_name}}</view>
+    <view class="rv-sub">{{d.sku.sku_code}}<text wx:if="{{d.sku.serial_number}}"> · 序列号 {{d.sku.serial_number}}</text> · 成色 {{d.sku.condition_grade || '—'}}</view>
+    <view wx:if="{{d.full_check && d.full_check.state !== 'NONE'}}" class="rv-state {{d.full_check.state === 'COMPLETE' ? 'rv-state--ok' : 'rv-state--bad'}}">{{d.full_check.label}}</view>
+    <view wx:if="{{d.inspection && d.inspection.mismatch_remark}}" class="rv-warn">货不对版：{{d.inspection.mismatch_remark}}</view>
+  </view>
+
+  <view class="card">
+    <view class="rv-h">入库凭证</view>
+    <view wx:if="{{!evidence.length && !photos.length && !oldVideos.length}}" class="rv-empty">这件货没有入库凭证（老货可能没有开箱视频），复核时要写明说明。</view>
+    <view wx:for="{{evidence}}" wx:key="id" wx:if="{{item.is_video}}" class="rv-video" data-index="{{index}}" bindtap="playVideo">▶ {{item.kindLabel}} · {{item.recorded_by_name}}</view>
+    <view wx:for="{{oldVideos}}" wx:key="index" class="rv-video" data-index="{{index}}" bindtap="playOldVideo">▶ 验货瑕疵视频 {{index + 1}}</view>
+    <view class="rv-photos" wx:if="{{photos.length}}">
+      <image wx:for="{{photos}}" wx:key="index" src="{{item}}" mode="aspectFill" class="rv-photo" data-index="{{index}}" bindtap="previewPhotos" />
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{problems.length || d.exceptions.length}}">
+    <view class="rv-h">入库瑕疵逐项比对</view>
+    <view class="rv-muted rv-gap-s">对照实物勾选：一样 / 已修好 / 更严重 / 新问题。更严重或新问题会拦住出库。</view>
+    <view wx:for="{{problems}}" wx:key="item_key" class="rv-check">
+      <view class="rv-line"><text class="tag tag-warning">{{item.label}}</text> {{item.title}}<text wx:if="{{item.defect_part}}" class="rv-muted"> · {{item.defect_part}}</text></view>
+      <view wx:if="{{item.note}}" class="rv-muted">入库时：{{item.note}}</view>
+      <view class="rv-chips">
+        <text
+          wx:for="{{checkOpts}}"
+          wx:for-item="opt"
+          wx:key="key"
+          class="rv-chip {{item.check === opt.key ? 'rv-chip--on' : ''}} {{opt.key === 'WORSE' || opt.key === 'NEW' ? 'rv-chip--bad' : ''}}"
+          data-index="{{index}}"
+          data-key="{{opt.key}}"
+          bindtap="pickCheck"
+        >{{opt.label}}</text>
+      </view>
+    </view>
+    <view wx:for="{{d.exceptions}}" wx:key="id" class="rv-line"><text class="tag tag-danger">异常</text> {{item.description}}<text class="rv-muted">（{{item.status === 'OPEN' ? '未结束' : '已结束'}}）</text></view>
+  </view>
+
+  <view class="card">
+    <view class="rv-h">复核</view>
+    <view class="form-group">
+      <text class="form-label">核对实物：扫货号或序列号<text class="req">*</text></text>
+      <view class="rv-row">
+        <input class="input rv-flex" placeholder="扫码或手输，对不上会提示拿错件" value="{{identity}}" bindinput="onIdentity" />
+        <button class="btn btn-outline rv-scan" bindtap="scanIdentity">扫码</button>
+      </view>
+    </view>
+    <view class="rv-results">
+      <view class="rv-result {{result === 'OK' ? 'rv-result--ok' : ''}}" data-key="OK" bindtap="pickResult">核对无误</view>
+      <view class="rv-result {{result === 'PROBLEM' ? 'rv-result--bad' : ''}}" data-key="PROBLEM" bindtap="pickResult">发现新问题</view>
+    </view>
+    <textarea class="input input--textarea" auto-height="{{true}}" maxlength="300" value="{{remark}}" bindinput="onRemark"
+      placeholder="{{result === 'PROBLEM' ? '什么新问题、在哪个部位（必填）' : '说明（没有开箱视频或有未结束异常时必填）'}}" />
+    <view class="rv-photos">
+      <view wx:for="{{media}}" wx:key="raw" class="rv-photo-wrap" data-index="{{index}}" bindtap="removePhoto">
+        <image src="{{item.url}}" mode="aspectFill" class="rv-photo" />
+        <view class="rv-photo-x">×</view>
+      </view>
+      <view class="rv-photo rv-photo--add" bindtap="addPhoto">+ 拍当前货况</view>
+    </view>
+    <button class="btn-primary btn-block rv-gap" loading="{{busy}}" bindtap="submit">提交复核</button>
+  </view>
+
+  <view class="card" wx:if="{{d.reviews.length}}">
+    <view class="rv-h">历次复核</view>
+    <view wx:for="{{d.reviews}}" wx:key="index" class="rv-hist">
+      <view><text class="tag {{item.result === 'PROBLEM' ? 'tag-danger' : 'tag-success'}}">{{item.result === 'PROBLEM' ? '发现问题' : '核对无误'}}</text> {{item.state}} · {{item.reviewer_name}} · {{item.created_at}}</view>
+      <view wx:if="{{item.remark}}" class="rv-muted">{{item.remark}}</view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,64 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<view class="page-wrap page-wrap--no-tab record-page">
+  <view class="card filter-card">
+    <view class="search-bar">
+      <input class="search-input" placeholder="搜索单号/买家/平台" value="{{q}}" bindinput="onSearchInput" confirm-type="search" bindconfirm="onSearch" />
+    </view>
+    <view class="date-row">
+      <picker mode="date" value="{{dateFrom}}" bindchange="onDateFromChange">
+        <view class="date-pill {{dateFrom ? 'date-pill--filled' : ''}}">{{dateFrom || '开始日期'}}</view>
+      </picker>
+      <text class="date-sep">至</text>
+      <picker mode="date" value="{{dateTo}}" bindchange="onDateToChange">
+        <view class="date-pill {{dateTo ? 'date-pill--filled' : ''}}">{{dateTo || '结束日期'}}</view>
+      </picker>
+    </view>
+    <button class="btn search-btn" bindtap="onSearch">搜索</button>
+    <view class="filter-meta">共 {{total}} 条记录</view>
+  </view>
+
+  <scroll-view scroll-x class="status-tabs" enhanced show-scrollbar="{{false}}">
+    <view
+      wx:for="{{statusTabs}}"
+      wx:key="key"
+      class="status-tab {{status === item.key ? 'status-tab--active' : ''}}"
+      data-key="{{item.key}}"
+      bindtap="onStatusTab"
+    >{{item.label}}</view>
+  </scroll-view>
+
+  <view class="card list-card">
+    <view wx:if="{{!list.length && !loading}}" class="empty">
+      <view class="e-icon">—</view>
+      <view class="e-text">暂无销售记录</view>
+    </view>
+    <view wx:for="{{list}}" wx:key="id" class="list-item" bindtap="openDetail" data-id="{{item.id}}">
+      <view class="li-thumb-wrap">
+        <media-thumb
+          wx:if="{{item.cover_thumb_url || item.cover_url}}"
+          url="{{item.cover_thumb_url || item.cover_url}}"
+          preview-url="{{item.cover_url}}"
+          size="small"
+        />
+        <!-- 没有产品图时,退而显示仓库定位图(找货用),角标区分 -->
+        <block wx:elif="{{item.location_images[0]}}">
+          <media-thumb url="{{item.location_images[0]}}" preview-url="{{item.location_images[0]}}" size="small" />
+          <view class="media-loc-badge">定位</view>
+        </block>
+        <view wx:else class="li-icon">{{fmt.iconChar(item.product_title || item.buyer_name)}}</view>
+      </view>
+      <view class="li-info">
+        <view class="li-title">{{fmt.productLine(item.product_title, item.product_spec) || item.order_no}}</view>
+        <view class="li-sub">{{item.order_no}} · {{item.buyer_name || '—'}} · {{fmt.platformLabel(item.shop_name, item.platform)}}{{item.operator_name ? ' · ' + item.operator_name : ''}}</view>
+        <view class="li-sub li-sub--time">{{item.shipped_at ? '发货时间 ' + fmt.datetime(item.shipped_at) : '销售时间 ' + fmt.datetime(item.created_at)}}</view>
+      </view>
+      <view class="li-meta">
+        <view class="li-price">¥{{fmt.money(item.amount)}}</view>
+        <view class="tag li-tag {{fmt.saleStatusTag(item.status)}}">{{fmt.saleStatusLabel(item.status)}}</view>
+      </view>
+    </view>
+    <view wx:if="{{loading}}" class="list-footer">加载中…</view>
+    <view wx:elif="{{noMore && list.length}}" class="list-footer">没有更多了</view>
+  </view>
+</view>

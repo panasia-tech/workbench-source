@@ -1,0 +1,56 @@
+<!-- 盘点记录（电脑版）：状态筛选 + 表格，点一行看盘点结果 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">盘点记录</view>
+      <view class="dk-sub">共 {{list.length}} 张盘点单</view>
+    </view>
+  </view>
+
+  <view class="dk-card">
+    <view class="dk-toolbar">
+      <view class="dk-tabs">
+        <view
+          wx:for="{{dkStatusOptions}}"
+          wx:key="value"
+          class="dk-tab {{statusFilter === item.value ? 'dk-tab--on' : ''}}"
+          data-value="{{item.value}}"
+          bindtap="pickStatus"
+        >{{item.label}}</view>
+      </view>
+    </view>
+
+    <view class="dk-table-wrap">
+      <table class="dk-table">
+        <thead>
+          <tr>
+            <th>盘点单号</th>
+            <th>状态</th>
+            <th>操作员</th>
+            <th class="dk-num">实盘</th>
+            <th class="dk-num">盘亏</th>
+            <th class="dk-num">盘盈</th>
+            <th>开始</th>
+            <th>完成</th>
+            <th class="dk-ops">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr wx:for="{{list}}" wx:key="id" class="dk-tr--click" data-id="{{item.id}}" bindtap="openDetail">
+            <td class="dk-nowrap dk-cell-main">{{item.session_no}}</td>
+            <td class="dk-nowrap"><text class="dk-tag {{item.status === 'APPROVED' ? 'tag-success' : (item.status === 'REJECTED' ? 'tag-danger' : (item.status === 'COMPLETED' ? 'tag-warning' : (item.status === 'PENDING_APPROVAL' ? 'tag-info' : 'tag-pending')))}}">{{item.statusLabel}}</text></td>
+            <td class="dk-nowrap">{{item.operator_name || '—'}}</td>
+            <td class="dk-num">{{item.scanned_count}}</td>
+            <td class="dk-num {{item.missing_count ? 'wsr-dk-danger' : ''}}">{{item.missing_count}}</td>
+            <td class="dk-num {{item.surplus_count ? 'wsr-dk-warn' : ''}}">{{item.surplus_count}}</td>
+            <td class="dk-nowrap">{{item.startedText}}</td>
+            <td class="dk-nowrap">{{item.completedText}}</td>
+            <td class="dk-ops"><text class="dk-link">看结果</text></td>
+          </tr>
+        </tbody>
+      </table>
+    </view>
+    <view wx:if="{{loading}}" class="dk-empty">加载中…</view>
+    <view wx:elif="{{!list.length}}" class="dk-empty">暂无盘点记录</view>
+  </view>
+</view>

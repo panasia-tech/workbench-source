@@ -1,0 +1,104 @@
+.sku-edit-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.sku-edit-row__input {
+  flex: 1;
+}
+
+.sku-edit-row__btn {
+  flex-shrink: 0;
+}
+
+/* 输入框内嵌扫码图标（货号 / 序列号） */
+.sku-edit-scan-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.sku-edit-scan-input {
+  flex: 1;
+  width: 100%;
+  padding-right: 84rpx;
+}
+
+.sku-edit-scan-icon {
+  position: absolute;
+  right: 12rpx;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 64rpx;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sku-edit-scan-icon:active {
+  opacity: 0.6;
+}
+
+.sku-edit-scan-icon .scan-frame {
+  position: relative;
+  width: 34rpx;
+  height: 34rpx;
+  background:
+    linear-gradient(#2563EB, #2563EB) left top,
+    linear-gradient(#2563EB, #2563EB) left top,
+    linear-gradient(#2563EB, #2563EB) right top,
+    linear-gradient(#2563EB, #2563EB) right top,
+    linear-gradient(#2563EB, #2563EB) left bottom,
+    linear-gradient(#2563EB, #2563EB) left bottom,
+    linear-gradient(#2563EB, #2563EB) right bottom,
+    linear-gradient(#2563EB, #2563EB) right bottom;
+  background-repeat: no-repeat;
+  background-size: 12rpx 3rpx, 3rpx 12rpx;
+}
+
+.sku-edit-scan-icon .scan-line {
+  position: absolute;
+  left: 15rpx;
+  right: 15rpx;
+  height: 3rpx;
+  background: #2563EB;
+  border-radius: 2rpx;
+}
+
+.sku-edit-picker {
+  display: flex;
+  align-items: center;
+}
+
+.sku-edit-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.sku-edit-thumb {
+  position: relative;
+  width: 200rpx;
+}
+
+.sku-edit-thumb__del {
+  position: absolute;
+  top: -12rpx;
+  right: -12rpx;
+  width: 44rpx;
+  height: 44rpx;
+  line-height: 40rpx;
+  text-align: center;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: 30rpx;
+  z-index: 3;
+}
+
+.sku-edit-save {
+  margin-top: 24rpx;
+}

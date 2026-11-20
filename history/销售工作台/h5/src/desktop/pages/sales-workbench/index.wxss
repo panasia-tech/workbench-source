@@ -1,0 +1,48 @@
+/* 「今天」电脑版模板用（通用样式在 src/styles/desktop.css）；照交付包的排法，浅色 */
+.swb-dk-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; }
+.swb-dk-eyebrow { color: #2563eb; font-weight: 700; font-size: 13px; }
+.swb-dk-hello { margin-top: 4px; font-size: 30px; font-weight: 800; letter-spacing: -0.02em; color: #111827; line-height: 1.2; }
+.swb-dk-lead { margin-top: 6px; color: #6b7280; font-size: 14px; }
+.swb-dk-help { margin-top: 14px; padding: 12px 16px; border-radius: 12px; background: #fff; border: 1px solid #e5e7eb; color: #4b5563; font-size: 13px; line-height: 1.7; }
+
+.swb-dk-gate { display: flex; align-items: center; gap: 16px; margin-top: 18px; padding: 14px 18px; border-radius: 14px; background: #fffbeb; border: 2px solid #fcd34d; }
+.swb-dk-gate__text { flex: 1; color: #92400e; font-weight: 600; font-size: 14px; }
+
+.swb-dk-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 20px; }
+.swb-dk-card { padding: 18px 20px; border-radius: 16px; background: #fff; border: 1px solid #e5e7eb; box-shadow: 0 1px 6px rgba(15, 23, 42, 0.05); }
+.swb-dk-card--click { cursor: pointer; }
+.swb-dk-card--click:hover { border-color: #bfdbfe; }
+.swb-dk-card__k { color: #6b7280; font-weight: 600; font-size: 13px; }
+.swb-dk-card__big { margin: 4px 0 8px; font-size: 36px; font-weight: 800; letter-spacing: -0.03em; color: #111827; line-height: 1.1; }
+.swb-dk-card__unit { font-size: 14px; font-weight: 600; color: #6b7280; letter-spacing: 0; }
+.swb-dk-card__k2 { margin-top: 8px; color: #6b7280; font-size: 12.5px; }
+.swb-dk-pill { padding: 1px 10px; border-radius: 999px; background: #f3f4f6; color: #374151; font-size: 12px; font-weight: 700; }
+.swb-dk-pill--yellow { background: #fef3c7; color: #92400e; }
+
+.swb-dk-grp { display: flex; align-items: center; gap: 10px; margin: 28px 0 12px; font-size: 18px; font-weight: 800; color: #111827; }
+.swb-dk-grp--next { margin-top: 26px; }
+.swb-dk-grp__n { padding: 1px 10px; border-radius: 999px; background: #e5e7eb; color: #4b5563; font-size: 12px; font-weight: 700; }
+.swb-dk-dot { width: 9px; height: 9px; border-radius: 50%; }
+.swb-dk-dot--red { background: #dc2626; }
+.swb-dk-dot--yellow { background: #d97706; }
+.swb-dk-more { margin: 2px 0 6px 6px; color: #6b7280; font-size: 13px; }
+
+.swb-dk-row { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; padding: 12px 16px; border-radius: 16px; background: #fff; border-left: 6px solid #e5e7eb; box-shadow: 0 1px 6px rgba(15, 23, 42, 0.05); cursor: pointer; }
+.swb-dk-row:hover { box-shadow: 0 2px 12px rgba(15, 23, 42, 0.1); }
+.swb-dk-row--red { border-left-color: #dc2626; }
+.swb-dk-row--yellow { border-left-color: #d97706; }
+.swb-dk-row__ic { flex: none; width: 28px; height: 28px; line-height: 28px; text-align: center; border-radius: 50%; font-size: 13px; font-weight: 800; }
+.swb-dk-row--red .swb-dk-row__ic { background: #fee2e2; color: #dc2626; }
+.swb-dk-row--yellow .swb-dk-row__ic { background: #fef3c7; color: #b45309; }
+.swb-dk-row__th { flex: none; width: 60px; height: 60px; border-radius: 12px; background: #f3f4f6; }
+.swb-dk-row__th--none { display: flex; align-items: center; justify-content: center; color: #9ca3af; font-size: 12px; font-weight: 700; }
+.swb-dk-row__mid { flex: 1; min-width: 0; }
+.swb-dk-row__line { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.swb-dk-row__title { font-size: 15px; font-weight: 700; color: #111827; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.swb-dk-row__sub { margin-top: 3px; color: #6b7280; font-size: 13px; }
+.swb-dk-tag { flex: none; padding: 1px 8px; border-radius: 6px; font-size: 12px; font-weight: 700; }
+.swb-dk-tag--red { background: #fee2e2; color: #b91c1c; }
+.swb-dk-tag--yellow { background: #fef3c7; color: #92400e; }
+
+.swb-dk-accs { margin-top: 28px; }
+.swb-dk-wait { color: #b91c1c; font-weight: 600; }

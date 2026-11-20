@@ -1,0 +1,93 @@
+<!-- 分件到货（电脑版）：数字卡片 + 设件数 + 各件表格；「标记没到货」在电脑上弹居中对话框写情况。方法都是这页原来的 -->
+<view class="dk-page" wx:if="{{loaded}}">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">{{d.product_name}}</view>
+      <view class="dk-sub">{{d.order_no}} · 成交 ¥{{d.unit_price}}</view>
+    </view>
+  </view>
+
+  <view class="dk-stats">
+    <view class="dk-stat">
+      <view class="dk-stat__label">一共</view>
+      <view class="dk-stat__value">{{d.quantity}} 件</view>
+    </view>
+    <view class="dk-stat">
+      <view class="dk-stat__label">已到</view>
+      <view class="dk-stat__value">{{d.arrived}}</view>
+    </view>
+    <view class="dk-stat">
+      <view class="dk-stat__label">没到货</view>
+      <view class="dk-stat__value {{d.missing ? 'pc-dk-bad' : ''}}">{{d.missing || 0}}</view>
+    </view>
+    <view class="dk-stat">
+      <view class="dk-stat__label">还差</view>
+      <view class="dk-stat__value {{d.quantity - d.done ? 'pc-dk-warn' : ''}}">{{d.quantity - d.done}}</view>
+      <view class="dk-stat__hint">还没验完的件数</view>
+    </view>
+  </view>
+
+  <view wx:if="{{d.can_set_quantity}}" class="dk-card">
+    <view class="dk-toolbar">
+      <text class="dk-label">这单一共几件</text>
+      <input class="dk-input pc-dk-qty" type="number" value="{{qty}}" bindinput="onQty" />
+      <view class="dk-btn dk-btn--primary" bindtap="saveQty">保存</view>
+      <text class="dk-help">一件都还没验时才能改</text>
+    </view>
+  </view>
+
+  <view class="dk-card">
+    <view class="dk-card__head"><text>各件情况</text></view>
+    <view class="dk-table-wrap">
+      <table class="dk-table">
+        <thead>
+          <tr>
+            <th>第几件</th>
+            <th>状态</th>
+            <th class="dk-num">金额</th>
+            <th>验货单</th>
+            <th>货号</th>
+            <th>验货时间</th>
+            <th>情况</th>
+            <th>退款</th>
+            <th class="dk-ops">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr wx:for="{{d.pieces}}" wx:key="piece_no" class="{{missingNo === item.piece_no ? 'dk-tr--on' : ''}}">
+            <td class="dk-nowrap dk-cell-main">第 {{item.piece_no}} 件</td>
+            <td class="dk-nowrap"><text class="dk-tag {{item.cls === 'ok' ? 'dk-tag--green' : (item.cls === 'bad' ? 'dk-tag--red' : 'dk-tag--orange')}}">{{item.state}}</text></td>
+            <td class="dk-num">¥{{item.cost}}</td>
+            <td class="dk-nowrap">{{item.inspect_no || '—'}}</td>
+            <td class="dk-nowrap">{{item.sku_code || '—'}}</td>
+            <td class="dk-nowrap">{{item.at || '—'}}</td>
+            <td><view class="dk-ellipsis" title="{{item.remark}}">{{item.remark || '—'}}</view></td>
+            <td class="dk-nowrap">{{item.refundLabel || '—'}}</td>
+            <td class="dk-ops">
+              <text wx:if="{{item.status !== 'PENDING' && item.action_type !== 'MISSING'}}" class="dk-link" data-no="{{item.piece_no}}" bindtap="goEvidence">看凭证</text>
+              <text wx:if="{{item.status === 'PENDING' && d.quantity > 1}}" class="dk-link dk-link--danger" data-no="{{item.piece_no}}" bindtap="openMissing">标记没到货</text>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </view>
+    <view wx:if="{{!d.pieces.length}}" class="dk-empty">还没有分件记录</view>
+  </view>
+
+  <view wx:if="{{missingNo}}" class="pc-dk-mask" bindtap="closeMissing">
+    <view class="pc-dk-dialog" catchtap="noop">
+      <view class="pc-dk-dialog__head">第 {{missingNo}} 件标记没到货</view>
+      <view class="pc-dk-dialog__body">
+        <textarea class="dk-input pc-dk-textarea" placeholder="写明情况，比如：卖家说只剩 2 件，第 3 件退款" value="{{reason}}" bindinput="onReason" />
+        <view class="dk-help">确认后按这件的金额开退款跟踪，业务员和采购员会收到通知</view>
+      </view>
+      <view class="pc-dk-dialog__foot">
+        <view class="dk-btn" bindtap="closeMissing">取消</view>
+        <view class="dk-btn dk-btn--danger" bindtap="submitMissing">确认没到货</view>
+      </view>
+    </view>
+  </view>
+</view>
+<view class="dk-page" wx:else>
+  <view class="dk-card"><view class="dk-empty">加载中…</view></view>
+</view>

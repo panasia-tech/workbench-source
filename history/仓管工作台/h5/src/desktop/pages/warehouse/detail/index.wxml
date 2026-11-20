@@ -1,0 +1,555 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<!-- 商品详情（电脑版）：顶部摘要 + 左右分栏（左：基本信息 / 行情 / 各店铺状态 / 上架信息；右：图片 / 上架图 / 库龄 / 自动上架 / 流转记录） -->
+<view class="dk-page" wx:if="{{detail}}">
+  <!-- 老系统迁入且关键资料缺失 -->
+  <view wx:if="{{fmt.legacyPendingVerify(detail)}}" class="whd-dk-banner">
+    <text class="whd-dk-banner__title">历史迁移商品 · 待核验</text>
+    <text>缺少序列号 / 实拍图 / 定位图 / 库位等关键资料。请先找到实物核对铭牌序列号，补拍照片并补录信息后再换新货号标签。</text>
+  </view>
+
+  <view class="dk-card whd-dk-sum">
+    <image wx:if="{{galleryUrls.length && !coverError}}" class="whd-dk-sum__img" src="{{galleryUrls[0]}}" mode="aspectFill" bindtap="previewCover" binderror="onCoverError" />
+    <view wx:else class="whd-dk-sum__img whd-dk-sum__img--ph">{{coverError ? '图片加载失败' : '无图'}}</view>
+    <view class="dk-grow">
+      <view class="dk-title">{{detail.product_name || '—'}}</view>
+      <view class="whd-dk-sum__line">
+        <text class="dk-tag {{fmt.warehouseItemTag(detail)}}">{{fmt.warehouseItemLabel(detail)}}</text>
+        <text class="dk-tag whd-dk-grade-tag">{{detail.condition_grade || '未定级'}}</text>
+        <text wx:if="{{detail.short_code}}" class="dk-tag dk-tag--green">上架编码 #{{detail.short_code}}（订单标题前缀）</text>
+        <text wx:if="{{price && price.market_name}}" class="dk-tag dk-tag--green">行情监控中 · {{price.market_name}}</text>
+        <text wx:if="{{fmt.legacyPendingVerify(detail)}}" class="dk-tag tag-warning">待核验</text>
+      </view>
+      <view class="whd-dk-sum__kv">
+        <view><text class="dk-muted">货号 SKU</text>{{detail.sku_code}}</view>
+        <view wx:if="{{detail.brand || detail.model}}"><text class="dk-muted">品牌 / 型号</text>{{detail.brand || '—'}} {{detail.model || ''}}</view>
+        <view><text class="dk-muted">成色</text>{{detail.condition_grade || '未定级'}}</view>
+        <view><text class="dk-muted">库位</text>{{detail.location_code || '未分配'}}</view>
+        <view wx:if="{{detail.cost_price != null}}"><text class="dk-muted">采购成本</text><text class="whd-dk-money">¥{{fmt.money(detail.cost_price)}}</text></view>
+        <view wx:if="{{age && (detail.status === 'IN_STOCK' || detail.status === 'RESERVED')}}"><text class="dk-muted">在库</text>{{age.days}} 天</view>
+      </view>
+    </view>
+    <view class="whd-dk-sum__ops">
+      <view class="dk-btn whd-dk-sum-cta {{priceItemUrl ? '' : 'dk-btn--disabled'}}" bindtap="openProductXianyu">前往闲鱼 ↗</view>
+      <view
+        wx:if="{{canEditSku && (detail.status === 'IN_STOCK' || detail.status === 'RESERVED')}}"
+        class="dk-btn"
+        bindtap="goEdit"
+      >编辑商品信息</view>
+      <view
+        wx:if="{{canEditSku && detail.status === 'IN_STOCK' && !detail.reserve_source && listedCount === 0}}"
+        class="dk-btn"
+        title="一对 / 多件误录成一条时，拆成多个独立货号"
+        bindtap="goSplit"
+      >拆分库存</view>
+    </view>
+  </view>
+
+  <view class="dk-split whd-dk-split">
+    <!-- ================= 左栏 ================= -->
+    <view class="whd-dk-col">
+      <view class="dk-card">
+        <view class="dk-card__head">
+          <text>基本信息</text>
+          <view class="dk-row">
+            <view
+              wx:if="{{canEditSku && detail.barcode && !detail.spu}}"
+              class="dk-btn dk-btn--sm {{barcodeLoading ? 'dk-btn--disabled' : ''}}"
+              bindtap="onLookupBarcode"
+            >{{barcodeLoading ? '查询中…' : '69码信息未查到，点击重试'}}</view>
+          </view>
+        </view>
+        <view class="dk-card__body">
+          <view class="dk-desc">
+            <view class="dk-desc__item dk-desc__item--full">
+              <text class="dk-desc__k">商品名称</text>
+              <text class="dk-desc__v">{{detail.product_name || '—'}}</text>
+            </view>
+            <view class="dk-desc__item">
+              <text class="dk-desc__k">规格</text>
+              <text class="dk-desc__v">{{detail.spec || '—'}}</text>
+            </view>
+            <view class="dk-desc__item">
+              <text class="dk-desc__k">货号 SKU</text>
+              <text class="dk-desc__v">{{detail.sku_code || '—'}}</text>
+            </view>
+            <view class="dk-desc__item">
+              <text class="dk-desc__k">69码</text>
+              <text class="dk-desc__v">{{detail.barcode || '—'}}</text>
+            </view>
+            <view class="dk-desc__item">
+              <text class="dk-desc__k">条码库信息</text>
+              <text class="dk-desc__v">{{spuText || '—'}}</text>
+            </view>
+            <view class="dk-desc__item" wx:if="{{canEditSku}}">
+              <text class="dk-desc__k">所属商品</text>
+              <text class="dk-desc__v dk-link" bindtap="goSpuMatch">去核对匹配 ›</text>
+            </view>
+            <view class="dk-desc__item" wx:if="{{detail.short_code}}">
+              <text class="dk-desc__k">上架编码</text>
+              <text class="dk-desc__v whd-dk-ok">#{{detail.short_code}}（订单标题前缀）</text>
+            </view>
+            <view class="dk-desc__item">
+              <text class="dk-desc__k">库位</text>
+              <text class="dk-desc__v">{{detail.location_code || '未分配'}}</text>
+            </view>
+            <view class="dk-desc__item">
+              <text class="dk-desc__k">成色</text>
+              <text class="dk-desc__v">{{detail.condition_grade || '—'}}</text>
+            </view>
+            <view class="dk-desc__item">
+              <text class="dk-desc__k">仓库状态</text>
+              <text class="dk-desc__v whd-dk-ok">{{fmt.warehouseItemLabel(detail)}}</text>
+            </view>
+            <view class="dk-desc__item" wx:if="{{detail.listing_status}}">
+              <text class="dk-desc__k">上架进度</text>
+              <text class="dk-desc__v">{{fmt.listingStatusLabel(detail.listing_status)}}</text>
+            </view>
+          </view>
+          <view class="whd-dk-sec">财务与关联单号</view>
+          <view class="dk-desc">
+            <view class="dk-desc__item" wx:if="{{detail.cost_price != null}}">
+              <text class="dk-desc__k">采购成本</text>
+              <text class="dk-desc__v whd-dk-money">¥{{fmt.money(detail.cost_price)}}</text>
+            </view>
+            <view class="dk-desc__item">
+              <text class="dk-desc__k">采购单号</text>
+              <text class="dk-desc__v">{{detail.purchase_order_no || detail.purchase_order_id || '—'}}</text>
+            </view>
+            <view class="dk-desc__item">
+              <text class="dk-desc__k">快递单号</text>
+              <text class="dk-desc__v">{{detail.tracking_no || '—'}}</text>
+            </view>
+            <view class="dk-desc__item" wx:if="{{detail.serial_number}}">
+              <text class="dk-desc__k">序列号</text>
+              <text class="dk-desc__v">{{detail.serial_number}}</text>
+            </view>
+            <view class="dk-desc__item" wx:if="{{detail.operator_name}}">
+              <text class="dk-desc__k">操作人</text>
+              <text class="dk-desc__v">{{detail.operator_name}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 价格历史 / 行情价 -->
+      <view class="dk-card">
+        <view class="dk-card__head">
+          <text>价格历史 / 行情价</text>
+          <text class="dk-link whd-dk-headlink" bindtap="showPriceSources">数据来源 ›</text>
+        </view>
+        <view wx:if="{{priceLoading}}" class="dk-empty">行情加载中…</view>
+        <view wx:elif="{{!price}}" class="dk-empty">
+          <view>{{priceError || '没有行情数据'}}</view>
+          <view wx:if="{{priceError}}" class="dk-btn dk-btn--sm whd-dk-retry" bindtap="loadPrice">重新加载</view>
+        </view>
+        <view wx:else class="dk-card__body">
+          <view class="dk-row whd-dk-pricebar">
+            <view class="dk-tabs">
+              <view
+                wx:for="{{priceTabs}}"
+                wx:key="key"
+                class="dk-tab {{priceTab === item.key ? 'dk-tab--on' : ''}}"
+                data-key="{{item.key}}"
+                bindtap="switchPriceTab"
+              >{{item.label}}</view>
+            </view>
+            <text wx:if="{{priceTab !== 'all'}}" class="dk-help dk-grow">{{priceTabNote}}</text>
+          </view>
+
+          <view class="whd-dk-hero" wx:if="{{priceSummary}}">
+            <view class="whd-dk-hero-main">
+              <view class="dk-muted">近7日成交均价</view>
+              <view class="whd-dk-hero-v">¥{{priceSummary.avg7}}</view>
+              <view wx:if="{{priceSummary.change_text}}" class="whd-dk-hero-delta {{priceSummary.change_up ? 'whd-dk-up' : 'whd-dk-down'}}">{{priceSummary.change_text}} <text class="dk-muted">较前7日</text></view>
+              <view wx:else class="whd-dk-hero-delta dk-muted">前7日样本较少</view>
+            </view>
+            <view class="whd-dk-hero-band">
+              <view class="dk-muted">近期成交区间</view>
+              <view class="whd-dk-hero-band-v">¥{{priceSummary.low}} – ¥{{priceSummary.high}}</view>
+              <view class="dk-muted">{{priceSummary.listings}} 条闲鱼记录 · {{priceSummary.days}} 天有数据</view>
+            </view>
+          </view>
+          <view wx:else class="dk-empty whd-dk-pricesum-empty">近7日同款记录不足，暂不能统计成交均价</view>
+
+          <view class="whd-dk-market-panel">
+            <view class="whd-dk-chart-stage">
+              <price-trend-chart points="{{priceSeries}}" band="{{priceBand}}" empty-text="{{priceChartNote}}" />
+            </view>
+
+            <view class="whd-dk-senti" wx:if="{{priceSentiment && priceSentiment.up_pct !== null}}">
+              <view class="whd-dk-senti__top">
+                <text class="whd-dk-up">{{priceSentiment.up_pct}}%</text>
+                <text class="whd-dk-down">{{priceSentiment.down_pct}}%</text>
+              </view>
+              <view class="whd-dk-senti__bar">
+                <view class="whd-dk-senti__up" style="width: {{priceSentiment.up_pct}}%"></view>
+                <view class="whd-dk-senti__down" style="width: {{priceSentiment.down_pct}}%"></view>
+              </view>
+              <view class="whd-dk-senti__actions">
+                <view class="whd-dk-senti__btn whd-dk-senti__btn--up">
+                  <view class="whd-dk-senti__ic whd-dk-senti__ic--up"></view>
+                  <text>价格看涨</text>
+                </view>
+                <view class="whd-dk-senti__btn whd-dk-senti__btn--down">
+                  <text>价格看跌</text>
+                  <view class="whd-dk-senti__ic whd-dk-senti__ic--down"></view>
+                </view>
+              </view>
+            </view>
+            <view wx:else class="dk-help">价格涨跌样本不足，暂不能计算看涨/看跌</view>
+          </view>
+
+          <view class="whd-dk-insight" wx:if="{{priceInsight}}">
+            <view><text class="dk-tag dk-tag--blue">✦ AI 解读</text> <text class="dk-muted">根据行情数据自动生成</text></view>
+            <view class="whd-dk-insight__text">{{priceInsight}}</view>
+          </view>
+
+          <view class="whd-dk-mstats" wx:if="{{priceStats && priceStats.points}}">
+            <view class="whd-dk-mstat">
+              <view class="dk-help">最新行情价</view>
+              <view class="whd-dk-mstat__v">¥{{priceStats.latest}}</view>
+              <view wx:if="{{priceStats.latestChange}}" class="whd-dk-mstat__d {{priceStats.latestUp ? 'whd-dk-up' : 'whd-dk-down'}}">{{priceStats.latestChange}} <text class="dk-muted">较上月</text></view>
+              <view wx:else class="whd-dk-mstat__d dk-muted">{{priceStats.latestDate}}</view>
+            </view>
+            <view class="whd-dk-mstat">
+              <view class="dk-help">30天均价</view>
+              <view class="whd-dk-mstat__v">{{priceStats.avg30 ? '¥' + priceStats.avg30 : '—'}}</view>
+              <view wx:if="{{priceStats.avgChange}}" class="whd-dk-mstat__d {{priceStats.avgUp ? 'whd-dk-up' : 'whd-dk-down'}}">{{priceStats.avgChange}} <text class="dk-muted">较上月</text></view>
+              <view wx:else class="whd-dk-mstat__d dk-muted">{{priceStats.points}} 天数据</view>
+            </view>
+            <view class="whd-dk-mstat">
+              <view class="dk-help">历史最高</view>
+              <view class="whd-dk-mstat__v">¥{{priceStats.high}}</view>
+              <view class="whd-dk-mstat__d dk-muted">{{priceStats.highDate}}</view>
+            </view>
+            <view class="whd-dk-mstat">
+              <view class="dk-help">历史最低</view>
+              <view class="whd-dk-mstat__v">¥{{priceStats.low}}</view>
+              <view class="whd-dk-mstat__d dk-muted">{{priceStats.lowDate}}</view>
+            </view>
+          </view>
+
+          <view class="whd-dk-sec whd-dk-sec--row">
+            <text>近期闲鱼价格记录</text>
+            <text wx:if="{{priceRecordsAll.length > priceRecords.length}}" class="dk-link whd-dk-headlink" bindtap="showAllRecords">查看全部 {{priceRecordsAll.length}} 条 ›</text>
+            <text wx:elif="{{priceRecordsAll.length > recordsFoldLimit}}" class="dk-link whd-dk-headlink" bindtap="foldRecords">收起 ‹</text>
+          </view>
+          <view wx:if="{{!priceRecords.length}}" class="dk-empty">这个成色还没有在售和成交记录</view>
+          <view wx:else class="dk-table-wrap whd-dk-tablebox">
+            <table class="dk-table">
+              <thead>
+                <tr>
+                  <th>商品</th>
+                  <th>成色</th>
+                  <th class="dk-num">发布价</th>
+                  <th class="dk-num">成交 / 在售价</th>
+                  <th>日期</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  wx:for="{{priceRecords}}"
+                  wx:key="_k"
+                  class="{{item.url || item.sku_code ? 'dk-tr--click' : ''}}"
+                  data-index="{{index}}"
+                  bindtap="openRecord"
+                >
+                  <td>
+                    <view class="dk-media">
+                      <image wx:if="{{item.image && !item._imgError}}" class="dk-thumb" src="{{item.image}}" mode="aspectFill" data-index="{{index}}" binderror="onRecordImageError" />
+                      <view wx:else class="dk-thumb whd-dk-rec-noimg">{{item._imgError ? '加载失败' : (item._sold ? '无图' : '闲鱼')}}</view>
+                      <view class="dk-grow">
+                        <view class="dk-cell-main dk-ellipsis">{{item._title}}</view>
+                        <view class="dk-cell-sub">{{item.channel}}</view>
+                      </view>
+                    </view>
+                  </td>
+                  <td class="dk-nowrap">{{item.grade || '成色未标'}}</td>
+                  <td class="dk-num">{{item.list_price ? item.list_price : '—'}}</td>
+                  <td class="dk-num">
+                    <text class="dk-tag {{item._sold ? 'whd-dk-rec-sold' : 'dk-tag--green'}}">{{item._sold ? '成交' : '在售'}}</text>
+                    <text class="whd-dk-gap">¥{{item._price}}</text>
+                  </td>
+                  <td class="dk-nowrap">{{item.date}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </view>
+        </view>
+      </view>
+
+      <!-- 各店铺状态 -->
+      <view class="dk-card" wx:if="{{shops.length}}">
+        <view class="dk-card__head">
+          <view>
+            <text>各店铺状态</text>
+            <text class="dk-sub whd-dk-gap">共 {{shops.length}} 个店铺 · 在架 {{listedCount}} · 下架 {{delistedCount}}</text>
+          </view>
+          <view class="dk-row">
+            <view class="dk-btn dk-btn--sm {{syncing ? 'dk-btn--disabled' : ''}}" bindtap="onSyncShops">{{syncing ? '同步中…' : '一键同步状态'}}</view>
+            <block wx:if="{{detail.status === 'IN_STOCK' && !detail.reserve_source}}">
+              <view class="dk-btn dk-btn--sm" bindtap="goDelist">店铺下架</view>
+              <view class="dk-btn dk-btn--sm dk-btn--primary" bindtap="goPublish">店铺上架</view>
+            </block>
+          </view>
+        </view>
+        <view class="dk-table-wrap whd-dk-shopbox">
+          <table class="dk-table">
+            <thead>
+              <tr>
+                <th>店铺</th>
+                <th>状态</th>
+                <th>上次上架</th>
+                <th>下次上架</th>
+                <th class="dk-ops" wx:if="{{canManageListing && detail.status === 'IN_STOCK' && !detail.reserve_source}}">操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr wx:for="{{shops}}" wx:key="shop_id">
+                <td>
+                  <view class="dk-cell-main">{{item.shop_label}}</view>
+                  <view class="dk-cell-sub">{{item.shop_code}}</view>
+                  <view wx:if="{{item.last_error}}" class="whd-dk-err">{{item.last_error}}</view>
+                </td>
+                <td class="dk-nowrap">
+                  <text class="dk-tag {{item.publish_status === 'LISTED' && !item.gc_pending ? 'tag-success' : (item.publish_status === 'FAILED' ? 'tag-danger' : 'tag-pending')}}">{{fmt.shopStateLabel(item.publish_status, item.gc_pending)}}</text>
+                </td>
+                <td class="dk-nowrap">
+                  <view>{{item.age.last_at || '—'}}</view>
+                  <view class="dk-cell-sub">{{item.age.last_label || '上次上架'}}</view>
+                </td>
+                <td class="dk-nowrap">
+                  <view>{{item.age.next_at || '—'}}</view>
+                  <view class="dk-cell-sub {{item.age.next_at ? 'whd-dk-next' : ''}}">{{item.nextText}}</view>
+                </td>
+                <td class="dk-ops" wx:if="{{canManageListing && detail.status === 'IN_STOCK' && !detail.reserve_source}}">
+                  <block wx:if="{{item.publish_status === 'LISTED' && !item.gc_pending}}">
+                    <text class="dk-link" data-index="{{index}}" data-act="refresh" bindtap="dkShopAct">立即重新上架</text>
+                    <text class="dk-link dk-link--danger" data-index="{{index}}" data-act="delist" bindtap="dkShopAct">下架</text>
+                  </block>
+                  <text wx:else class="dk-link" data-index="{{index}}" data-act="publish" bindtap="dkShopAct">去上架</text>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </view>
+      </view>
+
+      <!-- 上架信息 -->
+      <view class="dk-card" wx:if="{{listing}}">
+        <view class="dk-card__head">
+          <text>上架信息</text>
+          <view
+            wx:if="{{detail.status === 'IN_STOCK' && !detail.reserve_source}}"
+            class="dk-btn dk-btn--sm"
+            bindtap="goListingEdit"
+          >编辑上架信息</view>
+        </view>
+        <view class="dk-card__body">
+          <view class="dk-desc">
+            <view class="dk-desc__item dk-desc__item--full">
+              <text class="dk-desc__k">标题</text>
+              <text class="dk-desc__v">{{listing.title || '—'}}</text>
+            </view>
+            <view class="dk-desc__item">
+              <text class="dk-desc__k">上架状态</text>
+              <text class="dk-desc__v">{{fmt.listingStatusLabel(listing.status)}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- ================= 右栏 ================= -->
+    <view class="whd-dk-col">
+      <view class="dk-card">
+        <view class="dk-card__head">
+          <text>商品图片</text>
+          <text
+            wx:if="{{canEditSku && (detail.status === 'IN_STOCK' || detail.status === 'RESERVED')}}"
+            class="dk-link whd-dk-headlink"
+            bindtap="goEdit"
+          >编辑 / 补图 ›</text>
+        </view>
+        <view class="dk-card__body">
+          <view class="whd-dk-label">产品实拍图 <text class="dk-muted">{{galleryUrls.length}}</text></view>
+          <view wx:if="{{galleryUrls.length}}" class="whd-dk-gallery">
+            <view wx:for="{{galleryUrls}}" wx:key="*this" class="whd-dk-cell">
+              <media-thumb url="{{item}}" preview-url="{{item}}" group-urls="{{galleryUrls}}" size="fill" />
+            </view>
+          </view>
+          <view wx:else class="whd-dk-imgempty" bindtap="goEdit">暂无实拍图，点击补图</view>
+
+          <view class="whd-dk-label whd-dk-label--gap">仓库定位图 <text class="dk-muted">{{detail.location_images ? detail.location_images.length : 0}}</text></view>
+          <view wx:if="{{detail.location_images && detail.location_images.length}}" class="whd-dk-gallery">
+            <view wx:for="{{detail.location_images}}" wx:key="*this" class="whd-dk-cell">
+              <media-thumb url="{{item}}" preview-url="{{item}}" group-urls="{{detail.location_images}}" size="fill" />
+            </view>
+          </view>
+          <view wx:else class="whd-dk-imgempty" bindtap="goEdit">暂无定位图，点击补图</view>
+        </view>
+      </view>
+
+      <!-- 上架图片（客户展示） -->
+      <view class="dk-card" wx:if="{{limCard}}">
+        <view class="dk-card__head">
+          <view class="dk-row">
+            <text>上架图片（客户展示）</text>
+            <text class="whd-dk-help" bindtap="showLimHelp">?</text>
+          </view>
+          <text class="dk-link whd-dk-headlink" bindtap="goListingImages">{{limCard.meta}} ›</text>
+        </view>
+        <view class="dk-card__body">
+          <view wx:if="{{limCard.thumbs.length}}" class="whd-dk-strip" bindtap="goListingImages">
+            <view wx:for="{{limCard.thumbs}}" wx:key="*this" class="whd-dk-strip__cell">
+              <image class="whd-dk-strip__img" src="{{item}}" mode="aspectFill" />
+              <view wx:if="{{index === limCard.thumbs.length - 1 && limCard.more}}" class="whd-dk-strip__more">+{{limCard.more}}</view>
+            </view>
+          </view>
+          <view wx:else class="whd-dk-imgempty" bindtap="goListingImages">还没有上架图</view>
+        </view>
+      </view>
+
+      <!-- 库存库龄 -->
+      <view class="dk-card" wx:if="{{age && (detail.status === 'IN_STOCK' || detail.status === 'RESERVED')}}">
+        <view class="dk-card__head">
+          <view class="dk-row">
+            <text>库存库龄</text>
+            <text class="dk-sub">（从入库开始）</text>
+            <text class="whd-dk-help" data-topic="age" bindtap="showAgeHelp">?</text>
+          </view>
+          <text class="dk-link whd-dk-headlink" bindtap="openAgeSheet">库龄设置</text>
+        </view>
+        <view class="dk-card__body">
+          <view class="whd-dk-age">
+            <view>
+              <view class="whd-dk-age__n whd-dk-c--{{age.stage}}">{{age.days}} <text class="whd-dk-age__u">天</text></view>
+              <view class="dk-help">已在库时长</view>
+            </view>
+            <view class="whd-dk-age__goal">
+              <view class="dk-row">
+                <text class="whd-dk-stage whd-dk-stage--{{age.stage}}">{{age.stage_label}}</text>
+                <text class="dk-sub">{{age.goalText}} <text class="whd-dk-age__gd">{{age.goalDays}}</text> 天</text>
+              </view>
+              <view class="whd-dk-track"><view class="whd-dk-track__fill whd-dk-track__fill--{{age.stage}}" style="width: {{age.goalPct}}%"></view></view>
+              <view class="dk-help">满 {{age.goalEnd}} 天</view>
+            </view>
+          </view>
+
+          <view class="whd-dk-agebar">
+            <view class="whd-dk-agebar__bar"><view class="whd-dk-agebar__now" style="left: {{age.barPct}}%"></view></view>
+            <view class="whd-dk-agebar__tick whd-dk-agebar__tick--start" style="left: 0">0天<view>新入库</view></view>
+            <view class="whd-dk-agebar__tick" style="left: 22%">{{age.target_days}}天<view>健康周转</view></view>
+            <view class="whd-dk-agebar__tick" style="left: 50%">{{age.clearance_days}}天<view>关注清仓</view></view>
+            <view class="whd-dk-agebar__tick" style="left: 72%">{{age.max_days}}天<view>滞销预警</view></view>
+            <view class="whd-dk-agebar__tick whd-dk-agebar__tick--end">>{{age.max_days}}天<view>严重滞销</view></view>
+          </view>
+
+          <view class="whd-dk-mini3">
+            <view class="whd-dk-mini">
+              <view class="dk-help">目标周转</view>
+              <view class="whd-dk-mini__v whd-dk-c--target">{{age.target_days}} 天</view>
+              <view class="dk-help">建议 {{age.target_days}} 天内售出</view>
+            </view>
+            <view class="whd-dk-mini">
+              <view class="dk-help">清仓启动</view>
+              <view class="whd-dk-mini__v whd-dk-c--clearance">{{age.clearance_days}} 天</view>
+              <view class="dk-help">满 {{age.clearance_days}} 天该清仓</view>
+            </view>
+            <view class="whd-dk-mini">
+              <view class="dk-help">最长库龄</view>
+              <view class="whd-dk-mini__v whd-dk-c--stale">{{age.max_days}} 天</view>
+              <view class="dk-help">超过 {{age.max_days}} 天算滞销</view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 自动上架 = 链接焕新 -->
+      <view class="dk-card" wx:if="{{auto && detail.status === 'IN_STOCK' && !detail.reserve_source}}">
+        <view class="dk-card__head">
+          <view class="dk-row">
+            <text>自动上架</text>
+            <text class="dk-sub">（每 {{auto.cycle_days}} 天）</text>
+            <text class="whd-dk-help" data-topic="auto" bindtap="showAgeHelp">?</text>
+          </view>
+          <view class="dk-row whd-dk-switch">
+            <switch color="#2563EB" checked="{{!auto.paused}}" disabled="{{!canManageListing || autoSaving}}" bindchange="onAutoSwitch" />
+            <text class="dk-sub">{{auto.paused ? '已暂停' : '已开启'}}</text>
+          </view>
+        </view>
+        <view class="dk-card__body">
+          <view class="whd-dk-mini3">
+            <view class="whd-dk-mini">
+              <view class="dk-help">上架周期</view>
+              <view class="whd-dk-mini__v whd-dk-c--target">{{auto.cycle_days}}天</view>
+              <view class="dk-help">固定每 {{auto.cycle_days}} 天</view>
+            </view>
+            <view class="whd-dk-mini">
+              <view class="dk-help">下次上架</view>
+              <view class="whd-dk-mini__v whd-dk-mini__v--s">{{auto.nextText}}</view>
+              <view class="dk-help">{{auto.nextHint}}</view>
+            </view>
+            <view class="whd-dk-mini">
+              <view class="dk-help">上次上架</view>
+              <view class="whd-dk-mini__v whd-dk-mini__v--s">{{auto.last_at || '—'}}</view>
+              <view class="dk-help">{{auto.lastHint}}</view>
+            </view>
+          </view>
+          <view class="dk-row whd-dk-autoops" wx:if="{{canManageListing}}">
+            <view class="dk-btn dk-btn--sm dk-btn--primary {{refreshing ? 'dk-btn--disabled' : ''}}" bindtap="onRefreshAll">{{refreshing ? '提交中…' : '立即重新上架'}}</view>
+            <picker mode="date" value="{{auto.pickerValue}}" start="{{auto.pickerStart}}" end="{{auto.pickerEnd}}" bindchange="onPostpone">
+              <view class="dk-btn dk-btn--sm">调整排程</view>
+            </picker>
+            <view class="dk-btn dk-btn--sm dk-btn--danger" bindtap="onAutoToggle">{{auto.paused ? '恢复自动上架' : '暂停自动上架'}}</view>
+          </view>
+          <view class="whd-dk-hold" wx:if="{{auto.not_before}}">
+            <text>排到 {{auto.not_before}} 再上架</text>
+            <text wx:if="{{canManageListing}}" class="dk-link" bindtap="onClearPostpone">取消</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 流转记录 -->
+      <view class="dk-card">
+        <view class="dk-card__head">流转记录</view>
+        <view wx:if="{{!detail.stock_events || !detail.stock_events.length}}" class="dk-empty">暂无流转记录</view>
+        <view wx:else class="dk-card__body">
+          <view wx:for="{{detail.stock_events}}" wx:key="id" class="whd-dk-tl {{index === 0 ? 'whd-dk-tl--now' : ''}}">
+            <view class="whd-dk-tl__dot"></view>
+            <view class="dk-grow">
+              <view>{{fmt.stockEventLabel(item.event_type)}}{{item.ref_no ? ' · ' + item.ref_no : ''}}</view>
+              <view class="dk-help">{{fmt.datetime(item.created_at)}}</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 库龄设置：居中对话框 -->
+  <view wx:if="{{ageSheet}}" class="whd-dk-mask" bindtap="closeAgeSheet">
+    <view class="whd-dk-dialog" catchtap="noop">
+      <view class="dk-card__head">库龄设置</view>
+      <view class="dk-card__body">
+        <view class="dk-form">
+          <view class="dk-field dk-field--full">
+            <text class="dk-label">入库时间</text>
+            <text>{{age.inbound_at || '没有记录'}}</text>
+          </view>
+          <view class="dk-field" wx:for="{{ageFields}}" wx:key="key">
+            <text class="dk-label">{{item.label}}（天）</text>
+            <input wx:if="{{isAdmin}}" class="dk-input" type="number" value="{{ageForm[item.key]}}" data-key="{{item.key}}" bindinput="onAgeInput" />
+            <text wx:else>{{ageForm[item.key]}}</text>
+          </view>
+        </view>
+        <view wx:if="{{isAdmin}}" class="dk-help whd-dk-gaptop">改的是全部商品的三条线。</view>
+      </view>
+      <view class="whd-dk-dialog__foot">
+        <view class="dk-btn" bindtap="closeAgeSheet">{{isAdmin ? '取消' : '关闭'}}</view>
+        <view wx:if="{{isAdmin}}" class="dk-btn dk-btn--primary" bindtap="saveAgeThresholds">保存（全部商品）</view>
+      </view>
+    </view>
+  </view>
+</view>

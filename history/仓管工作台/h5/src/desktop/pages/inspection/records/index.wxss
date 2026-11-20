@@ -1,0 +1,36 @@
+/* 验货记录（电脑版模板 index.wxml 用；手机模板里没有 ir-dk- 类名） */
+.ir-dk-ph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+.ir-dk-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+}
+
+.ir-dk-exp {
+  max-width: 160px;
+}
+
+.ir-dk-exp__head {
+  flex-wrap: nowrap;
+}
+
+.ir-dk-exp__sum {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.ir-dk-name {
+  max-width: 190px;
+}
+
+.ir-dk-note {
+  margin-top: 0;
+  color: #c2410c;
+}

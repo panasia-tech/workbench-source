@@ -1,0 +1,103 @@
+/* 库存商品：照销售工作台交付包的卡片墙（浅色），列数随宽度自动排；红 = 现在动手，黄 = 注意，绿 = 不用管 */
+.sg-page .sg-sum { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8rpx 28rpx; padding: 4rpx 4rpx 0; }
+.sg-page .sg-big { font-size: 26rpx; font-weight: 600; }
+.sg-page .sg-big__n { font-size: 52rpx; font-weight: 800; letter-spacing: -1rpx; }
+.sg-page .sg-big--red { color: #DC2626; }
+.sg-page .sg-big--yellow { color: #D97706; }
+.sg-page .sg-big--green { color: #059669; }
+.sg-page .sg-total { font-size: 24rpx; color: #6B7280; }
+
+.sg-page .sg-bar { display: flex; align-items: center; gap: 12rpx; margin-top: 20rpx; }
+.sg-page .sg-search { flex: 1; min-width: 0; }
+.sg-page .sg-q { flex: none; width: 44rpx; height: 44rpx; line-height: 44rpx; text-align: center; border-radius: 50%; border: 1rpx solid #D1D5DB; color: #6B7280; font-size: 24rpx; }
+.sg-page .sg-help { margin-top: 12rpx; padding: 14rpx 18rpx; border-radius: 12rpx; background: #FFFFFF; font-size: 24rpx; color: #4B5563; line-height: 1.6; }
+
+.sg-page .sg-segs { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12rpx; margin-top: 18rpx; }
+.sg-page .sg-seg { display: flex; align-items: center; gap: 4rpx; padding: 6rpx; border-radius: 18rpx; background: #FFFFFF; border: 1rpx solid #E5E7EB; }
+.sg-page .sg-seg__k { padding: 0 6rpx 0 10rpx; font-size: 22rpx; color: #9CA3AF; }
+.sg-page .sg-seg__i { display: flex; align-items: center; gap: 8rpx; padding: 10rpx 18rpx; border-radius: 12rpx; font-size: 24rpx; font-weight: 600; color: #4B5563; }
+.sg-page .sg-seg__i.is-on { background: #111827; color: #FFFFFF; }
+.sg-page .sg-dot { display: inline-block; width: 14rpx; height: 14rpx; border-radius: 50%; }
+.sg-page .sg-dot--red { background: #DC2626; }
+.sg-page .sg-dot--yellow { background: #D97706; }
+.sg-page .sg-dot--green { background: #059669; }
+.sg-page .sg-empty { margin-top: 60rpx; text-align: center; color: #9CA3AF; font-size: 26rpx; }
+
+.sg-page .sg-group { display: flex; align-items: center; gap: 12rpx; margin: 32rpx 4rpx 14rpx; font-size: 30rpx; font-weight: 800; color: #111827; }
+.sg-page .sg-group__n { padding: 2rpx 14rpx; border-radius: 999rpx; background: #E5E7EB; font-size: 22rpx; font-weight: 700; color: #4B5563; }
+.sg-page .sg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330rpx, 1fr)); gap: 18rpx; }
+.sg-page .sg-card { overflow: hidden; border-radius: 24rpx; background: #FFFFFF; box-shadow: 0 2rpx 12rpx rgba(15, 23, 42, 0.07); border: 3rpx solid transparent; }
+.sg-page .sg-card--red { border-color: #EF4444; }
+.sg-page .sg-card--yellow { border-color: #FCD34D; }
+.sg-page .sg-pic { position: relative; aspect-ratio: 1 / 1; background: #F3F4F6; }
+.sg-page .sg-pic__img { width: 100%; height: 100%; display: block; }
+.sg-page .sg-pic__none { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6rpx; color: #92400E; font-size: 22rpx; background: repeating-linear-gradient(45deg, #FEF3C7, #FEF3C7 12px, #F9FAFB 12px, #F9FAFB 24px); }
+.sg-page .sg-pic__none-t { font-size: 34rpx; font-weight: 800; }
+.sg-page .sg-badge { position: absolute; left: 14rpx; top: 14rpx; padding: 6rpx 18rpx; border-radius: 999rpx; font-size: 22rpx; font-weight: 800; color: #FFFFFF; box-shadow: 0 4rpx 14rpx rgba(0, 0, 0, 0.18); }
+.sg-page .sg-badge--red { background: #DC2626; }
+.sg-page .sg-badge--yellow { background: #F59E0B; color: #3B2600; }
+.sg-page .sg-badge--green { background: #059669; }
+.sg-page .sg-kind { position: absolute; right: 14rpx; top: 14rpx; padding: 4rpx 16rpx; border-radius: 999rpx; font-size: 21rpx; font-weight: 600; background: rgba(17, 24, 39, 0.6); color: #FFFFFF; }
+.sg-page .sg-photo { position: absolute; left: 14rpx; bottom: 14rpx; padding: 2rpx 14rpx; border-radius: 999rpx; font-size: 20rpx; background: rgba(17, 24, 39, 0.6); color: #FFFFFF; }
+.sg-page .sg-body { padding: 18rpx 20rpx 20rpx; }
+.sg-page .sg-name { font-size: 28rpx; font-weight: 700; color: #111827; line-height: 1.4; min-height: 78rpx; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.sg-page .sg-meta { margin-top: 4rpx; font-size: 22rpx; color: #6B7280; }
+.sg-page .sg-imgline { display: flex; flex-wrap: wrap; gap: 4rpx 16rpx; margin-top: 6rpx; font-size: 22rpx; color: #6B7280; }
+.sg-page .sg-bad { color: #B91C1C; font-weight: 800; }
+.sg-page .sg-warn { color: #B45309; font-weight: 700; }
+.sg-page .sg-m { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 0 8rpx; margin-top: 14rpx; font-size: 24rpx; font-weight: 700; color: #111827; }
+.sg-page .sg-age { color: #374151; }
+.sg-page .sg-age--stale { color: #DC2626; }
+.sg-page .sg-age--clearance { color: #B45309; }
+.sg-page .sg-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 8rpx; margin-top: 12rpx; }
+.sg-page .sg-chip { padding: 2rpx 14rpx; border-radius: 999rpx; font-size: 21rpx; font-weight: 700; color: #6B7280; }
+.sg-page .sg-chip--green { background: #D1FAE5; color: #065F46; }
+.sg-page .sg-chip--yellow { background: #FEF3C7; color: #92400E; }
+.sg-page .sg-chip--red { background: #FEE2E2; color: #B91C1C; }
+.sg-page .sg-issue { margin-top: 14rpx; padding: 12rpx 16rpx; border-radius: 14rpx; font-size: 23rpx; line-height: 1.5; font-weight: 500; }
+.sg-page .sg-issue--red { background: #FEF2F2; color: #B91C1C; }
+.sg-page .sg-issue--yellow { background: #FFFBEB; color: #92400E; }
+.sg-page .sg-issue--green { background: #ECFDF5; color: #065F46; }
+.sg-page .sg-more { font-weight: 700; opacity: 0.75; }
+
+/* 电脑上卡片放大，一行四五张，对齐交付包 */
+@media (min-width: 1024px) {
+  .sg-page .sg-big { font-size: 15px; }
+  .sg-page .sg-big__n { font-size: 30px; }
+  .sg-page .sg-total { font-size: 14px; }
+  .sg-page .sg-bar { max-width: 420px; }
+  .sg-page .sg-segs { margin-top: 16px; }
+  .sg-page .sg-seg__i { padding: 7px 14px; font-size: 14px; border-radius: 10px; }
+  .sg-page .sg-seg__k { font-size: 13px; }
+  .sg-page .sg-group { margin: 26px 2px 14px; font-size: 19px; }
+  .sg-page .sg-grid { grid-template-columns: repeat(auto-fill, minmax(225px, 1fr)); gap: 18px; }
+  .sg-page .sg-card { border-radius: 18px; cursor: pointer; transition: transform 0.16s ease, box-shadow 0.16s ease; }
+  .sg-page .sg-card:hover { transform: translateY(-4px); box-shadow: 0 10px 28px rgba(15, 23, 42, 0.14); }
+  .sg-page .sg-name { font-size: 16px; min-height: 44px; }
+  .sg-page .sg-meta, .sg-page .sg-imgline { font-size: 12.5px; }
+  .sg-page .sg-m { font-size: 14px; }
+  .sg-page .sg-chip { font-size: 12px; }
+  .sg-page .sg-issue { font-size: 13px; }
+  .sg-page .sg-badge { font-size: 13px; padding: 4px 12px; }
+  .sg-page .sg-kind, .sg-page .sg-photo { font-size: 12px; }
+}
+
+/* 同款图池（页头）和行情涨跌（卡片） */
+.sg-page .sg-pool { display: flex; flex-wrap: wrap; align-items: center; gap: 10rpx 16rpx; margin: 16rpx 0; padding: 14rpx 20rpx; border-radius: 16rpx; background: #F9FAFB; font-size: 24rpx; color: #374151; }
+.sg-page .sg-pool__k { font-weight: 700; color: #111827; }
+.sg-page .sg-pool__i--READY { color: #047857; }
+.sg-page .sg-pool__i--REVIEWING, .sg-page .sg-pool__i--SEARCHING, .sg-page .sg-pool__i--NONE { color: #B45309; }
+.sg-page .sg-pool__i--FAILED, .sg-page .sg-pool__i--REJECTED, .sg-page .sg-pool__i--NOSPU { color: #DC2626; }
+.sg-page .sg-pool__go { margin-left: auto; color: #2563EB; }
+.sg-page .sg-priceline { display: flex; align-items: center; gap: 12rpx; margin-top: 8rpx; }
+.sg-page .sg-clean { margin-left: auto; color: #2563EB; font-size: 22rpx; }
+.sg-page .sg-trend { display: inline-block; padding: 2rpx 12rpx; border-radius: 8rpx; background: #F3F4F6; color: #4B5563; font-size: 22rpx; }
+.sg-page .sg-trend--yellow { background: #FFFBEB; color: #B45309; }
+.sg-page .sg-trend--red { background: #FEF2F2; color: #DC2626; font-weight: 700; }
+@media (min-width: 1024px) {
+  .sg-page .sg-pool { margin: 12px 0; padding: 8px 14px; border-radius: 10px; font-size: 13px; gap: 6px 14px; }
+  .sg-page .sg-pool__go { cursor: pointer; }
+  .sg-page .sg-priceline { gap: 8px; margin-top: 6px; }
+  .sg-page .sg-clean { font-size: 12px; cursor: pointer; }
+  .sg-page .sg-trend { padding: 1px 8px; border-radius: 6px; font-size: 12px; }
+}

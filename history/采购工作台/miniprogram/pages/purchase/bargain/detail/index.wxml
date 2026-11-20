@@ -1,0 +1,60 @@
+<view class="page-wrap page-wrap--no-tab bg-page" wx:if="{{d}}">
+  <view class="card">
+    <view class="title">{{d.title || d.platform_item_id || '议价会话'}}</view>
+    <view class="sub">{{d.stateLabel}} · 第 {{d.round_no}} 轮</view>
+    <view class="sub">卖家 {{d.seller_name || '—'}} · 账号 {{d.purchase_account || '—'}}</view>
+    <view class="sub">标价 {{d.listed_price || '—'}} · 我方 {{d.our_price || '—'}} · 对方 {{d.their_price || '—'}} · 谈妥 {{d.deal_price || '—'}}</view>
+    <view wx:if="{{d.gc_conversation_id}}" class="sub link" bindtap="goGcChat">已绑群控会话 ›</view>
+  </view>
+
+  <view class="card" wx:if="{{d.checks.length}}">
+    <view class="h">必要问题待核 <text wx:if="{{d.pendingRequired}}" class="warn">· 还剩 {{d.pendingRequired}} 项</text></view>
+    <view wx:for="{{d.checks}}" wx:key="key" class="ck">
+      <view class="ck-title">
+        <text wx:if="{{item.required}}" class="req">*</text>{{item.title}}
+        <text class="ck-st {{item.pending ? 'ck-st--pending' : ''}}">{{item.statusLabel}}</text>
+      </view>
+      <view wx:if="{{item.note}}" class="muted">{{item.note}}</view>
+      <view class="ck-btns" wx:if="{{d.canAct}}">
+        <button class="btn btn-outline btn-mini" loading="{{busy}}" data-key="{{item.key}}" data-status="DECLARED" bindtap="setCheck">卖家已声明</button>
+        <button class="btn btn-outline btn-mini" loading="{{busy}}" data-key="{{item.key}}" data-status="VERIFIED" bindtap="setCheck">已核对</button>
+        <button class="btn btn-outline btn-mini" loading="{{busy}}" data-key="{{item.key}}" data-status="SKIPPED" bindtap="setCheck">跳过</button>
+      </view>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{d.canAct}}">
+    <view class="h">推进</view>
+    <block wx:if="{{d.state !== 'PAUSING' && d.state !== 'PAUSED'}}">
+      <input class="input" type="digit" placeholder="价格（报价/还价/谈妥必填）" value="{{price}}" bindinput="onPrice" />
+      <input class="input" style="margin-top:12rpx" placeholder="说明（可选）" value="{{note}}" bindinput="onNote" />
+      <view class="btns">
+        <button class="btn btn-outline" loading="{{busy}}" data-action="quote" bindtap="act">报价</button>
+        <button class="btn btn-outline" loading="{{busy}}" data-action="counter" bindtap="act">还价</button>
+        <button class="btn-primary" loading="{{busy}}" data-action="deal" bindtap="act">谈妥</button>
+      </view>
+    </block>
+    <view class="btns">
+      <button wx:if="{{d.state !== 'PAUSING' && d.state !== 'PAUSED'}}" class="btn btn-outline" loading="{{busy}}" data-action="pause_request" bindtap="act">请求暂停</button>
+      <button wx:if="{{d.state === 'PAUSING'}}" class="btn-primary" loading="{{busy}}" data-action="pause_confirm" bindtap="act">确认暂停</button>
+      <button wx:if="{{d.state === 'PAUSING' || d.state === 'PAUSED'}}" class="btn btn-outline" loading="{{busy}}" data-action="resume" bindtap="act">{{d.state === 'PAUSING' ? '取消请求' : '恢复'}}</button>
+      <button class="btn btn-outline" loading="{{busy}}" data-action="close" bindtap="act">结束</button>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{d.state === 'DEAL'}}">
+    <view class="h">下一步</view>
+    <button wx:if="{{!d.purchase_order_id}}" class="btn-primary btn-block" bindtap="goCreatePurchase">去建采购单（带入谈妥价与商品 ID）</button>
+    <button wx:else class="btn-primary btn-block" bindtap="goPurchaseDetail">已绑采购单，去查看</button>
+  </view>
+
+  <view class="card">
+    <view class="h">历程</view>
+    <view wx:for="{{d.events}}" wx:key="index" class="ev">
+      <text class="muted">{{item.at}}</text> {{item.from}} → {{item.to}}
+      <text wx:if="{{item.price}}"> · ¥{{item.price}}</text>
+      <text wx:if="{{item.note}}" class="muted"> · {{item.note}}</text>
+    </view>
+    <view wx:if="{{!d.events.length}}" class="muted">暂无记录</view>
+  </view>
+</view>

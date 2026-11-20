@@ -1,0 +1,8 @@
+/* 库存商品电脑版模板用；卡片墙的样式在原页面 wxss 的 @media (min-width: 1024px) 里 */
+.sg-dk-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; }
+.sg-dk-title { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; color: #111827; line-height: 1.15; }
+.sg-dk .sg-sum { margin-top: 8px; padding: 0; }
+.sg-dk .sg-big { cursor: pointer; border-radius: 8px; padding: 0 4px; }
+.sg-dk .sg-big:hover { background: #f3f4f6; }
+.sg-dk-search { width: 300px; }
+.sg-dk .sg-seg__i { cursor: pointer; }

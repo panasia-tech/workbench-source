@@ -1,0 +1,38 @@
+<view class="page-wrap page-wrap--no-tab as-page">
+  <view class="card">
+    <view class="card-head">派一件事</view>
+    <view class="as-tip">留给要人判断的活，比如「这个系列今天过一遍」。图片、上架这些系统自己会派，不用加派。</view>
+    <view class="as-k">要做什么</view>
+    <input class="input" placeholder="例：把架上 27 寸显示器的价过一遍" value="{{title}}" data-key="title" bindinput="onInput" />
+    <view class="as-k">范围：做到哪算完</view>
+    <textarea class="input input--textarea" auto-height="{{true}}" placeholder="例：只看小米、AOC 两个牌子；每台写清新价，低于最低价的不改" value="{{scope}}" data-key="scope" bindinput="onInput" />
+    <view class="as-k">交付时间</view>
+    <view class="as-row">
+      <picker mode="date" value="{{day}}" data-key="day" bindchange="onPick"><view class="input as-pick">{{day}}</view></picker>
+      <picker mode="time" value="{{time}}" data-key="time" bindchange="onPick"><view class="input as-pick">{{time}}</view></picker>
+    </view>
+    <view class="as-k">派给谁</view>
+    <picker mode="selector" range="{{staffNames}}" value="{{toIdx}}" data-key="toIdx" bindchange="onPick">
+      <view class="input as-pick {{toIdx < 0 ? 'as-ph' : ''}}">{{toIdx >= 0 ? staffNames[toIdx] : '选一个销售'}}</view>
+    </picker>
+    <view class="as-k">货号（跟某件货有关才填）</view>
+    <input class="input" placeholder="可不填" value="{{sku}}" data-key="sku" bindinput="onInput" />
+    <button class="btn btn-primary as-go" disabled="{{busy}}" bindtap="submit">派出去</button>
+  </view>
+
+  <view class="card">
+    <view class="card-head">派出去的</view>
+    <view wx:if="{{loaded && !tasks.length}}" class="as-tip">还没派过任务。</view>
+    <view wx:for="{{tasks}}" wx:key="id" class="as-item" data-url="{{item.url}}" bindtap="open">
+      <view class="as-item__line">
+        <text class="tag {{item.tagClass}}">{{item.state}}</text>
+        <text class="as-item__title">{{item.title}}</text>
+      </view>
+      <view class="as-item__sub">
+        {{item.assignee}} · 交付 {{item.due}}<text wx:if="{{item.late}}" class="as-late">（已过）</text>
+        <text wx:if="{{item.state === '待验收'}}" class="as-late"> · 等你验收</text>
+        <text wx:elif="{{item.state === '受阻待接管'}}" class="as-late"> · 卡住了：{{item.note}}</text>
+      </view>
+    </view>
+  </view>
+</view>

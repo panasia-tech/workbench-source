@@ -1,0 +1,139 @@
+<wxs module="fmt" src="../../utils/format.wxs" />
+
+<!-- 「今天」（电脑版）：问候 + 三张卡 + 一列任务（先红后黄）+ 号的明细表，照销售工作台交付包的排法，浅色 -->
+<view class="dk-page swb-dk">
+  <view class="swb-dk-head">
+    <view>
+      <view class="swb-dk-eyebrow">{{ov && ov.me ? (ov.me.department || '销售部') + ' · ' + ov.me.role_label : ''}}</view>
+      <view class="swb-dk-hello">{{greet}}{{ov && ov.me ? '，' + ov.me.name : ''}}</view>
+      <view class="swb-dk-lead">红的先做，黄的有空看，没列出来的不用管。从最上面一条开始。</view>
+    </view>
+    <view class="dk-row">
+      <view class="dk-btn swb-report" bindtap="goReport">遇到没见过的情况</view>
+      <view class="dk-btn swb-dev" title="需求只走禅道，不私发给程序员；谁提的谁验收" bindtap="goDev">提给开发</view>
+      <view wx:if="{{ov && ov.is_sup}}" class="dk-btn swb-assign" bindtap="goAssign">加派任务</view>
+      <view class="dk-btn swb-help-btn" title="一件货只占一行，写的是它最急的那个问题，点「去处理」直接去处理那一项；还有别的问题写「另有 N 项」，到「库存商品」里看全。实物当天 17:00 前卖出的当天 17:00 前发，之后卖出的次日 17:00 前发，过了就变红。每种颜色最多列 30 条，按最急的排。" bindtap="toggleHelp">怎么用</view>
+      <view class="dk-btn" bindtap="goSales">销售发货</view>
+      <view class="dk-btn dk-btn--primary" bindtap="goChat">去回复买家</view>
+    </view>
+  </view>
+  <view wx:if="{{showHelp}}" class="swb-dk-help">
+    <view>一件货只占一行，写的是它最急的那个问题，点「去处理」直接去处理那一项；还有别的问题写「另有 N 项」，到「库存商品」里看全。</view>
+    <view>实物当天 17:00 前卖出的当天 17:00 前发，之后卖出的次日 17:00 前发，过了就变红。</view>
+    <view>每种颜色最多列 30 条，按最急的排，其余去「库存商品」看。做完一条，回到这页就少一条。</view>
+  </view>
+
+  <view wx:if="{{locked}}" class="swb-dk-gate">
+    <view class="swb-dk-gate__text">真实任务先锁着：先做完上手练习，做完才能上架、审批、发货。</view>
+    <view class="dk-btn dk-btn--primary" bindtap="goPractice">去练习</view>
+  </view>
+
+  <view class="swb-dk-cards">
+    <view class="swb-dk-card">
+      <view class="swb-dk-card__k">今天的提成</view>
+      <view class="swb-dk-card__big">{{ov && ov.commission !== null ? '¥' + fmt.money(ov.commission) : '—'}}</view>
+      <view class="swb-dk-card__k2">本月 {{ov && ov.commission_month !== null ? '¥' + fmt.money(ov.commission_month) : '—'}}</view>
+    </view>
+    <view class="swb-dk-card swb-dk-card--click" bindtap="goSales">
+      <view class="swb-dk-card__k">今日成交</view>
+      <view class="swb-dk-card__big">{{ov && ov.today_deals !== null ? ov.today_deals : '—'}}<text class="swb-dk-card__unit" wx:if="{{ov && ov.today_deals !== null}}"> 件</text></view>
+      <view class="swb-dk-card__k2">{{ov && ov.today_amount !== null ? '¥' + fmt.money(ov.today_amount) : '金额拿不到'}} · 在架 {{ov && ov.listed !== null ? ov.listed : '—'}} 条</view>
+    </view>
+    <view class="swb-dk-card">
+      <view class="swb-dk-card__k">我今天的任务</view>
+      <view class="swb-dk-card__big">{{red}}<text class="swb-dk-card__unit"> 件红</text></view>
+      <view class="dk-row">
+        <text class="swb-dk-pill swb-dk-pill--yellow">黄 {{yellow}}</text>
+        <text class="swb-dk-pill">共 {{red + yellow}}</text>
+      </view>
+      <view class="swb-dk-card__k2">做完一条，回来这里会少一条</view>
+    </view>
+  </view>
+
+  <view wx:if="{{loading && !loaded}}" class="dk-empty">加载中…</view>
+
+  <block wx:if="{{loaded}}">
+    <view class="swb-dk-grp">
+      <view class="swb-dk-dot swb-dk-dot--red"></view>
+      <text>要处理，先做这些</text>
+      <text class="swb-dk-grp__n">{{red}}</text>
+    </view>
+    <view wx:if="{{!reds.length}}" class="dk-empty">今天没有红灯。</view>
+    <view
+      wx:for="{{reds}}"
+      wx:key="key"
+      class="swb-dk-row swb-dk-row--red"
+      data-url="{{item.url}}"
+      data-off="{{item.off}}"
+      bindtap="openTodo"
+    >
+      <view class="swb-dk-row__ic">✕</view>
+      <image wx:if="{{item.thumb}}" class="swb-dk-row__th" src="{{item.thumb}}" mode="aspectFill" lazy-load="{{true}}" />
+      <view wx:else class="swb-dk-row__th swb-dk-row__th--none">{{item.tag}}</view>
+      <view class="swb-dk-row__mid">
+        <view class="swb-dk-row__line"><text class="swb-dk-tag swb-dk-tag--red">{{item.tag}}</text><text class="swb-dk-row__title">{{item.title}}</text></view>
+        <view wx:if="{{item.sub}}" class="swb-dk-row__sub">{{item.sub}}</view>
+      </view>
+      <view class="dk-btn dk-btn--sm {{item.off ? 'dk-btn--disabled' : 'dk-btn--primary'}}" title="{{item.off ? '先做完上手练习' : ''}}">{{item.off ? '🔒 ' : ''}}{{item.button}}</view>
+    </view>
+    <view wx:if="{{redMore}}" class="swb-dk-more">还有 {{redMore}} 件红的没列出来（按最急的排）。<text class="dk-link" data-level="red" bindtap="goGoods">去「库存商品」看全部</text></view>
+
+    <view class="swb-dk-grp swb-dk-grp--next">
+      <view class="swb-dk-dot swb-dk-dot--yellow"></view>
+      <text>注意，有空看看</text>
+      <text class="swb-dk-grp__n">{{yellow}}</text>
+    </view>
+    <view wx:if="{{!ambs.length}}" class="dk-empty">没有要留意的。</view>
+    <view
+      wx:for="{{ambs}}"
+      wx:key="key"
+      class="swb-dk-row swb-dk-row--yellow"
+      data-url="{{item.url}}"
+      data-off="{{item.off}}"
+      bindtap="openTodo"
+    >
+      <view class="swb-dk-row__ic">!</view>
+      <image wx:if="{{item.thumb}}" class="swb-dk-row__th" src="{{item.thumb}}" mode="aspectFill" lazy-load="{{true}}" />
+      <view wx:else class="swb-dk-row__th swb-dk-row__th--none">{{item.tag}}</view>
+      <view class="swb-dk-row__mid">
+        <view class="swb-dk-row__line"><text class="swb-dk-tag swb-dk-tag--yellow">{{item.tag}}</text><text class="swb-dk-row__title">{{item.title}}</text></view>
+        <view wx:if="{{item.sub}}" class="swb-dk-row__sub">{{item.sub}}</view>
+      </view>
+      <view class="dk-btn dk-btn--sm {{item.off ? 'dk-btn--disabled' : ''}}" title="{{item.off ? '先做完上手练习' : ''}}">{{item.off ? '🔒 ' : ''}}{{item.button}}</view>
+    </view>
+    <view wx:if="{{ambMore}}" class="swb-dk-more">还有 {{ambMore}} 件黄的没列出来。<text class="dk-link" data-level="yellow" bindtap="goGoods">去「库存商品」看全部</text></view>
+  </block>
+
+  <view class="dk-card swb-dk-accs" wx:if="{{accounts.length}}">
+    <view class="dk-card__head">
+      <text>{{ov.accounts_scope === 'mine' ? '我的号' : '全部号'}}</text>
+      <text class="dk-sub">{{accounts.length}} 个</text>
+    </view>
+    <view class="dk-table-wrap">
+      <table class="dk-table">
+        <thead>
+          <tr>
+            <th>号</th>
+            <th class="dk-num">在架</th>
+            <th class="dk-num">在等回复</th>
+            <th class="dk-ops">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr wx:for="{{accounts}}" wx:key="nick">
+            <td class="dk-cell-main">{{item.nick}}</td>
+            <td class="dk-num">{{item.listed}}</td>
+            <td class="dk-num">
+              <text wx:if="{{item.waiting}}" class="swb-dk-wait">{{item.waiting}} 个</text>
+              <text wx:elif="{{item.waiting === 0}}" class="dk-muted">0</text>
+              <text wx:else class="dk-muted">—</text>
+            </td>
+            <td class="dk-ops">
+              <text wx:if="{{item.waiting}}" class="dk-link" bindtap="goChat">去回复</text>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </view>
+  </view>
+</view>

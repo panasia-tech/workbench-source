@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1600" />
+  <title>锚点中控 · 全量台账与全工作台治理总控台（老板 / 总经办 / 各主管 / 员工）</title>
+  <link rel="stylesheet" href="/styles.css?v=20261118v9" />
+</head>
+<body>
+  <div id="app" class="desktop-shell">
+    <!-- 左侧极简桌面导航栏 -->
+    <aside class="sidebar">
+      <div class="brand-box">
+        <div class="brand-logo" aria-hidden="true">
+          <span></span><span></span><span></span>
+        </div>
+        <div class="brand-text">
+          <h1 id="sidebar-brand-title">锚点全量台账</h1>
+          <p id="sidebar-brand-sub">BOSS · SUP · STAFF</p>
+        </div>
+      </div>
+
+      <div id="sidebar-group-label" class="nav-group-label">老板统筹与台账目录</div>
+      <nav id="sidebar-nav" class="sidebar-nav"></nav>
+
+      <div class="sidebar-footer">
+        <div class="oa-mini-pill">
+          <span class="oa-dot"></span>
+          <span>OA/钉钉充值接口已预留</span>
+          <button type="button" class="q-tip q-tip-dark" data-tip="sim_fee_oa" aria-label="说明">?</button>
+        </div>
+        <button id="btn-reset-demo" class="btn btn-ghost btn-sm full-w" title="将测试修改重置回初始完整基准台账">
+          ↺ 重置演示数据
+        </button>
+      </div>
+    </aside>
+
+    <!-- 右侧主工作区 -->
+    <div class="main-area">
+      <!-- 顶部全局控制栏（含三端角色工作台切换器） -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="role-portal-switcher" id="role-portal-switcher" title="同系统分角色与分专区隔离：切换老板端 / 总经办端 / 各工作台主管端 / 员工端">
+            <button type="button" class="portal-tab active" data-portal-role="boss">👑 老板端</button>
+            <button type="button" class="portal-tab" data-portal-role="gm_office">🏛 总经办(沈悦)</button>
+            <button type="button" class="portal-tab" data-portal-role="supervisor">🧭 主管端</button>
+            <select id="supervisor-staff-select" class="select-control sup-staff-select hidden" title="切换各业务工作台主管视角">
+              <option value="周安">周安 · 开店中控主管</option>
+              <option value="陆铭">陆铭 · 销售工作台主管</option>
+              <option value="苏晴">苏晴 · 客服工作台主管</option>
+              <option value="郑凯">郑凯 · 采购工作台主管</option>
+              <option value="马强">马强 · 仓管工作台主管</option>
+            </select>
+            <button type="button" class="portal-tab" data-portal-role="employee">🛠 员工端</button>
+            <select id="employee-staff-select" class="select-control emp-staff-select hidden" title="选择当前登录的开店/运营员工视角">
+              <option value="赵宇">员工：赵宇 (跨轨锁演示)</option>
+              <option value="陈晓雯">员工：陈晓雯 (打回重交演示)</option>
+              <option value="林婷">员工：林婷 (待审解锁上架)</option>
+              <option value="李航">员工：李航 (采购专窗)</option>
+            </select>
+          </div>
+          <div id="lp-switcher-wrap" class="lp-switcher-wrap">
+            <label for="lp-filter">委托客户视角</label>
+            <select id="lp-filter" class="select-control lp-select"></select>
+          </div>
+          <div class="search-wrap">
+            <input
+              id="global-search"
+              type="search"
+              class="input-control global-search"
+              placeholder="搜索执照 / 支付宝 / 手机号 / 家宽IP / Mac Pro / 店铺..."
+            />
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <span id="role-scope-badge" class="badge badge-purple hidden"></span>
+          <button id="btn-vault-status" class="btn btn-vault-locked" title="点击通过 iPhone 扫码或 Authenticator 解锁全量密码保险箱">
+            🔒 密码库已锁
+          </button>
+          <button id="btn-dispatch-cap" class="btn btn-outline" title="一次性配置各店铺分组月度派单容量与负荷均衡阈值（仅老板端可见）">
+            ⚙ 派单容量配置
+          </button>
+          <button id="btn-open-glossary" class="btn btn-outline" title="查看全部名词解释与衍生业务逻辑">
+            📖 逻辑词典
+          </button>
+          <button id="btn-toggle-mask" class="btn btn-outline" title="切换身份证、手机号显示或脱敏">
+            👁 明文模式
+          </button>
+          <div id="boss-quick-create-wrap" class="dropdown-wrap">
+            <button id="btn-quick-create" class="btn btn-primary">+ 新增录入 ▾</button>
+            <div id="quick-create-menu" class="dropdown-menu hidden">
+              <button data-create="business_entities">🏛 新增营业执照主体</button>
+              <button data-create="tax_registrations">🧾 新增税务局登记</button>
+              <button data-create="annual_reports">📋 新增工商年报记录</button>
+              <hr />
+              <button data-create="alipay_accounts">💳 新增企业支付宝</button>
+              <button data-create="alipay_bills">📑 登记支付宝账单流水</button>
+              <button data-create="platform_accounts">🛍 新增平台店铺 / 业务号</button>
+              <hr />
+              <button data-create="proxy_ips">🌐 新增 ¥10/月家宽代理</button>
+              <button data-create="adspower_profiles">🪟 新增 AdsPower 窗口</button>
+              <button data-create="physical_devices">📱 新增实体手机 / 宿主机</button>
+              <button data-create="sim_cards">📶 新增手机卡</button>
+              <button data-create="carrier_quotas">🔢 登记运营商占坑配额</button>
+              <hr />
+              <button data-create-vault="1">🔐 新增加密账号密码</button>
+            </div>
+          </div>
+          <div id="boss-export-wrap" class="dropdown-wrap">
+            <button id="btn-export-menu" class="btn btn-outline">⬇ 导出 CSV ▾</button>
+            <div id="export-menu" class="dropdown-menu dropdown-right hidden">
+              <a href="/api/export/entities_compliance.csv" target="_blank">导出：执照·4税务·4工商年报.csv</a>
+              <a href="/api/export/alipay_accounts.csv" target="_blank">导出：企业支付宝与因公支付.csv</a>
+              <a href="/api/export/account_finance.csv" target="_blank">导出：全账号财务结算与损益预留.csv</a>
+              <a href="/api/export/platform_accounts.csv" target="_blank">导出：全平台账号与小店矩阵.csv</a>
+              <a href="/api/export/proxy_ips.csv" target="_blank">导出：家宽代理到期与复用矩阵.csv</a>
+              <a href="/api/export/sim_cards.csv" target="_blank">导出：手机卡·外部合约·话费台账.csv</a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- 主内容渲染容器 -->
+      <main id="view-container" class="view-container">
+        <div class="loading-state">正在加载全量主台账数据...</div>
+      </main>
+    </div>
+  </div>
+
+  <!-- 全局悬浮「?」名词解释与衍生逻辑卡片 -->
+  <div id="qtip-popover" class="qtip-popover hidden" role="dialog" aria-label="名词解释与衍生逻辑"></div>
+
+  <!-- iPhone 扫码 / Authenticator 密码库安全验证弹窗 -->
+  <div id="vault-modal-backdrop" class="modal-backdrop hidden"></div>
+  <div id="vault-modal" class="vault-modal hidden" role="dialog" aria-label="解锁全量密码保险箱">
+    <div class="vault-modal-head">
+      <div>
+        <span class="badge badge-purple">🔐 零信任二次验证 (Step-Up 2FA)</span>
+        <h3 id="vault-modal-title">iPhone 扫码 / Authenticator 解锁全量密码库</h3>
+      </div>
+      <button id="vault-modal-close" class="btn-icon" title="关闭">✕</button>
+    </div>
+    <div id="vault-modal-body" class="vault-modal-body"></div>
+  </div>
+
+  <!-- 右侧穿透详情 / 新增编辑滑出抽屉 -->
+  <div id="drawer-backdrop" class="drawer-backdrop hidden"></div>
+  <aside id="drawer-panel" class="drawer-panel hidden" aria-label="详情与编辑抽屉">
+    <div class="drawer-header">
+      <div>
+        <span id="drawer-tag" class="badge badge-blue">台账详情</span>
+        <h2 id="drawer-title">详情</h2>
+      </div>
+      <button id="drawer-close" class="btn-icon" title="关闭 (Esc)">✕</button>
+    </div>
+    <div id="drawer-body" class="drawer-body"></div>
+    <div id="drawer-footer" class="drawer-footer hidden"></div>
+  </aside>
+
+  <!-- 开店全流程手把手步进教程大弹窗（支持 15步企支 ↔ 18步闲鱼双轨联动、只读预览、材料审核与跳步特批） -->
+  <div id="wizard-modal-backdrop" class="modal-backdrop hidden"></div>
+  <div id="wizard-modal" class="wizard-modal hidden" role="dialog" aria-label="开店流程与手把手教程">
+    <div class="wizard-modal-head">
+      <div id="wizard-modal-head-left"></div>
+      <button id="wizard-modal-close" class="btn-icon" title="关闭教程面板 (Esc)">✕</button>
+    </div>
+    <div id="wizard-modal-body" class="wizard-modal-body"></div>
+  </div>
+
+  <!-- 顶部通知弹窗 -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="/health_ext.js?v=20261118v9"></script>
+  <script src="/governance_ext.js?v=20261118v9"></script>
+  <script src="/portals_ext.js?v=20261118v9"></script>
+  <script src="/app.js?v=20261118v9"></script>
+</body>
+</html>

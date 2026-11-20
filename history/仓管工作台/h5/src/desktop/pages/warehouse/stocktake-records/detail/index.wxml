@@ -1,0 +1,71 @@
+<!-- 盘点结果（电脑版）：单据信息 + 账实相符 / 盘亏 / 盘盈数字卡片（点了筛选）+ 商品表格 -->
+<view class="dk-page">
+  <view wx:if="{{loading}}" class="dk-card dk-empty">加载中…</view>
+
+  <block wx:elif="{{session}}">
+    <view class="dk-head">
+      <view>
+        <view class="dk-row">
+          <text class="dk-title">{{session.session_no}}</text>
+          <text class="dk-tag {{session.status === 'APPROVED' ? 'tag-success' : (session.status === 'REJECTED' ? 'tag-danger' : (session.status === 'COMPLETED' ? 'tag-warning' : 'tag-info'))}}">{{statusLabel}}</text>
+        </view>
+        <view class="dk-sub">操作员 {{session.operator_name || '—'}} · 开始 {{startedText}} · 结束 {{completedText}}</view>
+      </view>
+      <view wx:if="{{canSubmit}}" class="dk-btn dk-btn--primary {{submitting ? 'dk-btn--disabled' : ''}}" bindtap="submit">{{submitting ? '提交中…' : '提交管理员审批'}}</view>
+    </view>
+
+    <view wx:if="{{session.status === 'REJECTED' && session.review_comment}}" class="wsd-dk-warn">驳回原因：{{session.review_comment}}</view>
+
+    <view class="dk-stats">
+      <view wx:if="{{session.diff_result}}" class="dk-stat">
+        <view class="dk-stat__label">系统在库 / 实际扫到</view>
+        <view class="dk-stat__value">{{session.diff_result.warehouse_count}} / {{session.diff_result.scanned_count}}</view>
+        <view class="dk-stat__hint">件</view>
+      </view>
+      <view
+        wx:for="{{tabs}}"
+        wx:key="key"
+        class="dk-stat dk-stat--click {{activeKey === item.key ? 'dk-stat--on' : ''}}"
+        data-key="{{item.key}}"
+        bindtap="pickTab"
+      >
+        <view class="dk-stat__label">{{item.label}}</view>
+        <view class="dk-stat__value wsd-dk-n--{{item.key}}">{{item.items.length}}</view>
+        <view class="dk-stat__hint">点开看清单</view>
+      </view>
+    </view>
+
+    <view class="dk-card">
+      <view class="dk-card__head">
+        <text>{{activeKey === 'matched' ? '账实相符' : (activeKey === 'missing' ? '盘亏（系统有、没扫到）' : (activeKey === 'surplus' ? '盘盈（扫到了、系统不在库）' : '已盘读'))}} <text class="dk-sub">{{list.length}} 件</text></text>
+      </view>
+      <view wx:if="{{!list.length}}" class="dk-empty">该分类暂无商品</view>
+      <view wx:else class="dk-table-wrap">
+        <table class="dk-table">
+          <thead>
+            <tr>
+              <th>商品</th>
+              <th>货号</th>
+              <th>库位</th>
+              <th class="dk-ops">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr wx:for="{{list}}" wx:key="sku_code" class="dk-tr--click" data-code="{{item.sku_code}}" bindtap="openSku">
+              <td>
+                <view class="dk-media">
+                  <image wx:if="{{item.cover_url}}" class="dk-thumb" src="{{item.cover_url}}" mode="aspectFill" data-url="{{item.cover_url}}" catchtap="dkPreview" />
+                  <view wx:else class="dk-thumb wsd-dk-noimg">无图</view>
+                  <view class="dk-cell-main dk-ellipsis">{{item.product_name || '系统里没有这个货号'}}</view>
+                </view>
+              </td>
+              <td class="dk-nowrap">{{item.sku_code}}</td>
+              <td class="dk-nowrap">{{item.location_code || '—'}}</td>
+              <td class="dk-ops"><text class="dk-link">商品详情</text></td>
+            </tr>
+          </tbody>
+        </table>
+      </view>
+    </view>
+  </block>
+</view>

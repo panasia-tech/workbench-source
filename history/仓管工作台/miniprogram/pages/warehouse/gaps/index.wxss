@@ -1,0 +1,100 @@
+/* 列表、底部弹层沿用货号更换页 */
+@import "../sku-migration/index.wxss";
+
+.gaps-page .gaps-kind-scroll {
+  width: 100%;
+  white-space: nowrap;
+}
+
+.gaps-page .status-seg {
+  min-width: 0;
+  padding: 16rpx 24rpx;
+  white-space: nowrap;
+}
+
+.gaps-page .gaps-setting {
+  flex-shrink: 0;
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #2563EB;
+}
+
+.gaps-page .gaps-item__row {
+  display: flex;
+  gap: 20rpx;
+}
+
+.gaps-page .gaps-thumb {
+  flex-shrink: 0;
+}
+
+.gaps-page .gaps-thumb__none {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 16rpx;
+  background: #F3F4F6;
+  color: #9CA3AF;
+  font-size: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gaps-page .gaps-item__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.gaps-page .gaps-red {
+  color: #DC2626;
+  font-weight: 800;
+}
+
+.gaps-page .gaps-note {
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #B45309;
+  line-height: 1.45;
+}
+
+.gaps-page .gaps-note--wait {
+  color: #9CA3AF;
+  font-weight: 500;
+}
+
+.gaps-page .gaps-wait {
+  display: inline-block;
+  margin-right: 10rpx;
+  padding: 0 10rpx;
+  border-radius: 8rpx;
+  background: #F3F4F6;
+  color: #6B7280;
+  font-size: 22rpx;
+}
+
+.gaps-page .gaps-check {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 18rpx 0;
+  font-size: 28rpx;
+  color: #111827;
+}
+
+.gaps-page .gaps-box {
+  width: 40rpx;
+  height: 40rpx;
+  line-height: 40rpx;
+  text-align: center;
+  border: 2rpx solid #D1D5DB;
+  border-radius: 8rpx;
+  font-size: 26rpx;
+  font-weight: 800;
+  color: #fff;
+}
+
+.gaps-page .gaps-box--on {
+  background: #2563EB;
+  border-color: #2563EB;
+}

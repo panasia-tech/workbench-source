@@ -1,0 +1,88 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<!-- 拆分库存（电脑版）：原货信息 + 每件一行的明细表 + 合计核对 + 底部操作条 -->
+<view class="dk-page" wx:if="{{!loading && source}}">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">拆分库存</view>
+      <view class="dk-sub">把这条库存拆成多件独立商品（如一对喇叭录成了一条）。各件金额之和须等于原成本；提交后原货号退役、生成 N 个新货号。</view>
+    </view>
+  </view>
+
+  <view class="dk-card">
+    <view class="dk-card__body">
+      <view class="dk-desc">
+        <view class="dk-desc__item">
+          <text class="dk-desc__k">原商品</text>
+          <text class="dk-desc__v">{{source.product_name}}</text>
+        </view>
+        <view class="dk-desc__item">
+          <text class="dk-desc__k">原货号</text>
+          <text class="dk-desc__v">{{source.sku_code}}</text>
+        </view>
+        <view class="dk-desc__item">
+          <text class="dk-desc__k">原成本（各件金额之和须等于它）</text>
+          <text class="dk-desc__v wsp-dk-money">¥{{fmt.money(source.cost_price)}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="dk-card">
+    <view class="dk-card__head">
+      <text>拆成 {{items.length}} 件</text>
+      <view class="dk-btn dk-btn--sm" bindtap="addItem">+ 添加一件</view>
+    </view>
+    <view class="dk-table-wrap">
+      <table class="dk-table wsp-dk-table">
+        <thead>
+          <tr>
+            <th class="wsp-dk-no">件</th>
+            <th><text class="dk-label--req"></text>品牌</th>
+            <th><text class="dk-label--req"></text>型号</th>
+            <th class="dk-num"><text class="dk-label--req"></text>金额（¥）</th>
+            <th>成色</th>
+            <th>库位</th>
+            <th>序列号</th>
+            <th class="dk-ops">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr wx:for="{{items}}" wx:key="index">
+            <td class="wsp-dk-no">件 {{index + 1}}</td>
+            <td><input class="dk-input wsp-dk-in" placeholder="如 漫步者" data-index="{{index}}" data-field="brand" value="{{item.brand}}" bindinput="onItemInput" /></td>
+            <td><input class="dk-input wsp-dk-in" placeholder="型号" data-index="{{index}}" data-field="model" value="{{item.model}}" bindinput="onItemInput" /></td>
+            <td><input class="dk-input wsp-dk-in wsp-dk-amount" placeholder="0.00" type="digit" data-index="{{index}}" data-field="amount" value="{{item.amount}}" bindinput="onItemInput" /></td>
+            <td>
+              <picker class="wsp-dk-picker" range="{{grades}}" value="{{item.gradeIndex}}" data-index="{{index}}" bindchange="pickGrade">
+                <view class="dk-select {{item.condition_grade ? '' : 'dk-muted'}}">{{item.condition_grade || '选择成色'}}</view>
+              </picker>
+            </td>
+            <td>
+              <picker class="wsp-dk-picker" range="{{locations}}" range-key="label" value="{{item.locationIndex}}" data-index="{{index}}" bindchange="pickLocation">
+                <view class="dk-select {{item.location_code ? '' : 'dk-muted'}}">{{item.location_code || '选择库位'}}</view>
+              </picker>
+            </td>
+            <td><input class="dk-input wsp-dk-in" placeholder="选填" data-index="{{index}}" data-field="serial_number" value="{{item.serial_number}}" bindinput="onItemInput" /></td>
+            <td class="dk-ops">
+              <text wx:if="{{items.length > 2}}" class="dk-link dk-link--danger" data-index="{{index}}" bindtap="removeItem">删除</text>
+              <text wx:else class="dk-muted">至少 2 件</text>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </view>
+    <view class="wsp-dk-sum {{matched ? 'wsp-dk-sum--ok' : 'wsp-dk-sum--warn'}}">
+      合计 ¥{{sumText}} / 原 ¥{{fmt.money(source.cost_price)}}
+      <text class="wsp-dk-flag">{{matched ? '✓ 匹配' : '✗ 不匹配'}}</text>
+    </view>
+  </view>
+
+  <view class="dk-actionbar wsp-dk-bar">
+    <text wx:if="{{!matched}}" class="dk-help">各件金额之和等于原成本才能提交</text>
+    <view class="dk-btn" bindtap="dkBack">取消</view>
+    <view class="dk-btn dk-btn--primary {{!matched || submitting ? 'dk-btn--disabled' : ''}}" bindtap="dkSubmit">{{submitting ? '提交中…' : '确认拆分'}}</view>
+  </view>
+</view>
+
+<view wx:elif="{{loading}}" class="dk-page"><view class="dk-card dk-empty">加载中…</view></view>

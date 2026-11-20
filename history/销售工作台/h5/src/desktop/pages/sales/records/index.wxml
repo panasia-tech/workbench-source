@@ -1,0 +1,114 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<!-- 销售记录（电脑版）：筛选工具栏 + 表格 + 页码 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">销售记录</view>
+      <view class="dk-sub">共 {{total}} 条记录</view>
+    </view>
+  </view>
+
+  <view class="dk-card">
+    <view class="dk-toolbar">
+      <view class="dk-tabs">
+        <view
+          wx:for="{{statusTabs}}"
+          wx:key="key"
+          class="dk-tab {{status === item.key ? 'dk-tab--on' : ''}}"
+          data-key="{{item.key}}"
+          bindtap="onStatusTab"
+        >{{item.label}}</view>
+      </view>
+      <input
+        class="dk-input dk-search"
+        placeholder="搜索单号 / 买家 / 平台"
+        value="{{q}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+        bindconfirm="onSearch"
+      />
+      <picker mode="date" value="{{dateFrom}}" bindchange="onDateFromChange">
+        <view class="dk-select {{dateFrom ? '' : 'dk-muted'}}">{{dateFrom || '开始日期'}}</view>
+      </picker>
+      <text class="dk-muted">至</text>
+      <picker mode="date" value="{{dateTo}}" bindchange="onDateToChange">
+        <view class="dk-select {{dateTo ? '' : 'dk-muted'}}">{{dateTo || '结束日期'}}</view>
+      </picker>
+      <text wx:if="{{dateFrom || dateTo}}" class="dk-link" bindtap="dkClearDates">清除日期</text>
+      <view class="dk-btn dk-btn--primary" bindtap="onSearch">搜索</view>
+    </view>
+
+    <view class="dk-table-wrap">
+      <table class="dk-table">
+        <thead>
+          <tr>
+            <th>商品</th>
+            <th>单号</th>
+            <th>买家</th>
+            <th>店铺 / 经办人</th>
+            <th class="dk-num">金额</th>
+            <th>状态</th>
+            <th>时间</th>
+            <th class="dk-ops">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr wx:for="{{list}}" wx:key="id" class="dk-tr--click" data-id="{{item.id}}" bindtap="openDetail">
+            <td>
+              <view class="dk-media">
+                <image
+                  wx:if="{{item.cover_thumb_url || item.cover_url}}"
+                  class="dk-thumb"
+                  src="{{item.cover_thumb_url || item.cover_url}}"
+                  mode="aspectFill"
+                  data-url="{{item.cover_url || item.cover_thumb_url}}"
+                  catchtap="dkPreview"
+                />
+                <view wx:elif="{{item.location_images[0]}}" class="rec-dk-thumb-wrap">
+                  <image class="dk-thumb" src="{{item.location_images[0]}}" mode="aspectFill" data-url="{{item.location_images[0]}}" catchtap="dkPreview" />
+                  <text class="rec-dk-loc-badge">定位</text>
+                </view>
+                <view wx:else class="dk-thumb rec-dk-thumb-empty">{{fmt.iconChar(item.product_title || item.buyer_name)}}</view>
+                <view class="dk-grow">
+                  <view class="dk-cell-main dk-ellipsis rec-dk-name" title="{{item.product_title}}">{{item.product_title || item.order_no}}</view>
+                  <view class="dk-cell-sub dk-ellipsis rec-dk-name">{{item.product_spec || '—'}}</view>
+                </view>
+              </view>
+            </td>
+            <td class="dk-nowrap">
+              <view>{{item.order_no}}</view>
+              <view wx:if="{{item.external_order_no}}" class="dk-cell-sub">平台 {{item.external_order_no}}</view>
+            </td>
+            <td class="dk-nowrap">{{item.buyer_name || '—'}}</td>
+            <td class="dk-nowrap">
+              <view>{{fmt.platformLabel(item.shop_name, item.platform)}}</view>
+              <view class="dk-cell-sub">{{item.operator_name || '—'}}</view>
+            </td>
+            <td class="dk-num">¥{{fmt.money(item.amount)}}</td>
+            <td class="dk-nowrap"><text class="dk-tag {{fmt.saleStatusTag(item.status)}}">{{fmt.saleStatusLabel(item.status)}}</text></td>
+            <td class="dk-nowrap">
+              <view title="{{fmt.datetime(item.shipped_at || item.created_at)}}">{{fmt.datetime(item.shipped_at || item.created_at).slice(5, 16)}}</view>
+              <view class="dk-cell-sub">{{item.shipped_at ? '发货' : '销售'}}</view>
+            </td>
+            <td class="dk-ops">
+              <text class="dk-link" data-id="{{item.id}}" catchtap="openDetail">详情</text>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </view>
+
+    <view wx:if="{{!list.length && !loading}}" class="dk-empty">暂无销售记录</view>
+    <view wx:if="{{loading && !list.length}}" class="dk-empty">加载中…</view>
+
+    <view wx:if="{{total > dkPageSize}}" class="dk-pager">
+      <text>共 {{total}} 条，每页 {{dkPageSize}} 条</text>
+      <view class="dk-row">
+        <view class="dk-btn dk-btn--sm {{dkPage <= 1 ? 'dk-btn--disabled' : ''}}" bindtap="dkPrev">上一页</view>
+        <text>第 {{dkPage}} / {{dkPages}} 页</text>
+        <view class="dk-btn dk-btn--sm {{dkPage >= dkPages ? 'dk-btn--disabled' : ''}}" bindtap="dkNext">下一页</view>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,161 @@
+<!-- 验货凭证（电脑版）：左边不通过 / 无法测试的项目表（卖家说 vs 实测，议价退款对照）和异常处理（平台售后、留货提议能直接改），右边开箱视频与照片。
+     一单多件时顶上切第几件。方法都是这页原来的 -->
+<view class="dk-page" wx:if="{{loaded}}">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">{{d.product_name}}</view>
+      <view class="dk-sub">{{d.order_no}}<text wx:if="{{d.sku_code}}"> · 货号 {{d.sku_code}}</text><text wx:if="{{d.pieces.length && d.piece_cost}}"> · 这件 ¥{{d.piece_cost}}</text><text wx:elif="{{d.unit_price}}"> · 采购 ¥{{d.unit_price}}</text></view>
+    </view>
+    <view class="dk-row">
+      <text wx:if="{{!d.task}}" class="dk-tag">还没有验货记录</text>
+      <text wx:elif="{{d.full_check && d.full_check.state !== 'NONE'}}" class="dk-tag {{d.full_check.state === 'COMPLETE' ? 'dk-tag--green' : (d.full_check.state === 'RETEST' ? 'dk-tag--red' : 'dk-tag--orange')}}">{{d.full_check.label}}</text>
+    </view>
+  </view>
+
+  <view wx:if="{{d.pieces.length}}" class="dk-card">
+    <view class="dk-toolbar">
+      <text class="dk-label">一单多件，看第几件</text>
+      <view class="dk-tabs">
+        <view
+          wx:for="{{d.pieces}}"
+          wx:key="piece_no"
+          class="dk-tab {{item.piece_no === d.piece_no ? 'dk-tab--on' : ''}}"
+          data-no="{{item.piece_no}}"
+          bindtap="switchPiece"
+        >{{item.label}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{d.task && d.task.mismatch_remark}}" class="pe-dk-warn">货不对版：{{d.task.mismatch_remark}}</view>
+
+  <view class="dk-split pe-dk-split">
+    <view class="pe-dk-col">
+      <view class="dk-card">
+        <view class="dk-card__head"><text>验出来的问题</text><text class="dk-sub">议价 / 退款对照</text></view>
+        <view wx:if="{{d.items.length}}" class="dk-table-wrap">
+          <table class="dk-table">
+            <thead>
+              <tr>
+                <th>结果</th>
+                <th>项目</th>
+                <th>部位</th>
+                <th>卖家说</th>
+                <th>实测</th>
+                <th>照片</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr wx:for="{{d.items}}" wx:key="item_key">
+                <td class="dk-nowrap"><text class="dk-tag {{item.result === 'FAIL' ? 'tag-danger' : 'tag-warning'}}">{{item.label}}</text></td>
+                <td class="dk-cell-main">{{item.title}}</td>
+                <td>{{item.defect_part || '—'}}</td>
+                <td>{{item.seller_claim || '—'}}</td>
+                <td>{{item.note || '—'}}</td>
+                <td>
+                  <view wx:if="{{item.evidence.length}}" class="dk-row pe-dk-photos">
+                    <image
+                      wx:for="{{item.evidence}}"
+                      wx:for-item="u"
+                      wx:for-index="ui"
+                      wx:key="ui"
+                      src="{{u}}"
+                      mode="aspectFill"
+                      class="dk-thumb pe-dk-zoom"
+                      data-list="{{item.evidence}}"
+                      data-index="{{ui}}"
+                      bindtap="previewItemPhoto"
+                    />
+                  </view>
+                  <text wx:else class="dk-muted">—</text>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </view>
+        <view wx:else class="dk-empty">{{d.task ? '没有不通过或无法测试的项目' : '还没有验货记录'}}</view>
+      </view>
+
+      <view wx:if="{{d.exceptions.length}}" class="dk-card">
+        <view class="dk-card__head"><text>异常处理</text><text class="dk-sub">平台售后、留货提议在这里改；拒签、退回物流、退款到账在电脑后台「拒签退款跟踪」里更新</text></view>
+        <view class="dk-card__body">
+          <view wx:for="{{d.exceptions}}" wx:key="id" wx:for-item="x" class="pe-dk-exc">
+            <view class="dk-row pe-dk-exc__head">
+              <text class="dk-tag {{x.status === 'OPEN' ? 'dk-tag--orange' : ''}}">{{x.status === 'OPEN' ? '处理中' : '已结束'}}</text>
+              <text class="dk-grow">{{x.description}}</text>
+              <view wx:if="{{x.can_edit}}" class="dk-btn dk-btn--sm" data-id="{{x.id}}" bindtap="openAftersale">{{asOpen === x.id ? '收起' : '更新售后 / 记留货'}}</view>
+            </view>
+            <view class="pe-dk-facts">
+              <text>拒签 <text class="pe-dk-v">{{x.rejectLabel}}</text></text>
+              <text>退款 <text class="pe-dk-v">{{x.refundLabel}}</text><text wx:if="{{x.refund_amount}}"> · 到账 ¥{{x.refund_amount}}</text></text>
+              <text>平台售后 <text class="pe-dk-v">{{x.aftersale_label}}</text><text wx:if="{{x.deadlineText}}" class="dk-muted"> · 期限 {{x.deadlineText}}（{{x.deadline_source_label}}）</text></text>
+            </view>
+            <view wx:for="{{x.aftersale_hints}}" wx:for-item="h" wx:key="*this" class="pe-dk-warn pe-dk-hint">{{h}}</view>
+            <view wx:if="{{x.aftersale_receipt.length}}" class="dk-row pe-dk-photos pe-dk-gapline">
+              <text class="dk-muted">平台回执</text>
+              <image wx:for="{{x.aftersale_receipt}}" wx:for-item="u" wx:for-index="ui" wx:key="ui" src="{{u}}" mode="aspectFill" class="dk-thumb pe-dk-zoom" data-list="{{x.aftersale_receipt}}" data-index="{{ui}}" bindtap="previewReceipt" />
+            </view>
+            <view wx:if="{{x.offers.length}}" class="pe-dk-gapline">
+              <view class="dk-muted">留货 / 补差提议<text wx:if="{{x.first_offer_by}}"> · {{x.first_offer_by === 'seller' ? '卖家先提的' : '我们先提的'}}</text></view>
+              <view wx:for="{{x.offers}}" wx:for-item="o" wx:key="at" class="pe-dk-offer">{{o.atText}} {{o.by_label}}：「{{o.text}}」<text wx:if="{{o.amount}}"> 补差 ¥{{o.amount}}</text></view>
+            </view>
+
+            <view wx:if="{{asOpen === x.id}}" class="pe-dk-form">
+              <view class="pe-dk-line">
+                <text class="dk-label pe-dk-k">平台回执</text>
+                <view class="dk-btn dk-btn--sm" bindtap="uploadReceipt">传申请成功的截图</view>
+                <text class="dk-help">标「已在平台提交」「平台已受理」之前要先传</text>
+              </view>
+              <view class="pe-dk-line">
+                <text class="dk-label pe-dk-k">售后状态</text>
+                <view class="dk-row pe-dk-chips">
+                  <view wx:for="{{aftersaleOptions}}" wx:for-item="c" wx:key="key" class="pe-dk-chip {{asForm.status === c.key ? 'pe-dk-chip--on' : ''}} {{x.aftersale_status === c.key ? 'pe-dk-chip--now' : ''}}" data-key="{{c.key}}" bindtap="pickAsStatus">{{c.label}}</view>
+                </view>
+              </view>
+              <view class="pe-dk-line">
+                <text class="dk-label pe-dk-k">平台期限</text>
+                <picker mode="date" value="{{asForm.date}}" bindchange="onAsDate"><view class="dk-select pe-dk-pick {{asForm.date ? '' : 'dk-muted'}}">{{asForm.date || '选日期'}}</view></picker>
+                <picker mode="time" value="{{asForm.time}}" bindchange="onAsTime"><view class="dk-select pe-dk-pick {{asForm.time ? '' : 'dk-muted'}}">{{asForm.time || '几点（不填 23:59）'}}</view></picker>
+                <view class="pe-dk-chip {{asForm.source === 'platform' ? 'pe-dk-chip--on' : ''}}" data-key="platform" bindtap="pickAsSource">平台页面上写的</view>
+                <view class="pe-dk-chip {{asForm.source === 'estimate' ? 'pe-dk-chip--on' : ''}}" data-key="estimate" bindtap="pickAsSource">自己估的</view>
+              </view>
+              <view class="pe-dk-line">
+                <text class="dk-label pe-dk-k">说明</text>
+                <input class="dk-input dk-grow" maxlength="300" value="{{asForm.note}}" bindinput="onAsNote" placeholder="撤销、介入、处理完要写为什么" />
+                <view class="dk-btn dk-btn--primary dk-btn--sm {{asBusy ? 'dk-btn--disabled' : ''}}" bindtap="saveAftersale">保存售后</view>
+              </view>
+              <view class="pe-dk-line pe-dk-line--sep">
+                <text class="dk-label pe-dk-k">留货提议</text>
+                <view class="pe-dk-chip {{offer.by === 'seller' ? 'pe-dk-chip--on' : ''}}" data-key="seller" bindtap="pickOfferBy">卖家提的</view>
+                <view class="pe-dk-chip {{offer.by === 'us' ? 'pe-dk-chip--on' : ''}}" data-key="us" bindtap="pickOfferBy">我们提的</view>
+                <input class="dk-input dk-grow" maxlength="500" value="{{offer.text}}" bindinput="onOfferText" placeholder="对方原话" />
+                <input class="dk-input pe-dk-amt" type="digit" value="{{offer.amount}}" bindinput="onOfferAmount" placeholder="补差金额" />
+                <view class="dk-btn dk-btn--sm {{asBusy ? 'dk-btn--disabled' : ''}}" bindtap="addOffer">记下</view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{d.task}}" class="dk-card">
+      <view class="dk-card__head"><text>开箱视频与照片</text></view>
+      <view class="dk-card__body">
+        <view wx:if="{{!videos.length && !photos.length}}" class="dk-muted">没有凭证</view>
+        <view wx:for="{{videos}}" wx:key="index" class="pe-dk-video" data-index="{{index}}" bindtap="playVideo">
+          <text class="pe-dk-video__play">▶</text>
+          <view class="dk-grow">
+            <view>{{item.kindLabel}}<text wx:if="{{item.recorded_by_name}}" class="dk-muted"> · {{item.recorded_by_name}}</text></view>
+            <view wx:if="{{item.interrupted}}" class="pe-dk-video__warn">中断：{{item.gap_note}}</view>
+          </view>
+        </view>
+        <view wx:if="{{photos.length}}" class="dk-gallery pe-dk-gallery">
+          <image wx:for="{{photos}}" wx:key="index" src="{{item}}" mode="aspectFill" class="dk-gallery__item" data-index="{{index}}" bindtap="previewPhoto" />
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+<view class="dk-page" wx:else>
+  <view class="dk-card"><view class="dk-empty">加载中…</view></view>
+</view>

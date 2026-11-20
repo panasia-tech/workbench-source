@@ -1,0 +1,171 @@
+<!-- 上架图片管理（电脑版）：顶部商品摘要 + tab；按账号查看是「左边账号列表、右边这个号的图和操作」，弹层改成居中对话框 -->
+<view class="dk-page">
+  <view wx:if="{{loading}}" class="dk-card dk-empty">加载中…</view>
+  <block wx:elif="{{res}}">
+    <view class="dk-card lim-dk-sum">
+      <image wx:if="{{res.common.length}}" class="lim-dk-sum__img" src="{{res.common[0].thumb}}" mode="aspectFill" />
+      <view wx:else class="lim-dk-sum__img lim-dk-none">无图</view>
+      <view class="dk-grow">
+        <view class="dk-title">{{res.product_name}}</view>
+        <view class="dk-sub">货号：{{res.sku_code}} · 库位：{{res.location_code || '未分配'}} · 每个号最多 {{res.max_per_shop}} 张，各号的图不能重复</view>
+      </view>
+      <view class="dk-btn" bindtap="goBack">返回商品</view>
+    </view>
+
+    <view wx:if="{{res.readonly_reason}}" class="lim-dk-note">{{res.readonly_reason}}</view>
+
+    <view class="dk-card">
+      <view class="dk-toolbar lim-dk-tabsbar">
+        <view class="dk-tabs">
+          <view class="dk-tab {{tab === 'account' ? 'dk-tab--on' : ''}}" data-tab="account" bindtap="switchTab">按账号查看 <text class="dk-tab__n">{{accounts.length}}</text></view>
+          <view class="dk-tab {{tab === 'library' ? 'dk-tab--on' : ''}}" data-tab="library" bindtap="switchTab">全部图片 <text class="dk-tab__n">{{res.library.length}}</text></view>
+          <view class="dk-tab {{tab === 'crawled' ? 'dk-tab--on' : ''}}" data-tab="crawled" bindtap="switchTab">同款图 <text class="dk-tab__n">{{res.crawled.length}}</text></view>
+          <view wx:if="{{res.rejected.length}}" class="dk-tab {{tab === 'rejected' ? 'dk-tab--on' : ''}}" data-tab="rejected" bindtap="switchTab">淘汰 <text class="dk-tab__n">{{res.rejected.length}}</text></view>
+        </view>
+      </view>
+
+      <!-- 按账号查看 -->
+      <block wx:if="{{tab === 'account'}}">
+        <view wx:if="{{!accounts.length}}" class="dk-empty">这件货还没上过任何号。上架时给每个号选图，选好的图会出现在这里。</view>
+        <view wx:else class="lim-dk-acc">
+          <!-- 左：账号列表 -->
+          <view class="lim-dk-side">
+            <view class="lim-dk-chip {{shopId === '' ? 'lim-dk-chip--on' : ''}}" data-id="" bindtap="pickAccount">
+              <view class="lim-dk-chip__name">全部账号</view>
+              <view class="lim-dk-chip__sub">{{accounts.length}} 个账号</view>
+            </view>
+            <view wx:for="{{accounts}}" wx:key="shop_id" class="lim-dk-chip {{shopId === item.shop_id ? 'lim-dk-chip--on' : ''}}" data-id="{{item.shop_id}}" bindtap="pickAccount">
+              <view class="lim-dk-chip__name">{{item.shop_label}}</view>
+              <view class="lim-dk-chip__sub">
+                <text class="lim-dk-dot {{item.live ? 'lim-dk-dot--live' : ''}}"></text>{{item.statusLabel}} · {{item.images.length}} 张 · {{item.own ? '单独选的' : '公用图'}}
+              </view>
+            </view>
+          </view>
+
+          <!-- 右：全部账号一号一行 -->
+          <view wx:if="{{!current}}" class="lim-dk-main">
+            <view wx:for="{{accounts}}" wx:key="shop_id" class="lim-dk-row" data-id="{{item.shop_id}}" bindtap="pickAccount">
+              <view class="lim-dk-row__head">
+                <text class="dk-cell-main">{{item.shop_label}}</text>
+                <text class="dk-tag {{item.live ? 'dk-tag--green' : ''}}">{{item.statusLabel}}</text>
+                <text class="dk-tag">{{item.own ? '单独选的' : '公用图'}}</text>
+                <text wx:if="{{item.shares_with.length}}" class="lim-dk-warn">和「{{item.sharesText}}」用的同一组公用图</text>
+                <text class="dk-link lim-dk-row__n">{{item.images.length}} 张 · 管理 ›</text>
+              </view>
+              <view class="lim-dk-strip">
+                <image wx:for="{{item.images}}" wx:for-item="img" wx:for-index="i" wx:key="url" wx:if="{{i < 10}}" class="lim-dk-strip__img" src="{{img.thumb}}" mode="aspectFill" />
+                <text wx:if="{{item.images.length > 10}}" class="dk-muted lim-dk-strip__more">+{{item.images.length - 10}}</text>
+                <text wx:if="{{!item.images.length}}" class="dk-muted">没有图</text>
+              </view>
+            </view>
+          </view>
+
+          <!-- 右：单个账号 -->
+          <view wx:else class="lim-dk-main">
+            <view class="lim-dk-sec">
+              <text class="lim-dk-sec__title">账号：{{current.shop_label}} · {{current.own ? '单独选的' : '用公用图'}} {{grid.length}} 张</text>
+              <text wx:if="{{editable && current.own && !sorting}}" class="dk-link" bindtap="backToShared">改回公用图</text>
+            </view>
+            <view wx:if="{{current.shares_with.length}}" class="lim-dk-warn lim-dk-block">和「{{current.sharesText}}」用的同一组公用图，闲鱼上这几条链接图一样。给这个号换一组自己的图就分开了。</view>
+
+            <view wx:if="{{editable}}" class="lim-dk-ops">
+              <block wx:if="{{sorting}}">
+                <text class="dk-help dk-grow">按想要的顺序依次点图，第一张是主图；没点到的排在后面。</text>
+                <view class="dk-btn dk-btn--sm" bindtap="cancelSort">取消</view>
+                <view class="dk-btn dk-btn--sm dk-btn--primary {{saving ? 'dk-btn--disabled' : ''}}" bindtap="finishSort">完成排序</view>
+              </block>
+              <block wx:else>
+                <view class="lim-dk-all" bindtap="toggleAll">
+                  <view class="lim-dk-box {{grid.length && selectedCount === grid.length ? 'lim-dk-box--on' : ''}}">{{grid.length && selectedCount === grid.length ? '✓' : ''}}</view>
+                  <text>全选</text>
+                  <text wx:if="{{selectedCount}}" class="dk-muted">（已勾 {{selectedCount}}）</text>
+                </view>
+                <view class="dk-grow"></view>
+                <view class="dk-btn dk-btn--sm" bindtap="upload">上传图片</view>
+                <view class="dk-btn dk-btn--sm" bindtap="openSheet">加图</view>
+                <view class="dk-btn dk-btn--sm" bindtap="startSort">排序</view>
+                <view class="dk-btn dk-btn--sm" bindtap="setMain">设为主图</view>
+                <view class="dk-btn dk-btn--sm dk-btn--danger" bindtap="removeSelected">拿掉</view>
+              </block>
+            </view>
+            <view wx:if="{{editable && !grid.length && !sorting}}" class="dk-help lim-dk-block">没有图，点上面「上传图片」或「加图」。</view>
+
+            <view class="lim-dk-grid">
+              <view wx:for="{{grid}}" wx:key="url" class="lim-dk-cell {{selected[item.url] ? 'lim-dk-cell--on' : ''}}" data-index="{{index}}" bindtap="tapImage">
+                <image class="lim-dk-img" src="{{item.thumb}}" mode="aspectFill" />
+                <view class="lim-dk-badge">{{index === 0 ? '1 主图' : item.order}}</view>
+                <view wx:if="{{item.rejected}}" class="lim-dk-used lim-dk-used--bad">已淘汰·{{item.rejected}}</view>
+                <view wx:if="{{sorting && item.sortNo}}" class="lim-dk-sortno">{{item.sortNo}}</view>
+                <view wx:if="{{selected[item.url]}}" class="lim-dk-tick">✓</view>
+                <view wx:if="{{!sorting}}" class="lim-dk-zoom" title="看大图" data-list="grid" data-index="{{index}}" catchtap="preview">看大图</view>
+              </view>
+            </view>
+            <view wx:if="{{editable && grid.length && !sorting}}" class="dk-help lim-dk-tip">点图勾选，鼠标移到图上点「看大图」</view>
+          </view>
+        </view>
+      </block>
+
+      <!-- 全部图片 -->
+      <view wx:if="{{tab === 'library'}}" class="dk-card__body">
+        <view class="dk-help lim-dk-block">这件货的实拍图、上架图和给各号上传的图。底下写着哪个号在用。{{res.can_edit ? '不能用的点开淘汰。' : ''}}</view>
+        <view class="lim-dk-grid">
+          <view wx:for="{{res.library}}" wx:key="url" class="lim-dk-cell" data-list="library" data-index="{{index}}" bindtap="tapMaterial">
+            <image class="lim-dk-img" src="{{item.thumb}}" mode="aspectFill" />
+            <view class="lim-dk-badge">{{item.kindText}}</view>
+            <view class="lim-dk-used {{item.usedText ? '' : 'lim-dk-used--free'}}">{{item.usedText || '没号在用'}}</view>
+          </view>
+        </view>
+        <view wx:if="{{!res.library.length}}" class="dk-empty">还没有图</view>
+      </view>
+
+      <!-- 同款图 -->
+      <view wx:if="{{tab === 'crawled'}}" class="dk-card__body">
+        <view class="dk-help lim-dk-block">图片爬虫按型号搜的同款图{{res.crawl_status ? '（' + res.crawl_status + '）' : ''}}。红角标的不会自动用，不能用的点开淘汰。</view>
+        <view class="lim-dk-grid">
+          <view wx:for="{{res.crawled}}" wx:key="url" class="lim-dk-cell" data-list="crawled" data-index="{{index}}" bindtap="tapMaterial">
+            <image class="lim-dk-img" src="{{item.thumb}}" mode="aspectFill" />
+            <view wx:if="{{item.status === 'review'}}" class="lim-dk-badge lim-dk-badge--bad">{{item.kindText}}</view>
+            <view class="lim-dk-used {{item.usedText ? '' : 'lim-dk-used--free'}}">{{item.usedText || '没号在用'}}</view>
+          </view>
+        </view>
+        <view wx:if="{{!res.crawled.length}}" class="dk-empty">{{res.crawl_status ? '没有能用的同款图' : '还没搜过这款的图，去店铺上架时会自动让爬虫搜'}}</view>
+      </view>
+
+      <!-- 淘汰 -->
+      <view wx:if="{{tab === 'rejected'}}" class="dk-card__body">
+        <view class="dk-help lim-dk-block">挑图、加图时都看不到这些了。{{res.can_edit ? '淘汰错了点开放回。' : ''}}</view>
+        <view class="lim-dk-grid">
+          <view wx:for="{{res.rejected}}" wx:key="url" class="lim-dk-cell" data-list="rejected" data-index="{{index}}" bindtap="tapMaterial">
+            <image class="lim-dk-img lim-dk-img--gone" src="{{item.thumb}}" mode="aspectFill" />
+            <view class="lim-dk-badge lim-dk-badge--bad">{{item.reason}}</view>
+            <view wx:if="{{item.usedText}}" class="lim-dk-used lim-dk-used--bad">{{item.usedText}} 还在用</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <!-- 加图：居中对话框 -->
+  <view wx:if="{{sheet}}" class="lim-dk-mask" bindtap="closeSheet">
+    <view class="lim-dk-dialog" catchtap="noop">
+      <view class="dk-card__head">
+        <text>给「{{current.shop_label}}」加图</text>
+        <text class="dk-help">灰掉的已经给别的号用了，各号的图不能重复。</text>
+      </view>
+      <scroll-view scroll-y class="lim-dk-dialog__body">
+        <view class="lim-dk-grid lim-dk-grid--sm">
+          <view wx:for="{{sheetItems}}" wx:key="url" class="lim-dk-cell {{sheetPicked[item.url] ? 'lim-dk-cell--on' : ''}} {{item.takenBy ? 'lim-dk-cell--taken' : ''}}" data-index="{{index}}" bindtap="tapSheetItem">
+            <image class="lim-dk-img" src="{{item.thumb}}" mode="aspectFill" />
+            <view class="lim-dk-badge">{{item.kind}}</view>
+            <view wx:if="{{item.takenBy}}" class="lim-dk-used">{{item.takenBy}}</view>
+            <view wx:if="{{sheetPicked[item.url]}}" class="lim-dk-tick">✓</view>
+          </view>
+        </view>
+      </scroll-view>
+      <view class="lim-dk-foot">
+        <view class="dk-btn" bindtap="closeSheet">取消</view>
+        <view class="dk-btn dk-btn--primary" bindtap="confirmSheet">加 {{sheetCount}} 张</view>
+      </view>
+    </view>
+  </view>
+</view>

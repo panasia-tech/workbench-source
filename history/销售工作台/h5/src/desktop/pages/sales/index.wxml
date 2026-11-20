@@ -1,0 +1,92 @@
+<wxs module="fmt" src="../../utils/format.wxs" />
+
+<!-- 销售（电脑版）：上面一排其他出库入口，下面待发货表格 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">销售发货</view>
+      <view class="dk-sub">发货时扫码核对货号，快递单必填，买家自提无需运单号</view>
+    </view>
+    <view class="dk-row">
+      <view class="dk-btn" bindtap="goRecords">销售记录</view>
+      <view class="dk-btn" bindtap="goPickupRecords">自提记录</view>
+    </view>
+  </view>
+
+  <!-- 其他出库：线下自提、切单换货等 -->
+  <view class="dk-grid-3">
+    <view class="dk-card sl-dk-entry" bindtap="goManualSale">
+      <view class="sl-dk-entry__icon sl-dk-entry__icon--manual">售</view>
+      <view class="dk-grow">
+        <view class="dk-cell-main">手动销售成交</view>
+        <view class="dk-cell-sub">扫码填单出库</view>
+      </view>
+      <text class="dk-muted">›</text>
+    </view>
+    <view class="dk-card sl-dk-entry" bindtap="goPickup">
+      <view class="sl-dk-entry__icon sl-dk-entry__icon--pickup">提</view>
+      <view class="dk-grow">
+        <view class="dk-cell-main">买家自提出库</view>
+        <view class="dk-cell-sub">收款截图 + 现场证据 · 无需运单号</view>
+      </view>
+      <text class="dk-muted">›</text>
+    </view>
+    <view class="dk-card sl-dk-entry" bindtap="goSwitchList">
+      <view class="sl-dk-entry__icon sl-dk-entry__icon--switch">切</view>
+      <view class="dk-grow">
+        <view class="dk-cell-main">切单管理</view>
+        <view class="dk-cell-sub">新建切单 · 快递发货出库</view>
+      </view>
+      <text class="dk-muted">›</text>
+    </view>
+  </view>
+
+  <view class="dk-card">
+      <view class="dk-card__head">
+        <text>待发货</text>
+        <text class="dk-sub">{{ordersLoading ? '加载中…' : erpOrders.length + ' 单'}}{{erpOrders.length >= 50 ? '（最多列 50 单）' : ''}}</text>
+      </view>
+      <view class="dk-table-wrap">
+        <table class="dk-table">
+          <thead>
+            <tr>
+              <th>商品</th>
+              <th>买家</th>
+              <th class="dk-num">金额</th>
+              <th>店铺</th>
+              <th>下单时间</th>
+              <th class="dk-ops">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              wx:for="{{erpOrders}}"
+              wx:key="id"
+              class="dk-tr--click"
+              data-id="{{item.id}}"
+              bindtap="openShip"
+            >
+              <td>
+                <view class="dk-media">
+                  <view class="dk-thumb sl-dk-icon">{{fmt.iconChar(item.product_title)}}</view>
+                  <view class="dk-grow">
+                    <view class="dk-cell-main dk-ellipsis sl-dk-name" title="{{item.product_title}}">{{item.product_title || item.order_no}}</view>
+                    <view class="dk-cell-sub dk-ellipsis">{{item.product_spec || item.order_no}}</view>
+                  </view>
+                </view>
+              </td>
+              <td class="dk-nowrap">{{item.buyer_name || '—'}}</td>
+              <td class="dk-num">¥{{fmt.money(item.amount)}}</td>
+              <td class="dk-nowrap">{{fmt.platformLabel(item.shop_name, item.platform)}}</td>
+              <td class="dk-nowrap" title="{{fmt.datetime(item.created_at)}}">{{fmt.datetime(item.created_at).slice(5, 16)}}</td>
+              <td class="dk-ops">
+                <view class="dk-btn dk-btn--primary dk-btn--sm" data-id="{{item.id}}" catchtap="openShip">发货</view>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </view>
+      <view wx:if="{{!erpOrders.length && !ordersLoading}}" class="dk-empty">暂无待发货订单</view>
+      <view wx:if="{{ordersLoading && !erpOrders.length}}" class="dk-empty">加载中…</view>
+    </view>
+</view>

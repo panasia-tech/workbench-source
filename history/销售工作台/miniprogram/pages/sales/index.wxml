@@ -1,0 +1,85 @@
+<wxs module="fmt" src="../../utils/format.wxs" />
+
+<view class="page-wrap page-wrap--no-tab sales-page">
+  <view class="entry-chips">
+    <view class="entry-chip" hover-class="entry-chip--hover" bindtap="goRecords">
+      <text class="entry-chip-text">销售记录</text>
+      <text class="entry-chip-arrow">›</text>
+    </view>
+    <view class="entry-chip" hover-class="entry-chip--hover" bindtap="goPickupRecords">
+      <text class="entry-chip-text">自提记录</text>
+      <text class="entry-chip-arrow">›</text>
+    </view>
+  </view>
+
+  <view class="card ship-card">
+    <view class="card-head">
+      <view class="card-head-main">待发货</view>
+    </view>
+    <view class="form-note">发货时扫码核对货号，快递单必填，买家自提无需运单号</view>
+
+    <view wx:if="{{!erpOrders.length && !ordersLoading}}" class="empty empty--compact">
+      <view class="e-text">暂无待发货订单</view>
+    </view>
+
+    <view class="ship-order-list">
+      <view
+        wx:for="{{erpOrders}}"
+        wx:key="id"
+        class="list-item ship-order-item"
+        bindtap="openShip"
+        data-id="{{item.id}}"
+      >
+        <view class="li-icon">{{fmt.iconChar(item.product_title)}}</view>
+        <view class="li-info">
+          <view class="li-title">{{fmt.productLine(item.product_title, item.product_spec) || item.order_no}}</view>
+          <view class="li-sub">
+            {{item.buyer_name || '—'}} · ¥{{fmt.money(item.amount)}} · {{fmt.platformLabel(item.shop_name, item.platform)}}
+          </view>
+          <view class="li-sub li-sub--time">下单时间 {{fmt.datetime(item.created_at)}}</view>
+        </view>
+        <view class="li-meta">
+          <button class="btn btn-sm btn-success ship-action-btn" catchtap="openShip" data-id="{{item.id}}">发货</button>
+        </view>
+      </view>
+    </view>
+    <view wx:if="{{ordersLoading}}" class="list-footer">加载中…</view>
+  </view>
+
+  <view class="card more-card">
+    <view class="card-head">其他出库</view>
+    <view class="form-note">线下自提、切单换货等</view>
+    <view class="more-entry-list">
+      <view class="more-entry-item" bindtap="goManualSale">
+        <view class="more-entry-body">
+          <view class="more-entry-icon more-entry-icon--manual">售</view>
+          <view class="more-entry-text">
+            <view class="more-entry-title">手动销售成交</view>
+            <view class="more-entry-sub">扫码填单出库</view>
+          </view>
+        </view>
+        <text class="more-entry-arrow">›</text>
+      </view>
+      <view class="more-entry-item" bindtap="goPickup">
+        <view class="more-entry-body">
+          <view class="more-entry-icon more-entry-icon--pickup">提</view>
+          <view class="more-entry-text">
+            <view class="more-entry-title">买家自提出库</view>
+            <view class="more-entry-sub">收款截图 + 现场证据 · 无需运单号</view>
+          </view>
+        </view>
+        <text class="more-entry-arrow">›</text>
+      </view>
+      <view class="more-entry-item" bindtap="goSwitchList">
+        <view class="more-entry-body">
+          <view class="more-entry-icon more-entry-icon--switch">切</view>
+          <view class="more-entry-text">
+            <view class="more-entry-title">切单管理</view>
+            <view class="more-entry-sub">新建切单 · 快递发货出库</view>
+          </view>
+        </view>
+        <text class="more-entry-arrow">›</text>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,105 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<view class="page-wrap page-wrap--no-tab sku-migration-page">
+  <view class="search-bar">
+    <view class="search-input-wrap">
+      <input
+        class="search-input search-input--with-scan"
+        placeholder="货号 / 商品名 / 库位"
+        value="{{q}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+        bindconfirm="onSearch"
+      />
+      <view class="search-scan-icon" catchtap="onScanSearch" aria-role="button">
+        <view class="scan-frame"></view>
+        <view class="scan-line"></view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card filter-card">
+    <view class="status-segment">
+      <text
+        wx:for="{{tabs}}"
+        wx:key="key"
+        class="status-seg {{tab === item.key ? 'active' : ''}}"
+        data-tab="{{item.key}}"
+        bindtap="switchTab"
+      >{{item.label}}</text>
+    </view>
+    <view class="filter-meta">
+      <text>共 {{total}} 条</text>
+      <text class="filter-hint">{{tab === 'pending' ? '仅显示在库且未换新号商品' : '新号以前缀 51321154 判断'}}</text>
+    </view>
+  </view>
+
+  <view class="card list-card">
+    <view wx:if="{{!list.length && !loading}}" class="empty">
+      <view class="e-icon">—</view>
+      <view class="e-text">{{tab === 'pending' ? '暂无待更换商品' : '暂无已更换商品'}}</view>
+    </view>
+
+    <view wx:for="{{list}}" wx:key="id" class="sku-item">
+      <view class="sku-item__main" data-code="{{item.sku_code}}" bindtap="openDetail">
+        <view class="sku-item__head">
+          <view class="sku-item__code">{{item.sku_code}}</view>
+          <view class="tag {{item.migration_status === 'DONE' ? 'tag-success' : 'tag-warning'}}">
+            {{item.migrationLabel}}
+          </view>
+        </view>
+        <view class="sku-item__name">{{item.product_name}}</view>
+        <view class="sku-item__sub">{{item.spec || '—'}} · 库位 {{item.location_code || '未分配'}}</view>
+        <view class="sku-item__sub">状态 {{fmt.statusLabel(item.status)}}</view>
+        <view class="sku-item__sub sku-item__sub--time">
+          {{tab === 'pending' ? '入库时间 ' + fmt.datetime(item.inbound_at) : (item.last_recode_at ? '最近更换 ' + fmt.datetime(item.last_recode_at) : '按前缀识别为已更换')}}
+        </view>
+        <view wx:if="{{tab === 'done'}}" class="sku-item__note">
+          {{item.last_recode_operator_name ? '更换人 ' + item.last_recode_operator_name : '无历史更换记录'}}
+          <text wx:if="{{item.last_recode_source}}"> · {{item.last_recode_source}}</text>
+        </view>
+      </view>
+
+      <button
+        wx:if="{{tab === 'pending' && item.can_migrate}}"
+        class="btn-primary btn-block sku-item__action"
+        data-code="{{item.sku_code}}"
+        catchtap="openEditor"
+      >可更换</button>
+    </view>
+
+    <view wx:if="{{loading}}" class="list-footer">加载中…</view>
+    <view wx:elif="{{noMore && list.length}}" class="list-footer">没有更多了</view>
+  </view>
+
+  <view wx:if="{{editorVisible}}" class="editor-mask" bindtap="closeEditor" catchtouchmove="true">
+    <view class="editor-sheet" catchtap="">
+      <view class="editor-sheet__head">
+        <text class="editor-sheet__cancel" bindtap="closeEditor">取消</text>
+        <text class="editor-sheet__title">货号更换</text>
+        <text class="editor-sheet__confirm {{saving ? 'is-disabled' : ''}}" bindtap="submitRecode">
+          {{saving ? '提交中…' : '确定'}}
+        </text>
+      </view>
+      <view class="editor-sheet__body">
+        <view class="editor-field">
+          <view class="editor-label">旧货号</view>
+          <view class="editor-value">{{editorOldCode}}</view>
+        </view>
+        <view class="editor-field editor-field--stacked">
+          <view class="editor-label">新货号</view>
+          <view class="editor-input-row">
+            <input
+              class="editor-input"
+              placeholder="扫描或输入 51321154 开头的新货号"
+              value="{{editorNewCode}}"
+              bindinput="onEditorInput"
+              confirm-type="done"
+            />
+            <button class="btn btn-outline btn-sm editor-scan-btn" bindtap="scanNewCode">扫码</button>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

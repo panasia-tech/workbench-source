@@ -1,0 +1,126 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<view class="page-wrap page-wrap--no-tab sku-migration-page barcode-migration-page">
+  <view class="search-bar">
+    <view class="search-input-wrap">
+      <input
+        class="search-input search-input--with-scan"
+        placeholder="货号 / 69码 / 商品名 / 库位"
+        value="{{q}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+        bindconfirm="onSearch"
+      />
+      <view class="search-scan-icon" catchtap="onScanSearch" aria-role="button">
+        <view class="scan-frame"></view>
+        <view class="scan-line"></view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card filter-card">
+    <view class="status-segment">
+      <text
+        wx:for="{{tabs}}"
+        wx:key="key"
+        class="status-seg {{tab === item.key ? 'active' : ''}}"
+        data-tab="{{item.key}}"
+        bindtap="switchTab"
+      >{{item.label}}</text>
+    </view>
+    <view class="filter-meta">
+      <text>共 {{total}} 条</text>
+      <text class="filter-hint">{{tab === 'pending' ? '在库且 69码 为空' : (tab === 'done' ? '已录 69码 且条码库已查到' : '已录 69码 但条码库没查到')}}</text>
+    </view>
+  </view>
+
+  <view class="card list-card">
+    <view wx:if="{{!list.length && !loading}}" class="empty">
+      <view class="e-icon">—</view>
+      <view class="e-text">{{tab === 'pending' ? '暂无缺 69码 的商品' : (tab === 'done' ? '暂无已查到 SPU 的商品' : '没有查不到的 69码')}}</view>
+    </view>
+
+    <view wx:for="{{list}}" wx:key="id" class="sku-item">
+      <view class="sku-item__main" data-code="{{item.sku_code}}" bindtap="openDetail">
+        <view class="sku-item__head">
+          <view class="sku-item__code">{{item.sku_code}}</view>
+          <view class="tag {{item.migration_status === 'DONE' ? 'tag-success' : 'tag-warning'}}">
+            {{item.migrationLabel}}
+          </view>
+        </view>
+        <view class="sku-item__barcode {{item.barcode ? '' : 'sku-item__barcode--empty'}}">
+          69码 {{item.barcode || '未录入'}}
+        </view>
+        <view wx:if="{{item.barcode}}" class="sku-item__spu {{item.spu_text ? '' : 'sku-item__spu--miss'}}">
+          {{item.spu_text || '条码库未查到该 69码，可重新查询或重录'}}
+        </view>
+        <view class="sku-item__name">{{item.product_name}}</view>
+        <view class="sku-item__sub">{{item.spec || '—'}} · 库位 {{item.location_code || '未分配'}}</view>
+        <view class="sku-item__sub">状态 {{fmt.statusLabel(item.status)}}</view>
+        <view class="sku-item__sub sku-item__sub--time">
+          {{tab === 'pending' ? '入库时间 ' + fmt.datetime(item.inbound_at) : (item.last_barcode_at ? '最近更换 ' + fmt.datetime(item.last_barcode_at) : '入库时录入')}}
+        </view>
+        <view wx:if="{{tab === 'done' && item.last_barcode_at}}" class="sku-item__note">
+          {{item.last_barcode_operator_name ? '更换人 ' + item.last_barcode_operator_name : '无操作人记录'}}
+          <text wx:if="{{item.last_barcode_source}}"> · {{item.last_barcode_source}}</text>
+          <text wx:if="{{item.last_barcode_old}}"> · 原 {{item.last_barcode_old}}</text>
+        </view>
+      </view>
+
+      <view wx:if="{{item.can_migrate}}" class="sku-item__actions">
+        <button
+          wx:if="{{tab === 'missing'}}"
+          class="btn-primary sku-item__action"
+          data-code="{{item.sku_code}}"
+          catchtap="relookup"
+          disabled="{{relookupCode === item.sku_code}}"
+        >{{relookupCode === item.sku_code ? '查询中…' : '重新查询'}}</button>
+        <button
+          class="{{tab === 'missing' ? 'btn btn-outline' : 'btn-primary'}} sku-item__action"
+          data-code="{{item.sku_code}}"
+          data-barcode="{{item.barcode}}"
+          catchtap="openEditor"
+        >{{item.actionLabel}}</button>
+      </view>
+    </view>
+
+    <view wx:if="{{loading}}" class="list-footer">加载中…</view>
+    <view wx:elif="{{noMore && list.length}}" class="list-footer">没有更多了</view>
+  </view>
+
+  <view wx:if="{{editorVisible}}" class="editor-mask" bindtap="closeEditor" catchtouchmove="true">
+    <view class="editor-sheet" catchtap="">
+      <view class="editor-sheet__head">
+        <text class="editor-sheet__cancel" bindtap="closeEditor">取消</text>
+        <text class="editor-sheet__title">69码更换</text>
+        <text class="editor-sheet__confirm {{saving ? 'is-disabled' : ''}}" bindtap="submitBarcode">
+          {{saving ? '提交中…' : '确定'}}
+        </text>
+      </view>
+      <view class="editor-sheet__body">
+        <view class="editor-field">
+          <view class="editor-label">货号</view>
+          <view class="editor-value">{{editorSkuCode}}</view>
+        </view>
+        <view class="editor-field">
+          <view class="editor-label">原 69码</view>
+          <view class="editor-value">{{editorOldBarcode || '未录入'}}</view>
+        </view>
+        <view class="editor-field editor-field--stacked">
+          <view class="editor-label">新 69码</view>
+          <view class="editor-input-row">
+            <input
+              class="editor-input"
+              type="number"
+              placeholder="扫描或输入 13 位商品条码"
+              value="{{editorNewBarcode}}"
+              bindinput="onEditorInput"
+              confirm-type="done"
+            />
+            <button class="btn btn-outline btn-sm editor-scan-btn" bindtap="scanNewBarcode">扫码</button>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

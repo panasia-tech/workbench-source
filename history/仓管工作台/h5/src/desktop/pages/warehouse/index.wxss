@@ -1,0 +1,41 @@
+/* 仓库（电脑版模板 index.wxml 用的几处补充；通用样式在 src/styles/desktop.css） */
+.wh-dk-tags {
+  padding-top: 0;
+}
+
+.wh-dk-warn {
+  color: #c2410c;
+}
+
+.wh-dk-thumb-wrap {
+  position: relative;
+  flex: none;
+}
+
+.wh-dk-loc-badge {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  padding: 0 4px;
+  border-radius: 0 4px 0 4px;
+  background: rgba(17, 24, 39, 0.7);
+  color: #fff;
+  font-size: 10px;
+  line-height: 16px;
+}
+
+.wh-dk-thumb-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+.wh-dk-tag-gap {
+  margin-left: 4px;
+}
+
+.wh-dk-legacy {
+  border-top: 1px solid #f0f1f3;
+}

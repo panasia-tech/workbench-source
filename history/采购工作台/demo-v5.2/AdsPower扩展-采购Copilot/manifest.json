@@ -1,0 +1,46 @@
+{
+  "manifest_version": 3,
+  "name": "采购 Copilot · 闲鱼内嵌助手 (AdsPower 旗舰版 v5.0)",
+  "version": "5.0.0",
+  "description": "闲鱼商品页多图快照自动留存 + 聊天页5维筛选读秒 + 顶部快照大图灯箱 + 平行四Dock面板（会话折线图/行情修正/双轨12招二次议价工单/两段10%收益看板）。",
+  "permissions": ["storage", "tabs", "activeTab"],
+  "host_permissions": [
+    "http://127.0.0.1:5360/*",
+    "http://localhost:5360/*",
+    "https://www.goofish.com/*",
+    "https://goofish.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "采购 Copilot v5.0 · 闲鱼内嵌助手",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.goofish.com/*", "https://goofish.com/*"],
+      "js": ["product-snapshot.js", "snapshot-ui.js", "content.js"],
+      "css": ["integration.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["sidebar.html", "sidebar.js", "sidebar.css", "icons/*"],
+      "matches": ["https://www.goofish.com/*", "https://goofish.com/*"]
+    }
+  ]
+}

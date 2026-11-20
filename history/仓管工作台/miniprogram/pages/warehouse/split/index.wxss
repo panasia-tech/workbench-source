@@ -1,0 +1,110 @@
+.split-page .split-source {
+  padding: 16rpx 0 4rpx;
+}
+
+.split-page .ss-name {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #111827;
+}
+
+.split-page .ss-meta {
+  font-size: 24rpx;
+  color: #6B7280;
+  margin-top: 4rpx;
+}
+
+.split-page .form-note {
+  font-size: 24rpx;
+  color: #6B7280;
+  font-weight: 600;
+  line-height: 1.5;
+  margin: 12rpx 0 20rpx;
+}
+
+.split-page .form-group--compact {
+  margin-bottom: 16rpx;
+}
+
+.split-page .form-row--short {
+  gap: 12rpx;
+}
+
+.split-page .input--compact {
+  min-height: 72rpx;
+  padding: 16rpx 20rpx;
+  font-size: 26rpx;
+}
+
+.split-page .picker-field {
+  display: flex;
+  align-items: center;
+  line-height: 1.4;
+}
+
+.split-page .picker-field--placeholder {
+  color: #9CA3AF;
+  font-weight: 600;
+}
+
+.split-page .multi-item-card {
+  margin-bottom: 16rpx;
+  padding: 24rpx;
+  background: #F9FAFB;
+  border: 1rpx solid #E5E7EB;
+  border-radius: 32rpx;
+}
+
+.split-page .multi-item-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.split-page .multi-item-badge {
+  font-size: 24rpx;
+  font-weight: 800;
+  color: #2563EB;
+}
+
+.split-page .multi-remove {
+  color: #DC2626;
+  font-size: 24rpx;
+  font-weight: 700;
+}
+
+.split-page .multi-add {
+  margin-bottom: 8rpx;
+}
+
+.split-page .split-sum {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 24rpx;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  font-weight: 700;
+  margin: 8rpx 0 20rpx;
+}
+
+.split-page .split-sum--ok {
+  background: #ECFDF5;
+  color: #059669;
+}
+
+.split-page .split-sum--warn {
+  background: #FEF2F2;
+  color: #DC2626;
+}
+
+.split-page .split-sum-flag {
+  font-size: 26rpx;
+}
+
+.split-page .submit-btn {
+  margin-top: 12rpx;
+  height: 96rpx;
+  font-size: 30rpx;
+}

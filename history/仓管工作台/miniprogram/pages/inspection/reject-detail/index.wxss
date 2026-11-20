@@ -1,0 +1,92 @@
+/* ===== 拒签主卡：红色 hero ===== */
+.reject-hero-card {
+  border-top: 6rpx solid #DC2626;
+}
+
+.reject-hero {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+}
+
+.reject-hero-thumb {
+  width: 132rpx;
+  height: 132rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #F3F4F6;
+}
+
+.reject-hero-thumb--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reject-hero-ph {
+  font-size: 48rpx;
+  font-weight: 700;
+  color: #FCA5A5;
+}
+
+.reject-hero-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.reject-badge {
+  display: inline-block;
+  padding: 4rpx 16rpx;
+  border-radius: 8rpx;
+  background: #FEE2E2;
+  color: #B91C1C;
+  border: 1rpx solid #FCA5A5;
+  font-size: 24rpx;
+  font-weight: 700;
+  margin-bottom: 12rpx;
+}
+
+.reject-hero-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.reject-hero-sub {
+  margin-top: 6rpx;
+  font-size: 24rpx;
+  color: #6B7280;
+}
+
+/* 拒签原因：前置、醒目的红色块 */
+.reject-reason {
+  margin-top: 24rpx;
+  padding: 22rpx 24rpx;
+  background: #FEF2F2;
+  border: 1rpx solid #FECACA;
+  border-radius: 14rpx;
+}
+
+.reject-reason-label {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #B91C1C;
+  margin-bottom: 10rpx;
+}
+
+.reject-reason-icon {
+  font-size: 28rpx;
+}
+
+.reject-reason-text {
+  font-size: 28rpx;
+  line-height: 1.6;
+  color: #374151;
+  word-break: break-all;
+  white-space: pre-wrap;
+}

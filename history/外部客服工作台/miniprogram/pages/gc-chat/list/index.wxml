@@ -1,0 +1,50 @@
+<view class="gcl">
+  <!-- 顶栏：和聊天详情同一套（navigationStyle: custom） -->
+  <view class="gcl-nav" style="padding-top: {{navPadTop}}; padding-right: {{navPadRight}}px">
+    <view class="gcl-nav-inner" style="height: {{navHeight}}px">
+      <view class="gcl-nav-btn" bindtap="goBack" aria-label="返回">
+        <view class="gc-ic gc-ic--back gcl-nav-ic"></view>
+      </view>
+      <text class="gcl-nav-title">聚合会话</text>
+    </view>
+  </view>
+
+  <view wx:if="{{!list.length && !loading}}" class="gcl-empty">暂无会话</view>
+
+  <view
+    wx:for="{{list}}"
+    wx:key="id"
+    class="gcl-row"
+    hover-class="gcl-row--hover"
+    bindtap="openDetail"
+    data-id="{{item.id}}"
+    data-title="{{item.peer_nick}}"
+    data-item="{{item.item_title}}"
+    data-price="{{item.item_price}}"
+    data-image="{{item.item_image}}"
+    data-status="{{item.order_status}}"
+    data-acc="{{item.account_nick}}"
+  >
+    <view class="gcl-avatar">
+      <text>{{item._avatar}}</text>
+      <view wx:if="{{item.unread > 0}}" class="gcl-badge">{{item._unread}}</view>
+    </view>
+    <view class="gcl-main">
+      <view class="gcl-head">
+        <text class="gcl-nick">{{item._nick}}</text>
+        <text class="gcl-shop">{{item.account_nick || '未知账号'}}</text>
+        <text class="gcl-time">{{item._time}}</text>
+      </view>
+      <view class="gcl-last {{item.unread > 0 ? 'gcl-last--unread' : ''}}">{{item.last_message || '暂无消息'}}</view>
+      <view class="gcl-goods" wx:if="{{item.item_title || item.item_price || item.order_status}}">
+        <text class="gcl-status" wx:if="{{item.order_status}}">{{item.order_status}}</text>
+        <text class="gcl-price" wx:if="{{item.item_price}}">¥{{item.item_price}}</text>
+        <text class="gcl-title">{{item.item_title}}</text>
+      </view>
+    </view>
+    <image wx:if="{{item.item_image}}" class="gcl-thumb" src="{{item.item_image}}" mode="aspectFill" lazy-load />
+  </view>
+
+  <view wx:if="{{loading}}" class="gcl-foot">加载中…</view>
+  <view wx:elif="{{noMore && list.length}}" class="gcl-foot">没有更多了</view>
+</view>

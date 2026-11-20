@@ -1,0 +1,56 @@
+<view class="page">
+  <view wx:if="{{loading}}" class="hint">加载中…</view>
+
+  <block wx:elif="{{session}}">
+    <view class="card">
+      <view class="d-head">
+        <text class="d-no">{{session.session_no}}</text>
+        <text class="d-status">{{statusLabel}}</text>
+      </view>
+      <view class="d-row">操作员：{{session.operator_name || '—'}}</view>
+      <view class="d-row">开始：{{startedText}}</view>
+      <view class="d-row">结束：{{completedText}}</view>
+      <view class="d-row" wx:if="{{session.diff_result}}">系统在库 {{session.diff_result.warehouse_count}} 件，实际扫到 {{session.diff_result.scanned_count}} 件</view>
+      <view class="d-row d-warn" wx:if="{{session.status === 'REJECTED' && session.review_comment}}">驳回原因：{{session.review_comment}}</view>
+      <button wx:if="{{canSubmit}}" class="btn btn-primary btn-block d-submit" loading="{{submitting}}" bindtap="submit">提交管理员审批</button>
+    </view>
+
+    <!-- 筛选 Tab(账实相符 / 盘亏 / 盘盈) -->
+    <view class="tabs">
+      <view
+        wx:for="{{tabs}}"
+        wx:key="key"
+        class="tab {{activeKey === item.key ? 'tab--on' : ''}}"
+        data-key="{{item.key}}"
+        bindtap="pickTab"
+      >
+        <view class="tab-num tab-{{item.key}}">{{item.items.length}}</view>
+        <view class="tab-label">{{item.label}}</view>
+      </view>
+    </view>
+
+    <!-- 商品列表(按 Tab 过滤,点击跳商品详情) -->
+    <view class="card">
+      <view wx:if="{{!list.length}}" class="empty">该分类暂无商品</view>
+      <block wx:else>
+        <view
+          wx:for="{{list}}"
+          wx:key="sku_code"
+          class="li"
+          data-code="{{item.sku_code}}"
+          bindtap="openSku"
+        >
+          <image wx:if="{{item.cover_url}}" class="li-img" src="{{item.cover_url}}" mode="aspectFill" lazy-load="true" />
+          <view wx:else class="li-img li-img--empty">无图</view>
+          <view class="li-info">
+            <view class="li-main">
+              <text class="li-code">{{item.sku_code}}</text>
+              <text class="li-arrow">›</text>
+            </view>
+            <text class="li-sub">{{item.product_name || ''}}{{item.location_code ? ' · ' + item.location_code : ''}}</text>
+          </view>
+        </view>
+      </block>
+    </view>
+  </block>
+</view>

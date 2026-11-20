@@ -1,0 +1,53 @@
+.status-tabs {
+  white-space: nowrap;
+  margin: 16rpx 0;
+}
+
+.status-tab {
+  display: inline-block;
+  padding: 12rpx 32rpx;
+  margin-right: 16rpx;
+  border-radius: 32rpx;
+  font-size: 26rpx;
+  color: var(--text-primary);
+  background: #fff;
+  border: 2rpx solid var(--color-primary-border);
+}
+
+.status-tab--active {
+  color: #fff;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.li-sub--time {
+  color: #9CA3AF;
+}
+
+/* 商品退回入口：实心按钮样式，与状态 tag（浅色描边胶囊）视觉区分；
+   catchtap 不触发整行跳详情 */
+.ob-return-btn {
+  margin-top: 8rpx;
+  padding: 10rpx 22rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #fff;
+  border: none;
+  border-radius: 10rpx;
+  background: var(--color-primary);
+  box-shadow: 0 2rpx 8rpx rgba(37, 99, 235, 0.35);
+}
+
+.ob-return-btn--hover {
+  opacity: 0.85;
+}
+
+.ob-fee {
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  color: #6B7280;
+}
+.ob-fee--empty {
+  color: var(--color-primary);
+  text-decoration: underline;
+}

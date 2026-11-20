@@ -1,0 +1,150 @@
+<view class="page-wrap page-wrap--no-tab sm-page" wx:if="{{loaded}}">
+  <!-- 这件货 -->
+  <view class="card">
+    <view class="sm-goods">
+      <image wx:if="{{sku.cover_url}}" class="sm-goods__cover" src="{{sku.cover_url}}" mode="aspectFill" data-list="{{sku.images}}" data-index="0" bindtap="previewImages" />
+      <view class="sm-goods__main">
+        <view class="sm-goods__code">{{sku.sku_code}}</view>
+        <view class="sm-goods__name">{{sku.product_name}}</view>
+        <view class="sm-kv"><text class="sm-k">品牌型号</text><text class="sm-v">{{sku.brand || '—'}} {{sku.model || '未登记型号'}}</text></view>
+        <view class="sm-kv"><text class="sm-k">规格</text><text class="sm-v">{{sku.spec || '—'}}</text></view>
+        <view class="sm-kv"><text class="sm-k">69码</text><text class="sm-v">{{sku.barcode || '未录入'}}</text></view>
+        <view class="sm-kv"><text class="sm-k">库位</text><text class="sm-v">{{sku.location_code || '未分配'}}</text></view>
+      </view>
+    </view>
+    <view class="sm-link" bindtap="goEditSku">型号或 69码 登记错了？去补正商品信息 ›</view>
+  </view>
+
+  <!-- 验收退回：原因 + 附件，按项补正 -->
+  <view wx:if="{{match && match.status === 'RETURNED'}}" class="card sm-returned">
+    <view class="sm-returned__title">验收退回，请按下面补正后重新提交</view>
+    <view class="sm-returned__reason">{{match.return_reason}}</view>
+    <view wx:if="{{match.return_media.length}}" class="sm-thumbs">
+      <image wx:for="{{match.return_media}}" wx:key="raw" class="sm-thumb" src="{{item.url}}" mode="aspectFill" data-list="{{match.return_media}}" data-index="{{index}}" bindtap="previewImages" />
+    </view>
+    <view class="sm-meta">{{match.reviewed_by}} 退回</view>
+  </view>
+
+  <!-- 已提交的匹配 -->
+  <view wx:if="{{match && match.status !== 'RETURNED'}}" class="card">
+    <view class="sm-row">
+      <text class="sm-title">当前匹配</text>
+      <text class="tag {{match.status === 'CONFIRMED' ? 'tag-success' : 'tag-warning'}}">{{match.label}}</text>
+    </view>
+    <view class="sm-chosen">{{match.spu || '报告：目录里找不到'}}<text wx:if="{{match.spu_code}}" class="sm-code"> · {{match.spu_code}}</text></view>
+    <view wx:if="{{match.note}}" class="sm-note">依据：{{match.note}}</view>
+    <view wx:if="{{match.media.length}}" class="sm-thumbs">
+      <image wx:for="{{match.media}}" wx:key="raw" class="sm-thumb" src="{{item.url}}" mode="aspectFill" data-list="{{match.media}}" data-index="{{index}}" bindtap="previewImages" />
+    </view>
+    <view class="sm-meta">{{match.submitted_by}} 提交<text wx:if="{{match.reviewed_by}}">，{{match.reviewed_by}} 验收</text></view>
+    <button wx:if="{{!editing}}" class="btn btn-outline btn-block sm-gap" bindtap="startEdit">提交错了，修改</button>
+  </view>
+
+  <block wx:if="{{editing}}">
+    <!-- 系统判断 + 下一步 -->
+    <view class="card sm-state {{stateClass}}">
+      <view class="sm-row">
+        <text class="sm-state__word">{{stateWord}}</text>
+        <text class="sm-state__title">{{assessment.title}}</text>
+      </view>
+      <view class="sm-state__detail">{{assessment.detail}}</view>
+      <view class="sm-state__next">下一步：{{assessment.next_step}}</view>
+    </view>
+
+    <!-- 候选 -->
+    <view class="card">
+      <view class="sm-title">对照候选，选和实物一致的</view>
+      <view wx:if="{{!candidates.length}}" class="sm-empty">没有候选。可以在下面搜目录，或报告找不到。</view>
+      <view
+        wx:for="{{candidates}}"
+        wx:key="spu_id"
+        class="sm-cand {{selectedId === item.spu_id ? 'sm-cand--on' : ''}}"
+        data-id="{{item.spu_id}}"
+        bindtap="selectCandidate"
+      >
+        <view class="sm-cand__radio">{{selectedId === item.spu_id ? '●' : '○'}}</view>
+        <image wx:if="{{item.image}}" class="sm-cand__img" src="{{item.image}}" mode="aspectFit" />
+        <view class="sm-cand__main">
+          <view class="sm-cand__name">{{item.name}}</view>
+          <view class="sm-kv"><text class="sm-k">配置</text><text class="sm-v {{item.diffText && item.spec ? 'sm-diff' : ''}}">{{item.spec || '未登记'}}</text></view>
+          <view class="sm-kv"><text class="sm-k">编码</text><text class="sm-v {{item.diffText ? 'sm-diff' : ''}}">{{item.spu_code}}</text></view>
+          <view wx:if="{{item.note}}" class="sm-kv"><text class="sm-k">备注</text><text class="sm-v">{{item.note}}</text></view>
+          <view class="sm-why">{{item.why}}<text wx:if="{{item.diffText}}">　· 候选之间不同：{{item.diffText}}</text></view>
+        </view>
+      </view>
+
+      <view class="sm-search">
+        <input class="input" placeholder="候选都不对？搜目录：型号 / 品牌 / 编码 / 配置" value="{{searchQ}}" bindinput="onSearchInput" />
+        <view wx:for="{{searchResults}}" wx:key="spu_id" class="sm-hit" data-id="{{item.spu_id}}" bindtap="selectSearch">
+          <text>{{item.name}}</text><text class="sm-code"> {{item.spec || ''}} · {{item.spu_code}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 依据 -->
+    <view class="card">
+      <view class="form-group">
+        <text class="form-label">核对说明</text>
+        <textarea class="input input--textarea" auto-height="{{true}}" maxlength="500" value="{{note}}" bindinput="onNoteInput"
+          placeholder="写你怎么核对的：铭牌型号、容量/颜色/版本。冲突、搜出来的、报找不到时必填" />
+      </view>
+      <view class="form-group">
+        <text class="form-label">照片（铭牌 / 配置页 / 包装条码）</text>
+        <view class="sm-thumbs">
+          <view wx:for="{{media}}" wx:key="raw" class="sm-thumb-wrap" data-index="{{index}}" bindtap="removeMedia">
+            <image class="sm-thumb" src="{{item.url}}" mode="aspectFill" />
+            <view class="sm-thumb-x">×</view>
+          </view>
+          <view wx:if="{{media.length < 9}}" class="sm-thumb sm-thumb-add" bindtap="addMedia">+</view>
+        </view>
+      </view>
+      <button class="btn-primary btn-block" loading="{{busy}}" bindtap="onSubmit">确认匹配，提交验收</button>
+      <button class="btn btn-outline btn-block sm-gap" bindtap="onReport">目录里找不到，报告异常</button>
+      <view class="sm-meta">拿不准就找仓库主管（管理员）核实，别为了交差硬选。</view>
+    </view>
+  </block>
+
+  <!-- 管理员验收 -->
+  <view wx:if="{{canReview}}" class="card">
+    <view class="sm-title">验收</view>
+    <textarea class="input input--textarea" auto-height="{{true}}" maxlength="500" value="{{reviewReason}}" bindinput="onReviewReason"
+      placeholder="退回必填：哪里不对、要补什么" />
+    <view class="sm-thumbs sm-gap">
+      <view wx:for="{{reviewMedia}}" wx:key="raw" class="sm-thumb-wrap" data-index="{{index}}" bindtap="removeReviewMedia">
+        <image class="sm-thumb" src="{{item.url}}" mode="aspectFill" />
+        <view class="sm-thumb-x">×</view>
+      </view>
+      <view wx:if="{{reviewMedia.length < 9}}" class="sm-thumb sm-thumb-add" bindtap="addReviewMedia">+ 标注截图</view>
+    </view>
+    <view class="sm-actions">
+      <button class="btn btn-outline" bindtap="onReturn">退回补正</button>
+      <button class="btn-primary" bindtap="onApprove">验收通过</button>
+    </view>
+  </view>
+
+  <!-- 经办记录 -->
+  <view wx:if="{{logs.length}}" class="card">
+    <view class="sm-title">经办记录</view>
+    <view wx:for="{{logs}}" wx:key="index" class="sm-log">
+      <view><text class="sm-log__who">{{item.staff || '—'}}</text> {{item.label}}<text wx:if="{{item.to_spu}}">：{{item.from_spu && item.from_spu !== item.to_spu ? item.from_spu + ' → ' : ''}}{{item.to_spu}}</text></view>
+      <view wx:if="{{item.note}}" class="sm-log__note">{{item.note}}</view>
+      <view wx:if="{{item.media.length}}" class="sm-thumbs">
+        <image wx:for="{{item.media}}" wx:for-item="m" wx:for-index="mi" wx:key="raw" class="sm-thumb sm-thumb--s" src="{{m.url}}" mode="aspectFill" data-list="{{item.media}}" data-index="{{mi}}" bindtap="previewImages" />
+      </view>
+    </view>
+  </view>
+
+  <!-- 改已有匹配：先看影响 -->
+  <view wx:if="{{impact}}" class="sm-mask">
+    <view class="sm-dialog">
+      <view class="sm-title">改掉已有的匹配？</view>
+      <view class="sm-note">现在是：{{impact.current_spu}}（{{impact.current_status === 'CONFIRMED' ? '已验收' : '待验收'}}）</view>
+      <view class="sm-note">改了会：</view>
+      <view wx:for="{{impact.effects}}" wx:key="index" class="sm-effect">· {{item}}</view>
+      <view class="sm-actions">
+        <button class="btn btn-outline" bindtap="cancelChange">不改了</button>
+        <button class="btn-primary" bindtap="confirmChange">确认修改</button>
+      </view>
+    </view>
+  </view>
+</view>

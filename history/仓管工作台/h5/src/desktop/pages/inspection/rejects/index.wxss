@@ -1,0 +1,9 @@
+/* 拒签记录（电脑版模板 index.wxml 用；手机模板里没有 rj-dk- 类名） */
+.rj-dk-ph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fee2e2;
+  color: #b91c1c;
+  font-size: 13px;
+}

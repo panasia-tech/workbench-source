@@ -1,0 +1,83 @@
+/* 销售详情（电脑版模板 index.wxml 用；通用样式在 src/styles/desktop.css） */
+.sd-dk-main {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.sd-dk-price {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.sd-dk-cover {
+  display: block;
+  width: 100%;
+  height: 300px;
+  border-radius: 6px;
+  background: #f3f4f6;
+  cursor: zoom-in;
+}
+
+.sd-dk-msg {
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  background: #fff7ed;
+  color: #c2410c;
+  font-size: 13px;
+}
+
+.sd-dk-tl {
+  display: flex;
+  flex-direction: column;
+}
+
+.sd-dk-tl__item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 12px;
+  padding: 0 0 14px 20px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.sd-dk-tl__item::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 14px;
+  bottom: 0;
+  width: 1px;
+  background: #e5e7eb;
+}
+
+.sd-dk-tl__item:last-child::before {
+  display: none;
+}
+
+.sd-dk-tl__dot {
+  position: absolute;
+  left: 0;
+  top: 5px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #d1d5db;
+}
+
+.sd-dk-tl__item--first .sd-dk-tl__dot {
+  background: #2563eb;
+}
+
+.sd-dk-tl__item--first .sd-dk-tl__text {
+  color: #1f2937;
+  font-weight: 500;
+}
+
+.sd-dk-tl__time {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}

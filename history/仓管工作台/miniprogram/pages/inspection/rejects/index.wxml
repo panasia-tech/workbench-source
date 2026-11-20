@@ -1,0 +1,63 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<view class="page-wrap page-wrap--no-tab record-page reject-page">
+  <view class="card filter-card">
+    <view class="search-bar">
+      <view class="search-input-wrap">
+        <input class="search-input search-input--with-scan" placeholder="验货单号/采购单/商品/物流单号" value="{{q}}" bindinput="onSearchInput" confirm-type="search" bindconfirm="onSearch" />
+        <view class="search-scan-icon" catchtap="onScanSearch" aria-role="button">
+          <view class="scan-frame"></view>
+          <view class="scan-line"></view>
+        </view>
+      </view>
+    </view>
+    <view class="date-row">
+      <picker mode="date" value="{{dateFrom}}" end="{{dateTo || ''}}" bindchange="onDateFromChange">
+        <view class="date-pill {{dateFrom ? 'date-pill--filled' : ''}}">{{dateFrom || '开始日期'}}</view>
+      </picker>
+      <text class="date-sep">至</text>
+      <picker mode="date" value="{{dateTo}}" start="{{dateFrom || ''}}" bindchange="onDateToChange">
+        <view class="date-pill {{dateTo ? 'date-pill--filled' : ''}}">{{dateTo || '结束日期'}}</view>
+      </picker>
+      <text wx:if="{{dateFrom || dateTo}}" class="date-clear" bindtap="clearDate">清除</text>
+    </view>
+    <view class="filter-meta">共 {{total}} 单拒签退回</view>
+  </view>
+
+  <view class="card list-card">
+    <view wx:if="{{!list.length && !loading}}" class="empty">
+      <view class="e-icon">—</view>
+      <view class="e-text">暂无拒签记录</view>
+    </view>
+    <view
+      wx:for="{{list}}"
+      wx:key="id"
+      class="list-item list-item--stacked reject-item"
+      data-id="{{item.id}}"
+      bindtap="openItem"
+    >
+      <view class="list-item__main">
+        <view class="li-thumb-wrap">
+          <media-thumb
+            wx:if="{{item.product_image_thumb}}"
+            url="{{item.product_image_thumb}}"
+            preview-url="{{item.product_image}}"
+            size="small"
+          />
+          <view wx:else class="li-icon reject-icon">拒</view>
+        </view>
+        <view class="li-info">
+          <view class="li-title">{{item.product_name || item.inspect_no}}</view>
+          <view class="li-sub">{{item.inspect_no}} · {{item.order_no || '—'}}{{item.spec ? ' · ' + item.spec : ''}}</view>
+          <view class="li-sub li-sub--time">拒签时间 {{fmt.datetime(item.inspected_at || item.created_at)}}{{item.operator_name ? ' · ' + item.operator_name : ''}}</view>
+        </view>
+        <view class="li-meta">
+          <view class="li-price" wx:if="{{item.unit_price}}">¥{{fmt.money(item.unit_price)}}</view>
+          <view class="tag tag-danger li-tag">拒签退回</view>
+        </view>
+      </view>
+    </view>
+    <view wx:if="{{loading}}" class="list-loading">加载中…</view>
+    <view wx:elif="{{noMore && list.length}}" class="list-end">没有更多了</view>
+  </view>
+</view>

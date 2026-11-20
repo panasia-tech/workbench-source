@@ -1,0 +1,222 @@
+<!-- 匹配商品（电脑版）：左边是匹配流程（退回 / 当前匹配 / 系统判断 / 候选 / 依据 / 验收），右边是这件货的资料和经办记录 -->
+<view class="dk-page" wx:if="{{loaded}}">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">匹配商品 · {{sku.sku_code}}</view>
+      <view class="dk-sub">对照候选选和实物一致的那个；拿不准就找仓库主管（管理员）核实，别为了交差硬选。</view>
+    </view>
+  </view>
+
+  <view class="dk-split smd-dk-split">
+    <!-- ================= 左栏：匹配流程 ================= -->
+    <view class="smd-dk-col">
+      <!-- 验收退回 -->
+      <view wx:if="{{match && match.status === 'RETURNED'}}" class="dk-card smd-dk-returned">
+        <view class="dk-card__head">验收退回，请按下面补正后重新提交</view>
+        <view class="dk-card__body">
+          <view class="smd-dk-reason">{{match.return_reason}}</view>
+          <view wx:if="{{match.return_media.length}}" class="smd-dk-thumbs">
+            <image wx:for="{{match.return_media}}" wx:key="raw" class="smd-dk-thumb" src="{{item.url}}" mode="aspectFill" data-list="{{match.return_media}}" data-index="{{index}}" bindtap="previewImages" />
+          </view>
+          <view class="dk-help">{{match.reviewed_by}} 退回</view>
+        </view>
+      </view>
+
+      <!-- 已提交的匹配 -->
+      <view wx:if="{{match && match.status !== 'RETURNED'}}" class="dk-card">
+        <view class="dk-card__head">
+          <view class="dk-row">
+            <text>当前匹配</text>
+            <text class="dk-tag {{match.status === 'CONFIRMED' ? 'tag-success' : 'tag-warning'}}">{{match.label}}</text>
+          </view>
+          <view wx:if="{{!editing}}" class="dk-btn dk-btn--sm" bindtap="startEdit">提交错了，修改</view>
+        </view>
+        <view class="dk-card__body">
+          <view class="smd-dk-chosen">{{match.spu || '报告：目录里找不到'}}<text wx:if="{{match.spu_code}}" class="dk-muted"> · {{match.spu_code}}</text></view>
+          <view wx:if="{{match.note}}" class="smd-dk-note">依据：{{match.note}}</view>
+          <view wx:if="{{match.media.length}}" class="smd-dk-thumbs">
+            <image wx:for="{{match.media}}" wx:key="raw" class="smd-dk-thumb" src="{{item.url}}" mode="aspectFill" data-list="{{match.media}}" data-index="{{index}}" bindtap="previewImages" />
+          </view>
+          <view class="dk-help">{{match.submitted_by}} 提交<text wx:if="{{match.reviewed_by}}">，{{match.reviewed_by}} 验收</text></view>
+        </view>
+      </view>
+
+      <block wx:if="{{editing}}">
+        <!-- 系统判断 + 下一步 -->
+        <view class="smd-dk-state {{stateClass}}">
+          <view class="dk-row">
+            <text class="smd-dk-state__word">{{stateWord}}</text>
+            <text class="smd-dk-state__title">{{assessment.title}}</text>
+          </view>
+          <view class="smd-dk-state__detail">{{assessment.detail}}</view>
+          <view class="smd-dk-state__next">下一步：{{assessment.next_step}}</view>
+        </view>
+
+        <!-- 候选 -->
+        <view class="dk-card">
+          <view class="dk-card__head">对照候选，选和实物一致的</view>
+          <view wx:if="{{!candidates.length}}" class="dk-empty">没有候选。可以在下面搜目录，或报告找不到。</view>
+          <view wx:else class="dk-table-wrap">
+            <table class="dk-table">
+              <thead>
+                <tr>
+                  <th class="smd-dk-radio-col"></th>
+                  <th>商品</th>
+                  <th>配置</th>
+                  <th>编码</th>
+                  <th>依据</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  wx:for="{{candidates}}"
+                  wx:key="spu_id"
+                  class="dk-tr--click {{selectedId === item.spu_id ? 'dk-tr--on' : ''}}"
+                  data-id="{{item.spu_id}}"
+                  bindtap="selectCandidate"
+                >
+                  <td class="smd-dk-radio-col"><view class="smd-dk-radio {{selectedId === item.spu_id ? 'smd-dk-radio--on' : ''}}"></view></td>
+                  <td>
+                    <view class="dk-media">
+                      <image wx:if="{{item.image}}" class="dk-thumb" src="{{item.image}}" mode="aspectFit" />
+                      <view class="dk-grow">
+                        <view class="dk-cell-main">{{item.name}}</view>
+                        <view wx:if="{{item.note}}" class="dk-cell-sub">备注：{{item.note}}</view>
+                      </view>
+                    </view>
+                  </td>
+                  <td class="{{item.diffText && item.spec ? 'smd-dk-diff' : ''}}">{{item.spec || '未登记'}}</td>
+                  <td class="dk-nowrap {{item.diffText ? 'smd-dk-diff' : ''}}">{{item.spu_code}}</td>
+                  <td class="smd-dk-why">{{item.why}}<view wx:if="{{item.diffText}}" class="dk-cell-sub">候选之间不同：{{item.diffText}}</view></td>
+                </tr>
+              </tbody>
+            </table>
+          </view>
+          <view class="dk-card__body smd-dk-search">
+            <input class="dk-input" placeholder="候选都不对？搜目录：型号 / 品牌 / 编码 / 配置" value="{{searchQ}}" bindinput="onSearchInput" />
+            <view wx:if="{{searchResults.length}}" class="smd-dk-hits">
+              <view wx:for="{{searchResults}}" wx:key="spu_id" class="smd-dk-hit" data-id="{{item.spu_id}}" bindtap="selectSearch">
+                <text class="dk-cell-main">{{item.name}}</text>
+                <text class="dk-muted"> {{item.spec || ''}} · {{item.spu_code}}</text>
+                <text class="dk-link smd-dk-hit__pick">选这个</text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 依据 -->
+        <view class="dk-card">
+          <view class="dk-card__head">核对依据</view>
+          <view class="dk-card__body">
+            <view class="dk-form">
+              <view class="dk-field dk-field--full">
+                <text class="dk-label">核对说明</text>
+                <textarea class="dk-input smd-dk-full" maxlength="500" value="{{note}}" bindinput="onNoteInput"
+                  placeholder="写你怎么核对的：铭牌型号、容量/颜色/版本。冲突、搜出来的、报找不到时必填" />
+              </view>
+              <view class="dk-field dk-field--full">
+                <text class="dk-label">照片（铭牌 / 配置页 / 包装条码）<text class="dk-muted">{{media.length}} / 9</text></text>
+                <view class="smd-dk-thumbs">
+                  <view wx:for="{{media}}" wx:key="raw" class="smd-dk-thumb-wrap">
+                    <image class="smd-dk-thumb" src="{{item.url}}" mode="aspectFill" data-list="{{media}}" data-index="{{index}}" bindtap="previewImages" />
+                    <view class="smd-dk-x" title="移除" data-index="{{index}}" catchtap="removeMedia">×</view>
+                  </view>
+                  <view wx:if="{{media.length < 9}}" class="smd-dk-thumb smd-dk-add" bindtap="addMedia">+</view>
+                </view>
+              </view>
+            </view>
+          </view>
+          <view class="smd-dk-foot">
+            <text class="dk-help dk-grow">拿不准就找仓库主管（管理员）核实，别为了交差硬选。</text>
+            <view class="dk-btn" bindtap="onReport">目录里找不到，报告异常</view>
+            <view class="dk-btn dk-btn--primary {{busy ? 'dk-btn--disabled' : ''}}" bindtap="onSubmit">{{busy ? '提交中…' : '确认匹配，提交验收'}}</view>
+          </view>
+        </view>
+      </block>
+
+      <!-- 管理员验收 -->
+      <view wx:if="{{canReview}}" class="dk-card">
+        <view class="dk-card__head">验收</view>
+        <view class="dk-card__body">
+          <textarea class="dk-input smd-dk-full" maxlength="500" value="{{reviewReason}}" bindinput="onReviewReason"
+            placeholder="退回必填：哪里不对、要补什么" />
+          <view class="smd-dk-thumbs smd-dk-mt">
+            <view wx:for="{{reviewMedia}}" wx:key="raw" class="smd-dk-thumb-wrap">
+              <image class="smd-dk-thumb" src="{{item.url}}" mode="aspectFill" data-list="{{reviewMedia}}" data-index="{{index}}" bindtap="previewImages" />
+              <view class="smd-dk-x" title="移除" data-index="{{index}}" catchtap="removeReviewMedia">×</view>
+            </view>
+            <view wx:if="{{reviewMedia.length < 9}}" class="smd-dk-thumb smd-dk-add smd-dk-add--text" bindtap="addReviewMedia">+ 标注截图</view>
+          </view>
+        </view>
+        <view class="smd-dk-foot">
+          <view class="dk-btn dk-btn--danger" bindtap="onReturn">退回补正</view>
+          <view class="dk-btn dk-btn--primary" bindtap="onApprove">验收通过</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- ================= 右栏：这件货 + 经办记录 ================= -->
+    <view class="smd-dk-col">
+      <view class="dk-card">
+        <view class="dk-card__head">这件货</view>
+        <view class="dk-card__body">
+          <image wx:if="{{sku.cover_url}}" class="smd-dk-cover" src="{{sku.cover_url}}" mode="aspectFill" data-list="{{sku.images}}" data-index="0" bindtap="previewImages" />
+          <view class="dk-cell-main smd-dk-name">{{sku.product_name}}</view>
+          <view class="dk-desc dk-desc--2">
+            <view class="dk-desc__item">
+              <text class="dk-desc__k">货号</text>
+              <text class="dk-desc__v">{{sku.sku_code}}</text>
+            </view>
+            <view class="dk-desc__item">
+              <text class="dk-desc__k">库位</text>
+              <text class="dk-desc__v">{{sku.location_code || '未分配'}}</text>
+            </view>
+            <view class="dk-desc__item">
+              <text class="dk-desc__k">品牌型号</text>
+              <text class="dk-desc__v">{{sku.brand || '—'}} {{sku.model || '未登记型号'}}</text>
+            </view>
+            <view class="dk-desc__item">
+              <text class="dk-desc__k">69码</text>
+              <text class="dk-desc__v">{{sku.barcode || '未录入'}}</text>
+            </view>
+            <view class="dk-desc__item dk-desc__item--full">
+              <text class="dk-desc__k">规格</text>
+              <text class="dk-desc__v">{{sku.spec || '—'}}</text>
+            </view>
+          </view>
+          <view class="dk-link smd-dk-mt" bindtap="goEditSku">型号或 69码 登记错了？去补正商品信息 ›</view>
+        </view>
+      </view>
+
+      <view wx:if="{{logs.length}}" class="dk-card">
+        <view class="dk-card__head">经办记录</view>
+        <view class="dk-card__body">
+          <view wx:for="{{logs}}" wx:key="index" class="smd-dk-log">
+            <view><text class="dk-cell-main">{{item.staff || '—'}}</text> {{item.label}}<text wx:if="{{item.to_spu}}">：{{item.from_spu && item.from_spu !== item.to_spu ? item.from_spu + ' → ' : ''}}{{item.to_spu}}</text></view>
+            <view wx:if="{{item.note}}" class="dk-help">{{item.note}}</view>
+            <view wx:if="{{item.media.length}}" class="smd-dk-thumbs">
+              <image wx:for="{{item.media}}" wx:for-item="m" wx:for-index="mi" wx:key="raw" class="smd-dk-thumb smd-dk-thumb--s" src="{{m.url}}" mode="aspectFill" data-list="{{item.media}}" data-index="{{mi}}" bindtap="previewImages" />
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 改已有匹配：先看影响 -->
+  <view wx:if="{{impact}}" class="smd-dk-mask">
+    <view class="smd-dk-dialog">
+      <view class="dk-card__head">改掉已有的匹配？</view>
+      <view class="dk-card__body">
+        <view class="smd-dk-note">现在是：{{impact.current_spu}}（{{impact.current_status === 'CONFIRMED' ? '已验收' : '待验收'}}）</view>
+        <view class="smd-dk-note">改了会：</view>
+        <view wx:for="{{impact.effects}}" wx:key="index" class="smd-dk-effect">· {{item}}</view>
+      </view>
+      <view class="smd-dk-foot">
+        <view class="dk-btn" bindtap="cancelChange">不改了</view>
+        <view class="dk-btn dk-btn--primary" bindtap="confirmChange">确认修改</view>
+      </view>
+    </view>
+  </view>
+</view>
+<view wx:else class="dk-page"><view class="dk-card dk-empty">加载中…</view></view>

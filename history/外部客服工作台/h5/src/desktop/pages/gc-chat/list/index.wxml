@@ -1,0 +1,76 @@
+<!-- 聚合会话（电脑版）：会话表格，点一行进聊天；接口不给总数，底部「加载更多」接着往下拉 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">聚合会话</view>
+      <view class="dk-sub">所有店铺的闲鱼会话；已加载 {{list.length}} 个{{noMore ? '' : '，往下还有'}}</view>
+    </view>
+  </view>
+
+  <view class="dk-card">
+    <view class="dk-table-wrap">
+      <table class="dk-table">
+        <thead>
+          <tr>
+            <th>买家</th>
+            <th>店铺</th>
+            <th>最后一条消息</th>
+            <th>商品</th>
+            <th class="dk-num">价格</th>
+            <th>订单</th>
+            <th class="dk-num">时间</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            wx:for="{{list}}"
+            wx:key="id"
+            class="dk-tr--click"
+            bindtap="openDetail"
+            data-id="{{item.id}}"
+            data-title="{{item.peer_nick}}"
+            data-item="{{item.item_title}}"
+            data-price="{{item.item_price}}"
+            data-image="{{item.item_image}}"
+            data-status="{{item.order_status}}"
+            data-acc="{{item.account_nick}}"
+          >
+            <td class="dk-nowrap">
+              <view class="dk-media">
+                <view class="gcl-dk-avatar">
+                  <text>{{item._avatar}}</text>
+                  <text wx:if="{{item.unread > 0}}" class="gcl-dk-badge">{{item._unread}}</text>
+                </view>
+                <text class="dk-cell-main">{{item._nick}}</text>
+              </view>
+            </td>
+            <td class="dk-nowrap">{{item.account_nick || '未知账号'}}</td>
+            <td>
+              <view class="dk-ellipsis gcl-dk-last {{item.unread > 0 ? 'gcl-dk-last--unread' : ''}}" title="{{item.last_message}}">{{item.last_message || '暂无消息'}}</view>
+            </td>
+            <td>
+              <view wx:if="{{item.item_title || item.item_image}}" class="dk-media">
+                <image wx:if="{{item.item_image}}" class="dk-thumb gcl-dk-thumb" src="{{item.item_image}}" mode="aspectFill" lazy-load />
+                <view class="dk-ellipsis gcl-dk-title" title="{{item.item_title}}">{{item.item_title || '—'}}</view>
+              </view>
+              <text wx:else class="dk-muted">—</text>
+            </td>
+            <td class="dk-num">{{item.item_price ? '¥' + item.item_price : '—'}}</td>
+            <td class="dk-nowrap">
+              <text wx:if="{{item.order_status}}" class="dk-tag dk-tag--orange">{{item.order_status}}</text>
+              <text wx:else class="dk-muted">—</text>
+            </td>
+            <td class="dk-num">{{item._time}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </view>
+
+    <view wx:if="{{!list.length && !loading}}" class="dk-empty">暂无会话</view>
+    <view wx:if="{{loading}}" class="dk-empty">加载中…</view>
+    <view wx:elif="{{list.length && !noMore}}" class="dk-pager gcl-dk-more">
+      <view class="dk-btn" bindtap="loadMore">加载更多</view>
+    </view>
+    <view wx:elif="{{list.length}}" class="dk-pager gcl-dk-more"><text>没有更多了</text></view>
+  </view>
+</view>

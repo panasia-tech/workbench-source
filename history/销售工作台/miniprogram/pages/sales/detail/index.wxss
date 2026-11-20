@@ -1,0 +1,48 @@
+.sales-detail-page .detail-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24rpx;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid #E5E7EB;
+  font-size: 26rpx;
+}
+
+.sales-detail-page .detail-row:last-child {
+  border-bottom: none;
+}
+
+.sales-detail-page .detail-label {
+  flex-shrink: 0;
+  color: #6B7280;
+  font-weight: 600;
+}
+
+.sales-detail-page .detail-value {
+  flex: 1;
+  min-width: 0;
+  text-align: right;
+  color: #111827;
+  font-weight: 600;
+  word-break: break-all;
+}
+
+.sales-detail-page .detail-value--price {
+  color: #DC2626;
+}
+
+.sales-detail-page .card-head--split {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sales-detail-page .empty--compact {
+  padding: 24rpx 0;
+}
+
+.sd-cover {
+  display: flex;
+  justify-content: center;
+  padding: 8rpx 0;
+}

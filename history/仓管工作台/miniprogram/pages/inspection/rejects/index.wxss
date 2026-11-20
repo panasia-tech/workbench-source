@@ -1,0 +1,19 @@
+/* 拒签图标用红色，区别于普通验货「验」 */
+.reject-page .li-icon.reject-icon {
+  background: #FEE2E2;
+  color: #B91C1C;
+}
+
+.reject-page .date-clear {
+  margin-left: 16rpx;
+  font-size: 26rpx;
+  color: var(--color-text-secondary, #6B7280);
+}
+
+.reject-page .list-loading,
+.reject-page .list-end {
+  text-align: center;
+  padding: 24rpx 0;
+  font-size: 24rpx;
+  color: var(--color-text-secondary, #9CA3AF);
+}

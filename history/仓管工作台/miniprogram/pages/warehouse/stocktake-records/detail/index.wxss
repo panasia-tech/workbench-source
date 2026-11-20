@@ -1,0 +1,35 @@
+.page { padding: 20rpx; }
+.hint { text-align: center; color: #999; padding: 80rpx 0; }
+
+.d-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12rpx; }
+.d-no { font-size: 32rpx; font-weight: 600; }
+.d-status { font-size: 26rpx; color: #1565C0; }
+.d-row { font-size: 26rpx; color: #555; margin-top: 8rpx; }
+
+/* 筛选 Tab(由统计卡演变,可点) */
+.tabs { display: flex; gap: 16rpx; margin: 18rpx 0; }
+.tab {
+  flex: 1; background: #fff; border-radius: 16rpx; padding: 24rpx 0;
+  text-align: center; box-shadow: 0 2rpx 8rpx rgba(0,0,0,.04);
+  border: 2rpx solid transparent;
+}
+.tab--on { border-color: #1565C0; background: #f3f8ff; }
+.tab-num { font-size: 44rpx; font-weight: 700; color: #1565C0; }
+.tab-num.tab-missing { color: #d32f2f; }
+.tab-num.tab-surplus { color: #e08600; }
+.tab-label { font-size: 24rpx; color: #888; margin-top: 6rpx; }
+.tab--on .tab-label { color: #1565C0; }
+
+.empty { text-align: center; color: #aaa; padding: 50rpx 0; }
+
+.li { display: flex; align-items: center; padding: 16rpx 0; border-top: 1rpx solid #f0f0f0; }
+.li:first-child { border-top: none; }
+.li-img { width: 96rpx; height: 96rpx; border-radius: 12rpx; margin-right: 20rpx; background: #f0f1f3; flex-shrink: 0; }
+.li-img--empty { display: flex; align-items: center; justify-content: center; color: #bbb; font-size: 22rpx; }
+.li-info { flex: 1; min-width: 0; }
+.li-main { display: flex; justify-content: space-between; align-items: center; }
+.li-code { font-size: 30rpx; color: #222; }
+.li-arrow { color: #ccc; font-size: 36rpx; }
+.li-sub { font-size: 24rpx; color: #999; margin-top: 6rpx; display: block; }
+.d-warn { color: #d32f2f; }
+.d-submit { margin-top: 20rpx; }

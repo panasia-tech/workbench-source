@@ -1,0 +1,147 @@
+<!-- 发货前复核（电脑版）：左边这件货的入库凭证、入库问题、历次复核，右边复核表单 -->
+<view class="dk-page">
+  <view wx:if="{{!loaded}}" class="dk-card dk-empty">加载中…</view>
+  <block wx:else>
+    <view class="dk-head">
+      <view>
+        <view class="dk-title">{{d.sku.product_name}}</view>
+        <view class="dk-sub">{{d.sku.sku_code}}<text wx:if="{{d.sku.serial_number}}"> · 序列号 {{d.sku.serial_number}}</text> · 成色 {{d.sku.condition_grade || '—'}}</view>
+      </view>
+      <view class="dk-row">
+        <text wx:if="{{d.full_check && d.full_check.state !== 'NONE'}}" class="dk-tag {{d.full_check.state === 'COMPLETE' ? 'tag-success' : 'tag-danger'}}">{{d.full_check.label}}</text>
+      </view>
+    </view>
+
+    <view wx:if="{{d.inspection && d.inspection.mismatch_remark}}" class="rv-dk-warn">货不对版：{{d.inspection.mismatch_remark}}</view>
+
+    <view class="dk-split rv-dk-split">
+      <view class="rv-dk-col">
+        <view class="dk-card">
+          <view class="dk-card__head">
+            <text>入库凭证</text>
+            <text class="dk-sub">{{evidence.length + oldVideos.length}} 个文件</text>
+          </view>
+          <view class="dk-card__body rv-dk-col">
+            <view wx:if="{{!evidence.length && !photos.length && !oldVideos.length}}" class="dk-help">这件货没有入库凭证（老货可能没有开箱视频），复核时要写明说明。</view>
+            <view wx:if="{{evidence.length || oldVideos.length}}" class="dk-row">
+              <block wx:for="{{evidence}}" wx:key="id">
+                <view wx:if="{{item.is_video}}" class="dk-btn" data-index="{{index}}" bindtap="playVideo">▶ {{item.kindLabel}} · {{item.recorded_by_name}}</view>
+              </block>
+              <view wx:for="{{oldVideos}}" wx:key="index" class="dk-btn" data-index="{{index}}" bindtap="playOldVideo">▶ 验货瑕疵视频 {{index + 1}}</view>
+            </view>
+            <view wx:if="{{photos.length}}" class="dk-gallery">
+              <image wx:for="{{photos}}" wx:key="index" src="{{item}}" mode="aspectFill" class="dk-gallery__item rv-dk-img" data-index="{{index}}" bindtap="previewPhotos" />
+            </view>
+          </view>
+        </view>
+
+        <view class="dk-card" wx:if="{{problems.length || d.exceptions.length}}">
+          <view class="dk-card__head">
+            <text>入库时记录的问题</text>
+            <text class="dk-sub">和现在货况比对</text>
+          </view>
+          <table class="dk-table">
+            <thead>
+              <tr>
+                <th>类型</th>
+                <th>内容</th>
+                <th>说明 / 状态</th>
+                <th>现在</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr wx:for="{{problems}}" wx:key="index">
+                <td class="dk-nowrap"><text class="dk-tag tag-warning">{{item.label}}</text></td>
+                <td>{{item.title}}<text wx:if="{{item.defect_part}}" class="dk-muted"> · {{item.defect_part}}</text></td>
+                <td class="dk-muted">{{item.note || '—'}}</td>
+                <td class="dk-nowrap">
+                  <text
+                    wx:for="{{checkOpts}}"
+                    wx:for-item="opt"
+                    wx:for-index="oi"
+                    wx:key="key"
+                    class="rv-dk-chip {{item.check === opt.key ? 'rv-dk-chip--on' : ''}} {{opt.key === 'WORSE' || opt.key === 'NEW' ? 'rv-dk-chip--bad' : ''}}"
+                    data-index="{{index}}"
+                    data-key="{{opt.key}}"
+                    bindtap="pickCheck"
+                  >{{opt.label}}</text>
+                </td>
+              </tr>
+              <tr wx:for="{{d.exceptions}}" wx:key="id">
+                <td class="dk-nowrap"><text class="dk-tag tag-danger">异常</text></td>
+                <td>{{item.description}}</td>
+                <td><text class="dk-tag {{item.status === 'OPEN' ? 'tag-warning' : 'tag-pending'}}">{{item.status === 'OPEN' ? '未结束' : '已结束'}}</text></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </view>
+
+        <view class="dk-card" wx:if="{{d.reviews.length}}">
+          <view class="dk-card__head">历次复核</view>
+          <table class="dk-table">
+            <thead>
+              <tr>
+                <th>结果</th>
+                <th>环节</th>
+                <th>复核人</th>
+                <th>时间</th>
+                <th>说明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr wx:for="{{d.reviews}}" wx:key="index">
+                <td class="dk-nowrap"><text class="dk-tag {{item.result === 'PROBLEM' ? 'tag-danger' : 'tag-success'}}">{{item.result === 'PROBLEM' ? '发现问题' : '核对无误'}}</text></td>
+                <td class="dk-nowrap">{{item.state}}</td>
+                <td class="dk-nowrap">{{item.reviewer_name}}</td>
+                <td class="dk-nowrap">{{item.created_at}}</td>
+                <td class="dk-muted">{{item.remark || '—'}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </view>
+      </view>
+
+      <view class="dk-card">
+        <view class="dk-card__head">复核</view>
+        <view class="dk-card__body rv-dk-col">
+          <view class="dk-field">
+            <text class="dk-label">核对实物：扫货号或序列号</text>
+            <view class="dk-row">
+              <input class="dk-input dk-grow" placeholder="扫码或手输，对不上会提示拿错件" value="{{identity}}" bindinput="onIdentity" />
+              <view class="dk-btn" bindtap="scanIdentity">扫码</view>
+            </view>
+          </view>
+          <view class="dk-field">
+            <text class="dk-label">结论</text>
+            <view class="rv-dk-results">
+              <view class="rv-dk-result {{result === 'OK' ? 'rv-dk-result--ok' : ''}}" data-key="OK" bindtap="pickResult">核对无误</view>
+              <view class="rv-dk-result {{result === 'PROBLEM' ? 'rv-dk-result--bad' : ''}}" data-key="PROBLEM" bindtap="pickResult">发现新问题</view>
+            </view>
+          </view>
+          <view class="dk-field">
+            <text class="dk-label {{result === 'PROBLEM' ? 'dk-label--req' : ''}}">说明</text>
+            <textarea
+              class="dk-input rv-dk-textarea"
+              maxlength="300"
+              value="{{remark}}"
+              bindinput="onRemark"
+              placeholder="{{result === 'PROBLEM' ? '什么新问题、在哪个部位（必填）' : '说明（没有开箱视频或有未结束异常时必填）'}}"
+            />
+          </view>
+          <view class="dk-field">
+            <text class="dk-label">当前货况照片</text>
+            <view class="rv-dk-media">
+              <view wx:for="{{media}}" wx:key="raw" class="rv-dk-thumb">
+                <image src="{{item.url}}" mode="aspectFill" class="rv-dk-img" data-url="{{item.url}}" bindtap="dkPreview" />
+                <view class="rv-dk-x" data-index="{{index}}" catchtap="removePhoto" title="删掉这张">×</view>
+              </view>
+              <view class="rv-dk-thumb rv-dk-add" bindtap="addPhoto">+ 拍当前货况</view>
+            </view>
+          </view>
+          <view class="dk-btn dk-btn--primary rv-dk-submit {{busy ? 'dk-btn--disabled' : ''}}" bindtap="submit">{{busy ? '提交中…' : '提交复核'}}</view>
+        </view>
+      </view>
+    </view>
+  </block>
+</view>

@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>采购工作台 · 闲鱼侧边助手</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div class="hd">
+    <div class="logo">采</div>
+    <div>
+      <div class="t">采购 Copilot · 闲鱼内嵌旗舰版 v5.0</div>
+      <div id="srv-lamp" class="s">正在检查本机采购工作台…</div>
+    </div>
+  </div>
+
+  <div class="stack">
+    <button id="btn-toggle" class="btn btn-primary" type="button">🪟 在当前闲鱼页显示 / 隐藏四Dock助手</button>
+    <button id="btn-full" class="btn" type="button">↗ 打开 7 模块完整采购工作台 (:5360)</button>
+    <button id="btn-sandbox" class="btn" type="button">🎮 新员工 2 分钟防踩坑小练习</button>
+  </div>
+
+  <div class="cfg">
+    <label for="srv-url">采购工作台地址（默认无需改动）</label>
+    <div class="row">
+      <input id="srv-url" type="text" value="http://127.0.0.1:5360" />
+      <button id="btn-save" class="btn btn-sm" type="button">保存</button>
+    </div>
+    <div id="pop-msg" class="msg"></div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

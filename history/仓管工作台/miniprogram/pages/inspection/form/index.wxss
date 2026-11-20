@@ -1,0 +1,382 @@
+.insp-form-page .form-note {
+  font-size: 24rpx;
+  color: #6B7280;
+  margin: -4rpx 0 20rpx;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.insp-form-page .label-hint {
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #6B7280;
+}
+
+.insp-form-head {
+  display: flex;
+  align-items: stretch;
+  gap: 24rpx;
+  margin-bottom: 28rpx;
+}
+
+/* 商品实拍图：取自采购单首图，供验货员核对实物 */
+.insp-hero-thumb {
+  position: relative;
+  flex-shrink: 0;
+  width: 168rpx;
+  height: 168rpx;
+  border-radius: 24rpx;
+  overflow: hidden;
+  border: 1rpx solid #BFDBFE;
+  background: #F3F6FB;
+}
+
+.insp-hero-thumb media-thumb {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.insp-hero-badge {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  padding: 4rpx 14rpx;
+  border-radius: 0 16rpx 0 16rpx;
+  background: rgba(37, 99, 235, 0.88);
+  color: #fff;
+  font-size: 20rpx;
+  font-weight: 700;
+  letter-spacing: 1rpx;
+}
+
+.insp-hero-thumb--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-style: dashed;
+  border-color: #D1D5DB;
+}
+
+.insp-hero-ph {
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #9CA3AF;
+}
+
+.insp-form-head-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.insp-form-head .card-head {
+  margin-bottom: 8rpx;
+}
+
+.insp-form-sub {
+  font-size: 26rpx;
+  color: #374151;
+  font-weight: 700;
+  line-height: 1.45;
+  margin-bottom: 14rpx;
+}
+
+.insp-form-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  margin-top: auto;
+}
+
+.insp-form-tag {
+  display: inline-block;
+}
+
+.insp-form-price {
+  padding: 10rpx 22rpx;
+  border-radius: 40rpx;
+  background: #EFF6FF;
+  color: #2563EB;
+  border: 1rpx solid #BFDBFE;
+  font-size: 28rpx;
+  font-weight: 800;
+}
+
+.mode-switch {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 32rpx;
+}
+
+.mode-option {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  padding: 24rpx 16rpx;
+  border: 1rpx solid #E5E7EB;
+  border-radius: 24rpx;
+  background: #fff;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #6B7280;
+}
+
+.mode-option.active {
+  border-color: #1D4ED8;
+  background: #EFF6FF;
+  color: #2563EB;
+}
+
+.mode-check {
+  width: 36rpx;
+  height: 36rpx;
+  line-height: 36rpx;
+  text-align: center;
+  font-size: 24rpx;
+  font-weight: 800;
+}
+
+.form-section {
+  margin-bottom: 28rpx;
+}
+
+.insp-form-page .upload-zone {
+  margin-bottom: 0;
+}
+
+.insp-form-page .upload-preview-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.insp-form-page .upload-preview-item {
+  width: calc(50% - 8rpx);
+  height: 220rpx;
+  border-radius: 24rpx;
+  overflow: hidden;
+  border: 1rpx solid #BFDBFE;
+  background: #F9FAFB;
+}
+
+.insp-form-page .upload-zone--compact {
+  min-height: 120rpx;
+  padding: 24rpx;
+}
+
+.insp-form-page .uz-camera {
+  width: 88rpx;
+  height: 72rpx;
+  margin: 0 auto 20rpx;
+  background: #E5E7EB;
+  border-radius: 12rpx;
+  position: relative;
+}
+
+.insp-form-page .uz-camera::before {
+  content: '';
+  position: absolute;
+  top: 16rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 36rpx;
+  height: 24rpx;
+  border: 6rpx solid #6B7280;
+  border-radius: 6rpx;
+}
+
+.insp-form-page .uz-plus {
+  width: 56rpx;
+  height: 56rpx;
+  margin: 0 auto 12rpx;
+  border-radius: 50%;
+  background: #EFF6FF;
+  color: #2563EB;
+  font-size: 40rpx;
+  line-height: 52rpx;
+  text-align: center;
+  font-weight: 700;
+}
+
+.scan-status {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  font-size: 24rpx;
+  color: #6B7280;
+  font-weight: 600;
+  margin: 8rpx 0 12rpx;
+}
+
+.ocr-btn {
+  margin-top: 8rpx;
+}
+
+.code-btn-row {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 8rpx;
+}
+
+.code-btn-row .code-btn {
+  flex: 1;
+}
+
+.btn-danger {
+  background: #FEE2E2;
+  color: #B91C1C;
+  border: 1rpx solid #FECACA;
+  border-radius: 24rpx;
+  font-size: 30rpx;
+  font-weight: 700;
+  padding: 24rpx;
+}
+
+.btn-danger::after {
+  border: none;
+}
+
+.pd-media-block {
+  margin-top: 16rpx;
+}
+
+.insp-form-page .pill-group {
+  margin-bottom: 0;
+}
+
+.picker-field {
+  display: flex;
+  align-items: center;
+  line-height: 1.4;
+  min-height: 88rpx;
+  font-size: 32rpx;
+  font-weight: 700;
+}
+
+.picker-field--empty {
+  color: #9CA3AF;
+  font-weight: 600;
+}
+
+.picker-sheet-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1000;
+}
+
+.picker-sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #fff;
+  border-radius: 32rpx 32rpx 0 0;
+  z-index: 1001;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.picker-sheet__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx 32rpx;
+  border-bottom: 2rpx solid #E5E7EB;
+}
+
+.picker-sheet__btn {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #6B7280;
+  min-width: 96rpx;
+}
+
+.picker-sheet__btn--confirm {
+  color: #2563EB;
+  text-align: right;
+}
+
+.picker-sheet__title {
+  font-size: 32rpx;
+  font-weight: 800;
+  color: #1F2937;
+}
+
+.picker-sheet__view {
+  height: 480rpx;
+}
+
+.picker-sheet__item {
+  height: 112rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 0 32rpx;
+}
+
+.picker-sheet__text {
+  font-size: 36rpx;
+  font-weight: 700;
+  line-height: 1.4;
+  color: #1F2937;
+  text-align: center;
+}
+
+.input--price {
+  font-weight: 800;
+  color: #DC2626;
+}
+
+.insp-piece-entry {
+  display: inline-block;
+  margin: 8rpx 0 12rpx;
+  padding: 4rpx 16rpx;
+  border-radius: 999rpx;
+  background: #EFF6FF;
+  color: #1D4ED8;
+  font-size: 24rpx;
+  font-weight: 600;
+}
+
+.insp-check-entry {
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+  margin: 20rpx 0;
+  padding: 20rpx 24rpx;
+  border-radius: 14rpx;
+  background: #EFF6FF;
+  border: 2rpx solid #BFDBFE;
+}
+
+.insp-check-entry__title { font-size: 28rpx; font-weight: 700; color: #1D4ED8; }
+.insp-check-entry__sub { font-size: 24rpx; color: #374151; }
+
+.insp-form-page .tag-chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.insp-form-page .tag-chip {
+  padding: 12rpx 24rpx;
+  border-radius: 28rpx;
+  background: #F9FAFB;
+  border: 1rpx solid #E5E7EB;
+  color: #6B7280;
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+.insp-form-page .tag-chip--active {
+  background: #EFF6FF;
+  border-color: #2563EB;
+  color: #2563EB;
+}

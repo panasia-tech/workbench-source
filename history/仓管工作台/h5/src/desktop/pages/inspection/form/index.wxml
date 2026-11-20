@@ -1,0 +1,278 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<!-- 验货（电脑版）：顶上切「验货入库 / 拒签退回」，左边表单字段，右边图片 / 视频，底部提交。
+     库位在电脑上是居中对话框（可搜索，点一下就选上）；其余全是手机版原来的方法 -->
+<view class="dk-page" wx:if="{{task}}">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title dk-row">
+        <text>验货处理</text>
+        <text class="dk-tag tag-warning">{{fmt.statusLabel(task.order_status)}}</text>
+        <text wx:if="{{task.piece_label}}" class="dk-tag dk-tag--blue">{{task.piece_label}}</text>
+      </view>
+      <view class="dk-sub">{{task.product_name || task.order_no || task.inspect_no}}{{task.spec ? ' · ' + task.spec : ''}}{{task.unit_price ? ' · 采购价 ' + fmt.money(task.unit_price) + ' 元' : ''}}</view>
+    </view>
+    <view class="dk-row">
+      <view wx:if="{{task.piece_label}}" class="dk-btn" data-url="/pages/purchase/pieces/index?id={{task.purchase_order_id}}" bindtap="dkOpen">看各件、标没到货</view>
+      <view class="dk-btn dk-btn--primary" data-url="/pages/inspection/check/index?id={{taskId}}" bindtap="dkOpen">逐项验货 · 开箱视频 · 登记异常</view>
+    </view>
+  </view>
+
+  <view wx:if="{{task.condition_warning}}" class="if-dk-warn">⚠ 实拍图含「{{task.condition_warning_text || '全新'}}」字样，请重点核对货况是否与全新 / 几乎全新相符</view>
+
+  <view class="dk-card">
+    <view class="dk-toolbar">
+      <view class="dk-tabs">
+        <view class="dk-tab {{actionType === 'INBOUND' ? 'dk-tab--on' : ''}}" data-type="INBOUND" bindtap="pickAction">验货入库</view>
+        <view class="dk-tab {{actionType === 'REJECT' ? 'dk-tab--on' : ''}}" data-type="REJECT" bindtap="pickAction">拒签退回</view>
+      </view>
+      <text class="dk-help">{{actionType === 'INBOUND' ? '选「货不对板」仍会正常入库，但会生成待议价工单' : '拒签后订单标记为已撤销，不会生成库存'}}</text>
+    </view>
+  </view>
+
+  <!-- 入库 -->
+  <view wx:if="{{actionType === 'INBOUND'}}" class="if-dk-layout">
+    <view class="if-dk-col">
+      <view class="dk-card">
+        <view class="dk-card__head"><text>验货结果</text></view>
+        <view class="dk-card__body">
+          <view class="dk-form">
+            <view class="dk-field dk-field--full">
+              <text class="dk-label dk-label--req">验货结果</text>
+              <view class="dk-row">
+                <view class="if-dk-chip {{form.inspection_result === 'PASSED' ? 'if-dk-chip--on' : ''}}" data-result="PASSED" bindtap="pickResult">验货通过</view>
+                <view class="if-dk-chip {{form.inspection_result === 'MISMATCH' ? 'if-dk-chip--on if-dk-chip--warn' : ''}}" data-result="MISMATCH" bindtap="pickResult">货不对板</view>
+              </view>
+            </view>
+            <view wx:if="{{form.inspection_result === 'MISMATCH'}}" class="dk-field dk-field--full">
+              <text class="dk-label">货不对板说明（选填）</text>
+              <textarea class="dk-input if-dk-ta" placeholder="描述与采购单不符之处" data-key="mismatch_remark" value="{{form.mismatch_remark}}" bindinput="onInput" />
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="dk-card">
+        <view class="dk-card__head"><text>货号 / 序列号 / 69码</text><text class="dk-sub">可扫码（扫码枪）、拍照识别或手填</text></view>
+        <view class="dk-card__body">
+          <view class="dk-form dk-form--3">
+            <view class="dk-field">
+              <text class="dk-label dk-label--req">货号</text>
+              <input class="dk-input if-dk-code" placeholder="货号" data-key="sku_code" value="{{form.sku_code}}" bindinput="onInput" />
+              <view class="dk-row">
+                <view class="dk-btn dk-btn--sm" bindtap="scanSkuCode">扫码</view>
+                <view class="dk-btn dk-btn--sm" bindtap="ocrSkuCode">拍照识别</view>
+              </view>
+            </view>
+            <view class="dk-field">
+              <text class="dk-label dk-label--req">序列号</text>
+              <input class="dk-input if-dk-code" placeholder="序列号" data-key="serial_number" value="{{form.serial_number}}" bindinput="onInput" />
+              <view class="dk-row">
+                <view class="dk-btn dk-btn--sm" bindtap="scanSerialNumber">扫码</view>
+                <view class="dk-btn dk-btn--sm" bindtap="ocrSerialNumber">拍照识别</view>
+              </view>
+            </view>
+            <view class="dk-field">
+              <text class="dk-label">69码（选填）</text>
+              <input class="dk-input if-dk-code" placeholder="69码" data-key="barcode" value="{{form.barcode}}" bindinput="onInput" />
+              <view class="dk-row">
+                <view class="dk-btn dk-btn--sm" bindtap="scanBarcode69">扫码</view>
+              </view>
+            </view>
+          </view>
+          <view class="dk-help if-dk-gap">货号、序列号各自拍照识别更准</view>
+        </view>
+      </view>
+
+      <view class="dk-card">
+        <view class="dk-card__head"><text>入库信息</text></view>
+        <view class="dk-card__body">
+          <view class="dk-form">
+            <view class="dk-field">
+              <text class="dk-label dk-label--req">库位</text>
+              <view wx:if="{{locations.length}}" class="dk-select if-dk-select {{form.location_code ? '' : 'dk-muted'}}" bindtap="openLocationPicker">{{locationLabel || '选择库位'}}</view>
+              <view wx:else class="dk-muted">暂无可用库位，请联系管理员配置</view>
+            </view>
+            <view class="dk-field">
+              <text class="dk-label dk-label--req">商品类型</text>
+              <view wx:if="{{productTypes.length && productTypes.length <= 12}}" class="dk-row">
+                <view
+                  wx:for="{{productTypes}}"
+                  wx:key="*this"
+                  class="if-dk-chip {{form.product_type === item ? 'if-dk-chip--on' : ''}}"
+                  data-index="{{index}}"
+                  bindtap="dkPickType"
+                >{{item}}</view>
+              </view>
+              <picker wx:else mode="selector" range="{{productTypes}}" value="{{productTypeIndex}}" bindchange="pickProductType">
+                <view class="dk-select if-dk-select {{form.product_type ? '' : 'dk-muted'}}">{{form.product_type || '选择商品类型'}}</view>
+              </picker>
+            </view>
+            <view class="dk-field">
+              <text class="dk-label dk-label--req">成色</text>
+              <view class="dk-row">
+                <view
+                  wx:for="{{grades}}"
+                  wx:key="*this"
+                  class="if-dk-chip {{form.condition_grade === item ? 'if-dk-chip--on' : ''}}"
+                  data-index="{{index}}"
+                  bindtap="dkPickGrade"
+                >{{item}}</view>
+              </view>
+            </view>
+            <view wx:if="{{tagOptions.length}}" class="dk-field dk-field--full">
+              <text class="dk-label">仓库标签（选填，可多选）</text>
+              <view class="dk-row">
+                <view
+                  wx:for="{{tagOptions}}"
+                  wx:key="id"
+                  class="if-dk-chip {{form.tags.indexOf(item.name) >= 0 ? 'if-dk-chip--on' : ''}}"
+                  data-name="{{item.name}}"
+                  bindtap="toggleTag"
+                >{{item.name}}</view>
+              </view>
+            </view>
+            <view class="dk-field dk-field--full">
+              <text class="dk-label">验货备注（选填）</text>
+              <textarea class="dk-input if-dk-ta" placeholder="其他说明" data-key="remark" value="{{form.remark}}" bindinput="onInput" />
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="if-dk-col">
+      <view class="dk-card">
+        <view class="dk-card__head"><text>采购实拍图</text></view>
+        <view class="dk-card__body">
+          <image
+            wx:if="{{task.product_image_thumb}}"
+            class="if-dk-cover"
+            src="{{task.product_image_thumb}}"
+            mode="aspectFill"
+            data-url="{{task.product_image || task.product_image_thumb}}"
+            bindtap="dkPreview"
+          />
+          <view wx:else class="dk-muted">暂无实拍图</view>
+        </view>
+      </view>
+
+      <view class="dk-card">
+        <view class="dk-card__head">
+          <text><text class="if-dk-req">*</text>入库商品图 / 视频</text>
+          <view class="dk-btn dk-btn--sm dk-btn--primary" data-type="listing" bindtap="addImage">上传</view>
+        </view>
+        <view class="dk-card__body">
+          <media-gallery wx:if="{{form.listing_images.length}}" urls="{{form.listing_images}}" display-urls="{{listingDisplayUrls}}" thumb-size="medium" />
+          <view wx:else class="if-dk-drop" data-type="listing" bindtap="addImage">必传，至少 1 张；可传图片或视频</view>
+        </view>
+      </view>
+
+      <view class="dk-card">
+        <view class="dk-card__head">
+          <text>瑕疵照片 / 视频</text>
+          <view class="dk-row">
+            <view class="dk-btn dk-btn--sm" data-type="defect" bindtap="addImage">传照片</view>
+            <view class="dk-btn dk-btn--sm" data-type="defect_video" bindtap="addImage">传视频</view>
+          </view>
+        </view>
+        <view class="dk-card__body">
+          <media-gallery wx:if="{{form.defect_images.length}}" urls="{{form.defect_images}}" display-urls="{{defectDisplayUrls}}" thumb-size="medium" />
+          <view wx:if="{{form.defect_videos.length}}" class="dk-help if-dk-gap">已上传 {{form.defect_videos.length}} 个瑕疵视频</view>
+          <view wx:if="{{!form.defect_images.length && !form.defect_videos.length}}" class="dk-help">选填；普通二手瑕疵不会触发问题单，会进入待议价清单</view>
+        </view>
+      </view>
+
+      <view class="dk-card">
+        <view class="dk-card__head">
+          <text>仓库定位图 / 视频</text>
+          <view class="dk-btn dk-btn--sm" data-type="location" bindtap="addImage">上传</view>
+        </view>
+        <view class="dk-card__body">
+          <media-gallery wx:if="{{form.location_images.length}}" urls="{{form.location_images}}" display-urls="{{locationDisplayUrls}}" thumb-size="medium" />
+          <view wx:else class="dk-help">选填；货放到库位后拍一张，用于找货盘点，不给客户看</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 拒签 -->
+  <view wx:else class="if-dk-layout">
+    <view class="if-dk-col">
+      <view class="dk-card">
+        <view class="dk-card__head"><text>拒签原因</text></view>
+        <view class="dk-card__body">
+          <view class="dk-field">
+            <text class="dk-label dk-label--req">拒签原因</text>
+            <textarea class="dk-input if-dk-ta if-dk-reason" placeholder="请说明拒签原因，如严重货不对板、破损拒收等" data-key="remark" value="{{form.remark}}" bindinput="onInput" />
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="if-dk-col">
+      <view class="dk-card">
+        <view class="dk-card__head"><text>采购实拍图</text></view>
+        <view class="dk-card__body">
+          <image
+            wx:if="{{task.product_image_thumb}}"
+            class="if-dk-cover"
+            src="{{task.product_image_thumb}}"
+            mode="aspectFill"
+            data-url="{{task.product_image || task.product_image_thumb}}"
+            bindtap="dkPreview"
+          />
+          <view wx:else class="dk-muted">暂无实拍图</view>
+        </view>
+      </view>
+      <view class="dk-card">
+        <view class="dk-card__head">
+          <text>拒签证据图 / 视频</text>
+          <view class="dk-btn dk-btn--sm" data-type="reject" bindtap="addImage">上传</view>
+        </view>
+        <view class="dk-card__body">
+          <media-gallery wx:if="{{form.reject_images.length}}" urls="{{form.reject_images}}" display-urls="{{rejectDisplayUrls}}" thumb-size="medium" />
+          <view wx:else class="if-dk-drop" data-type="reject" bindtap="addImage">选填，最多 4 个</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="dk-actionbar if-dk-bar">
+    <view
+      wx:if="{{actionType === 'INBOUND'}}"
+      class="dk-btn dk-btn--primary {{submitting ? 'dk-btn--disabled' : ''}}"
+      bindtap="submit"
+    >{{submitting ? '提交中…' : '提交验货并入库'}}</view>
+    <view
+      wx:else
+      class="dk-btn if-dk-btn-danger {{submitting ? 'dk-btn--disabled' : ''}}"
+      bindtap="submit"
+    >{{submitting ? '提交中…' : '确认拒签退回'}}</view>
+  </view>
+
+  <!-- 选库位：居中对话框，可搜索，点一下就选上 -->
+  <view wx:if="{{locationPickerVisible}}" class="if-dk-mask" bindtap="closeLocationPicker">
+    <view class="if-dk-dialog" catchtap="noop">
+      <view class="if-dk-dialog__head">
+        <text>选择库位</text>
+        <input class="dk-input if-dk-loc-q" placeholder="搜库位，如 A-3" value="{{dkLocQ}}" bindinput="dkLocInput" focus="{{true}}" />
+      </view>
+      <view class="if-dk-locs">
+        <view
+          wx:for="{{locations}}"
+          wx:key="code"
+          wx:if="{{!dkLocQ || item.label.toUpperCase().indexOf(dkLocQ.toUpperCase()) >= 0}}"
+          class="if-dk-loc {{form.location_code === item.code ? 'if-dk-loc--on' : ''}}"
+          data-index="{{index}}"
+          bindtap="dkPickLocation"
+        >{{item.label}}</view>
+      </view>
+      <view class="if-dk-dialog__foot">
+        <view class="dk-btn" bindtap="closeLocationPicker">取消</view>
+      </view>
+    </view>
+  </view>
+</view>
+<view class="dk-page" wx:else>
+  <view class="dk-card"><view class="dk-empty">加载中…</view></view>
+</view>

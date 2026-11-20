@@ -1,0 +1,69 @@
+<wxs module="fmt" src="../../../utils/format.wxs" />
+
+<!-- 店铺下架（电脑版）：可勾选的店铺表格 + 底部操作条 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">店铺下架 · {{skuCode}}</view>
+      <view class="dk-sub">勾选要下架的店铺，默认全选在架店铺；确认后由服务端下架（真机模式为异步，会先显示「下架中」再收敛为已下架）。</view>
+    </view>
+  </view>
+
+  <view class="dk-card">
+    <view wx:if="{{loading && !shops.length}}" class="dk-empty">加载中…</view>
+    <view wx:elif="{{!shops.length}}" class="dk-empty">暂无启用的销售店铺</view>
+    <block wx:else>
+      <view class="dk-toolbar">
+        <text wx:if="{{delistableCount}}" class="dk-sub">已选 {{selectedCount}} / {{delistableCount}} 个在架店铺</text>
+        <text wx:else class="dk-sub">当前无在架店铺可下架（可能正在处理中）</text>
+        <view wx:if="{{hasTransient && !pollExhausted}}" class="wso-dk-poll"><text class="wso-dk-dot"></text>真机处理中，自动刷新状态…</view>
+        <view wx:if="{{pollExhausted}}" class="wso-dk-poll wso-dk-poll--stale" bindtap="manualRefresh">仍在处理中，点此刷新</view>
+      </view>
+      <view class="dk-table-wrap">
+        <table class="dk-table">
+          <thead>
+            <tr>
+              <th class="wso-dk-chk">
+                <view wx:if="{{delistableCount}}" class="wso-dk-box {{allSelected ? 'wso-dk-box--on' : ''}}" title="{{allSelected ? '取消全选' : '全选'}}" bindtap="toggleSelectAll">{{allSelected ? '✓' : ''}}</view>
+              </th>
+              <th>店铺</th>
+              <th>店铺编码</th>
+              <th>状态</th>
+              <th>说明</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              wx:for="{{shops}}"
+              wx:key="shop_id"
+              class="{{item.canDelist ? 'dk-tr--click' : 'wso-dk-off'}} {{item.selected ? 'dk-tr--on' : ''}}"
+              data-id="{{item.shop_id}}"
+              bindtap="toggleShop"
+            >
+              <td class="wso-dk-chk">
+                <view class="wso-dk-box {{item.selected ? 'wso-dk-box--on' : ''}} {{item.canDelist ? '' : 'wso-dk-box--disabled'}}">{{item.selected ? '✓' : ''}}</view>
+              </td>
+              <td class="dk-nowrap dk-cell-main">{{item.shop_label}}</td>
+              <td class="dk-nowrap">{{item.shop_code}}</td>
+              <td class="dk-nowrap">
+                <text class="dk-tag {{fmt.shopStateTag(item.publish_status, item.gc_pending)}}">{{fmt.shopStateLabel(item.publish_status, item.gc_pending)}}</text>
+              </td>
+              <td>
+                <text wx:if="{{item.last_error}}" class="wso-dk-err">{{item.last_error}}</text>
+                <text wx:elif="{{!item.canDelist}}" class="dk-muted">{{item.transient ? '处理中，不能再勾' : '不在架'}}</text>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </view>
+    </block>
+  </view>
+
+  <view wx:if="{{shops.length && delistableCount}}" class="dk-actionbar wso-dk-bar">
+    <view class="dk-btn" bindtap="toggleSelectAll">{{allSelected ? '取消全选' : '全选'}}</view>
+    <view
+      class="dk-btn dk-btn--danger {{submitting || !selectedCount ? 'dk-btn--disabled' : ''}}"
+      bindtap="submitDelist"
+    >{{submitting ? '提交中…' : (selectedCount === delistableCount && delistableCount ? '一键下架全部店铺' : '下架所选店铺（' + selectedCount + '）')}}</view>
+  </view>
+</view>

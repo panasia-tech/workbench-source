@@ -1,0 +1,46 @@
+/* 销售（电脑版模板 index.wxml 用；通用样式在 src/styles/desktop.css） */
+.sl-dk-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.sl-dk-entry {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+}
+
+.sl-dk-entry:hover {
+  border-color: #2563eb;
+  background: #f8fafc;
+}
+
+.sl-dk-entry__icon {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.sl-dk-entry__icon--manual { background: #2563eb; }
+.sl-dk-entry__icon--pickup { background: #059669; }
+.sl-dk-entry__icon--switch { background: #d97706; }
+
+.sl-dk-name {
+  max-width: 260px;
+}

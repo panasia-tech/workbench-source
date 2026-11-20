@@ -1,0 +1,330 @@
+<!-- 会话详情（电脑版）：左会话列表 / 中聊天 / 右买家·商品·SKU 槽，整页定高，只有消息区和两边列表各自滚。
+     「商品详情（WMS）」「发送给买家」两个底部弹层换成居中对话框；手机「•••」「+」面板里的东西直接摆出来 -->
+<view class="gcd-dk">
+  <!-- ============================================================ 左：会话列表 -->
+  <view class="gcd-dk-convs">
+    <view class="gcd-dk-col-head">
+      <text>会话</text>
+      <text class="dk-link gcd-dk-small" bindtap="goBack">全部会话</text>
+    </view>
+    <scroll-view scroll-y class="gcd-dk-convs__list">
+      <view wx:if="{{dkConvLoading && !dkConvs.length}}" class="gcd-dk-hint">加载中…</view>
+      <view wx:elif="{{!dkConvs.length}}" class="gcd-dk-hint"><text class="dk-link" bindtap="dkLoadConvs">加载会话列表</text></view>
+      <view
+        wx:for="{{dkConvs}}"
+        wx:key="id"
+        class="gcd-dk-conv {{item.id === id ? 'gcd-dk-conv--on' : ''}}"
+        data-id="{{item.id}}"
+        data-title="{{item.peer_nick}}"
+        data-item="{{item.item_title}}"
+        data-price="{{item.item_price}}"
+        data-image="{{item.item_image}}"
+        data-status="{{item.order_status}}"
+        data-acc="{{item.account_nick}}"
+        bindtap="dkSwitchConv"
+      >
+        <view class="gcd-dk-avatar">
+          <text>{{item._avatar}}</text>
+          <text wx:if="{{item.unread > 0 && item.id !== id}}" class="gcd-dk-badge">{{item._unread}}</text>
+        </view>
+        <view class="dk-grow">
+          <view class="gcd-dk-conv__top">
+            <text class="gcd-dk-conv__nick">{{item._nick}}</text>
+            <text class="gcd-dk-conv__time">{{item._time}}</text>
+          </view>
+          <view class="gcd-dk-conv__shop">{{item.account_nick || '未知账号'}}</view>
+          <view class="gcd-dk-conv__last {{item.unread > 0 && item.id !== id ? 'gcd-dk-conv__last--unread' : ''}}">{{item.last_message || '暂无消息'}}</view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- ============================================================ 中：聊天 -->
+  <view class="gcd-dk-chat">
+    <view class="gcd-dk-chat__head">
+      <view class="gcd-dk-avatar gcd-dk-avatar--lg">{{peerAvatar}}</view>
+      <view class="dk-grow">
+        <view class="dk-row">
+          <text class="gcd-dk-chat__nick">{{title || '买家'}}</text>
+          <text wx:if="{{orderStatus}}" class="dk-tag dk-tag--orange">{{orderStatus}}</text>
+        </view>
+        <view wx:if="{{accountNick}}" class="dk-sub">店铺：{{accountNick}}</view>
+      </view>
+      <view class="dk-btn dk-btn--sm" bindtap="dkRefresh">刷新消息</view>
+    </view>
+
+    <scroll-view
+      scroll-y
+      class="gcd-dk-stream"
+      scroll-into-view="{{anchorId}}"
+      scroll-with-animation
+      bindtap="onStreamTap"
+    >
+      <view wx:if="{{!messages.length && !loading}}" class="gcd-dk-hint">暂无消息</view>
+      <block wx:for="{{messages}}" wx:key="id">
+        <view wx:if="{{item._sep}}" class="gcd-dk-sep">{{item._sep}}</view>
+        <view class="gcd-dk-row {{item.direction === 'out' ? 'gcd-dk-row--out' : ''}}">
+          <view class="gcd-dk-avatar {{item.direction === 'out' ? 'gcd-dk-avatar--me' : ''}}">{{item.direction === 'out' ? myAvatar : peerAvatar}}</view>
+          <view class="gcd-dk-msg">
+            <view wx:if="{{item._card}}" class="gcd-dk-card" data-index="{{index}}" data-mi="0" catchtap="previewMessageMedia">
+              <image wx:if="{{item._media[0].cover}}" class="gcd-dk-card__img" src="{{item._media[0].cover}}" mode="aspectFill" />
+              <view class="dk-grow">
+                <view class="gcd-dk-card__title">{{item._card.title}}</view>
+                <view wx:if="{{item._card.grade}}" class="dk-cell-sub">{{item._card.grade}}</view>
+                <view wx:if="{{item._card.price}}" class="gcd-dk-card__price">¥{{item._card.price}}</view>
+              </view>
+            </view>
+            <view wx:elif="{{item._media}}" class="gcd-dk-media">
+              <view
+                wx:for="{{item._media}}"
+                wx:for-item="md"
+                wx:for-index="mi"
+                wx:key="url"
+                class="gcd-dk-media__cell"
+                data-index="{{index}}"
+                data-mi="{{mi}}"
+                catchtap="previewMessageMedia"
+              >
+                <image wx:if="{{md.cover}}" class="gcd-dk-media__img" src="{{md.cover}}" mode="aspectFill" />
+                <view wx:if="{{md.type === 'video'}}" class="gc-ic gc-ic--play gcd-dk-play"></view>
+              </view>
+            </view>
+            <view wx:else class="gcd-dk-bubble">{{item.text}}</view>
+            <view class="gcd-dk-time {{item._warn ? 'gcd-dk-time--warn' : ''}}">{{item._label || item._hm}}</view>
+          </view>
+        </view>
+      </block>
+      <view wx:if="{{loading && !messages.length}}" class="gcd-dk-hint">加载中…</view>
+      <view id="anchorEnd" class="gcd-dk-end"></view>
+    </scroll-view>
+
+    <view class="gcd-dk-bar">
+      <view wx:if="{{panel === 'emoji'}}" class="gcd-dk-emoji">
+        <view wx:for="{{emojis}}" wx:key="*this" class="gcd-dk-emoji__cell" data-emoji="{{item}}" bindtap="pickEmoji">{{item}}</view>
+      </view>
+      <view class="gcd-dk-tools">
+        <view class="gcd-dk-tool {{panel === 'emoji' ? 'gcd-dk-tool--on' : ''}}" bindtap="toggleEmoji" title="表情">
+          <view class="gc-ic gc-ic--emoji gcd-dk-ic"></view>
+        </view>
+        <view class="gcd-dk-tool" bindtap="pickFromAlbum" title="从电脑选图片发给买家">
+          <view class="gc-ic gc-ic--album gcd-dk-ic"></view>
+          <text>图片</text>
+        </view>
+        <view class="gcd-dk-tool" bindtap="pickFromCamera" title="拍照（电脑上会打开文件选择）">
+          <view class="gc-ic gc-ic--camera gcd-dk-ic"></view>
+          <text>拍摄</text>
+        </view>
+        <view class="gcd-dk-tool" bindtap="sendWarehouseLocation" title="发送仓库自提地址">
+          <view class="gc-ic gc-ic--location gcd-dk-ic"></view>
+          <text>发送仓库位置</text>
+        </view>
+      </view>
+      <view class="gcd-dk-input-row">
+        <input
+          class="dk-input gcd-dk-input"
+          placeholder="想跟TA说点什么…（回车发送）"
+          value="{{draft}}"
+          confirm-type="send"
+          bindinput="onDraftInput"
+          bindfocus="closePanel"
+          bindconfirm="sendReply"
+          disabled="{{sending}}"
+        />
+        <view class="dk-btn dk-btn--primary gcd-dk-send {{draft && !sending ? '' : 'dk-btn--disabled'}}" bindtap="dkSend">{{sending ? '发送中' : '发送'}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ============================================================ 右：买家、商品、SKU 槽 -->
+  <scroll-view scroll-y class="gcd-dk-side">
+    <view class="dk-card">
+      <view class="dk-card__head">
+        <text>商品</text>
+        <text wx:if="{{itemUrl}}" class="dk-link gcd-dk-small" bindtap="dkOpenItem">前往链接 ↗</text>
+      </view>
+      <view class="dk-card__body">
+        <view wx:if="{{itemTitle || itemImage || itemPrice || itemMissing}}" class="gcd-dk-item">
+          <image wx:if="{{itemImage}}" class="gcd-dk-item__img" src="{{itemImage}}" mode="aspectFill" bindtap="openProductDetail" />
+          <view wx:else class="gcd-dk-item__img gcd-dk-item__img--ph" bindtap="openProductDetail">商品图待补</view>
+          <view class="dk-grow" bindtap="openProductDetail">
+            <view wx:if="{{itemPrice}}" class="gcd-dk-item__price">¥{{itemPrice}}</view>
+            <view class="gcd-dk-item__title">{{itemTitle || '商品信息待补全'}}<text wx:if="{{itemGrade}}" class="dk-muted"> | {{itemGrade}}</text></view>
+            <view wx:if="{{itemModel}}" class="dk-muted">{{itemModel}}</view>
+            <view wx:if="{{itemState || itemLocation || itemCode}}" class="gcd-dk-tags">
+              <text wx:if="{{itemState}}" class="dk-tag dk-tag--blue">{{itemState}}</text>
+              <text wx:if="{{itemLocation}}" class="dk-tag dk-tag--blue">{{itemLocation}}</text>
+              <text wx:if="{{itemCode}}" class="dk-tag dk-tag--blue">{{itemCode}}</text>
+            </view>
+            <view wx:if="{{itemMissing}}" class="gcd-dk-hint gcd-dk-gap-top">
+              商品信息待补全<text wx:if="{{itemNeedMatch}}" class="dk-link" catchtap="openSkuMatcher"> 去匹配</text><text wx:else class="dk-link" catchtap="openProductDetail"> 去补全</text>
+            </view>
+          </view>
+        </view>
+        <view wx:else class="dk-muted">商品信息待补全</view>
+        <view wx:if="{{itemTags.length}}" class="gcd-dk-tags">
+          <text wx:for="{{itemTags}}" wx:key="*this" class="dk-tag dk-tag--blue">{{item}}</text>
+        </view>
+        <view class="dk-row gcd-dk-acts">
+          <view wx:if="{{dkListingSku}}" class="dk-btn dk-btn--sm" bindtap="dkViewSku">查看这件货</view>
+          <view wx:if="{{itemUrl}}" class="dk-btn dk-btn--sm" bindtap="dkCopyLink">复制商品链接</view>
+          <view wx:if="{{title}}" class="dk-btn dk-btn--sm" bindtap="dkCopyNick">复制买家昵称</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="dk-card">
+      <view class="dk-card__head">
+        <text>SKU 槽 <text class="dk-sub">（实际商品）</text></text>
+        <text class="dk-link gcd-dk-small" bindtap="explainSkuSlots">这是什么</text>
+      </view>
+      <view class="dk-card__body">
+        <view wx:if="{{spuName}}" class="dk-help gcd-dk-gap">链接里是 SPU：{{spuName}}</view>
+        <view wx:if="{{slotsLoading}}" class="gcd-dk-hint">正在找这条链接的在库货…</view>
+        <view wx:elif="{{slotsError}}" class="gcd-dk-hint">{{slotsError}}</view>
+        <view wx:elif="{{!slots.length}}" class="gcd-dk-hint">
+          <text class="dk-link" bindtap="loadSlots">找同款在库货</text>
+        </view>
+        <view wx:else class="gcd-dk-slots">
+          <view
+            wx:for="{{slots}}"
+            wx:key="key"
+            class="gcd-dk-slot {{item.count ? '' : 'gcd-dk-slot--empty'}} {{slotKey === item.key ? 'gcd-dk-slot--on' : ''}}"
+            data-key="{{item.key}}"
+            bindtap="openSlot"
+          >
+            <image wx:if="{{item.cover}}" class="gcd-dk-slot__img" src="{{item.cover}}" mode="aspectFill" />
+            <view wx:else class="gcd-dk-slot__img gcd-dk-slot__img--ph">{{item.count ? '无图' : '无货'}}</view>
+            <view class="gcd-dk-slot__label">{{item.label}}<text wx:if="{{item.count > 1}}" class="dk-muted"> · {{item.count}}件</text></view>
+          </view>
+        </view>
+
+        <view class="dk-label gcd-dk-gap-top">商品链接（SPU）</view>
+        <view class="dk-row gcd-dk-link">
+          <input
+            class="dk-input dk-grow"
+            placeholder="https://… 或货号 / 型号"
+            value="{{linkDraft}}"
+            bindinput="onLinkInput"
+            bindconfirm="applyLink"
+            confirm-type="search"
+          />
+          <view wx:if="{{linkDraft}}" class="dk-btn dk-btn--sm" bindtap="clearLink">清空</view>
+          <view class="dk-btn dk-btn--sm dk-btn--primary" bindtap="applyLink">查找</view>
+        </view>
+        <view class="dk-help">对不上链接时，粘贴闲鱼商品链接，按它找同款在库货</view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- ============================================================ 商品详情（WMS）/ 发送给买家 -->
+  <view wx:if="{{sheet}}" class="gcd-dk-mask" catchtap="closeSheet">
+    <view class="gcd-dk-dialog" catchtap="noop">
+      <block wx:if="{{sheet === 'pick'}}">
+        <view class="dk-card__head">
+          <text>商品详情（WMS）<text wx:if="{{sku.title}}" class="dk-sub"> {{sku.title}}</text></text>
+          <text class="gcd-dk-x" bindtap="closeSheet">×</text>
+        </view>
+        <view class="gcd-dk-dialog__body">
+          <view wx:if="{{sku.items.length > 1}}" class="dk-row gcd-dk-gap">
+            <text class="dk-label">同成色在库</text>
+            <view class="dk-tabs">
+              <view
+                wx:for="{{sku.items}}"
+                wx:key="sku_id"
+                class="dk-tab {{item.sku_id === sku.skuId ? 'dk-tab--on' : ''}}"
+                data-id="{{item.sku_id}}"
+                bindtap="switchSku"
+              >{{item.sku_code}}{{item.location_code ? ' · ' + item.location_code : ''}}</view>
+            </view>
+          </view>
+          <view wx:if="{{sku.loading}}" class="gcd-dk-hint">加载实拍…</view>
+          <view wx:elif="{{sku.error}}" class="gcd-dk-hint">{{sku.error}}</view>
+          <view wx:elif="{{!sku.media.length}}" class="gcd-dk-hint">这件货还没有实拍图和视频</view>
+          <view wx:else class="gcd-dk-pick">
+            <view class="gcd-dk-hero">
+              <view class="gcd-dk-hero__box" bindtap="previewHero">
+                <image wx:if="{{sku.heroSrc}}" class="gcd-dk-hero__img" src="{{sku.heroSrc}}" mode="aspectFit" />
+                <view wx:if="{{sku.heroIsVideo}}" class="gc-ic gc-ic--play gcd-dk-hero__play"></view>
+                <text class="gcd-dk-hero__n">{{sku.cur + 1}}/{{sku.media.length}}</text>
+              </view>
+              <view class="dk-row gcd-dk-hero__nav">
+                <view class="dk-btn dk-btn--sm" bindtap="prevMedia">‹ 上一张</view>
+                <view class="dk-btn dk-btn--sm" bindtap="previewHero">看大图</view>
+                <view class="dk-btn dk-btn--sm" bindtap="nextMedia">下一张 ›</view>
+              </view>
+            </view>
+            <view class="dk-grow">
+              <view class="dk-tabs gcd-dk-gap">
+                <view class="dk-tab {{sku.tab === 'all' ? 'dk-tab--on' : ''}}" data-tab="all" bindtap="switchTab">全部 <text class="dk-tab__n">{{sku.media.length}}</text></view>
+                <view class="dk-tab {{sku.tab === 'image' ? 'dk-tab--on' : ''}}" data-tab="image" bindtap="switchTab">图片 <text class="dk-tab__n">{{sku.imageCount}}</text></view>
+                <view class="dk-tab {{sku.tab === 'video' ? 'dk-tab--on' : ''}}" data-tab="video" bindtap="switchTab">视频 <text class="dk-tab__n">{{sku.videoCount}}</text></view>
+              </view>
+              <view class="gcd-dk-grid">
+                <block wx:for="{{sku.media}}" wx:key="url">
+                  <view
+                    wx:if="{{sku.tab === 'all' || sku.tab === item.type}}"
+                    class="gcd-dk-cell {{item._on ? 'gcd-dk-cell--on' : ''}} {{index === sku.cur ? 'gcd-dk-cell--cur' : ''}}"
+                    data-index="{{index}}"
+                    bindtap="toggleMedia"
+                  >
+                    <image wx:if="{{item.cover}}" class="gcd-dk-cell__img" src="{{item.cover}}" mode="aspectFill" />
+                    <view wx:if="{{item.type === 'video'}}" class="gc-ic gc-ic--play gcd-dk-play"></view>
+                    <text wx:if="{{item.duration}}" class="gcd-dk-dur">{{item.duration}}</text>
+                    <view class="gcd-dk-check {{item._on ? 'gcd-dk-check--on' : ''}}">{{item._on ? '✓' : ''}}</view>
+                    <text class="gcd-dk-cell__see" data-index="{{index}}" catchtap="showMedia">看</text>
+                  </view>
+                </block>
+              </view>
+              <view class="dk-help">点图选中 / 取消（一次最多 9 张）；视频只能看，闲鱼网页版发不了</view>
+            </view>
+          </view>
+        </view>
+        <view class="gcd-dk-dialog__foot">
+          <text class="dk-sub gcd-dk-picked">已选 <text class="gcd-dk-picked__n">{{pickedCount}}</text> 项</text>
+          <view class="dk-btn" bindtap="closeSheet">取消</view>
+          <view class="dk-btn dk-btn--primary {{pickedCount ? '' : 'dk-btn--disabled'}}" bindtap="dkGoConfirm">下一步：发送给买家</view>
+        </view>
+      </block>
+
+      <block wx:if="{{sheet === 'confirm'}}">
+        <view class="dk-card__head">
+          <view class="dk-row">
+            <text class="dk-link gcd-dk-small" bindtap="backToPick">‹ 返回</text>
+            <text>发送给买家</text>
+          </view>
+          <text class="gcd-dk-x" bindtap="closeSheet">×</text>
+        </view>
+        <view class="gcd-dk-dialog__body">
+          <view class="dk-label gcd-dk-gap">已选图片（{{pickedImages.length}}）</view>
+          <view wx:if="{{pickedImages.length}}" class="gcd-dk-grid gcd-dk-grid--confirm">
+            <view wx:for="{{pickedImages}}" wx:key="url" class="gcd-dk-cell">
+              <image wx:if="{{item.cover}}" class="gcd-dk-cell__img" src="{{item.cover}}" mode="aspectFill" />
+              <text class="gcd-dk-remove" data-url="{{item.url}}" bindtap="unpick" title="不发这张">×</text>
+            </view>
+          </view>
+          <block wx:if="{{pickedVideos.length}}">
+            <view class="dk-label gcd-dk-gap gcd-dk-gap-top">已选视频（{{pickedVideos.length}}）</view>
+            <view class="gcd-dk-grid gcd-dk-grid--confirm">
+              <view wx:for="{{pickedVideos}}" wx:key="url" class="gcd-dk-cell">
+                <image wx:if="{{item.cover}}" class="gcd-dk-cell__img" src="{{item.cover}}" mode="aspectFill" />
+                <view class="gc-ic gc-ic--play gcd-dk-play"></view>
+                <text wx:if="{{item.duration}}" class="gcd-dk-dur">{{item.duration}}</text>
+                <text class="gcd-dk-remove" data-url="{{item.url}}" bindtap="unpick">×</text>
+              </view>
+            </view>
+          </block>
+          <view wx:if="{{productCard}}" class="dk-row gcd-dk-gap-top">
+            <text class="dk-label">价格 ¥</text>
+            <input class="dk-input gcd-dk-price" type="digit" value="{{productCard.price}}" placeholder="不填就不发价格" bindinput="onCardPriceInput" />
+          </view>
+          <view wx:if="{{productCard}}" class="dk-help gcd-dk-gap-top">买家会收到这些图片和一句：{{productCard.title}} {{productCard.grade}} {{productCard.price ? '¥' + productCard.price : ''}}</view>
+          <view wx:else class="dk-help gcd-dk-gap-top">买家只会收到这些图片</view>
+        </view>
+        <view class="gcd-dk-dialog__foot">
+          <view class="dk-btn" bindtap="backToPick">返回</view>
+          <view class="dk-btn dk-btn--primary {{!pickedCount || sendingMedia ? 'dk-btn--disabled' : ''}}" bindtap="dkSendPicked">{{sendingMedia ? '提交中…' : '发送给买家'}}</view>
+        </view>
+      </block>
+    </view>
+  </view>
+</view>

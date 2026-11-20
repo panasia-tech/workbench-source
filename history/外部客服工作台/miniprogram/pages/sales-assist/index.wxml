@@ -1,0 +1,47 @@
+<!-- 实物接管台：照销售工作台交付包（浅色）——页顶四个数，下面在等的买家（红的先回），点一行进聊天页 -->
+<view class="page-wrap page-wrap--no-tab sa-page">
+  <view class="sa-head">
+    <view class="sa-eyebrow">实物 · 买家在等我们回复</view>
+    <view class="sa-h1">实物接管台 <text class="sa-q" bindtap="toggleHelp">?</text></view>
+  </view>
+  <view wx:if="{{showHelp}}" class="sa-help">超过 {{d ? d.reply_min : 15}} 分钟还没回就算升级（夜间不考核，等的时间扣掉夜里），红的先回。点一行进聊天页，商品卡、实拍图、仓库位置都在聊天页里发。{{d && d.scope === 'mine' ? '只列分给你的号。' : ''}}</view>
+
+  <view class="sa-stats">
+    <view class="sa-st"><view class="sa-st__k">回复率</view><view class="sa-st__v">{{sum && sum.rate !== null ? sum.rate + '%' : '—'}}</view><view class="sa-st__s">{{sum ? '今天回了 ' + sum.replied + ' / 收到 ' + sum.cycles : '群控没连上'}}</view></view>
+    <view class="sa-st"><view class="sa-st__k">回复超时</view><view class="sa-st__v {{sum && sum.late ? 'sa-red' : ''}}">{{sum ? sum.late + ' 次' : '—'}}</view><view class="sa-st__s">超过 {{d ? d.reply_min : 15}} 分钟才回</view></view>
+    <view class="sa-st"><view class="sa-st__k">还没回</view><view class="sa-st__v {{red ? 'sa-red' : ''}}">{{d && d.rows !== null ? red + yellow + ' 个' : '—'}}</view><view class="sa-st__s">现在还在等的会话</view></view>
+    <view class="sa-st"><view class="sa-st__k">平均回复</view><view class="sa-st__v">{{sum && sum.avg !== null ? sum.avg + ' 分钟' : '—'}}</view><view class="sa-st__s">今天回了的平均用时</view></view>
+  </view>
+  <view wx:if="{{d && d.stats && d.stats.length}}" class="sa-fold" bindtap="toggleStats">{{showStats ? '▾' : '▸'}} 按负责人看回复率</view>
+  <view wx:if="{{showStats}}" class="sa-card">
+    <view class="sa-stat sa-stat--head">
+      <text class="sa-stat__name">负责人</text><text>回了/收到</text><text>回复率</text><text>平均</text><text>超时</text>
+    </view>
+    <view wx:for="{{d.stats}}" wx:key="name" class="sa-stat">
+      <text class="sa-stat__name">{{item.name}}</text>
+      <text>{{item.replied}}/{{item.cycles}}</text>
+      <text class="{{item.rate !== null && item.rate < 80 ? 'sa-bad' : ''}}">{{item.rate === null ? '—' : item.rate + '%'}}</text>
+      <text>{{item.avg_reply_min === null ? '—' : item.avg_reply_min + ' 分'}}</text>
+      <text class="{{item.late_reply ? 'sa-bad' : ''}}">{{item.late_reply}}</text>
+    </view>
+  </view>
+
+  <view class="sa-grp">
+    <text class="sa-dot sa-dot--red"></text><text>要接管</text><text class="sa-grp__n">{{red}}</text>
+    <text class="sa-dot sa-dot--yellow sa-grp__gap"></text><text>在等</text><text class="sa-grp__n">{{yellow}}</text>
+  </view>
+  <view wx:if="{{loading && !loaded}}" class="list-footer">加载中…</view>
+  <view wx:if="{{loaded && d.rows === null}}" class="sa-empty sa-empty--bad">群控没连上，拿不到在等的买家</view>
+  <view wx:elif="{{loaded && !d.rows.length}}" class="sa-empty">没有买家在等回复</view>
+  <view wx:for="{{d.rows}}" wx:key="key" class="sa-row sa-row--{{item.level}}" data-url="{{item.url}}" bindtap="go">
+    <view class="sa-row__top">
+      <text class="sa-pf">闲鱼</text>
+      <text class="sa-row__buyer">{{item.buyer}}</text>
+      <text class="sa-tag sa-tag--{{item.level}}">{{item.level === 'red' ? '要人' : '在等'}}</text>
+    </view>
+    <view wx:if="{{item.item_title}}" class="sa-row__item">{{item.item_title}}</view>
+    <view wx:if="{{item.last_message}}" class="sa-row__msg">“{{item.last_message}}”</view>
+    <view class="sa-row__foot"><text>{{item.status}}</text><text>{{item.account}}</text></view>
+    <view class="sa-row__ask" data-i="{{index}}" catchtap="ask">请同事帮忙</view>
+  </view>
+</view>

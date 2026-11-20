@@ -1,0 +1,33 @@
+.rv-page .card { margin-bottom: 20rpx; }
+.rv-title { font-size: 32rpx; font-weight: 700; color: #111827; }
+.rv-sub { margin-top: 6rpx; font-size: 24rpx; color: #6B7280; }
+.rv-state { display: inline-block; margin-top: 12rpx; padding: 6rpx 16rpx; border-radius: 999rpx; font-size: 24rpx; font-weight: 700; }
+.rv-state--ok { background: #D1FAE5; color: #047857; }
+.rv-state--bad { background: #FEE2E2; color: #B91C1C; }
+.rv-warn { margin-top: 10rpx; font-size: 26rpx; color: #B45309; }
+.rv-h { font-size: 30rpx; font-weight: 700; color: #111827; margin-bottom: 12rpx; }
+.rv-empty { font-size: 26rpx; color: #9CA3AF; }
+.rv-video { padding: 14rpx 0; font-size: 26rpx; color: #2563EB; border-bottom: 1rpx solid #F3F4F6; }
+.rv-photos { display: flex; flex-wrap: wrap; gap: 12rpx; margin-top: 12rpx; }
+.rv-photo { width: 150rpx; height: 150rpx; border-radius: 10rpx; background: #F3F4F6; }
+.rv-photo-wrap { position: relative; }
+.rv-photo-x { position: absolute; top: -10rpx; right: -10rpx; width: 36rpx; height: 36rpx; line-height: 34rpx; text-align: center; border-radius: 50%; background: rgba(17, 24, 39, 0.72); color: #fff; font-size: 26rpx; }
+.rv-photo--add { display: flex; align-items: center; justify-content: center; border: 2rpx dashed #D1D5DB; color: #6B7280; font-size: 22rpx; background: #fff; text-align: center; }
+.rv-line { font-size: 26rpx; color: #111827; line-height: 1.8; }
+.rv-muted { font-size: 24rpx; color: #6B7280; }
+.rv-gap-s { margin: 0 0 12rpx; }
+.rv-check { padding: 14rpx 0; border-bottom: 1rpx solid #F3F4F6; }
+.rv-chips { display: flex; flex-wrap: wrap; gap: 12rpx; margin-top: 10rpx; }
+.rv-chip { padding: 8rpx 18rpx; border-radius: 999rpx; border: 2rpx solid #D1D5DB; font-size: 24rpx; color: #374151; background: #fff; }
+.rv-chip--on { border-color: #2563EB; background: #EFF6FF; color: #1D4ED8; font-weight: 700; }
+.rv-chip--bad.rv-chip--on { border-color: #EF4444; background: #FEF2F2; color: #B91C1C; }
+.req { color: #DC2626; }
+.rv-row { display: flex; gap: 12rpx; align-items: center; }
+.rv-flex { flex: 1; }
+.rv-scan { margin: 0; width: 140rpx; padding: 0; font-size: 26rpx; }
+.rv-results { display: flex; gap: 16rpx; margin: 16rpx 0; }
+.rv-result { flex: 1; text-align: center; padding: 18rpx 0; border: 2rpx solid #D1D5DB; border-radius: 12rpx; font-size: 28rpx; color: #374151; }
+.rv-result--ok { border-color: #10B981; background: #ECFDF5; color: #047857; font-weight: 700; }
+.rv-result--bad { border-color: #EF4444; background: #FEF2F2; color: #B91C1C; font-weight: 700; }
+.rv-gap { margin-top: 20rpx; }
+.rv-hist { padding: 12rpx 0; border-bottom: 1rpx solid #F3F4F6; font-size: 24rpx; color: #374151; }

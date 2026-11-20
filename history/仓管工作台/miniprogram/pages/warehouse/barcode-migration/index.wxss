@@ -1,0 +1,39 @@
+/* 与货号更换页是同构双胞胎，样式直接复用，只补 69码 特有的几处 */
+@import "../sku-migration/index.wxss";
+
+.sku-migration-page .sku-item__barcode {
+  margin-top: 10rpx;
+  font-size: 28rpx;
+  font-weight: 800;
+  color: #2563EB;
+  word-break: break-all;
+}
+
+.sku-migration-page .sku-item__barcode--empty {
+  color: #9CA3AF;
+  font-weight: 600;
+}
+
+.sku-migration-page .sku-item__spu {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #059669;
+  line-height: 1.45;
+}
+
+.sku-migration-page .sku-item__spu--miss {
+  color: #D97706;
+}
+
+/* 「未查到」Tab 有两个操作：重新查询（主）+ 更换（次），并排等分 */
+.sku-migration-page .sku-item__actions {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 16rpx;
+}
+
+.sku-migration-page .sku-item__actions .sku-item__action {
+  flex: 1;
+  margin-top: 0;
+}

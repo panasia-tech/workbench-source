@@ -1,0 +1,63 @@
+.sm-page .card { margin-bottom: 20rpx; }
+.sm-row { display: flex; align-items: center; justify-content: space-between; gap: 16rpx; }
+.sm-title { font-size: 30rpx; font-weight: 700; color: #111827; margin-bottom: 12rpx; }
+.sm-gap { margin-top: 16rpx; }
+.sm-meta { margin-top: 12rpx; font-size: 22rpx; color: #9CA3AF; }
+.sm-note { margin-top: 8rpx; font-size: 26rpx; color: #374151; line-height: 1.5; }
+.sm-code { color: #6B7280; font-size: 24rpx; font-weight: 400; }
+.sm-empty { font-size: 26rpx; color: #9CA3AF; padding: 12rpx 0; }
+
+.sm-goods { display: flex; gap: 20rpx; }
+.sm-goods__cover { width: 180rpx; height: 180rpx; border-radius: 12rpx; background: #F3F4F6; flex-shrink: 0; }
+.sm-goods__main { flex: 1; min-width: 0; }
+.sm-goods__code { font-size: 28rpx; font-weight: 800; color: #2563EB; }
+.sm-goods__name { margin: 4rpx 0 8rpx; font-size: 28rpx; font-weight: 600; color: #111827; }
+.sm-kv { display: flex; gap: 12rpx; font-size: 24rpx; line-height: 1.6; }
+.sm-k { color: #9CA3AF; flex-shrink: 0; width: 112rpx; }
+.sm-v { color: #374151; word-break: break-all; }
+.sm-diff { color: #B45309; font-weight: 700; background: #FEF3C7; padding: 0 6rpx; border-radius: 6rpx; }
+.sm-link { margin-top: 16rpx; font-size: 24rpx; color: #2563EB; }
+
+.sm-returned { border: 2rpx solid #FCA5A5; background: #FEF2F2; }
+.sm-returned__title { font-size: 28rpx; font-weight: 700; color: #B91C1C; }
+.sm-returned__reason { margin-top: 10rpx; font-size: 28rpx; color: #111827; line-height: 1.55; white-space: pre-wrap; }
+
+.sm-chosen { font-size: 30rpx; font-weight: 700; color: #111827; }
+
+.sm-state { border-left: 8rpx solid #9CA3AF; }
+.sm-state--ok { border-left-color: #10B981; }
+.sm-state--warn { border-left-color: #F59E0B; background: #FFFBEB; }
+.sm-state--bad { border-left-color: #EF4444; background: #FEF2F2; }
+.sm-state__word { font-size: 24rpx; font-weight: 800; color: #374151; }
+.sm-state__title { flex: 1; font-size: 28rpx; font-weight: 700; color: #111827; text-align: right; }
+.sm-state__detail { margin-top: 10rpx; font-size: 26rpx; color: #374151; line-height: 1.5; }
+.sm-state__next { margin-top: 10rpx; font-size: 26rpx; color: #111827; font-weight: 600; line-height: 1.5; }
+
+.sm-cand { display: flex; gap: 16rpx; padding: 18rpx; margin-top: 14rpx; border: 2rpx solid #E5E7EB; border-radius: 14rpx; }
+.sm-cand--on { border-color: #2563EB; background: #EFF6FF; }
+.sm-cand__radio { font-size: 30rpx; color: #2563EB; width: 32rpx; }
+.sm-cand__img { width: 120rpx; height: 120rpx; border-radius: 10rpx; background: #F9FAFB; flex-shrink: 0; }
+.sm-cand__main { flex: 1; min-width: 0; }
+.sm-cand__name { font-size: 28rpx; font-weight: 700; color: #111827; margin-bottom: 4rpx; }
+.sm-why { margin-top: 6rpx; font-size: 22rpx; color: #6B7280; }
+
+.sm-search { margin-top: 20rpx; }
+.sm-hit { padding: 16rpx 8rpx; border-bottom: 1rpx solid #F3F4F6; font-size: 26rpx; color: #111827; }
+
+.sm-thumbs { display: flex; flex-wrap: wrap; gap: 14rpx; margin-top: 10rpx; }
+.sm-thumb { width: 150rpx; height: 150rpx; border-radius: 10rpx; background: #F3F4F6; }
+.sm-thumb--s { width: 110rpx; height: 110rpx; }
+.sm-thumb-wrap { position: relative; }
+.sm-thumb-x { position: absolute; top: -10rpx; right: -10rpx; width: 36rpx; height: 36rpx; line-height: 34rpx; text-align: center; border-radius: 50%; background: rgba(17, 24, 39, 0.72); color: #fff; font-size: 26rpx; }
+.sm-thumb-add { display: flex; align-items: center; justify-content: center; color: #9CA3AF; font-size: 24rpx; border: 2rpx dashed #D1D5DB; background: #fff; text-align: center; }
+
+.sm-actions { display: flex; gap: 16rpx; margin-top: 20rpx; }
+.sm-actions button { flex: 1; }
+
+.sm-log { padding: 14rpx 0; border-bottom: 1rpx solid #F3F4F6; font-size: 26rpx; color: #374151; }
+.sm-log__who { font-weight: 700; color: #111827; }
+.sm-log__note { margin-top: 4rpx; font-size: 24rpx; color: #6B7280; }
+
+.sm-mask { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(17, 24, 39, 0.5); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 40rpx; }
+.sm-dialog { background: #fff; border-radius: 20rpx; padding: 32rpx; width: 100%; max-width: 560px; }
+.sm-effect { font-size: 26rpx; color: #B45309; line-height: 1.6; }

@@ -1,0 +1,56 @@
+<view class="page-wrap page-wrap--no-tab sku-migration-page spu-match-page">
+  <view class="search-bar">
+    <view class="search-input-wrap">
+      <input
+        class="search-input search-input--with-scan"
+        placeholder="货号 / 69码 / 商品名 / 型号 / 库位"
+        value="{{q}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+      />
+      <view class="search-scan-icon" catchtap="onScanSearch" aria-role="button">
+        <view class="scan-frame"></view>
+        <view class="scan-line"></view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card filter-card">
+    <view class="status-segment">
+      <text
+        wx:for="{{tabs}}"
+        wx:key="key"
+        class="status-seg {{tab === item.key ? 'active' : ''}}"
+        data-tab="{{item.key}}"
+        bindtap="switchTab"
+      >{{item.label}}</text>
+    </view>
+    <view class="filter-meta">
+      <text>共 {{total}} 件</text>
+      <text class="filter-hint">{{hint}}</text>
+    </view>
+  </view>
+
+  <view class="card list-card">
+    <view wx:if="{{!list.length && !loading}}" class="empty">
+      <view class="e-icon">—</view>
+      <view class="e-text">这里没有货</view>
+    </view>
+
+    <view wx:for="{{list}}" wx:key="sku_code" class="sku-item" data-code="{{item.sku_code}}" bindtap="openDetail">
+      <view class="sku-item__main">
+        <view class="sku-item__head">
+          <view class="sku-item__code">{{item.sku_code}}</view>
+          <view class="tag {{item.tagClass}}">{{item.tagText}}</view>
+        </view>
+        <view class="sku-item__name">{{item.product_name}}</view>
+        <view class="sku-item__sub">型号 {{item.model || '未登记'}} · 69码 {{item.barcode || '未录入'}}</view>
+        <view class="sku-item__sub">库位 {{item.location_code || '未分配'}}</view>
+        <view wx:if="{{item.spu}}" class="sku-item__spu">已选：{{item.spu}}</view>
+        <view wx:if="{{item.return_reason}}" class="sku-item__spu sku-item__spu--miss">退回原因：{{item.return_reason}}</view>
+      </view>
+    </view>
+    <view wx:if="{{loading}}" class="list-footer">加载中…</view>
+    <view wx:elif="{{noMore && list.length}}" class="list-footer">没有更多了</view>
+  </view>
+</view>

@@ -1,0 +1,151 @@
+<!-- 自提 / 切单出库（电脑版）：左边出库表单，右边商品核对和收款码，底部操作条提交 -->
+<view class="dk-page">
+  <view class="dk-head">
+    <view>
+      <view class="dk-title">{{pageTitle}}</view>
+      <view class="dk-sub">{{pageNote}}</view>
+    </view>
+  </view>
+
+  <view class="dk-split">
+    <view class="dk-card">
+      <view class="dk-card__head">出库信息</view>
+      <view class="dk-card__body">
+        <view class="dk-form">
+          <view class="dk-field dk-field--full">
+            <text class="dk-label dk-label--req">货号</text>
+            <view class="dk-row">
+              <input
+                class="dk-input dk-grow"
+                placeholder="扫码或输入货号，离开输入框自动带出商品"
+                data-key="sku_code"
+                value="{{form.sku_code}}"
+                bindinput="onInput"
+                bindblur="onCodeBlur"
+              />
+              <view class="dk-btn" bindtap="scanSku">扫码填入</view>
+            </view>
+          </view>
+
+          <view class="dk-field">
+            <text class="dk-label dk-label--req">买家昵称</text>
+            <input class="dk-input" placeholder="买家昵称" data-key="buyer_name" value="{{form.buyer_name}}" bindinput="onInput" />
+          </view>
+          <view class="dk-field">
+            <text class="dk-label dk-label--req">售价</text>
+            <input class="dk-input" placeholder="0.00" type="digit" data-key="sale_price" value="{{form.sale_price}}" bindinput="onInput" />
+          </view>
+
+          <block wx:if="{{form.outbound_type === 'SWITCH'}}">
+            <view class="dk-field">
+              <text class="dk-label dk-label--req">快递运单号</text>
+              <input class="dk-input" placeholder="切单发货运单号" data-key="tracking_no" value="{{form.tracking_no}}" bindinput="onInput" />
+            </view>
+            <view class="dk-field">
+              <text class="dk-label">快递费</text>
+              <input class="dk-input" placeholder="0.00" type="digit" data-key="express_fee" value="{{form.express_fee}}" bindinput="onInput" />
+            </view>
+            <view class="dk-field">
+              <text class="dk-label">闲鱼服务费</text>
+              <input class="dk-input" placeholder="订单页上的服务费，还没出来先空着" type="digit" data-key="platform_fee" value="{{form.platform_fee}}" bindinput="onInput" />
+            </view>
+            <view class="dk-field">
+              <text class="dk-label">手机后四位</text>
+              <input
+                class="dk-input"
+                placeholder="顺丰查询选填，收/寄件人手机号后 4 位"
+                type="number"
+                maxlength="4"
+                data-key="tracking_phone_suffix"
+                value="{{form.tracking_phone_suffix}}"
+                bindinput="onPhoneSuffixInput"
+              />
+            </view>
+          </block>
+
+          <view class="dk-field dk-field--full">
+            <text class="dk-label dk-label--req">成交凭证（至少 1 个，最多 3 个）</text>
+            <text class="dk-help">聊天 / 收款 / 物流截图等成交留证，图片或视频（已传 {{form.evidence_urls.length}} 个）</text>
+            <view class="ob-dk-evidence">
+              <media-gallery wx:if="{{form.evidence_urls.length}}" urls="{{form.evidence_urls}}" display-urls="{{evidenceDisplayUrls}}" thumb-size="medium" />
+              <view wx:if="{{form.evidence_urls.length < 3}}" class="ob-dk-add" bindtap="uploadEvidence">
+                <text class="ob-dk-add__plus">+</text>
+                <text>{{form.evidence_urls.length ? '继续追加' : '上传凭证'}}</text>
+              </view>
+            </view>
+          </view>
+
+          <view class="dk-field dk-field--full">
+            <text class="dk-label">备注</text>
+            <textarea class="dk-input ob-dk-textarea" placeholder="可选" data-key="remark" value="{{form.remark}}" bindinput="onInput" />
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="ob-dk-side">
+      <view class="dk-card">
+        <view class="dk-card__head">
+          <text>商品</text>
+          <text wx:if="{{sku}}" class="dk-link ob-dk-headlink" bindtap="goSkuDetail">详情 ›</text>
+        </view>
+        <view class="dk-card__body">
+          <view wx:if="{{skuLoading}}" class="dk-empty ob-dk-empty">查询商品中…</view>
+          <view wx:elif="{{skuError}}" class="ob-dk-err">{{skuError}}</view>
+          <block wx:elif="{{sku}}">
+            <view class="dk-media">
+              <image
+                wx:if="{{sku.cover_thumb_url || sku.cover_url}}"
+                class="dk-thumb dk-thumb--lg"
+                src="{{sku.cover_thumb_url || sku.cover_url}}"
+                mode="aspectFill"
+                data-url="{{sku.cover_url || sku.cover_thumb_url}}"
+                bindtap="dkPreview"
+              />
+              <view wx:else class="dk-thumb dk-thumb--lg ob-dk-icon">{{sku.product_name ? sku.product_name[0] : '货'}}</view>
+              <view class="dk-grow">
+                <view class="dk-cell-main">{{sku.product_name}}</view>
+                <view class="dk-cell-sub">{{sku.spec || '—'}}</view>
+                <view class="dk-cell-sub">{{sku.sku_code}}<text wx:if="{{sku.suggest_price}}"> · 参考价 ¥{{sku.suggest_price}}</text></view>
+              </view>
+            </view>
+            <view wx:if="{{sku.on_shelf_count > 0}}" class="ob-dk-err ob-dk-gap">仍在 {{sku.on_shelf_count}} 个店铺在架，请先全部下架后再自提</view>
+            <view wx:else class="ob-dk-ok ob-dk-gap">已全部下架，可自提出库</view>
+          </block>
+          <view wx:else class="dk-empty ob-dk-empty">扫码或输入货号后带出商品</view>
+        </view>
+      </view>
+
+      <view wx:if="{{form.outbound_type === 'PICKUP'}}" class="dk-card">
+        <view class="dk-card__head">买家扫码支付</view>
+        <view class="dk-card__body">
+          <view wx:if="{{pay}}" class="ob-dk-pay">
+            <image class="ob-dk-qr" src="{{pay.qr_image}}" mode="aspectFit" />
+            <view class="ob-dk-amount">¥{{form.sale_price}}</view>
+            <view class="dk-help">请买家用支付宝扫码支付，支付成功后自动出库</view>
+            <view class="ob-dk-countdown">剩余支付时间 {{countdownText}}</view>
+            <view wx:if="{{polling}}" class="dk-sub">等待支付中…</view>
+            <view class="dk-btn" bindtap="cancelPayment">取消并重新生成</view>
+          </view>
+          <view wx:else class="dk-help">填好左边的货号、买家、售价、凭证后点「生成收款码」，收款码显示在这里。</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="dk-actionbar ob-dk-bar">
+    <block wx:if="{{form.outbound_type === 'PICKUP' && !pay}}">
+      <text wx:if="{{sku && sku.on_shelf_count > 0}}" class="dk-help">商品还在架，先从各账号下架</text>
+      <view
+        class="dk-btn dk-btn--primary {{submitting || (sku && sku.on_shelf_count > 0) ? 'dk-btn--disabled' : ''}}"
+        bindtap="generatePayment"
+      >{{submitting ? '生成中…' : (sku && sku.on_shelf_count > 0 ? '请先从各账号下架' : '生成收款码')}}</view>
+    </block>
+    <text wx:elif="{{form.outbound_type === 'PICKUP' && pay}}" class="dk-help">收款码已生成，等买家支付；要改信息先在右边「取消并重新生成」</text>
+    <view
+      wx:if="{{form.outbound_type === 'SWITCH'}}"
+      class="dk-btn dk-btn--primary {{submitting ? 'dk-btn--disabled' : ''}}"
+      bindtap="submit"
+    >{{submitting ? '提交中…' : '确认出库'}}</view>
+  </view>
+</view>

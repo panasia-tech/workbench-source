@@ -1,0 +1,24 @@
+<view class="page-wrap page-wrap--no-tab bg-page">
+  <view class="tabs">
+    <view class="tab {{tab === 'open' ? 'tab--on' : ''}}" data-key="open" bindtap="switchTab">进行中</view>
+    <view class="tab {{tab === 'deal' ? 'tab--on' : ''}}" data-key="deal" bindtap="switchTab">已谈妥</view>
+    <view class="tab {{tab === 'closed' ? 'tab--on' : ''}}" data-key="closed" bindtap="switchTab">已结束</view>
+  </view>
+
+  <view class="card">
+    <view wx:if="{{!list.length && !loading}}" class="empty">暂无议价会话</view>
+    <view wx:for="{{list}}" wx:key="id" class="row" data-id="{{item.id}}" bindtap="openItem">
+      <view class="row-main">
+        <view class="title">{{item.title || item.platform_item_id || '未命名'}}</view>
+        <view class="sub">{{item.seller_name || '—'}} · {{item.purchase_account || '—'}}</view>
+        <view class="sub">我方/对方/谈妥：{{item.priceLine}}</view>
+      </view>
+      <view class="tag tag-warning">{{item.stateLabel}}</view>
+    </view>
+    <view wx:if="{{loading}}" class="empty">加载中…</view>
+  </view>
+
+  <view class="fab-wrap">
+    <button class="btn-primary btn-block" bindtap="openCreate">开聊</button>
+  </view>
+</view>

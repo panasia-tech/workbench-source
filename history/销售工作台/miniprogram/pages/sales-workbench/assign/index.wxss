@@ -1,0 +1,13 @@
+/* 加派任务：上面一张表单，下面派出去的（先要主管动手的） */
+.as-page .as-tip { font-size: 24rpx; color: #6B7280; line-height: 1.6; }
+.as-page .as-k { margin: 24rpx 0 10rpx; font-size: 24rpx; color: #374151; font-weight: 600; }
+.as-page .as-row { display: flex; gap: 16rpx; }
+.as-page .as-row picker { flex: 1; }
+.as-page .as-pick { color: #111827; }
+.as-page .as-ph { color: #9CA3AF; }
+.as-page .as-go { margin-top: 32rpx; }
+.as-page .as-item { padding: 20rpx 0; border-top: 1rpx solid #F3F4F6; }
+.as-page .as-item__line { display: flex; align-items: center; gap: 12rpx; }
+.as-page .as-item__title { flex: 1; font-size: 28rpx; font-weight: 600; color: #111827; }
+.as-page .as-item__sub { margin-top: 8rpx; font-size: 24rpx; color: #6B7280; }
+.as-page .as-late { color: #DC2626; }

@@ -1,0 +1,13 @@
+/* 商品匹配（电脑版模板用；wspm-dk- 开头，手机模板里不出现） */
+.wspm-dk-name {
+  max-width: 280px;
+}
+
+.wspm-dk-miss {
+  color: #c2410c;
+}
+
+.wspm-dk-wrap {
+  max-width: 360px;
+  font-size: 12px;
+}

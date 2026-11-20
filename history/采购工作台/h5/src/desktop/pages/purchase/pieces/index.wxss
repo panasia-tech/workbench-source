@@ -1,0 +1,59 @@
+/* 分件到货（电脑版模板 index.wxml 用；手机模板里没有 pc-dk- 类名） */
+.pc-dk-bad {
+  color: #b91c1c;
+}
+
+.pc-dk-warn {
+  color: #c2410c;
+}
+
+.pc-dk-qty {
+  width: 100px;
+}
+
+/* 居中对话框 */
+.pc-dk-mask {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(17, 24, 39, 0.45);
+}
+
+.pc-dk-dialog {
+  width: 480px;
+  max-width: calc(100vw - 48px);
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.25);
+}
+
+.pc-dk-dialog__head {
+  padding: 16px 20px 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.pc-dk-dialog__body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 20px;
+}
+
+.pc-dk-dialog__foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 20px 16px;
+}
+
+.pc-dk-textarea {
+  width: 100%;
+  min-height: 96px;
+}

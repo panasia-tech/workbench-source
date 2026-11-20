@@ -1,0 +1,72 @@
+<!-- 闲鱼订单：照销售工作台交付包（浅色）——发货时限说明条、分类标签、左边订单卡、右边写为什么红和下一步 -->
+<view class="page-wrap page-wrap--no-tab so-page">
+  <view class="so-head">
+    <view class="so-head__t">订单</view>
+    <view class="so-head__s">闲鱼卖出的货，抓得不对的有四种，都跳红：<text class="so-b">漏抓、对不上货、卡住没走、状态不同步</text>。<text class="so-q" bindtap="toggleHelp">?</text></view>
+  </view>
+  <view wx:if="{{showHelp}}" class="so-help">漏抓：闲鱼显示卖出了，ERP 里货没锁，别的号可能再卖一次。对不上货：同一件货在两个号都卖出了，只能发一单。卡住没走：卖出后过了发货时限还没发。状态不同步：ERP 已出库，闲鱼上还挂着。销售只看分给自己的号卖的，管理员看全部。</view>
+  <view class="so-rule">发货时限：<text class="so-b">实物当天 17:00 前</text>（17:00 以后卖出的顺延到次日 17:00）。超了就跳红。</view>
+
+  <view class="so-tabs">
+    <view wx:for="{{tabs}}" wx:key="key" class="so-tab {{tab === item.key ? 'is-on' : ''}}" data-key="{{item.key}}" bindtap="pickTab">
+      <text wx:if="{{item.dot}}" class="so-dot so-dot--{{item.dot}}"></text>{{item.label}}<text class="so-tab__n">{{item.count}}</text>
+    </view>
+  </view>
+
+  <view wx:if="{{loading && !loaded}}" class="list-footer">加载中…</view>
+
+  <view class="so-cols">
+    <view class="so-list">
+      <view wx:if="{{loaded && !list.length}}" class="so-empty">这一类现在没有订单。</view>
+      <block wx:for="{{list}}" wx:key="_k">
+        <view class="so-o so-o--{{item.level}} {{sel && sel._k === item._k ? 'is-sel' : ''}}" data-k="{{item._k}}" bindtap="pick">
+          <view class="so-o__top">
+            <image wx:if="{{item.thumb}}" class="so-thumb" src="{{item.thumb}}" mode="aspectFill" lazy-load="{{true}}" />
+            <view wx:else class="so-thumb so-thumb--none">无图</view>
+            <view class="so-o__main">
+              <text class="so-tag so-tag--{{item.level}}">{{item.tag}}</text>
+              <view class="so-o__t">{{item.product_name}}</view>
+              <view class="so-o__m">
+                <text wx:if="{{item.shops.length}}">{{item.shops[item.shops.length - 1]}}</text>
+                <text wx:if="{{item.sold_at}}">卖出 {{item.sold_at}}</text>
+                <text>货号 {{item.sku_code}}</text>
+                <text class="so-pill">实物</text>
+              </view>
+            </view>
+          </view>
+          <view wx:if="{{item.tab !== 'ok'}}" class="so-why so-why--{{item.level}}">{{item.text}}</view>
+        </view>
+        <!-- 手机上：点开的那单，详情展开在卡片下面 -->
+        <view wx:if="{{sel && sel._k === item._k}}" class="so-det so-det--inline">
+          <view class="so-det__h4">下一步</view>
+          <view class="so-det__p">{{sel.why}}</view>
+          <view class="so-det__acts">
+            <view class="so-btn" data-url="{{sel.url}}" bindtap="go">{{sel.button}}</view>
+            <view wx:if="{{sel.url !== sel.item_url}}" class="so-btn so-btn--plain" data-url="{{sel.item_url}}" bindtap="go">看这件货</view>
+          </view>
+        </view>
+      </block>
+    </view>
+
+    <!-- 电脑上：右边一栏 -->
+    <view class="so-side">
+      <view wx:if="{{!sel}}" class="so-det so-det--empty">点左边一笔订单，这里写它为什么红、该做什么。</view>
+      <view wx:else class="so-det">
+        <view class="so-det__h"><text class="so-tag so-tag--{{sel.level}}">{{sel.tag}}</text><text class="so-muted">货号 {{sel.sku_code}}</text></view>
+        <view class="so-det__t">{{sel.product_name}}</view>
+        <view class="so-kv">
+          <text class="so-kv__k">卖出的号</text><text>{{sel.shops.length ? sel.shops.join('、') : '—'}}</text>
+          <text class="so-kv__k">卖出时间</text><text>{{sel.sold_at || '—'}}</text>
+          <text class="so-kv__k">货号</text><text>{{sel.sku_code}}</text>
+        </view>
+        <view wx:if="{{sel.tab !== 'ok'}}" class="so-why so-why--{{sel.level}} so-why--big">{{sel.text}}</view>
+        <view class="so-det__h4">下一步</view>
+        <view class="so-det__p">{{sel.why}}</view>
+        <view class="so-det__acts">
+          <view class="so-btn" data-url="{{sel.url}}" bindtap="go">{{sel.button}}</view>
+          <view wx:if="{{sel.url !== sel.item_url}}" class="so-btn so-btn--plain" data-url="{{sel.item_url}}" bindtap="go">看这件货</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

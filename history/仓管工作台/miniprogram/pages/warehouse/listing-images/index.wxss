@@ -1,0 +1,71 @@
+.lim-page--bar { padding-bottom: calc(150rpx + env(safe-area-inset-bottom)); }
+
+.lim-page .lim-sku { display: flex; align-items: center; gap: 20rpx; }
+.lim-page .lim-sku-img { flex: none; width: 112rpx; height: 112rpx; border-radius: 16rpx; background: #F3F4F6; }
+.lim-page .lim-sku-img--none { display: flex; align-items: center; justify-content: center; color: #9CA3AF; font-size: 24rpx; }
+.lim-page .lim-sku-body { flex: 1; min-width: 0; }
+.lim-page .lim-sku-name { font-size: 30rpx; font-weight: 800; color: #111827; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lim-page .lim-sku-sub { margin-top: 8rpx; font-size: 24rpx; color: #6B7280; }
+.lim-page .lim-back { flex: none; padding: 12rpx 22rpx; border-radius: 999rpx; background: #F3F4F6; font-size: 24rpx; color: #374151; }
+
+.lim-page .lim-tabs { display: flex; margin: 0 0 20rpx; padding: 6rpx; border-radius: 20rpx; background: #E5E7EB; }
+.lim-page .lim-tab { flex: 1; padding: 16rpx 0; text-align: center; border-radius: 16rpx; font-size: 26rpx; color: #374151; white-space: nowrap; }
+.lim-page .lim-tab--on { background: #FFFFFF; color: #2563EB; font-weight: 800; }
+.lim-page .lim-tabs--4 .lim-tab { font-size: 22rpx; }
+
+.lim-page .lim-note { margin-bottom: 20rpx; padding: 16rpx 20rpx; border-radius: 16rpx; background: #FEF3C7; color: #92400E; font-size: 24rpx; }
+
+.lim-page .lim-chips { display: flex; width: 100%; white-space: nowrap; margin-bottom: 20rpx; }
+.lim-page .lim-chip { position: relative; display: inline-block; flex: none; min-width: 150rpx; margin-right: 16rpx; padding: 14rpx 22rpx; border: 2rpx solid #E5E7EB; border-radius: 16rpx; background: #FFFFFF; }
+.lim-page .lim-chip--on { border-color: #2563EB; background: #EFF6FF; }
+.lim-page .lim-chip-name { font-size: 26rpx; font-weight: 700; color: #111827; }
+.lim-page .lim-chip--on .lim-chip-name { color: #2563EB; }
+.lim-page .lim-chip-sub { margin-top: 4rpx; font-size: 22rpx; color: #6B7280; }
+.lim-page .lim-chip-check { position: absolute; right: -2rpx; bottom: -2rpx; width: 32rpx; height: 32rpx; border-radius: 16rpx 0 14rpx 0; background: #2563EB; color: #FFFFFF; font-size: 20rpx; line-height: 32rpx; text-align: center; }
+
+.lim-page .lim-acc { padding: 20rpx 0; border-bottom: 1rpx solid #E5E7EB; }
+.lim-page .lim-acc:first-child { padding-top: 0; }
+.lim-page .lim-acc:last-child { padding-bottom: 0; border-bottom: none; }
+.lim-page .lim-acc-head { display: flex; align-items: center; gap: 10rpx; margin-bottom: 14rpx; }
+.lim-page .lim-acc-name { font-size: 28rpx; font-weight: 700; color: #111827; }
+.lim-page .lim-acc-n { margin-left: auto; font-size: 24rpx; color: #6B7280; }
+.lim-page .lim-tag { padding: 2rpx 12rpx; border-radius: 8rpx; background: #F3F4F6; color: #6B7280; font-size: 20rpx; }
+.lim-page .lim-tag--live { background: #DCFCE7; color: #15803D; }
+.lim-page .lim-acc-strip { display: flex; gap: 10rpx; }
+.lim-page .lim-acc-img { width: 96rpx; height: 96rpx; border-radius: 10rpx; background: #F3F4F6; }
+
+.lim-page .lim-sec-head { display: flex; align-items: center; margin-bottom: 16rpx; }
+.lim-page .lim-sec-title { flex: 1; min-width: 0; padding-left: 14rpx; border-left: 6rpx solid #2563EB; font-size: 28rpx; font-weight: 800; color: #111827; }
+.lim-page .lim-link { flex: none; font-size: 24rpx; color: #2563EB; }
+.lim-page .lim-hint { margin-bottom: 16rpx; font-size: 24rpx; color: #6B7280; line-height: 1.5; }
+.lim-page .lim-warn { margin: 8rpx 0 16rpx; font-size: 24rpx; color: #B45309; line-height: 1.45; }
+.lim-page .lim-muted { font-size: 24rpx; color: #9CA3AF; }
+.lim-page .lim-tip { margin-top: 16rpx; text-align: center; }
+
+.lim-page .lim-grid { display: flex; flex-wrap: wrap; gap: 14rpx; }
+.lim-page .lim-cell { position: relative; width: calc((100% - 28rpx) / 3); height: 200rpx; border: 4rpx solid transparent; border-radius: 16rpx; overflow: hidden; background: #F3F4F6; box-sizing: border-box; }
+.lim-page .lim-cell--on { border-color: #2563EB; }
+.lim-page .lim-cell--taken { opacity: 0.45; }
+.lim-page .lim-img { width: 100%; height: 100%; display: block; }
+.lim-page .lim-badge { position: absolute; left: 8rpx; top: 8rpx; padding: 2rpx 12rpx; border-radius: 8rpx; background: rgba(17, 24, 39, 0.7); color: #FFFFFF; font-size: 20rpx; }
+.lim-page .lim-badge--bad { background: rgba(220, 38, 38, 0.85); }
+.lim-page .lim-sortno { position: absolute; right: 8rpx; top: 8rpx; width: 44rpx; height: 44rpx; border-radius: 22rpx; background: #F97316; color: #FFFFFF; font-size: 24rpx; font-weight: 800; line-height: 44rpx; text-align: center; }
+.lim-page .lim-tick { position: absolute; right: 8rpx; bottom: 8rpx; width: 40rpx; height: 40rpx; border-radius: 20rpx; background: #2563EB; color: #FFFFFF; font-size: 24rpx; line-height: 40rpx; text-align: center; }
+.lim-page .lim-used { position: absolute; left: 0; right: 0; bottom: 0; padding: 4rpx 8rpx; background: rgba(37, 99, 235, 0.85); color: #FFFFFF; font-size: 20rpx; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lim-page .lim-used--free { background: rgba(107, 114, 128, 0.75); }
+.lim-page .lim-used--bad { background: rgba(220, 38, 38, 0.85); }
+.lim-page .lim-img--gone { opacity: 0.6; }
+
+.lim-page .lim-bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; display: flex; align-items: center; gap: 10rpx; padding: 18rpx 20rpx calc(18rpx + env(safe-area-inset-bottom)); background: #FFFFFF; box-shadow: 0 -4rpx 16rpx rgba(17, 24, 39, 0.08); }
+.lim-page .lim-bar-all { flex: none; display: flex; align-items: center; gap: 8rpx; font-size: 24rpx; color: #374151; }
+.lim-page .lim-box { width: 34rpx; height: 34rpx; border: 2rpx solid #9CA3AF; border-radius: 8rpx; font-size: 22rpx; line-height: 34rpx; text-align: center; color: #FFFFFF; }
+.lim-page .lim-box--on { border-color: #2563EB; background: #2563EB; }
+.lim-page .lim-bar-btn { flex: 1; padding: 18rpx 0; border-radius: 14rpx; background: #F3F4F6; text-align: center; font-size: 24rpx; color: #111827; white-space: nowrap; }
+.lim-page .lim-bar-btn--pri { background: #2563EB; color: #FFFFFF; font-weight: 700; }
+.lim-page .lim-bar-btn--danger { color: #DC2626; }
+
+.lim-page .lim-mask { position: fixed; left: 0; right: 0; top: 0; bottom: 0; z-index: 100; background: rgba(17, 24, 39, 0.45); display: flex; align-items: flex-end; justify-content: center; }
+.lim-page .lim-sheet { width: 100%; max-width: 560px; padding: 28rpx 24rpx calc(24rpx + env(safe-area-inset-bottom)); border-radius: 28rpx 28rpx 0 0; background: #FFFFFF; box-sizing: border-box; }
+.lim-page .lim-sheet-title { margin-bottom: 10rpx; font-size: 30rpx; font-weight: 800; color: #111827; }
+.lim-page .lim-sheet-body { max-height: 60vh; }
+.lim-page .lim-sheet-actions { display: flex; gap: 16rpx; margin-top: 20rpx; }

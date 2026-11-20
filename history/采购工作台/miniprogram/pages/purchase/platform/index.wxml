@@ -1,0 +1,54 @@
+<view class="page-wrap page-wrap--no-tab pf-page">
+  <view class="card pf-head">
+    <view class="pf-tabs">
+      <view wx:for="{{tabs}}" wx:key="key" class="pf-tab {{view === item.key ? 'pf-tab--on' : ''}}" data-key="{{item.key}}" bindtap="switchTab">
+        {{item.label}}<text wx:if="{{counts[item.key]}}" class="pf-badge">{{counts[item.key]}}</text>
+      </view>
+    </view>
+    <view class="search-bar">
+      <input class="search-input" placeholder="搜订单号/标题/卖家" value="{{q}}" bindinput="onSearchInput" confirm-type="search" bindconfirm="reload" />
+    </view>
+    <view class="pf-meta">共 {{total}} 单 · {{lastSynced ? '最后抓到 ' + lastSynced : '执行端还没抓过'}}</view>
+  </view>
+
+  <view class="card">
+    <view wx:if="{{!list.length && !loading}}" class="empty">
+      <view class="e-icon">—</view>
+      <view class="e-text">{{view === 'unbound' ? '没有待建单的订单' : view === 'review' ? '没有要人看的' : '还没有抓到订单'}}</view>
+    </view>
+    <view wx:for="{{list}}" wx:key="id" class="pf-item">
+      <view class="pf-row" data-id="{{item.id}}" bindtap="toggle">
+        <image wx:if="{{item.item_image}}" class="pf-thumb" src="{{item.item_image}}" mode="aspectFill" />
+        <view wx:else class="pf-thumb pf-thumb--none">无图</view>
+        <view class="pf-info">
+          <view class="pf-title">{{item.item_title || '（标题没抓到）'}}</view>
+          <view class="pf-sub">{{item.platform_order_no}} · {{item.seller_name || '卖家没抓到'}}</view>
+          <view class="pf-sub">{{item.purchase_account || item.buyer_account}}{{item.paid_amount ? ' · 实付 ¥' + item.paid_amount : ''}}</view>
+          <view wx:if="{{item.needs_review}}" class="pf-warn">{{item.review_reason}}</view>
+          <view wx:if="{{item.sync_status !== 'ok'}}" class="pf-muted">{{item.sync_error || '只抓到一部分'}}</view>
+        </view>
+        <view class="pf-tags">
+          <view class="tag">{{item.trade_label}}</view>
+          <view wx:if="{{item.refund_status !== 'none'}}" class="tag tag-danger">{{item.refund_label}}</view>
+        </view>
+      </view>
+      <view wx:if="{{openId === item.id}}" class="pf-detail">
+        <view wx:if="{{!detail}}" class="pf-muted">加载中…</view>
+        <block wx:else>
+          <view class="pf-line">付款：{{detail.pay_label}} · 退款：{{detail.refund_label}} · 物流：{{detail.ship_label}}{{detail.tracking_no ? '（' + detail.tracking_no + '）' : ''}}</view>
+          <view wx:if="{{detail.raw_status}}" class="pf-line pf-muted">平台原文：{{detail.raw_status}}</view>
+          <view wx:for="{{detail.orders}}" wx:key="id" wx:for-item="po" class="pf-line pf-link" data-id="{{po.id}}" bindtap="openPurchase">采购单 {{po.order_no}} ›</view>
+          <view class="pf-ops">
+            <button wx:if="{{!detail.orders.length}}" class="btn btn-sm" data-id="{{item.id}}" bindtap="makeOrder">一键建采购单</button>
+            <button wx:if="{{detail.needs_review}}" class="btn btn-sm btn-ghost" data-id="{{item.id}}" bindtap="markReviewed">看过了</button>
+          </view>
+          <view class="pf-events">
+            <view wx:for="{{detail.events}}" wx:key="at" wx:for-item="ev" class="pf-ev"><text class="pf-muted">{{ev.at}}</text> {{ev.text}}</view>
+          </view>
+        </block>
+      </view>
+    </view>
+    <view wx:if="{{loading}}" class="list-footer">加载中...</view>
+    <view wx:elif="{{noMore && list.length}}" class="list-footer">没有更多了</view>
+  </view>
+</view>
