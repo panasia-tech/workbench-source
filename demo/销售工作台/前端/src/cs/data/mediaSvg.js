@@ -16,7 +16,7 @@ const PALETTES = {
 
 export function makeRealPhoto({
   kind = 'monitor',
-  skuCode = '990001540233-A',
+  skuCode = '513211540233-A',
   shortCode = '0233',
   angle = '正面亮屏定妆照',
   grade = '95新',

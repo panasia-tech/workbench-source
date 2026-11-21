@@ -1,5 +1,8 @@
 <template>
   <Login v-if="needLogin" />
+  <div v-else-if="isOutsourceMode" class="cs-sandbox-shell">
+    <CsWorkbench :embedded="false" :locked-outsource="true" :initial-actor="csInitialActor" @switch-sales-acct="switchTo" />
+  </div>
   <div v-else class="shell">
     <nav class="dock" aria-label="主导航">
       <button class="brand" @click="goDock('today')"><span><Icon name="grid" /></span>销售工作台</button>
@@ -24,9 +27,9 @@
         </div>
       </div>
     </header>
-    <main class="main" ref="mainEl">
+    <main class="main" ref="mainEl" :class="{ 'main-cs-flush': view.name === 'cs-workbench' }">
       <div v-if="REAL" class="realbar"><b>真实数据 · 只读</b>实物（库存、库龄、上架审批、缺口）来自真 ERP（WMS），不会写入生产。虚拟 / 服务、练习是演示数据：真 ERP 里还没有这部分，用本机演示库跑，卡片上标了「演示数据」。</div>
-      <div v-if="state.me && !state.me.practice_done && view.name !== 'learn'" class="gatebar"><Icon name="lock" />真实任务先锁着：先在「学」里做完 3 个练习才能操作真实订单和商品。<button class="btn sm" @click="goDock('learn')">去做练习</button></div>
+      <div v-if="state.me && !state.me.practice_done && view.name !== 'learn' && view.name !== 'cs-workbench'" class="gatebar"><Icon name="lock" />真实任务先锁着：先在「学」里做完 3 个练习才能操作真实订单和商品。<button class="btn sm" @click="goDock('learn')">去做练习</button></div>
       <div v-if="state.error" class="errbar"><span>{{ state.error }}</span><button class="btn sm" @click="loadAll(true)">重新读取</button></div>
       <Today v-if="view.name === 'today'" />
       <Ops v-else-if="view.name === 'ops'" />
@@ -57,6 +60,7 @@
       <Crm v-else-if="view.name === 'crm'" />
       <Reception v-else-if="view.name === 'reception'" />
       <Assist v-else-if="view.name === 'assist'" />
+      <CsWorkbench v-else-if="view.name === 'cs-workbench'" :embedded="true" :initial-actor="csInitialActor" @switch-sales-acct="switchTo" />
       <Me v-else-if="view.name === 'me'" />
       <DetailPhys v-else-if="view.name === 'item' && view.kind === 'phys'" :code="view.id" @back="back" />
       <DetailVirt v-else-if="view.name === 'item'" :id="view.id" @back="back" />
@@ -124,6 +128,8 @@ import ProgramDelivery from './ProgramDelivery.vue'
 import Commission from './Commission.vue'
 import Readiness from './Readiness.vue'
 import BookoffLibrary from './BookoffLibrary.vue'
+import CsWorkbench from './cs/CsWorkbench.vue'
+import { mapSalesUserToCsActor } from './cs/store.js'
 import { loadAll, state, buildTasks } from './store.js'
 import { me, ROLE, REAL, api } from './api.js'
 import { ui, setFont } from './ui.js'
@@ -146,6 +152,7 @@ const DOCK_ALL = [
   { key: 'gc-metrics', label: '小铺数据', icon: 'today' },
   { key: 'skills', label: 'Skill 台账', icon: 'skill' },
   { key: 'crm', label: '客户资源', icon: 'people' },
+  { key: 'cs-workbench', label: '外部客服', icon: 'chat' },
   { key: 'reception', label: '接待', icon: 'chat' },
   { key: 'assist', label: '接管', icon: 'assist' },
   { key: 'orders', label: '订单', icon: 'order' },
@@ -153,11 +160,20 @@ const DOCK_ALL = [
   { key: 'manual', label: '说明书', icon: 'book' }
 ]
 // 真数据只接 WMS 这条线：库存商品、今天（按库存红黄绿生成）、实物。订单对账/虚拟/服务/练习是演示功能，真 ERP 里没有
-const DOCK = REAL ? DOCK_ALL.filter((d) => ['wash', 'all', 'selphys', 'spec-baseline', 'selvirt', 'sources', 'crm', 'today', 'ops', 'phys', 'virt', 'svc', 'gc-matrix', 'gc-queue', 'gc-reprice', 'gc-metrics', 'skills', 'reception', 'assist', 'learn', 'manual'].includes(d.key)) : DOCK_ALL
+const DOCK = REAL ? DOCK_ALL.filter((d) => ['wash', 'all', 'selphys', 'spec-baseline', 'selvirt', 'sources', 'crm', 'cs-workbench', 'today', 'ops', 'phys', 'virt', 'svc', 'gc-matrix', 'gc-queue', 'gc-reprice', 'gc-metrics', 'skills', 'reception', 'assist', 'learn', 'manual'].includes(d.key)) : DOCK_ALL
 const logout = async () => { try { await fetch('/__session', { method: 'DELETE' }) } catch { /* 没有也行 */ } localStorage.clear(); sessionStorage.clear(); location.reload() }
-const ACCTS = [{ u: 'chenxm', n: '陈小满', r: '销售业务员' }, { u: 'zhoubb', n: '周小北', r: '销售业务员' }, { u: 'admin', n: '销售主管', r: '主管视角' }, { u: 'newbie', n: '新同事', r: '第一天（练习门禁）' }]
+const ACCTS = [
+  { u: 'chenxm', n: '陈小满', r: '销售业务员' },
+  { u: 'zhoubb', n: '周小北', r: '销售业务员' },
+  { u: 'admin', n: '销售主管', r: '主管视角' },
+  { u: 'newbie', n: '新同事', r: '第一天（练习门禁）' },
+  { u: 'outsource_lu', n: '林小鹿', r: '外部外包客服（脱敏沙盒）' },
+  { u: 'cs_newbie', n: '周小萌', r: '外部客服新人（3关门禁）' }
+]
 const u = me()
 const user = { name: u.name, role: ROLE[u.role] || u.role }
+const isOutsourceMode = computed(() => u.role === 'OUTSOURCE_CS')
+const csInitialActor = computed(() => mapSalesUserToCsActor(u.username || localStorage.getItem('erp_user') || 'chenxm'))
 const menu = ref(false)
 const moreOpen = ref(false)
 const MB = ['today', 'wash', 'all', 'reception'].map((k) => DOCK.find((d) => d.key === k)).filter(Boolean)
@@ -175,7 +191,7 @@ const operations = [
   ['me', '我的', 'people', '设置 字体 个人']
 ].map(([key, label, icon, aliases]) => ({ key, label, icon, aliases }))
 const navOrder = [
-  ['工作', ['today', 'reception', 'assist', 'orders', 'crm']],
+  ['工作', ['today', 'cs-workbench', 'reception', 'assist', 'orders', 'crm']],
   ['群控', ['gc-matrix', 'gc-queue', 'gc-reprice', 'gc-metrics']],
   ['选品', ['selphys', 'spec-baseline', 'selvirt', 'sources']],
   ['商品', ['wash', 'all', 'phys', 'virt', 'svc']],
@@ -184,7 +200,7 @@ const navOrder = [
 ]
 const NAV = navOrder.map(([label, keys]) => ({ label, items: keys.map((key) => DOCK.find((d) => d.key === key)).filter(Boolean) }))
 const searchGroups = NAV.map((g) => ({ ...g, items: [...g.items, ...(g.label === '经营' ? operations.slice(0, -1) : g.label === '帮助' ? operations.slice(-1) : [])] }))
-const aliases = { today: '任务 上报 派单', reception: '聊天 客服 10宫格', assist: '接管 聊天 10宫格', orders: '发货 出库 运单 退款', all: '库存 SKU', learn: '培训 练习', selvirt: '虚拟 选品 卡券', selphys: '选品 型号 多视角 显示器', 'spec-baseline': '规格 兜底 基准 防呆 走量 高端 卓威 超频 OLED 77款 选品', 'gc-matrix': '群控 AdsPower 矩阵 账号 串号 动态码 主页', 'gc-queue': '上下架 联动下架 错峰 截图 重试 擦亮', 'gc-reprice': '智能调价 改价 复核 锁价', 'gc-metrics': '小铺数据 15:30 曝光 转化 日报' }
+const aliases = { today: '任务 上报 派单', 'cs-workbench': '外部客服 外包 实拍 保修 富阳 退款 409 绩效', reception: '聊天 客服 10宫格', assist: '接管 聊天 10宫格', orders: '发货 出库 运单 退款', all: '库存 SKU', learn: '培训 练习', selvirt: '虚拟 选品 卡券', selphys: '选品 型号 多视角 显示器', 'spec-baseline': '规格 兜底 基准 防呆 走量 高端 卓威 超频 OLED 77款 选品', 'gc-matrix': '群控 AdsPower 矩阵 账号 串号 动态码 主页', 'gc-queue': '上下架 联动下架 错峰 截图 重试 擦亮', 'gc-reprice': '智能调价 改价 复核 锁价', 'gc-metrics': '小铺数据 15:30 曝光 转化 日报' }
 const query = ref('')
 const finder = ref(null)
 const finderInput = ref(null)
@@ -217,7 +233,7 @@ function parse() {
   if (['gc-matrix', 'gc-queue', 'gc-reprice', 'gc-metrics'].includes(p[0])) return { name: p[0] }
   if (p[0] === 'item') return { name: 'item', kind: p[1], id: decode(p[2]) }
   if (p[0] === 'gallery') return { name: 'gallery', lens: ['all', 'phys', 'virt', 'svc'].includes(p[1]) ? p[1] : 'all' }
-  return p[0] === 'today' || p[0] === 'orders' || p[0] === 'learn' || p[0] === 'manual' || p[0] === 'skills' || p[0] === 'selphys' || p[0] === 'spec-baseline' || p[0] === 'selvirt' || p[0] === 'sources' || p[0] === 'crm' || p[0] === 'reception' || p[0] === 'assist' || p[0] === 'ops' || p[0] === 'bookoff' || p[0] === 'inquiry' || p[0] === 'cycles' || p[0] === 'pricebook' || p[0] === 'program' || p[0] === 'commission' || p[0] === 'readiness' || p[0] === 'me' ? { name: p[0] } : { name: 'wash' }
+  return p[0] === 'today' || p[0] === 'cs-workbench' || p[0] === 'orders' || p[0] === 'learn' || p[0] === 'manual' || p[0] === 'skills' || p[0] === 'selphys' || p[0] === 'spec-baseline' || p[0] === 'selvirt' || p[0] === 'sources' || p[0] === 'crm' || p[0] === 'reception' || p[0] === 'assist' || p[0] === 'ops' || p[0] === 'bookoff' || p[0] === 'inquiry' || p[0] === 'cycles' || p[0] === 'pricebook' || p[0] === 'program' || p[0] === 'commission' || p[0] === 'readiness' || p[0] === 'me' ? { name: p[0] } : { name: 'wash' }
 }
 const view = ref(parse())
 let last = '#/wash'
@@ -231,6 +247,7 @@ const active = computed(() => {
 })
 const currentGroup = computed(() => searchGroups.find((g) => g.items.some((d) => d.key === active.value))?.label || '商品')
 const currentLabel = computed(() => {
+  if (view.value.name === 'cs-workbench') return '外部客服工作台 V3（单应用合入）'
   if (view.value.name === 'wash') return '待洗商品 Gallery'
   if (view.value.name === 'price-cleaning') return '第 1 步：洗价格（闲鱼快照去噪）'
   if (view.value.name === 'image-cleaning') return '第 2 步：洗图片（大库三栏直发）'
@@ -270,6 +287,6 @@ async function loadBadges() {
 }
 const switchTo = (name) => { const url = new URL(location.href); url.searchParams.set('as', name); location.href = url.toString() }
 const needLogin = !localStorage.getItem('erp_token')
-onMounted(() => { setFont(ui.fontBig); if (!needLogin) { loadAll(true); loadBadges(); setInterval(loadBadges, 30000) } })
+onMounted(() => { setFont(ui.fontBig); if (!needLogin && !isOutsourceMode.value) { loadAll(true); loadBadges(); setInterval(loadBadges, 30000) } })
 </script>
 

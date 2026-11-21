@@ -27,7 +27,7 @@ python3 -m venv .venv
 .venv/bin/python h5_server.py
 ```
 
-浏览器打开 `http://127.0.0.1:5341/?as=chenxm#/today`。页面使用本包自动签发的短期演示令牌。源码内置口令只匹配本地合成角色。右上可切换角色，或替换 `as` 为 `admin`、`zhoubb`、`linxiao`、`newbie`。改端口时，两终端使用同一 `STITCH_DEMO_PORT`，H5 终端可设置 `H5_PORT`。Windows 使用 `.venv\\Scripts\\python.exe`。
+浏览器打开 `http://127.0.0.1:5341/?as=chenxm#/today`（内部客服合入入口 `#/cs-workbench`；外包客服极窄脱敏沙盒 `?as=outsource_lu#/cs-workbench` / `?as=cs_newbie#/cs-workbench`）。页面使用本包自动签发的短期演示令牌。源码内置口令只匹配本地合成角色。右上可切换角色，或替换 `as` 为 `admin`、`zhoubb`、`linxiao`、`newbie`。改端口时，两终端使用同一 `STITCH_DEMO_PORT`，H5 终端可设置 `H5_PORT`。Windows 使用 `.venv\\Scripts\\python.exe`。
 
 ## 演示路径
 
@@ -41,3 +41,5 @@ python3 -m venv .venv
 - 数量、货号、图片和行情目录均为合成或演示值。三类图片由接口生成并标注用途，查重按去参数后的 URL 判重。BOOKOFF 启动时建立 4 行商品的合成样本，供类目和搜索使用。
 - 正式系统地址已换成占位，平台链接用于展示或在本地解析。发布、爬取、聊天、群控、仓储、老板台账、Wiki 和教程媒体均为本地演示或留作界面入口。配置、业务状态都由本机演示代码处理。教程模块使用现有文字和交互导览，录制视频未随包提供。
 - 销售演示后端默认新建临时目录，设置 `SALES_RUNTIME_DIR` 可以保存演示配置。后端重启重置业务样例，BOOKOFF 样本在本目录 `.demo-runtime/`。
+
+- **并入的外部客服工作台 V3（单应用合入）**：在销售侧导航「工作 → 外部客服」（`#/cs-workbench`）使用内嵌三栏外部客服 V3；通过右上角切到 `林小鹿` / `周小萌` 或打开 `http://127.0.0.1:5341/?as=outsource_lu#/cs-workbench` 即进入隐藏内部销售栏的极窄 C 端外包沙盒，由 `cs_api.py`（挂载在 `h5_server.py`）提供 SQLite WAL 状态同步、`/api/cs/guard-check` 外发守卫与服务端 RBAC 进价/供应商脱敏。

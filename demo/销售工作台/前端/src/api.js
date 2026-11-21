@@ -18,4 +18,4 @@ export async function api(path, opt = {}) {
 }
 export const post = (path, body = {}) => api(path, { method: 'POST', body: JSON.stringify(body) })
 export const me = () => { try { return JSON.parse(localStorage.getItem('erp_staff') || '{}') } catch { return {} } }
-export const ROLE = { SALES: '销售', ADMIN: '管理员', WAREHOUSE: '仓管', PURCHASER: '采购' }
+export const ROLE = { SALES: '销售', ADMIN: '管理员', WAREHOUSE: '仓管', PURCHASER: '采购', OUTSOURCE_CS: '外部外包客服' }

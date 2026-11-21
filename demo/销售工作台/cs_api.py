@@ -1,32 +1,25 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-泛亚外包客服工作台 · C端桌面版 H5 服务端 (2026-11-16)
-零第三方依赖：Python 3.12 标准库 ThreadingHTTPServer + SQLite (WAL)
-核心后端门禁：
-  1. 服务端 RBAC 脱敏网关：当请求者为外包角色 (outsource_* / newbie) 时，物理剥离 costPrice 与 supplierNick；
-  2. 服务端外发守卫校验：拦截站外微信号/手机号/单字符刷尾响；
-  3. SQLite WAL 状态机持久化与不可篡改审计流水。
+销售工作台 · 并入外部客服工作台 V3 API 模块 (2026-11-21)
+零第三方依赖：SQLite (WAL) + 服务端 RBAC 物理脱敏网关 + 外发守卫校验 + 不可篡改审计流水。
+统一挂载于销售工作台 h5_server.py (/cs-build.txt & /api/cs/*)。
 """
 from __future__ import annotations
 
 import copy
 import datetime
 import json
-import mimetypes
 import os
 import re
 import sqlite3
 import threading
-from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import unquote, urlparse
 
-RELEASE_ID = "cs-workbench-desktop-20261116-v1"
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DIST_DIR = os.path.join(BASE_DIR, "dist")
+RELEASE_ID = "cs-workbench-merged-sales-20261121-v3"
 RUNTIME_DIR = os.environ.get(
     "CS_RUNTIME_DIR",
-    os.path.join(BASE_DIR, ".demo-runtime"),
+    os.path.expanduser("~/Library/Caches/panasia-gallery-stitch-20261113"),
 )
 os.makedirs(RUNTIME_DIR, exist_ok=True)
 DB_PATH = os.path.join(RUNTIME_DIR, "cs_workbench.sqlite")
@@ -35,7 +28,7 @@ OUTSOURCE_ACTORS = {"outsource_lu", "outsource_zhang", "outsource_wang", "newbie
 DB_LOCK = threading.Lock()
 
 
-def get_conn():
+def _init_conn() -> sqlite3.Connection:
     conn = sqlite3.connect(DB_PATH, check_same_thread=False)
     conn.execute("PRAGMA journal_mode=WAL;")
     conn.execute(
@@ -63,7 +56,7 @@ def get_conn():
     return conn
 
 
-CONN = get_conn()
+CONN = _init_conn()
 
 
 def desensitize_for_actor(state_obj: dict | None, actor_id: str) -> dict | None:
@@ -116,49 +109,41 @@ def preserve_internal_secrets(incoming_state: dict, prev_state: dict | None) -> 
     return merged
 
 
-class CsWorkbenchHandler(BaseHTTPRequestHandler):
-    def log_message(self, fmt, *args):
-        return
+def _json_resp(code: int, obj: dict) -> tuple[int, str, bytes]:
+    return code, "application/json; charset=utf-8", json.dumps(obj, ensure_ascii=False).encode("utf-8")
 
-    def _send_json(self, code: int, obj: dict):
-        raw = json.dumps(obj, ensure_ascii=False).encode("utf-8")
-        self.send_response(code)
-        self.send_header("Content-Type", "application/json; charset=utf-8")
-        self.send_header("Content-Length", str(len(raw)))
-        self.send_header("Cache-Control", "no-store")
-        self.end_headers()
-        self.wfile.write(raw)
 
-    def _send_text(self, code: int, text: str, ctype: str = "text/plain; charset=utf-8"):
-        raw = text.encode("utf-8")
-        self.send_response(code)
-        self.send_header("Content-Type", ctype)
-        self.send_header("Content-Length", str(len(raw)))
-        self.send_header("Cache-Control", "no-store")
-        self.end_headers()
-        self.wfile.write(raw)
+def _text_resp(code: int, text: str) -> tuple[int, str, bytes]:
+    return code, "text/plain; charset=utf-8", text.encode("utf-8")
 
-    def do_GET(self):
-        parsed = urlparse(self.path)
-        path = unquote(parsed.path)
-        actor_id = self.headers.get("X-CS-Actor", "outsource_lu")
 
+def handle_cs_request(
+    method: str, raw_path: str, headers, body_bytes: bytes = b""
+) -> tuple[int, str, bytes] | None:
+    """处理 /cs-build.txt 与 /api/cs/* 请求；非客服路由返回 None。"""
+    parsed = urlparse(raw_path)
+    path = unquote(parsed.path)
+    if path != "/cs-build.txt" and not path.startswith("/api/cs/"):
+        return None
+
+    actor_id = (headers.get("X-CS-Actor") if headers else None) or "outsource_lu"
+
+    if method == "GET":
         if path == "/cs-build.txt":
-            return self._send_text(200, RELEASE_ID)
-
+            return _text_resp(200, RELEASE_ID)
         if path == "/api/cs/health":
             with DB_LOCK:
                 audit_count = CONN.execute("SELECT COUNT(*) FROM cs_audit_log").fetchone()[0]
-            return self._send_json(
+            return _json_resp(
                 200,
                 {
                     "ok": True,
                     "release": RELEASE_ID,
+                    "mergedInto": "sales-workbench",
                     "db": DB_PATH,
                     "auditCount": audit_count,
                 },
             )
-
         if path == "/api/cs/state":
             with DB_LOCK:
                 row = CONN.execute(
@@ -177,10 +162,10 @@ class CsWorkbenchHandler(BaseHTTPRequestHandler):
                     ).fetchall()
                 ]
             if not row:
-                return self._send_json(200, {"ok": True, "data": None, "logs": logs})
+                return _json_resp(200, {"ok": True, "data": None, "logs": logs})
             raw_state = json.loads(row[3])
             safe_state = desensitize_for_actor(raw_state, actor_id)
-            return self._send_json(
+            return _json_resp(
                 200,
                 {
                     "ok": True,
@@ -191,42 +176,22 @@ class CsWorkbenchHandler(BaseHTTPRequestHandler):
                     "logs": logs,
                 },
             )
+        return _json_resp(404, {"ok": False, "error": "Unknown GET /api/cs endpoint"})
 
-        # Serve static assets from dist/
-        rel = path.lstrip("/") or "index.html"
-        full_path = os.path.normpath(os.path.join(DIST_DIR, rel))
-        if not full_path.startswith(DIST_DIR) or not os.path.isfile(full_path):
-            full_path = os.path.join(DIST_DIR, "index.html")
-        if not os.path.isfile(full_path):
-            return self._send_json(404, {"ok": False, "error": "dist not built"})
-
-        ctype, _ = mimetypes.guess_type(full_path)
-        with open(full_path, "rb") as f:
-            content = f.read()
-        self.send_response(200)
-        self.send_header("Content-Type", ctype or "application/octet-stream")
-        self.send_header("Content-Length", str(len(content)))
-        self.end_headers()
-        self.wfile.write(content)
-
-    def do_POST(self):
-        parsed = urlparse(self.path)
-        path = unquote(parsed.path)
-        actor_id = self.headers.get("X-CS-Actor", "outsource_lu")
-        length = int(self.headers.get("Content-Length", "0") or "0")
-        raw_body = self.rfile.read(length) if length > 0 else b"{}"
+    if method == "POST":
+        raw_body = body_bytes or b"{}"
         try:
             body = json.loads(raw_body.decode("utf-8"))
         except Exception:
-            return self._send_json(400, {"ok": False, "error": "Invalid JSON"})
+            return _json_resp(400, {"ok": False, "error": "Invalid JSON"})
 
         now_str = datetime.datetime.now().strftime("%H:%M:%S")
 
         if path == "/api/cs/guard-check":
             ok, err = validate_outbound_text(body.get("text", ""))
             if not ok:
-                return self._send_json(400, {"ok": False, "error": err})
-            return self._send_json(200, {"ok": True})
+                return _json_resp(400, {"ok": False, "error": err})
+            return _json_resp(200, {"ok": True})
 
         if path == "/api/cs/reset":
             with DB_LOCK:
@@ -236,7 +201,7 @@ class CsWorkbenchHandler(BaseHTTPRequestHandler):
                     (now_str, actor_id, "reset_demo", "重置全站演示数据回初始基线"),
                 )
                 CONN.commit()
-            return self._send_json(200, {"ok": True})
+            return _json_resp(200, {"ok": True})
 
         if path == "/api/cs/sync":
             action = str(body.get("action") or "sync")
@@ -244,7 +209,7 @@ class CsWorkbenchHandler(BaseHTTPRequestHandler):
             actor_label = str(body.get("actor") or actor_id)
             incoming_state = body.get("state")
             if not isinstance(incoming_state, dict):
-                return self._send_json(400, {"ok": False, "error": "Missing state object"})
+                return _json_resp(400, {"ok": False, "error": "Missing state object"})
 
             with DB_LOCK:
                 prev_row = CONN.execute("SELECT payload FROM cs_state WHERE id = 1").fetchone()
@@ -268,17 +233,8 @@ class CsWorkbenchHandler(BaseHTTPRequestHandler):
                     (now_str, actor_label, action, summary),
                 )
                 CONN.commit()
-            return self._send_json(200, {"ok": True, "updatedAt": now_str})
+            return _json_resp(200, {"ok": True, "updatedAt": now_str})
 
-        return self._send_json(404, {"ok": False, "error": "Unknown endpoint"})
+        return _json_resp(404, {"ok": False, "error": "Unknown POST /api/cs endpoint"})
 
-
-def run_server():
-    port = int(os.environ.get("H5_PORT", "5380"))
-    server = ThreadingHTTPServer(("127.0.0.1", port), CsWorkbenchHandler)
-    print(f"泛亚外包客服工作台(桌面版)已启动: http://127.0.0.1:{port} (SQLite: {DB_PATH})", flush=True)
-    server.serve_forever()
-
-
-if __name__ == "__main__":
-    run_server()
+    return _json_resp(405, {"ok": False, "error": "Method not allowed"})

@@ -8,6 +8,7 @@
           : '闲鱼、小红书、淘宝、京东的买家消息聚在这里。每个会话绑一个 Codex 会话带着买家走，卡住了、有风险了才轮到人；人随时接管，接管前智能体先交接，接管后答应了什么都记下来。' }}</p></div>
       <div class="plats">
         <span v-if="doorbell" class="pl db-pill" :title="doorbell.desc">🔔 AdsPower 门铃<small>{{ doorbell.online }}/{{ doorbell.total }} 窗秒级监听</small></span>
+        <button v-if="isPhys" type="button" class="btn sm pri" @click="goCsWorkbench">打开并入的外部客服工作台 V3 →</button>
         <span v-for="p in platforms" :key="p.k" class="pl" :class="{ off: !p.connected }" :title="p.rule">{{ p.name }}<small>{{ p.connected ? '已接入' : '未接入·演示' }}</small></span>
         <button v-if="!isPhys && isAdmin" class="btn" :class="{ pri: kill }" @click="toggleKill">{{ kill ? '恢复智能体' : '暂停所有智能体' }}</button>
       </div>
@@ -335,6 +336,7 @@ async function setMode(m) { err.value = ''; try { await post(`/demo/inbox/${sel.
 async function toggleKill() { try { await post('/demo/inbox-kill', { on: !kill.value }); await load(true) } catch (e) { toast(e.message) } }
 async function resolveUrl() { try { lres.value = await api('/demo/link-resolve?url=' + encodeURIComponent(lurl.value)) } catch (e) { toast(e.message) } }
 const goProduct = (p) => { location.hash = `#/item/${p.kind === 'svc' ? 'svc' : 'virt'}/${encodeURIComponent(p.id)}` }
+const goCsWorkbench = () => { location.hash = '#/cs-workbench' }
 async function sendNote() { try { await post(`/demo/inbox/${sel.value}/note`, { text: onote.value }); onote.value = ''; await load(true); toast('已发给外包客服') } catch (e) { err.value = e.message } }
 async function askWh() { try { await post('/demo/exceptions', { text: `接管请求（${d.value.buyer}）：请仓管给 ${info.value.code} 补拍验货实拍图` }); toast('已发给主管 / 仓管') } catch (e) { toast(e.message) } }
 

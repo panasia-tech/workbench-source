@@ -9,7 +9,7 @@ function toUri(svg) {
 
 export function makeWarrantyCardSvg({
   productName = '二手严选数码单品（一机一码）',
-  skuCode = '990001549229-A',
+  skuCode = '513211549229-A',
   sn = 'B6P-CN-RJA8821A',
 } = {}) {
   const safeName = productName.length > 26 ? productName.slice(0, 26) + '…' : productName;

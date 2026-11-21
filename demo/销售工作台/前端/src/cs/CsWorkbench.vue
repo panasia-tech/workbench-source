@@ -1,5 +1,11 @@
 <template>
-  <div class="folded-app" @click="closePopMenus">
+  <div
+    class="cs-embed-root"
+    :class="{ 'is-embedded': embedded }"
+    :data-cs-theme="store.ui.darkMode ? 'dark' : 'light'"
+    :data-cs-font="store.ui.largeFont ? 'large' : 'normal'"
+  >
+  <div class="folded-app" :class="{ embedded }" @click="closePopMenus">
     <!-- ==================== 顶部 54px 清爽顶栏：名字状态 + 平铺核心绩效 + 折叠工具舱 ==================== -->
     <header class="top-header">
       <div class="brand-area">
@@ -62,14 +68,16 @@
           </button>
 
           <div v-if="store.ui.moreMenuOpen" class="more-dropdown">
-            <div class="md-sec-title">切换角色视角（验证 RBAC 脱敏与协同闭环）</div>
+            <div class="md-sec-title">
+              {{ lockedOutsource ? '外包坐席账号状态（已隔离内部销售数据）' : '切换角色视角（验证 RBAC 脱敏与协同闭环）' }}
+            </div>
             <button
-              v-for="r in ROLES"
+              v-for="r in visibleRoles"
               :key="r.id"
               type="button"
               class="md-role-item"
               :class="{ active: store.actorId === r.id }"
-              @click="switchActor(r.id)"
+              @click="onPickRole(r.id)"
             >
               <div>
                 <b>{{ r.name }} · {{ r.roleLabel }}</b>
@@ -77,6 +85,19 @@
               </div>
               <span v-if="store.actorId === r.id" class="tag acc">当前</span>
             </button>
+
+            <template v-if="lockedOutsource">
+              <div class="md-divider" />
+              <div class="md-sec-title">演示环境切回完整销售工作台</div>
+              <div class="md-grid-btns">
+                <button type="button" class="md-btn" @click="emitSwitchSales('chenxm')">
+                  ↩ 切回陈小满（内部销售）
+                </button>
+                <button type="button" class="md-btn" @click="emitSwitchSales('admin')">
+                  ↩ 切回销售主管（全功能）
+                </button>
+              </div>
+            </template>
 
             <div class="md-divider" />
             <div class="md-sec-title">零培训沙盒 · 职责红线 · 偏好设置</div>
@@ -420,10 +441,19 @@
 
     <div v-if="store.toast" class="toast">{{ store.toast }}</div>
   </div>
+  </div>
 </template>
 
 <script setup>
+import './styles/cs-scoped.css';
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
+
+const props = defineProps({
+  embedded: { type: Boolean, default: false },
+  initialActor: { type: String, default: '' },
+  lockedOutsource: { type: Boolean, default: false },
+});
+const emit = defineEmits(['switchSalesAcct']);
 import {
   store,
   currentRole,
@@ -467,6 +497,26 @@ const draft = ref('');
 const cardMenuOpen = ref(false);
 const pickedSkuCode = ref('');
 const chatScrollEl = ref(null);
+
+const visibleRoles = computed(() =>
+  props.lockedOutsource
+    ? ROLES.filter((r) => r.id === 'outsource_lu' || r.id === 'newbie')
+    : ROLES,
+);
+
+function onPickRole(roleId) {
+  if (props.lockedOutsource) {
+    store.ui.moreMenuOpen = false;
+    emit('switchSalesAcct', roleId === 'newbie' ? 'cs_newbie' : 'outsource_lu');
+    return;
+  }
+  switchActor(roleId);
+}
+
+function emitSwitchSales(username) {
+  store.ui.moreMenuOpen = false;
+  emit('switchSalesAcct', username);
+}
 
 const enabledRuleCount = computed(() => store.data.autoRules.filter((r) => r.enabled).length);
 const activeAutoShipCount = computed(
@@ -619,8 +669,20 @@ watch(
   },
 );
 
-onMounted(() => {
-  initStore();
+watch(
+  () => props.initialActor,
+  (actor) => {
+    if (actor && actor !== store.actorId) {
+      switchActor(actor);
+    }
+  },
+);
+
+onMounted(async () => {
+  await initStore();
+  if (props.initialActor && props.initialActor !== store.actorId) {
+    await switchActor(props.initialActor);
+  }
 });
 </script>
 
@@ -632,6 +694,10 @@ onMounted(() => {
   max-width: 100vw;
   height: 100vh;
   overflow: hidden;
+}
+.folded-app.embedded {
+  height: 100%;
+  max-width: 100%;
 }
 
 /* ==================== 顶部栏 ==================== */
@@ -842,6 +908,18 @@ onMounted(() => {
   width: 100%;
   height: 100%;
   overflow: hidden;
+}
+.folded-app.embedded .main-columns {
+  grid-template-columns: clamp(224px, 19vw, 272px) minmax(300px, 1fr) clamp(292px, 24vw, 348px);
+}
+@media (max-width: 1380px) {
+  .kpi-inline-bar {
+    gap: 7px;
+    padding: 4px 9px;
+  }
+  .brand-title {
+    font-size: 13.5px;
+  }
 }
 
 /* ==================== 左栏 ==================== */

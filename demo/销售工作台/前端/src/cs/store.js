@@ -72,6 +72,13 @@ export const store = reactive({
   },
 });
 
+export function mapSalesUserToCsActor(username) {
+  if (username === 'outsource_lu') return 'outsource_lu';
+  if (username === 'cs_newbie') return 'newbie';
+  if (username === 'admin') return 'supervisor';
+  return 'internal_chen';
+}
+
 // 兼容 HelpDrawer.vue 内部点击「打开完整手册总表」设置 route = 'manual'
 watch(
   () => store.ui.route,
@@ -81,26 +88,6 @@ watch(
       store.ui.route = 'chat';
     }
   },
-);
-
-watch(
-  () => store.ui.darkMode,
-  (dark) => {
-    if (typeof document !== 'undefined') {
-      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
-    }
-  },
-  { immediate: true },
-);
-
-watch(
-  () => store.ui.largeFont,
-  (lg) => {
-    if (typeof document !== 'undefined') {
-      document.documentElement.dataset.font = lg ? 'large' : 'normal';
-    }
-  },
-  { immediate: true },
 );
 
 let toastTimer = null;
@@ -858,7 +845,7 @@ export async function handleInternalCollabAction(convId, actionType, payload = {
   if (!conv) return;
 
   if (actionType === 'sim_warehouse_upload_video') {
-    const targetCode = payload.skuCode || conv.skuCode || '990001880106';
+    const targetCode = payload.skuCode || conv.skuCode || '513211880106';
     const rawSku = store.data.skus.find((s) => s.skuCode === targetCode);
     if (rawSku) {
       rawSku.gates.videoOk = true;
@@ -903,7 +890,7 @@ export async function handleInternalCollabAction(convId, actionType, payload = {
   } else if (actionType === 'sim_sales_bind_link') {
     conv.linkResolved = true;
     conv.spuCode = 'SPU-LG-27GP850';
-    conv.skuCode = '990001440512';
+    conv.skuCode = '513211440512';
     conv.stepState = 'INQUIRY';
     conv.issueReason = '';
     if (conv.collabTicket) conv.collabTicket.status = 'DONE';
@@ -912,7 +899,7 @@ export async function handleInternalCollabAction(convId, actionType, payload = {
       id: 'bind-done-' + Date.now(),
       dir: 'sys',
       time: nowHm(),
-      text: '🔗 内部销售陈小满已完成链接挂接 → 关联 WMS 在库单品【LG 27GP850-B · 货号 990001440512 · 95新】，现可安全发送实拍！',
+      text: '🔗 内部销售陈小满已完成链接挂接 → 关联 WMS 在库单品【LG 27GP850-B · 货号 513211440512 · 95新】，现可安全发送实拍！',
     });
     showToast('🔗 内部销售已完成商品链接绑定，右侧在库实拍已就绪！');
   } else if (actionType === 'internal_claim') {

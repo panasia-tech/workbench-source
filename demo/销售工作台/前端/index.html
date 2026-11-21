@@ -11,7 +11,18 @@
         var as = new URLSearchParams(location.search).get('as')
         var cur = localStorage.getItem('erp_user') || ''
         var want = as || cur || 'chenxm'
-        if (want === cur && localStorage.getItem('erp_token')) return
+        if (want === 'outsource_lu' || want === 'cs_newbie') {
+          localStorage.setItem('erp_token', 'cs-outsource-sandbox')
+          localStorage.setItem('erp_user', want)
+          localStorage.setItem('erp_staff', JSON.stringify({
+            username: want,
+            name: want === 'outsource_lu' ? '林小鹿' : '周小萌',
+            role: 'OUTSOURCE_CS',
+            practice_done: want === 'outsource_lu'
+          }))
+          return
+        }
+        if (want === cur && localStorage.getItem('erp_token') && localStorage.getItem('erp_token') !== 'cs-outsource-sandbox') return
         try {
           var x = new XMLHttpRequest()
           x.open('POST', '/api/auth/h5-login', false)

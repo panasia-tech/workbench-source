@@ -4,6 +4,9 @@ import http.server, socketserver, os, sys, json, sqlite3, urllib.request, urllib
 from urllib.parse import urlparse
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+if HERE not in sys.path:
+    sys.path.insert(0, HERE)
+import cs_api
 ROOT = os.path.join(HERE, 'dist')
 BACKEND = f"http://127.0.0.1:{int(os.environ.get('STITCH_DEMO_PORT', '5342'))}"
 BOOKOFF_DB = os.path.join(HERE, ".demo-runtime", "bookoff-demo-sample.sqlite")
@@ -163,7 +166,25 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         self.send_response(200); self.send_header('Content-Type', 'application/json; charset=utf-8'); self.send_header('Content-Length', str(len(msg))); self.send_header('Cache-Control', 'no-store'); self.end_headers(); self.wfile.write(msg)
         return True
 
+    def _handle_cs(self):
+        n = int(self.headers.get('Content-Length') or 0)
+        body = self.rfile.read(n) if n > 0 else b''
+        res = cs_api.handle_cs_request(self.command, self.path, self.headers, body)
+        if res is None:
+            return False
+        code, ctype, raw = res
+        self.send_response(code)
+        self.send_header('Content-Type', ctype)
+        self.send_header('Content-Length', str(len(raw)))
+        self.send_header('Cache-Control', 'no-store')
+        self.end_headers()
+        if self.command != 'HEAD':
+            self.wfile.write(raw)
+        return True
+
     def do_GET(self):
+        if self._handle_cs():
+            return
         if self.path.startswith('/api/bookoff/'):
             return self._bookoff()
         if self.path.startswith('/api/'):
@@ -191,6 +212,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         return super().do_HEAD()
 
     def do_POST(self):
+        if self._handle_cs():
+            return
         if self.path.startswith('/api/'):
             return self.proxy()
         self.send_error(405)

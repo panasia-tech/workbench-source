@@ -143,7 +143,7 @@ function closePractice() {
 </script>
 
 <style>
-.tour-highlight-ring {
+.cs-embed-root .tour-highlight-ring {
   position: relative;
   z-index: 96 !important;
   box-shadow: 0 0 0 4px #2952ff, 0 0 0 10px rgba(41, 82, 255, 0.25) !important;
