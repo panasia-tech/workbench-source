@@ -10,6 +10,12 @@ import cs_api
 import tutorial_ledger_api
 import virt_intel_api
 ROOT = os.path.join(HERE, 'dist')
+CS_TUTORIAL_MP4_DIR = os.path.abspath(
+    os.environ.get(
+        'CS_TUTORIAL_MP4_DIR',
+        os.path.join(HERE, '..', '..', 'outputs', '外部客服V3-独立节点教程与源码-20261124', 'mp4'),
+    )
+)
 BACKEND = f"http://127.0.0.1:{int(os.environ.get('STITCH_DEMO_PORT', '5342'))}"
 BOOKOFF_DB = os.path.join(HERE, ".demo-runtime", "bookoff-demo-sample.sqlite")
 PORT = int(os.environ.get('H5_PORT', '5341'))
@@ -225,7 +231,66 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(raw)
         return True
 
+    def _serve_cs_tutorial_mp4(self, head_only=False):
+        parsed_path = urllib.parse.unquote(urlparse(self.path).path)
+        if not parsed_path.startswith('/cs-tutorials/'):
+            return False
+        name = parsed_path[len('/cs-tutorials/'):].strip('/')
+        if not name or '/' in name or '\\' in name or '..' in name or not name.endswith('.mp4'):
+            self.send_error(404)
+            return True
+        fpath = os.path.abspath(os.path.join(CS_TUTORIAL_MP4_DIR, name))
+        if not fpath.startswith(CS_TUTORIAL_MP4_DIR + os.sep) or not os.path.isfile(fpath):
+            self.send_error(404)
+            return True
+        size = os.path.getsize(fpath)
+        rng = self.headers.get('Range')
+        start, end = 0, size - 1
+        status = 200
+        if rng and rng.startswith('bytes='):
+            spec = rng[6:].split(',')[0].strip()
+            if '-' in spec:
+                a, b = spec.split('-', 1)
+                try:
+                    if a == '':
+                        n = int(b)
+                        start = max(0, size - n)
+                    else:
+                        start = max(0, int(a))
+                        if b:
+                            end = min(size - 1, int(b))
+                    if start > end or start >= size:
+                        self.send_response(416)
+                        self.send_header('Content-Range', f'bytes */{size}')
+                        self.end_headers()
+                        return True
+                    status = 206
+                except ValueError:
+                    pass
+        length = max(0, end - start + 1)
+        self.send_response(status)
+        self.send_header('Content-Type', 'video/mp4')
+        self.send_header('Accept-Ranges', 'bytes')
+        self.send_header('Content-Length', str(length))
+        if status == 206:
+            self.send_header('Content-Range', f'bytes {start}-{end}/{size}')
+        self.send_header('Cache-Control', 'no-store')
+        self.end_headers()
+        if not head_only and length > 0:
+            with open(fpath, 'rb') as fp:
+                fp.seek(start)
+                rem = length
+                while rem > 0:
+                    chunk = fp.read(min(262144, rem))
+                    if not chunk:
+                        break
+                    self.wfile.write(chunk)
+                    rem -= len(chunk)
+        return True
+
     def do_GET(self):
+        if self._serve_cs_tutorial_mp4(head_only=False):
+            return
         if self._handle_virt_intel():
             return
         if self._handle_tutorials():
@@ -252,6 +317,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         super().end_headers()
 
     def do_HEAD(self):
+        if self._serve_cs_tutorial_mp4(head_only=True):
+            return
         if self.path.startswith('/api/bookoff/'):
             return self._bookoff()
         if self.path.startswith('/api/'):

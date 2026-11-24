@@ -72,38 +72,44 @@
         </section>
 
         <section class="sec">
-          <h3>原生教程台账与同版视频（通用讲解 + 人工兜底）</h3>
-          <div v-if="ledgerNode" class="guard-card" style="border-left: 3px solid var(--pri)">
+          <h3>本节点独立教程视频与专属 Wiki 子页</h3>
+          <div class="guard-card" style="border-left: 3px solid var(--pri)">
             <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap">
-              <code>{{ ledgerNode.node_id }}</code>
-              <span class="tag sm grn">{{ ledgerNode.skill_status }} · {{ ledgerNode.skill_name }}</span>
-              <span class="tag sm">{{ ledgerNode.fallback_status }}</span>
+              <code>{{ activeNodeId }}</code>
+              <span v-if="ledgerNode?.skill_name" class="tag sm grn">{{ ledgerNode.skill_status }} · {{ ledgerNode.skill_name }}</span>
+              <span class="tag sm">{{ activeReviewStatus }}</span>
+              <span class="tag sm">{{ activeTimecode }} 起播（独立成片）</span>
             </div>
-            <div><b>通用视频时间码：</b>{{ ledgerNode.timecode }}（{{ ledgerNode.video_source_status }}）</div>
-            <div><b>Codex 交办：</b>{{ ledgerNode.codex_prompt_hint }}</div>
-            <div><b>停手兜底：</b>{{ ledgerNode.manual_trigger }}</div>
+            <video
+              v-if="activeLocalVideoUrl"
+              :key="activeLocalVideoUrl"
+              controls
+              preload="metadata"
+              style="width: 100%; max-height: 240px; border-radius: 10px; background: #000; margin-top: 6px"
+              :src="activeLocalVideoUrl"
+            />
+            <div v-if="ledgerNode"><b>视频状态：</b>{{ ledgerNode.video_source_status }}</div>
+            <div v-if="ledgerNode"><b>Codex 交办：</b>{{ ledgerNode.codex_prompt_hint }}</div>
+            <div v-if="ledgerNode"><b>停手兜底：</b>{{ ledgerNode.manual_trigger }}</div>
             <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px">
-              <a v-if="ledgerNode.video_wiki_url" :href="ledgerNode.video_wiki_url" target="_blank" rel="noreferrer" class="btn sm pri">
-                ▶ 通用讲解（{{ ledgerNode.timecode }}）↗
+              <a v-if="activeWikiUrl" :href="activeWikiUrl" target="_blank" rel="noreferrer" class="btn sm pri">
+                📖 本节点专属 Wiki ↗
               </a>
-              <a v-if="ledgerNode.manual_fallback_video" :href="ledgerNode.manual_fallback_video" target="_blank" rel="noreferrer" class="btn sm soft">
-                🎬 客服 V3 专项片 ↗
+              <a v-if="activeVideoWikiUrl" :href="activeVideoWikiUrl" target="_blank" rel="noreferrer" class="btn sm soft">
+                ▶ 钉钉独立 1080p MP4（00:00）↗
               </a>
-              <a v-if="ledgerNode.pdf_url" :href="ledgerNode.pdf_url" target="_blank" rel="noreferrer" class="btn sm">
-                员工小动物 PDF ↗
+              <a v-if="activeSourceUrl" :href="activeSourceUrl" target="_blank" rel="noreferrer" class="btn sm">
+                🧩 渲染前可编辑源码 (.tar.gz) ↗
               </a>
               <button type="button" class="btn sm" @click="openTutorialLedger">
-                📚 打开客服独立教程台账 ›
+                📚 打开客服 7 节点台账 ›
               </button>
             </div>
-          </div>
-          <div v-else class="empty-video">
-            🎬 可点下方「打开客服独立教程台账」查看共用开场 + 外部客服 4 项节点的 720p Wiki 视频与时间码。
           </div>
           <div v-if="H.wiki?.length" class="wiki-stack">
             <div v-for="wk in H.wiki" :key="wk" class="wiki-row">
               <span>{{ WIKI_LINKS[wk]?.t }}</span>
-              <a v-if="WIKI_LINKS[wk]?.u" :href="WIKI_LINKS[wk].u" target="_blank" rel="noreferrer">打开钉钉文档 ↗</a>
+              <a v-if="WIKI_LINKS[wk]?.u" :href="WIKI_LINKS[wk].u" target="_blank" rel="noreferrer">打开专属子页 ↗</a>
               <span v-else class="tag amb">{{ WIKI_LINKS[wk]?.ver || '内部制度' }}</span>
             </div>
           </div>
@@ -129,6 +135,13 @@ import Icon from './Icon.vue';
 const selectedTerm = ref('');
 const ledgerNode = ref(null);
 const H = computed(() => (store.ui.helpKey ? HELP[store.ui.helpKey] || HELP.chat : null));
+const activeNodeId = computed(() => ledgerNode.value?.node_id || H.value?.nodeId || 'CS-REALSHOT-01');
+const activeTimecode = computed(() => ledgerNode.value?.timecode || H.value?.timecode || '00:00');
+const activeReviewStatus = computed(() => ledgerNode.value?.review_status || H.value?.reviewStatus || '待人工复核');
+const activeWikiUrl = computed(() => ledgerNode.value?.wiki_url || H.value?.wikiUrl || '');
+const activeVideoWikiUrl = computed(() => ledgerNode.value?.video_wiki_url || H.value?.video || '');
+const activeLocalVideoUrl = computed(() => ledgerNode.value?.local_video_url || H.value?.localVideoUrl || '');
+const activeSourceUrl = computed(() => ledgerNode.value?.source_url || H.value?.sourceUrl || '');
 
 function resolveQueryActor() {
   if (store.actorId === 'supervisor') return 'admin';

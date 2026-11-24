@@ -1,0 +1,79 @@
+{
+  "CS-ONBOARD-01": {
+    "node_id": "CS-ONBOARD-01",
+    "doc_name": "CS-ONBOARD-01｜外部新人客服3关情景通关与三栏极简上岗",
+    "wiki_node_id": "ZQYprEoWonANyZL4iXDa0lOZ81waOeDk",
+    "wiki_url": "https://alidocs.dingtalk.com/i/nodes/ZQYprEoWonANyZL4iXDa0lOZ81waOeDk?utm_scene=team_space",
+    "video_url": "https://alidocs.dingtalk.com/i/nodes/G53mjyd80pDo1GmEczlNNNey86zbX04v",
+    "source_url": "https://alidocs.dingtalk.com/i/nodes/NkDwLng8ZLDqxG6gcpxGd00jVKMEvZBY",
+    "revision": "V6.1-CS-20261124",
+    "timecode": "00:00",
+    "human_review_status": "pending"
+  },
+  "CS-REALSHOT-01": {
+    "node_id": "CS-REALSHOT-01",
+    "doc_name": "CS-REALSHOT-01｜三栏极简接待、WMS四关全绿选机与一件一拍直发",
+    "wiki_node_id": "Exel2BLV5zkl16Oeu7mNpgjRJgk9rpMq",
+    "wiki_url": "https://alidocs.dingtalk.com/i/nodes/Exel2BLV5zkl16Oeu7mNpgjRJgk9rpMq",
+    "video_url": "https://alidocs.dingtalk.com/i/nodes/pGBa2Lm8aGpqdKP2hREXArGoVgN7R35y",
+    "source_url": "https://alidocs.dingtalk.com/i/nodes/b9Y4gmKWrP5pynLDTrjwgg00JGXn6lpz",
+    "revision": "V6.1-CS-20261124",
+    "timecode": "00:00",
+    "human_review_status": "pending"
+  },
+  "CS-WARRANTY-02": {
+    "node_id": "CS-WARRANTY-02",
+    "doc_name": "CS-WARRANTY-02｜富阳法院保修激活卡自动触发与静默发问毫秒熔断",
+    "wiki_node_id": "1DKw2zgV2PMoYdjETdPl3BkG8B5r9YAn",
+    "wiki_url": "https://alidocs.dingtalk.com/i/nodes/1DKw2zgV2PMoYdjETdPl3BkG8B5r9YAn",
+    "video_url": "https://alidocs.dingtalk.com/i/nodes/Exel2BLV5zkl16Oeu7mNvXgPJgk9rpMq",
+    "source_url": "https://alidocs.dingtalk.com/i/nodes/dxXB52LJqn5XymZ9i2MD3kg78qjMp697",
+    "revision": "V6.1-CS-20261124",
+    "timecode": "00:00",
+    "human_review_status": "pending"
+  },
+  "CS-REFUND-409-03": {
+    "node_id": "CS-REFUND-409-03",
+    "doc_name": "CS-REFUND-409-03｜退款0秒手机UI三步引导图与WMS 409红屏急停截单",
+    "wiki_node_id": "NkDwLng8ZLDqxG6gcpxGnpvNVKMEvZBY",
+    "wiki_url": "https://alidocs.dingtalk.com/i/nodes/NkDwLng8ZLDqxG6gcpxGnpvNVKMEvZBY",
+    "video_url": "https://alidocs.dingtalk.com/i/nodes/G53mjyd80pDo1GmEczgxMAP286zbX04v",
+    "source_url": "https://alidocs.dingtalk.com/i/nodes/OG9lyrgJPzaqQx70uPzmnKMDWzN67Mw4",
+    "revision": "V6.1-CS-20261124",
+    "timecode": "00:00",
+    "human_review_status": "pending"
+  },
+  "CS-ESCALATE-05": {
+    "node_id": "CS-ESCALATE-05",
+    "doc_name": "CS-ESCALATE-05｜问题订单三类判别与60秒一键跨部门呼救",
+    "wiki_node_id": "vNG4YZ7JnPBj0zyKTo93QoLaW2LD0oRE",
+    "wiki_url": "https://alidocs.dingtalk.com/i/nodes/vNG4YZ7JnPBj0zyKTo93QoLaW2LD0oRE",
+    "video_url": "https://alidocs.dingtalk.com/i/nodes/gpG2NdyVX3v6oEy9c5GNnA4OWMwvDqPk",
+    "source_url": "https://alidocs.dingtalk.com/i/nodes/l6Pm2Db8D49lkzyNiy9lY5qQ8xLq0Ee4",
+    "revision": "V6.1-CS-20261124",
+    "timecode": "00:00",
+    "human_review_status": "pending"
+  },
+  "CS-TAKEOVER-06": {
+    "node_id": "CS-TAKEOVER-06",
+    "doc_name": "CS-TAKEOVER-06｜排他接管锁、超限让利与退回防甩锅交接",
+    "wiki_node_id": "QBnd5ExVEvDlXZQrca2rGeNyJyeZqMmz",
+    "wiki_url": "https://alidocs.dingtalk.com/i/nodes/QBnd5ExVEvDlXZQrca2rGeNyJyeZqMmz",
+    "video_url": "https://alidocs.dingtalk.com/i/nodes/y20BglGWO2ZB6yQRiD0zG96m8A7depqY",
+    "source_url": "https://alidocs.dingtalk.com/i/nodes/GZLxjv9VGqMl2mDpIq1Ln9y386EDybno",
+    "revision": "V6.1-CS-20261124",
+    "timecode": "00:00",
+    "human_review_status": "pending"
+  },
+  "CS-GUARD-KPI-04": {
+    "node_id": "CS-GUARD-KPI-04",
+    "doc_name": "CS-GUARD-KPI-04｜外发合规守卫、防作弊与五防绩效考核口径",
+    "wiki_node_id": "yQod3RxJKGXlx0zahY4ABMXRJkb4Mw9r",
+    "wiki_url": "https://alidocs.dingtalk.com/i/nodes/yQod3RxJKGXlx0zahY4ABMXRJkb4Mw9r",
+    "video_url": "https://alidocs.dingtalk.com/i/nodes/bva6QBXJwa5myYekU72m756XWn4qY5Pr",
+    "source_url": "https://alidocs.dingtalk.com/i/nodes/1zknDm0WRanqQP0YUdxPRgv38BQEx5rG",
+    "revision": "V6.1-CS-20261124",
+    "timecode": "00:00",
+    "human_review_status": "pending"
+  }
+}

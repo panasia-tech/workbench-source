@@ -17,7 +17,8 @@ import threading
 from urllib.parse import parse_qs, unquote, urlparse
 
 RELEASE_VERSION = "V6-20261124-merged-cs"
-SEED_VERSION = "2026-11-24.2"
+CS_TUTORIAL_VERSION = "V6.1-CS-20261124"
+SEED_VERSION = "2026-11-24.3-cs7"
 RUNTIME_DIR = os.environ.get(
     "CS_RUNTIME_DIR",
     os.path.expanduser("~/Library/Caches/panasia-gallery-stitch-20261113"),
@@ -587,36 +588,83 @@ SEED_NODES = [
         "last_verified_at": "2026-11-24",
     },
     {
-        "node_id": "CS-REALSHOT-01",
+        "node_id": "CS-ONBOARD-01",
         "parent_group": "07｜外部客服独立视图（单应用合并入销售工作台）",
-        "title": "外部客服·三栏极简接待、WMS 四关全绿选机与一键实拍照片/视频直发",
+        "title": "外部客服·新人首日 3 关情景通关与三栏极简上岗",
         "workbench": "销售工作台",
         "scope": "cs",
         "roles": ["外部外包客服", "客服新人", "销售业务员", "销售主管"],
-        "route_entry": "#/cs-workbench",
+        "route_entry": "?as=cs_newbie 或 #/cs-workbench",
+        "help_keys": ["learn", "newbie_sandbox"],
+        "business_basis": "60 秒 3 关防踩坑通关门禁（缺实拍/砍价/站外引流）＋物理脱敏三栏极简工作台",
+        "owner": "客服/销售主管",
+        "applicable_version": CS_TUTORIAL_VERSION,
+        "video_wiki_url": wiki_url("G53mjyd80pDo1GmEczlNNNey86zbX04v"),
+        "video_title": "CS-ONBOARD-01｜外部新人客服3关情景通关与三栏极简上岗（Serena 1080p 独立成片）",
+        "timecode": "00:00",
+        "video_source_status": "待人工复核 · Serena 官方预置音色 1080p 独立成片已回读校验（00:00 起播）",
+        "wiki_url": "https://alidocs.dingtalk.com/i/nodes/ZQYprEoWonANyZL4iXDa0lOZ81waOeDk?utm_scene=team_space",
+        "h5_url": wiki_url("sales_h5"),
+        "pdf_url": wiki_url("employee_pdf"),
+        "local_video_url": "/cs-tutorials/CS-ONBOARD-01.mp4",
+        "source_url": wiki_url("NkDwLng8ZLDqxG6gcpxGd00jVKMEvZBY"),
+        "source_wiki_url": wiki_url("NkDwLng8ZLDqxG6gcpxGd00jVKMEvZBY"),
+        "revision": CS_TUTORIAL_VERSION,
+        "human_review_status": "pending",
+        "external_review_status": "none",
+        "external_reference": {},
+        "codex_entry": "?as=cs_newbie → 锁定横幅「立即去做 3 关练习解锁」或「？」→ 本节点独立子页",
+        "skill_name": "cs-first-day-3step-gate",
+        "skill_status": "Skill 已核",
+        "codex_prompt_hint": "请核查周小萌（cs_newbie）3 关练习门禁状态，确认外包视角仅展示脱敏 CS 节点且非授权内部接口返回 403。",
+        "expected_evidence": "完成 3 关情景演练后保护锁自动解除，仅加载脱敏客服节点，内部选品/成本返回 403。",
+        "manual_trigger": "3 关练习连续卡关、页面误显内部拿货价或需要重温三栏动线时。",
+        "manual_fallback_doc": "https://alidocs.dingtalk.com/i/nodes/ZQYprEoWonANyZL4iXDa0lOZ81waOeDk?utm_scene=team_space",
+        "manual_fallback_video": wiki_url("G53mjyd80pDo1GmEczlNNNey86zbX04v"),
+        "coverage_status": "待人工复核",
+        "fallback_status": "已配兜底",
+        "gap_reason": "",
+        "last_verified_by": "Agent 字节校验上传（待人工复核）",
+        "last_verified_at": "2026-11-24",
+    },
+    {
+        "node_id": "CS-REALSHOT-01",
+        "parent_group": "07｜外部客服独立视图（单应用合并入销售工作台）",
+        "title": "外部客服·三栏极简接待、WMS 四关全绿选机与一件一拍直发",
+        "workbench": "销售工作台",
+        "scope": "cs",
+        "roles": ["外部外包客服", "客服新人", "销售业务员", "销售主管"],
+        "route_entry": "#/cs-workbench（售前标签）",
         "help_keys": ["chat", "copilot_card"],
         "business_basis": "并入客服 V3：发货前必须在 WMS 挑四关全绿单品发实拍图与通电视频（缺视频 60s 催仓管）",
         "owner": "客服/销售主管",
-        "applicable_version": RELEASE_VERSION,
-        "video_wiki_url": wiki_url("main_video"),
-        "video_title": "销售工作台-全量业务与研发讲解-20261119（并入客服章节 09）",
-        "timecode": "23:50",
-        "video_source_status": "已有 720p 合入总片章节（23:50）+ 57:58 客服 V3 专项全流程视频（旧音色基线）",
-        "wiki_url": wiki_url("sales_home"),
+        "applicable_version": CS_TUTORIAL_VERSION,
+        "video_wiki_url": wiki_url("pGBa2Lm8aGpqdKP2hREXArGoVgN7R35y"),
+        "video_title": "CS-REALSHOT-01｜三栏极简接待、WMS四关全绿选机与一件一拍直发（Serena 1080p 独立成片）",
+        "timecode": "00:00",
+        "video_source_status": "待人工复核 · Serena 官方预置音色 1080p 独立成片已回读校验（00:00 起播）",
+        "wiki_url": wiki_url("Exel2BLV5zkl16Oeu7mNpgjRJgk9rpMq"),
         "h5_url": wiki_url("sales_h5"),
         "pdf_url": wiki_url("employee_pdf"),
-        "codex_entry": "#/cs-workbench（或 ?as=outsource_lu 独立沙盒）→ 顶栏「📚 教程与视频台账」或「？」",
+        "local_video_url": "/cs-tutorials/CS-REALSHOT-01.mp4",
+        "source_url": wiki_url("b9Y4gmKWrP5pynLDTrjwgg00JGXn6lpz"),
+        "source_wiki_url": wiki_url("b9Y4gmKWrP5pynLDTrjwgg00JGXn6lpz"),
+        "revision": CS_TUTORIAL_VERSION,
+        "human_review_status": "pending",
+        "external_review_status": "none",
+        "external_reference": {},
+        "codex_entry": "#/cs-workbench（或 ?as=outsource_lu）→ 顶部/右栏「？」→ CS-REALSHOT-01 专属子页",
         "skill_name": "cs-pre-ship-realshot-select",
         "skill_status": "Skill 已核",
         "codex_prompt_hint": "请帮我核对这笔待发货订单在右栏同款槽位里哪台四关全绿可用，并生成发货前实拍发送检查表。",
         "expected_evidence": "绑定唯一四关全绿货号，买家收到实拍照片+通电视频回执（100% 前置执行）。",
         "manual_trigger": "商品链接认不出 WMS 货号、或仓库同款机器全部缺通电视频超过 60 秒。",
-        "manual_fallback_doc": wiki_url("sales_spec"),
-        "manual_fallback_video": wiki_url("cs_video"),
-        "coverage_status": "可用",
+        "manual_fallback_doc": wiki_url("Exel2BLV5zkl16Oeu7mNpgjRJgk9rpMq"),
+        "manual_fallback_video": wiki_url("pGBa2Lm8aGpqdKP2hREXArGoVgN7R35y"),
+        "coverage_status": "待人工复核",
         "fallback_status": "已配兜底",
         "gap_reason": "",
-        "last_verified_by": "Agent 盘点初筛（待主管确认 V6）",
+        "last_verified_by": "Agent 字节校验上传（待人工复核）",
         "last_verified_at": "2026-11-24",
     },
     {
@@ -626,96 +674,197 @@ SEED_NODES = [
         "workbench": "销售工作台",
         "scope": "cs",
         "roles": ["外部外包客服", "客服新人", "销售业务员", "销售主管"],
-        "route_entry": "#/cs-workbench",
-        "help_keys": ["warranty_card", "auto_ship", "autoship"],
+        "route_entry": "#/cs-workbench（售前 · 自动发图与自动发货池）",
+        "help_keys": ["warranty_card", "auto_ship", "autoship", "auto_rules"],
         "business_basis": "发货前自动发「杭州市富阳区人民法院管辖」保修激活卡＋30 分钟静默观察＋买家发问毫秒暂停",
         "owner": "客服/销售主管",
-        "applicable_version": RELEASE_VERSION,
-        "video_wiki_url": wiki_url("main_video"),
-        "video_title": "销售工作台-全量业务与研发讲解-20261119（并入客服章节 10）",
-        "timecode": "26:34",
-        "video_source_status": "已有 720p 合入总片章节（26:34）+ 57:58 客服 V3 专项视频（旧音色基线）",
-        "wiki_url": wiki_url("sales_home"),
+        "applicable_version": CS_TUTORIAL_VERSION,
+        "video_wiki_url": wiki_url("Exel2BLV5zkl16Oeu7mNvXgPJgk9rpMq"),
+        "video_title": "CS-WARRANTY-02｜富阳法院保修激活卡自动触发与静默发问毫秒熔断（Serena 1080p 独立成片）",
+        "timecode": "00:00",
+        "video_source_status": "待人工复核 · Serena 官方预置音色 1080p 独立成片已回读校验（00:00 起播）",
+        "wiki_url": wiki_url("1DKw2zgV2PMoYdjETdPl3BkG8B5r9YAn"),
         "h5_url": wiki_url("sales_h5"),
         "pdf_url": wiki_url("employee_pdf"),
-        "codex_entry": "#/cs-workbench → 顶栏「🖼 自动发图」/「📦 自动发货池」→ 点对应节点查看台账",
+        "local_video_url": "/cs-tutorials/CS-WARRANTY-02.mp4",
+        "source_url": wiki_url("dxXB52LJqn5XymZ9i2MD3kg78qjMp697"),
+        "source_wiki_url": wiki_url("dxXB52LJqn5XymZ9i2MD3kg78qjMp697"),
+        "revision": CS_TUTORIAL_VERSION,
+        "human_review_status": "pending",
+        "external_review_status": "none",
+        "external_reference": {},
+        "codex_entry": "#/cs-workbench → 顶栏「🖼 自动发图」/「📦 自动发货池」→「？」专属子页",
         "skill_name": "cs-warranty-silent-ship-fuse",
         "skill_status": "Skill 已核",
-        "codex_prompt_hint": "请检查该订单保修激活卡与管辖条款是否发出、买家是否在观察期内发问触发熔断暂停。",
-        "expected_evidence": "保修激活卡确认流水或发问熔断红警响应记录。",
+        "codex_prompt_hint": "请检查该订单保修激活卡与杭州市富阳区人民法院管辖条款是否发出、买家是否在观察期内发问触发熔断暂停。",
+        "expected_evidence": "保修激活卡确认流水或发问熔断红警响应记录与 WAVE 波次推仓单号。",
         "manual_trigger": "买家不同意保修管辖条款、或在静默期突然发问质疑机器成色故障。",
-        "manual_fallback_doc": wiki_url("sales_spec"),
-        "manual_fallback_video": wiki_url("cs_video"),
-        "coverage_status": "可用",
+        "manual_fallback_doc": wiki_url("1DKw2zgV2PMoYdjETdPl3BkG8B5r9YAn"),
+        "manual_fallback_video": wiki_url("Exel2BLV5zkl16Oeu7mNvXgPJgk9rpMq"),
+        "coverage_status": "待人工复核",
         "fallback_status": "已配兜底",
         "gap_reason": "",
-        "last_verified_by": "Agent 盘点初筛（待主管确认 V6）",
+        "last_verified_by": "Agent 字节校验上传（待人工复核）",
         "last_verified_at": "2026-11-24",
     },
     {
         "node_id": "CS-REFUND-409-03",
         "parent_group": "07｜外部客服独立视图（单应用合并入销售工作台）",
-        "title": "外部客服·0 秒退款三步引导图、409 红屏急停锁打包面单与永久禁关单硬锁",
+        "title": "外部客服·0 秒退款三步引导图、409 红屏急停锁打包面单与永久禁关单",
         "workbench": "销售工作台",
         "scope": "cs",
         "roles": ["外部外包客服", "客服新人", "销售业务员", "销售主管"],
-        "route_entry": "#/cs-workbench",
+        "route_entry": "#/cs-workbench（售后标签）",
         "help_keys": ["auto_refund", "emergency_intercept"],
-        "business_basis": "0 秒自动发退款理由图＋拣货台 409 红屏三连蜂鸣拦截＋永久禁卖方主动关单（鱼力值 165 事故）",
+        "business_basis": "0 秒自动发退款理由图＋拣货台 409 红屏拦截＋永久禁卖方主动关单（鱼力值 165 红线）",
         "owner": "客服/销售主管",
-        "applicable_version": RELEASE_VERSION,
-        "video_wiki_url": wiki_url("main_video"),
-        "video_title": "销售工作台-全量业务与研发讲解-20261119（并入客服章节 11）",
-        "timecode": "29:08",
-        "video_source_status": "已有 720p 合入总片章节（29:08）+ 57:58 客服 V3 专项视频（旧音色基线）",
-        "wiki_url": wiki_url("sales_home"),
+        "applicable_version": CS_TUTORIAL_VERSION,
+        "video_wiki_url": wiki_url("G53mjyd80pDo1GmEczgxMAP286zbX04v"),
+        "video_title": "CS-REFUND-409-03｜退款0秒手机UI三步引导图与WMS 409红屏急停截单（Serena 1080p 独立成片）",
+        "timecode": "00:00",
+        "video_source_status": "待人工复核 · Serena 官方预置音色 1080p 独立成片已回读校验（00:00 起播）",
+        "wiki_url": wiki_url("NkDwLng8ZLDqxG6gcpxGnpvNVKMEvZBY"),
         "h5_url": wiki_url("sales_h5"),
         "pdf_url": wiki_url("employee_pdf"),
-        "codex_entry": "#/cs-workbench 售后/问题订单栏 → 点击「？」/ 客服专属台账",
+        "local_video_url": "/cs-tutorials/CS-REFUND-409-03.mp4",
+        "source_url": wiki_url("OG9lyrgJPzaqQx70uPzmnKMDWzN67Mw4"),
+        "source_wiki_url": wiki_url("OG9lyrgJPzaqQx70uPzmnKMDWzN67Mw4"),
+        "revision": CS_TUTORIAL_VERSION,
+        "human_review_status": "pending",
+        "external_review_status": "none",
+        "external_reference": {},
+        "codex_entry": "#/cs-workbench 售后标签 → 409 急停处「？」专属子页",
         "skill_name": "cs-refund-409-hard-stop",
         "skill_status": "Skill 已核",
         "codex_prompt_hint": "买家申请退款/改地址且货在打包台，请帮我核对 409 急停锁状态与退回原货架指令，绝不主动关闭订单。",
-        "expected_evidence": "0 秒退款引导图回执、409 锁面单回执与仓管待归架单编号。",
+        "expected_evidence": "0 秒退款引导图回执、409 锁面单回执与仓管待归架确认。",
         "manual_trigger": "顺丰快递已被揽收无法 409 拦回、或买家坚持投诉不选「不想要了/协商一致」。",
-        "manual_fallback_doc": wiki_url("sales_spec"),
-        "manual_fallback_video": wiki_url("cs_video"),
-        "coverage_status": "可用",
+        "manual_fallback_doc": wiki_url("NkDwLng8ZLDqxG6gcpxGnpvNVKMEvZBY"),
+        "manual_fallback_video": wiki_url("G53mjyd80pDo1GmEczgxMAP286zbX04v"),
+        "coverage_status": "待人工复核",
         "fallback_status": "已配兜底",
         "gap_reason": "",
-        "last_verified_by": "Agent 盘点初筛（待主管确认 V6）",
+        "last_verified_by": "Agent 字节校验上传（待人工复核）",
+        "last_verified_at": "2026-11-24",
+    },
+    {
+        "node_id": "CS-ESCALATE-05",
+        "parent_group": "07｜外部客服独立视图（单应用合并入销售工作台）",
+        "title": "外部客服·问题订单三类判别与 60 秒一键跨部门呼救（催仓/呼销售）",
+        "workbench": "销售工作台",
+        "scope": "cs",
+        "roles": ["外部外包客服", "客服新人", "销售业务员", "销售主管"],
+        "route_entry": "#/cs-workbench（问题订单标签）",
+        "help_keys": ["collab_escalate"],
+        "business_basis": "C6 熔断 / C7 缺通电视频 60s 催仓 / C8 链接未绑 WMS 货号＋阻断外部网盘风险链接",
+        "owner": "客服/销售主管",
+        "applicable_version": CS_TUTORIAL_VERSION,
+        "video_wiki_url": wiki_url("gpG2NdyVX3v6oEy9c5GNnA4OWMwvDqPk"),
+        "video_title": "CS-ESCALATE-05｜问题订单三类判别与60秒一键跨部门呼救（Serena 1080p 独立成片）",
+        "timecode": "00:00",
+        "video_source_status": "待人工复核 · Serena 官方预置音色 1080p 独立成片已回读校验（00:00 起播）",
+        "wiki_url": wiki_url("vNG4YZ7JnPBj0zyKTo93QoLaW2LD0oRE"),
+        "h5_url": wiki_url("sales_h5"),
+        "pdf_url": wiki_url("employee_pdf"),
+        "local_video_url": "/cs-tutorials/CS-ESCALATE-05.mp4",
+        "source_url": wiki_url("l6Pm2Db8D49lkzyNiy9lY5qQ8xLq0Ee4"),
+        "source_wiki_url": wiki_url("l6Pm2Db8D49lkzyNiy9lY5qQ8xLq0Ee4"),
+        "revision": CS_TUTORIAL_VERSION,
+        "human_review_status": "pending",
+        "external_review_status": "none",
+        "external_reference": {},
+        "codex_entry": "#/cs-workbench 问题订单标签 / 跨部门协同处「？」专属子页",
+        "skill_name": "cs-abnormal-60s-escalate",
+        "skill_status": "Skill 已核",
+        "codex_prompt_hint": "请统计今日全部问题订单（C6 熔断 / C7 缺视频 / C8 未绑货号）的 60 秒呼救平均响应时长，并标出超时未接管单据。",
+        "expected_evidence": "缺视频 60s 直达仓管补拍、未绑货号 60s 推达内部销售、外部网盘链接 100% 阻断。",
+        "manual_trigger": "仓管补拍或内部绑货超过 60 秒无回流、或买家索要网盘附件检验。",
+        "manual_fallback_doc": wiki_url("vNG4YZ7JnPBj0zyKTo93QoLaW2LD0oRE"),
+        "manual_fallback_video": wiki_url("gpG2NdyVX3v6oEy9c5GNnA4OWMwvDqPk"),
+        "coverage_status": "待人工复核",
+        "fallback_status": "已配兜底",
+        "gap_reason": "",
+        "last_verified_by": "Agent 字节校验上传（待人工复核）",
+        "last_verified_at": "2026-11-24",
+    },
+    {
+        "node_id": "CS-TAKEOVER-06",
+        "parent_group": "07｜外部客服独立视图（单应用合并入销售工作台）",
+        "title": "内部销售·排他接管锁、超限让利与退回防甩锅交接（陈小满协同台）",
+        "workbench": "销售工作台",
+        "scope": "cs",
+        "roles": ["销售业务员", "销售主管", "外部外包客服"],
+        "route_entry": "?as=chenxm#/cs-workbench（工作 → 外部客服）",
+        "help_keys": ["takeover_handoff"],
+        "business_basis": "销售与客服合入单应用后：内部接管开启排他只读锁防撞单＋超 ¥20 让利＋无效甩锅退回记分",
+        "owner": "客服/销售主管",
+        "applicable_version": CS_TUTORIAL_VERSION,
+        "video_wiki_url": wiki_url("y20BglGWO2ZB6yQRiD0zG96m8A7depqY"),
+        "video_title": "CS-TAKEOVER-06｜排他接管锁、超限让利与退回防甩锅交接（Serena 1080p 独立成片）",
+        "timecode": "00:00",
+        "video_source_status": "待人工复核 · Serena 官方预置音色 1080p 独立成片已回读校验（00:00 起播）",
+        "wiki_url": wiki_url("QBnd5ExVEvDlXZQrca2rGeNyJyeZqMmz"),
+        "h5_url": wiki_url("sales_h5"),
+        "pdf_url": wiki_url("employee_pdf"),
+        "local_video_url": "/cs-tutorials/CS-TAKEOVER-06.mp4",
+        "source_url": wiki_url("GZLxjv9VGqMl2mDpIq1Ln9y386EDybno"),
+        "source_wiki_url": wiki_url("GZLxjv9VGqMl2mDpIq1Ln9y386EDybno"),
+        "revision": CS_TUTORIAL_VERSION,
+        "human_review_status": "pending",
+        "external_review_status": "none",
+        "external_reference": {},
+        "codex_entry": "?as=chenxm#/cs-workbench → 跨部门协同「排他接管」旁「？」专属子页",
+        "skill_name": "cs-internal-takeover-handoff",
+        "skill_status": "Skill 已核",
+        "codex_prompt_hint": "请审查全部内部销售接管单的排他锁状态记录、>¥20 超限让利审批原因，以及被陈小满退回的无效甩锅详情。",
+        "expected_evidence": "接管期间外包端只读锁死无撞话、完结交回外包留痕、无效甩锅入 KPI 审计。",
+        "manual_trigger": "买家砍价击穿最低销售底价保护线、或出现双方抢答撞单冲突。",
+        "manual_fallback_doc": wiki_url("QBnd5ExVEvDlXZQrca2rGeNyJyeZqMmz"),
+        "manual_fallback_video": wiki_url("y20BglGWO2ZB6yQRiD0zG96m8A7depqY"),
+        "coverage_status": "待人工复核",
+        "fallback_status": "已配兜底",
+        "gap_reason": "",
+        "last_verified_by": "Agent 字节校验上传（待人工复核）",
         "last_verified_at": "2026-11-24",
     },
     {
         "node_id": "CS-GUARD-KPI-04",
         "parent_group": "07｜外部客服独立视图（单应用合并入销售工作台）",
-        "title": "外部客服·防封外发守卫、外包零进价脱敏盾、内部排他接管与 14 项反作弊考核",
+        "title": "外部客服·防封外发守卫、反作弊雷达与五防全维绩效考核",
         "workbench": "销售工作台",
         "scope": "cs",
         "roles": ["外部外包客服", "客服新人", "销售业务员", "销售主管"],
-        "route_entry": "#/cs-workbench",
-        "help_keys": ["kpi", "manual_all", "newbie_sandbox"],
-        "business_basis": "50s 兜底不计人工回复＋单字 1/手机号/微信双端拦截＋外包 RBAC 剥离 costPrice",
+        "route_entry": "#/cs-workbench（底部外发守卫 + 顶栏「全维考核」）",
+        "help_keys": ["kpi", "manual_all"],
+        "business_basis": "50s 兜底不计人工回复＋单字 1/手机号/微信双端拦截＋14 项 CSV 结算导出",
         "owner": "客服/销售主管",
-        "applicable_version": RELEASE_VERSION,
-        "video_wiki_url": wiki_url("main_video"),
-        "video_title": "销售工作台-全量业务与研发讲解-20261119（并入客服章节 12）",
-        "timecode": "31:43",
-        "video_source_status": "已有 720p 合入总片章节（31:43）+ 57:58 客服 V3 专项视频（旧音色基线）",
-        "wiki_url": wiki_url("ui_charter"),
+        "applicable_version": CS_TUTORIAL_VERSION,
+        "video_wiki_url": wiki_url("bva6QBXJwa5myYekU72m756XWn4qY5Pr"),
+        "video_title": "CS-GUARD-KPI-04｜外发合规守卫、防作弊与五防绩效考核口径（Serena 1080p 独立成片）",
+        "timecode": "00:00",
+        "video_source_status": "待人工复核 · Serena 官方预置音色 1080p 独立成片已回读校验（00:00 起播）",
+        "wiki_url": wiki_url("yQod3RxJKGXlx0zahY4ABMXRJkb4Mw9r"),
         "h5_url": wiki_url("sales_h5"),
         "pdf_url": wiki_url("employee_pdf"),
-        "codex_entry": "#/cs-workbench → 顶栏「全维考核 ▾」与「⚙ 视角与更多」",
+        "local_video_url": "/cs-tutorials/CS-GUARD-KPI-04.mp4",
+        "source_url": wiki_url("1zknDm0WRanqQP0YUdxPRgv38BQEx5rG"),
+        "source_wiki_url": wiki_url("1zknDm0WRanqQP0YUdxPRgv38BQEx5rG"),
+        "revision": CS_TUTORIAL_VERSION,
+        "human_review_status": "pending",
+        "external_review_status": "none",
+        "external_reference": {},
+        "codex_entry": "#/cs-workbench → 顶栏「全维考核 ▾」→ 五防口径「？」专属子页",
         "skill_name": "cs-outbound-guard-and-kpi",
         "skill_status": "Skill 已核",
-        "codex_prompt_hint": "请帮我核对今日人工真回与 3 分钟回复率计算口径，确认 30 秒群控排队不误扣我个人考核。",
-        "expected_evidence": "个人 14 项指标卡与服务端审计日志（零外包成本泄密、零单字刷水）。",
-        "manual_trigger": "被内部销售接管后需补充关键情况、或对群控延迟统计申诉时转主管核对。",
-        "manual_fallback_doc": wiki_url("ui_charter"),
-        "manual_fallback_video": wiki_url("cs_video"),
-        "coverage_status": "可用",
+        "codex_prompt_hint": "请导出今日全坐席外发守卫拦截明细、50s 兜底挂机剔除原因，生成可供财务与主管复核的 14 项指标 CSV 核对单。",
+        "expected_evidence": "站外微信/手机 0 放行、3 分人工率剔除 50s 挂机水分、CSV 结算可回溯。",
+        "manual_trigger": "谐音字绕过风控、或对群控延迟与绩效扣除口径有异议需主管复核。",
+        "manual_fallback_doc": wiki_url("yQod3RxJKGXlx0zahY4ABMXRJkb4Mw9r"),
+        "manual_fallback_video": wiki_url("bva6QBXJwa5myYekU72m756XWn4qY5Pr"),
+        "coverage_status": "待人工复核",
         "fallback_status": "已配兜底",
         "gap_reason": "",
-        "last_verified_by": "Agent 盘点初筛（待主管确认 V6）",
+        "last_verified_by": "Agent 字节校验上传（待人工复核）",
         "last_verified_at": "2026-11-24",
     },
 ]
@@ -776,7 +925,14 @@ def _connect() -> sqlite3.Connection:
             gap_reason TEXT NOT NULL,
             last_verified_by TEXT NOT NULL,
             last_verified_at TEXT NOT NULL,
-            updated_at TEXT NOT NULL
+            updated_at TEXT NOT NULL,
+            source_url TEXT NOT NULL DEFAULT '',
+            source_wiki_url TEXT NOT NULL DEFAULT '',
+            local_video_url TEXT NOT NULL DEFAULT '',
+            revision TEXT NOT NULL DEFAULT '',
+            human_review_status TEXT NOT NULL DEFAULT 'pending',
+            external_review_status TEXT NOT NULL DEFAULT 'none',
+            external_reference_json TEXT NOT NULL DEFAULT '{}'
         );
         """
     )
@@ -794,6 +950,19 @@ def _connect() -> sqlite3.Connection:
         );
         """
     )
+    existing_cols = {r[1] for r in conn.execute("PRAGMA table_info(tutorial_nodes)").fetchall()}
+    extra_cols = [
+        ("source_url", "TEXT NOT NULL DEFAULT ''"),
+        ("source_wiki_url", "TEXT NOT NULL DEFAULT ''"),
+        ("local_video_url", "TEXT NOT NULL DEFAULT ''"),
+        ("revision", "TEXT NOT NULL DEFAULT 'sales-v6-20261124-r1'"),
+        ("human_review_status", "TEXT NOT NULL DEFAULT 'pending'"),
+        ("external_review_status", "TEXT NOT NULL DEFAULT 'none'"),
+        ("external_reference_json", "TEXT NOT NULL DEFAULT '{}'"),
+    ]
+    for col_name, col_def in extra_cols:
+        if col_name not in existing_cols:
+            conn.execute(f"ALTER TABLE tutorial_nodes ADD COLUMN {col_name} {col_def};")
     return conn
 
 
@@ -807,20 +976,57 @@ def _seed_db(conn: sqlite3.Connection, force: bool = False) -> None:
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     if force:
         conn.execute("DELETE FROM tutorial_nodes")
-    for idx, n in enumerate(SEED_NODES, 1):
+    else:
+        all_ids = [n["node_id"] for n in SEED_NODES]
+        placeholders = ",".join("?" for _ in all_ids)
         conn.execute(
-            """
-            INSERT INTO tutorial_nodes (
-                node_id, sort_order, parent_group, title, workbench, scope,
-                roles_json, route_entry, help_keys_json, business_basis, owner,
-                applicable_version, video_wiki_url, video_title, timecode,
-                video_source_status, wiki_url, h5_url, pdf_url, codex_entry,
-                skill_name, skill_status, codex_prompt_hint, expected_evidence,
-                manual_trigger, manual_fallback_doc, manual_fallback_video,
-                coverage_status, fallback_status, gap_reason, last_verified_by,
-                last_verified_at, updated_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ON CONFLICT(node_id) DO UPDATE SET
+            f"DELETE FROM tutorial_nodes WHERE node_id NOT IN ({placeholders})",
+            all_ids,
+        )
+    for idx, n in enumerate(SEED_NODES, 1):
+        params = (
+            n["node_id"],
+            idx,
+            n["parent_group"],
+            n["title"],
+            n["workbench"],
+            n["scope"],
+            json.dumps(n["roles"], ensure_ascii=False),
+            n["route_entry"],
+            json.dumps(n["help_keys"], ensure_ascii=False),
+            n["business_basis"],
+            n["owner"],
+            n["applicable_version"],
+            n["video_wiki_url"],
+            n["video_title"],
+            n["timecode"],
+            n["video_source_status"],
+            n["wiki_url"],
+            n["h5_url"],
+            n["pdf_url"],
+            n["codex_entry"],
+            n["skill_name"],
+            n["skill_status"],
+            n["codex_prompt_hint"],
+            n["expected_evidence"],
+            n["manual_trigger"],
+            n["manual_fallback_doc"],
+            n["manual_fallback_video"],
+            n["coverage_status"],
+            n["fallback_status"],
+            n["gap_reason"],
+            n["last_verified_by"],
+            n["last_verified_at"],
+            now,
+            n.get("source_url") or n.get("source_wiki_url", ""),
+            n.get("source_wiki_url") or n.get("source_url", ""),
+            n.get("local_video_url", ""),
+            n.get("revision", ""),
+            n.get("human_review_status", ""),
+            n.get("external_review_status", "none"),
+            json.dumps(n.get("external_reference") or {}, ensure_ascii=False),
+        )
+        conflict_sql = """ON CONFLICT(node_id) DO UPDATE SET
                 sort_order = excluded.sort_order,
                 parent_group = excluded.parent_group,
                 title = excluded.title,
@@ -830,6 +1036,7 @@ def _seed_db(conn: sqlite3.Connection, force: bool = False) -> None:
                 route_entry = excluded.route_entry,
                 help_keys_json = excluded.help_keys_json,
                 business_basis = excluded.business_basis,
+                owner = excluded.owner,
                 applicable_version = excluded.applicable_version,
                 video_wiki_url = excluded.video_wiki_url,
                 video_title = excluded.video_title,
@@ -840,45 +1047,42 @@ def _seed_db(conn: sqlite3.Connection, force: bool = False) -> None:
                 pdf_url = excluded.pdf_url,
                 codex_entry = excluded.codex_entry,
                 skill_name = excluded.skill_name,
+                skill_status = excluded.skill_status,
+                codex_prompt_hint = excluded.codex_prompt_hint,
+                expected_evidence = excluded.expected_evidence,
+                manual_trigger = excluded.manual_trigger,
                 manual_fallback_doc = excluded.manual_fallback_doc,
                 manual_fallback_video = excluded.manual_fallback_video,
-                updated_at = excluded.updated_at;
+                coverage_status = excluded.coverage_status,
+                fallback_status = excluded.fallback_status,
+                gap_reason = excluded.gap_reason,
+                last_verified_by = excluded.last_verified_by,
+                last_verified_at = excluded.last_verified_at,
+                updated_at = excluded.updated_at,
+                source_url = excluded.source_url,
+                source_wiki_url = excluded.source_wiki_url,
+                local_video_url = excluded.local_video_url,
+                revision = excluded.revision,
+                human_review_status = excluded.human_review_status,
+                external_review_status = excluded.external_review_status,
+                external_reference_json = excluded.external_reference_json"""
+        conn.execute(
+            f"""
+            INSERT INTO tutorial_nodes (
+                node_id, sort_order, parent_group, title, workbench, scope,
+                roles_json, route_entry, help_keys_json, business_basis, owner,
+                applicable_version, video_wiki_url, video_title, timecode,
+                video_source_status, wiki_url, h5_url, pdf_url, codex_entry,
+                skill_name, skill_status, codex_prompt_hint, expected_evidence,
+                manual_trigger, manual_fallback_doc, manual_fallback_video,
+                coverage_status, fallback_status, gap_reason, last_verified_by,
+                last_verified_at, updated_at,
+                source_url, source_wiki_url, local_video_url, revision,
+                human_review_status, external_review_status, external_reference_json
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            {conflict_sql};
             """,
-            (
-                n["node_id"],
-                idx,
-                n["parent_group"],
-                n["title"],
-                n["workbench"],
-                n["scope"],
-                json.dumps(n["roles"], ensure_ascii=False),
-                n["route_entry"],
-                json.dumps(n["help_keys"], ensure_ascii=False),
-                n["business_basis"],
-                n["owner"],
-                n["applicable_version"],
-                n["video_wiki_url"],
-                n["video_title"],
-                n["timecode"],
-                n["video_source_status"],
-                n["wiki_url"],
-                n["h5_url"],
-                n["pdf_url"],
-                n["codex_entry"],
-                n["skill_name"],
-                n["skill_status"],
-                n["codex_prompt_hint"],
-                n["expected_evidence"],
-                n["manual_trigger"],
-                n["manual_fallback_doc"],
-                n["manual_fallback_video"],
-                n["coverage_status"],
-                n["fallback_status"],
-                n["gap_reason"],
-                n["last_verified_by"],
-                n["last_verified_at"],
-                now,
-            ),
+            params,
         )
     conn.execute(
         """
@@ -887,22 +1091,21 @@ def _seed_db(conn: sqlite3.Connection, force: bool = False) -> None:
         """,
         (SEED_VERSION,),
     )
-    if force or conn.execute("SELECT COUNT(*) FROM tutorial_history").fetchone()[0] == 0:
-        conn.execute(
-            """
-            INSERT INTO tutorial_history (node_id, created_at, actor, action, summary, before_status, after_status)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-            """,
-            (
-                "SALES-SHARED-00",
-                now,
-                "system",
-                "seed_init",
-                f"按 2026-11-24 原生台账规范初始化全量 20 节点（含 4 客服独立视图节点、CAD 与三角洲模板节点；索引种子 {SEED_VERSION}）",
-                "",
-                "已入库盘点",
-            ),
-        )
+    conn.execute(
+        """
+        INSERT INTO tutorial_history (node_id, created_at, actor, action, summary, before_status, after_status)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        """,
+        (
+            "SALES-SHARED-00",
+            now,
+            "system",
+            "cs7_upgrade",
+            f"外部客服（并入销售独立视图）7 个独立节点升级为 00:00 起播独立 1080p Serena 成片 + 专属 Wiki 子页 + 可编辑源码包（保留上游 SALES-* 未改 · 种子 {SEED_VERSION}）",
+            "旧复用章节/断链",
+            "待人工复核",
+        ),
+    )
     conn.commit()
 
 
@@ -910,20 +1113,33 @@ with DB_LOCK:
     _seed_db(CONN, force=False)
 
 
+_NODE_COLS = [
+    "node_id", "sort_order", "parent_group", "title", "workbench", "scope",
+    "roles_json", "route_entry", "help_keys_json", "business_basis", "owner",
+    "applicable_version", "video_wiki_url", "video_title", "timecode",
+    "video_source_status", "wiki_url", "h5_url", "pdf_url", "codex_entry",
+    "skill_name", "skill_status", "codex_prompt_hint", "expected_evidence",
+    "manual_trigger", "manual_fallback_doc", "manual_fallback_video",
+    "coverage_status", "fallback_status", "gap_reason", "last_verified_by",
+    "last_verified_at", "updated_at",
+    "source_url", "source_wiki_url", "local_video_url", "revision",
+    "human_review_status", "external_review_status", "external_reference_json",
+]
+_SELECT_COLS = ", ".join(_NODE_COLS)
+
+
 def _row_to_node(r) -> dict:
-    keys = [
-        "node_id", "sort_order", "parent_group", "title", "workbench", "scope",
-        "roles_json", "route_entry", "help_keys_json", "business_basis", "owner",
-        "applicable_version", "video_wiki_url", "video_title", "timecode",
-        "video_source_status", "wiki_url", "h5_url", "pdf_url", "codex_entry",
-        "skill_name", "skill_status", "codex_prompt_hint", "expected_evidence",
-        "manual_trigger", "manual_fallback_doc", "manual_fallback_video",
-        "coverage_status", "fallback_status", "gap_reason", "last_verified_by",
-        "last_verified_at", "updated_at",
-    ]
-    raw = dict(zip(keys, r))
+    raw = dict(zip(_NODE_COLS, r))
+    raw["source_wiki_url"] = raw.get("source_wiki_url") or raw.get("source_url") or ""
+    raw["source_url"] = raw.get("source_url") or raw.get("source_wiki_url") or ""
+    raw["review_status"] = "待人工复核" if raw.get("human_review_status") != "reviewed" else "已人工复核"
     raw["roles"] = json.loads(raw.pop("roles_json"))
     raw["help_keys"] = json.loads(raw.pop("help_keys_json"))
+    ext_raw = raw.pop("external_reference_json", "{}")
+    try:
+        raw["external_reference"] = json.loads(ext_raw) if ext_raw else {}
+    except Exception:
+        raw["external_reference"] = {}
     raw["index_url"] = wiki_url("tutorial_index") or "#/tutorials"
     return raw
 
@@ -994,7 +1210,7 @@ def handle_tutorial_request(
                 )
             with DB_LOCK:
                 rows = CONN.execute(
-                    "SELECT * FROM tutorial_nodes ORDER BY sort_order ASC"
+                    f"SELECT {_SELECT_COLS} FROM tutorial_nodes ORDER BY sort_order ASC"
                 ).fetchall()
                 history_rows = CONN.execute(
                     "SELECT seq, node_id, created_at, actor, action, summary, before_status, after_status "
@@ -1050,7 +1266,7 @@ def handle_tutorial_request(
             node_id = path[len("/api/tutorials/node/"):].strip("/")
             with DB_LOCK:
                 row = CONN.execute(
-                    "SELECT * FROM tutorial_nodes WHERE node_id = ?", (node_id,)
+                    f"SELECT {_SELECT_COLS} FROM tutorial_nodes WHERE node_id = ?", (node_id,)
                 ).fetchone()
                 if not row:
                     return _json_resp(404, {"ok": False, "error": f"未找到节点 {node_id}"})
@@ -1096,10 +1312,17 @@ def handle_tutorial_request(
             help_key = path[len("/api/tutorials/by-help/"):].strip("/")
             with DB_LOCK:
                 rows = CONN.execute(
-                    "SELECT * FROM tutorial_nodes ORDER BY sort_order ASC"
+                    f"SELECT {_SELECT_COLS} FROM tutorial_nodes ORDER BY sort_order ASC"
                 ).fetchall()
             all_nodes = [_row_to_node(r) for r in rows]
-            matched = next((n for n in all_nodes if help_key in n["help_keys"]), None)
+            matched = None
+            if role == "outsource_cs":
+                matched = next(
+                    (n for n in all_nodes if n["scope"] in ("cs", "shared") and help_key in n["help_keys"]),
+                    None,
+                )
+            if not matched:
+                matched = next((n for n in all_nodes if help_key in n["help_keys"]), None)
             if not matched:
                 matched = next(
                     (
@@ -1130,35 +1353,53 @@ def handle_tutorial_request(
             )
 
         if path == "/api/tutorials/coverage-manifest":
+            req_scope = (params.get("scope") or ["all"])[0].strip()
+            if role == "outsource_cs" and req_scope == "sales":
+                return _json_resp(403, {"ok": False, "error": "权限隔离拦截：外部客服无权读取销售覆盖清单。"})
             with DB_LOCK:
                 rows = CONN.execute(
-                    "SELECT * FROM tutorial_nodes ORDER BY sort_order ASC"
+                    f"SELECT {_SELECT_COLS} FROM tutorial_nodes ORDER BY sort_order ASC"
                 ).fetchall()
             visible = [
                 _row_to_node(r)
                 for r in rows
                 if _can_access_node(role, _row_to_node(r))
             ]
+            if req_scope == "sales" and role != "outsource_cs":
+                visible = [n for n in visible if n["scope"] in ("sales", "shared")]
+            elif req_scope == "cs":
+                visible = [n for n in visible if n["scope"] in ("cs", "shared")]
+            cov_entries = []
+            for n in visible:
+                ent = {
+                    "node_id": n["node_id"],
+                    "wiki_url": n["wiki_url"],
+                    "video_url": n["video_wiki_url"],
+                    "timecode": n["timecode"],
+                    "scope": n["scope"],
+                    "coverage_status": n["coverage_status"],
+                    "skill_name": n["skill_name"],
+                    "skill_status": n["skill_status"],
+                    "fallback_status": n["fallback_status"],
+                }
+                if n.get("source_wiki_url"):
+                    ent["render_project"] = {
+                        "source_url": n["source_wiki_url"],
+                        "revision": n.get("revision") or "sales-v6-20261124-r1",
+                        "human_review_status": n.get("human_review_status") or "pending",
+                    }
+                if isinstance(n.get("external_reference"), dict) and n["external_reference"].get("source_url"):
+                    ent["external_reference"] = n["external_reference"]
+                cov_entries.append(ent)
             return _json_resp(
                 200,
                 {
                     "ok": True,
                     "version": RELEASE_VERSION,
-                    "index_url": wiki_url("tutorial_index") or "待发布 Wiki 索引节点",
+                    "scope": req_scope,
+                    "index_url": wiki_url("tutorial_index"),
                     "required_nodes": [n["node_id"] for n in visible],
-                    "entries": [
-                        {
-                            "node_id": n["node_id"],
-                            "video_url": n["video_wiki_url"],
-                            "timecode": n["timecode"],
-                            "scope": n["scope"],
-                            "coverage_status": n["coverage_status"],
-                            "skill_name": n["skill_name"],
-                            "skill_status": n["skill_status"],
-                            "fallback_status": n["fallback_status"],
-                        }
-                        for n in visible
-                    ],
+                    "entries": cov_entries,
                     "summary": _build_summary(visible),
                 },
             )
@@ -1192,6 +1433,7 @@ def handle_tutorial_request(
             node_id = path[len("/api/tutorials/node/"):-len("/update")].strip("/")
             editable = {
                 "coverage_status",
+                "human_review_status",
                 "fallback_status",
                 "skill_status",
                 "video_wiki_url",
@@ -1213,7 +1455,7 @@ def handle_tutorial_request(
             now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             today = datetime.datetime.now().strftime("%Y-%m-%d")
             with DB_LOCK:
-                row = CONN.execute("SELECT * FROM tutorial_nodes WHERE node_id = ?", (node_id,)).fetchone()
+                row = CONN.execute(f"SELECT {_SELECT_COLS} FROM tutorial_nodes WHERE node_id = ?", (node_id,)).fetchone()
                 if not row:
                     return _json_resp(404, {"ok": False, "error": f"未找到节点 {node_id}"})
                 prev = _row_to_node(row)
@@ -1253,7 +1495,7 @@ def handle_tutorial_request(
                     ),
                 )
                 CONN.commit()
-                new_row = CONN.execute("SELECT * FROM tutorial_nodes WHERE node_id = ?", (node_id,)).fetchone()
+                new_row = CONN.execute(f"SELECT {_SELECT_COLS} FROM tutorial_nodes WHERE node_id = ?", (node_id,)).fetchone()
                 hist = CONN.execute(
                     "SELECT seq, node_id, created_at, actor, action, summary, before_status, after_status "
                     "FROM tutorial_history WHERE node_id = ? ORDER BY seq DESC LIMIT 20",

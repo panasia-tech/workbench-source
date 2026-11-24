@@ -314,7 +314,10 @@
     <div class="wide-drawer" style="max-width: 920px">
       <header class="wd-head">
         <div>
-          <span class="tag acc">分场景自动触发 · 解放人工重复发图</span>
+          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap">
+            <span class="tag acc">分场景自动触发 · 解放人工重复发图</span>
+            <Q k="auto_rules" label="自动发图说明" />
+          </div>
           <h2>🖼 场景自动发图规则配置（保修富阳管辖卡 + 退款3步UI图）</h2>
         </div>
         <button type="button" class="btn sm" @click="store.ui.autoRuleModalOpen = false">

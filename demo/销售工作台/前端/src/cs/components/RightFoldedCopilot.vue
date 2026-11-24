@@ -92,11 +92,19 @@
 
       <!-- 4. 409 红屏已紧急拦停 -->
       <div v-else-if="conv.stepState === 'INTERCEPTED_409'" class="guide-box warn">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 4px">
+          <span>🛑 <b>409 截单已生效</b></span>
+          <Q k="auto_refund" label="退款与409急停" />
+        </div>
         <p>🛑 <b>409 红屏急停已锁死打包台面单！</b>仓管无法出库，请引导买家申请退款选“不想要了/协商一致”。</p>
       </div>
 
       <!-- 5. 售后：已自动发出 3 步手机 UI 退款引导图 -->
       <div v-else-if="conv.stepState === 'REFUND_GUIDE_SENT'" class="guide-box">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 4px">
+          <span>📱 <b>0 秒退款 UI 指引</b></span>
+          <Q k="auto_refund" label="退款与409急停" />
+        </div>
         <p>
           已 0 秒自动发出<b>《手机UI三步选“不想要了/协商一致”引导图》</b>。买家照图修改提交后，系统将自动 0 秒全额退款。
         </p>
@@ -104,6 +112,10 @@
 
       <!-- 6. 售后：拣货中买家口头说想退（如 C5） -->
       <div v-else-if="conv.stepState === 'WAIT_BUYER_REFUND_CLICK'" class="guide-box warn">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 4px">
+          <span>⚠️ <b>WMS 拣货中急停守卫</b></span>
+          <Q k="auto_refund" label="退款与409急停" />
+        </div>
         <p>
           ⚠️ 该单已在仓管拣货（{{ conv.wmsWaveNo }}）！请先点<b>紧急拦截仓库面单</b>，等买家点申请退款会自动发引导图。
         </p>
@@ -344,6 +356,10 @@
       :chip="collabChipText"
       :chip-tone="collabChipTone"
     >
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 6px">
+        <span style="font-size: 11.5px; color: var(--mute)">60s 一键跨部门派单</span>
+        <Q k="collab_escalate" label="跨台呼救" />
+      </div>
       <!-- 当前活跃协同工单状态 -->
       <div v-if="conv.collabTicket" class="ticket-banner" :class="conv.collabTicket.status.toLowerCase()">
         <div>
@@ -414,7 +430,10 @@
       <!-- 内部兜底销售（陈小满 / 主管）排他接管与幕后锦囊区 -->
       <div class="internal-console">
         <div class="ic-head">
-          <b>🎯 内部销售【陈小满】协同台</b>
+          <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap">
+            <b>🎯 内部销售【陈小满】协同台</b>
+            <Q k="takeover_handoff" label="排他接管" />
+          </div>
           <button
             v-if="isOutsourceRole"
             type="button"

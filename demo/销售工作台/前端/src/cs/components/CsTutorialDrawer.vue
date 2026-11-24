@@ -21,7 +21,7 @@
             Wiki 节点索引 ↗
           </a>
           <a v-if="data.employeePdfUrl" :href="data.employeePdfUrl" target="_blank" rel="noreferrer" class="btn sm soft">
-            员工小动物 PDF ↗
+            员工操作手册 PDF ↗
           </a>
           <button type="button" class="btn sm" @click="load(true)">
             <Icon name="refresh" size="14" /> 刷新
@@ -35,7 +35,7 @@
       <div class="wd-body">
         <div class="rbac-banner">
           <span>
-            🔒 <b>岗位可见范围隔离：</b>当前仅展示「公司共用开场」+「外部客服 4 项核心节点」（共 {{ nodes.length }} 条），已从服务端物理过滤所有内部销售选品、洗价成本与主管专属节点。
+            🔒 <b>岗位可见范围隔离：</b>当前仅展示「公司共用开场」+「外部客服 7 个独立教程节点」（共 {{ nodes.length }} 条，均含 00:00 起播独立 1080p MP4、专属 Wiki 子页与渲染前源码，状态为「待人工复核」），已从服务端物理过滤所有内部选品与成本节点。
           </span>
         </div>
 
@@ -55,24 +55,33 @@
                   <span class="tag sm" :class="n.coverage_status === '可用' ? 'grn' : 'amb'">
                     {{ n.coverage_status }}
                   </span>
+                  <span v-if="n.review_status && n.review_status !== n.coverage_status" class="tag sm amb">{{ n.review_status }}</span>
                 </div>
                 <h3>{{ n.title }}</h3>
               </div>
               <div class="cnc-links">
-                <a v-if="n.video_wiki_url" :href="n.video_wiki_url" target="_blank" rel="noreferrer" class="btn sm pri">
-                  ▶ 通用视频（{{ n.timecode }}）↗
+                <a v-if="n.wiki_url" :href="n.wiki_url" target="_blank" rel="noreferrer" class="btn sm pri">
+                  📖 专属 Wiki 子页 ↗
                 </a>
-                <a v-if="n.manual_fallback_video" :href="n.manual_fallback_video" target="_blank" rel="noreferrer" class="btn sm soft">
-                  🎬 客服 V3 专项片 ↗
+                <a v-if="n.video_wiki_url" :href="n.video_wiki_url" target="_blank" rel="noreferrer" class="btn sm soft">
+                  ▶ 独立视频（{{ n.timecode }}）↗
                 </a>
-                <a v-if="n.wiki_url" :href="n.wiki_url" target="_blank" rel="noreferrer" class="btn sm">
-                  📖 怎么做（Wiki）↗
+                <a v-if="n.source_url" :href="n.source_url" target="_blank" rel="noreferrer" class="btn sm">
+                  🧩 可编辑源码 (.tar.gz) ↗
                 </a>
                 <a v-if="n.h5_url" :href="n.h5_url" target="_blank" rel="noreferrer" class="btn sm">
                   📄 双视角 H5 ↗
                 </a>
               </div>
             </header>
+
+            <video
+              v-if="n.local_video_url"
+              controls
+              preload="metadata"
+              class="cnc-local-video"
+              :src="n.local_video_url"
+            />
 
             <div class="cnc-meta">
               <span><b>负责主管：</b>{{ n.owner }}</span>
@@ -133,9 +142,12 @@ const data = reactive({
 });
 
 const CS_HELP_MAP = {
+  'CS-ONBOARD-01': 'learn',
   'CS-REALSHOT-01': 'chat',
-  'CS-WARRANTY-02': 'warranty_card',
+  'CS-WARRANTY-02': 'autoship',
   'CS-REFUND-409-03': 'auto_refund',
+  'CS-ESCALATE-05': 'collab_escalate',
+  'CS-TAKEOVER-06': 'takeover_handoff',
   'CS-GUARD-KPI-04': 'kpi',
   'SALES-SHARED-00': 'chat',
 };
@@ -293,5 +305,12 @@ watch(
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
+}
+.cnc-local-video {
+  width: 100%;
+  max-height: 220px;
+  border-radius: 10px;
+  background: #000;
+  border: 1px solid var(--line);
 }
 </style>
