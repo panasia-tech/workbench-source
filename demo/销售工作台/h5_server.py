@@ -7,6 +7,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 if HERE not in sys.path:
     sys.path.insert(0, HERE)
 import cs_api
+import tutorial_ledger_api
+import virt_intel_api
 ROOT = os.path.join(HERE, 'dist')
 BACKEND = f"http://127.0.0.1:{int(os.environ.get('STITCH_DEMO_PORT', '5342'))}"
 BOOKOFF_DB = os.path.join(HERE, ".demo-runtime", "bookoff-demo-sample.sqlite")
@@ -167,6 +169,9 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         return True
 
     def _handle_cs(self):
+        parsed_path = urllib.parse.unquote(urlparse(self.path).path)
+        if parsed_path != '/cs-build.txt' and not parsed_path.startswith('/api/cs/'):
+            return False
         n = int(self.headers.get('Content-Length') or 0)
         body = self.rfile.read(n) if n > 0 else b''
         res = cs_api.handle_cs_request(self.command, self.path, self.headers, body)
@@ -182,7 +187,49 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(raw)
         return True
 
+    def _handle_tutorials(self):
+        parsed_path = urllib.parse.unquote(urlparse(self.path).path)
+        if not parsed_path.startswith('/api/tutorials/'):
+            return False
+        n = int(self.headers.get('Content-Length') or 0)
+        body = self.rfile.read(n) if n > 0 else b''
+        res = tutorial_ledger_api.handle_tutorial_request(self.command, self.path, self.headers, body)
+        if res is None:
+            return False
+        code, ctype, raw = res
+        self.send_response(code)
+        self.send_header('Content-Type', ctype)
+        self.send_header('Content-Length', str(len(raw)))
+        self.send_header('Cache-Control', 'no-store')
+        self.end_headers()
+        if self.command != 'HEAD':
+            self.wfile.write(raw)
+        return True
+
+    def _handle_virt_intel(self):
+        parsed_path = urllib.parse.unquote(urlparse(self.path).path)
+        if not parsed_path.startswith('/api/virt-intel/'):
+            return False
+        n = int(self.headers.get('Content-Length') or 0)
+        body = self.rfile.read(n) if n > 0 else b''
+        res = virt_intel_api.handle_virt_intel_request(self.command, self.path, self.headers, body)
+        if res is None:
+            return False
+        code, ctype, raw = res
+        self.send_response(code)
+        self.send_header('Content-Type', ctype)
+        self.send_header('Content-Length', str(len(raw)))
+        self.send_header('Cache-Control', 'no-store')
+        self.end_headers()
+        if self.command != 'HEAD':
+            self.wfile.write(raw)
+        return True
+
     def do_GET(self):
+        if self._handle_virt_intel():
+            return
+        if self._handle_tutorials():
+            return
         if self._handle_cs():
             return
         if self.path.startswith('/api/bookoff/'):
@@ -212,6 +259,10 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         return super().do_HEAD()
 
     def do_POST(self):
+        if self._handle_virt_intel():
+            return
+        if self._handle_tutorials():
+            return
         if self._handle_cs():
             return
         if self.path.startswith('/api/'):
@@ -224,6 +275,10 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         self.send_error(405)
 
     def do_PATCH(self):
+        if self._handle_virt_intel():
+            return
+        if self._handle_tutorials():
+            return
         if self.path.startswith('/api/'):
             return self.proxy()
         self.send_error(405)

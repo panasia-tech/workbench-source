@@ -43,10 +43,41 @@ export const TERMS = {
 };
 
 export const WIKI_LINKS = {
-  ext_manual: { t: '《泛亚·外部协作者手册（响应时效与保密红线）》', ver: 'v1.2 现行制度', u: '' },
-  ui_charter: { t: '《泛亚工作台 UI 设计总纲领 v1.0（零培训与KPI五防）》', ver: '2026-11-14', u: 'https://alidocs.dingtalk.com/i/nodes/1OQX0akWmxAM02eyfNoOlbyn8GlDd3mE' },
-  handoff_sop: { t: '《07 采购、仓管与销售客服交接规则》', ver: '2026-11-07', u: '' },
-  no_close_order: { t: '《严禁主动关闭买家订单（鱼力值165事故复盘）》', ver: '红线通告', u: '' },
+  ext_manual: {
+    t: '《销售工作台（含外部客服 V3）｜业务说明与发布入口》',
+    ver: 'V6-20261124 定稿入口',
+    u: 'https://alidocs.dingtalk.com/i/nodes/y20BglGWO2ZB6yQRiDlD25R08A7depqY',
+  },
+  ui_charter: {
+    t: '《泛亚工作台 UI 设计总纲领 v1.1（纯桌面端与 KPI 五防）》',
+    ver: '2026-11-24 v1.1',
+    u: 'https://alidocs.dingtalk.com/i/nodes/1OQX0akWmxAM02eyfNoOlbyn8GlDd3mE',
+  },
+  handoff_sop: {
+    t: '《销售与合并外部客服 V3 全量规格与跨台交接契约》',
+    ver: 'V6 合入定稿',
+    u: 'https://alidocs.dingtalk.com/i/nodes/OG9lyrgJPzaqQx70uPBPb5E0WzN67Mw4',
+  },
+  no_close_order: {
+    t: '《严禁主动关闭买家订单（鱼力值 165 红线）与 409 急停规范》',
+    ver: 'AC-06 / 红线通告',
+    u: 'https://alidocs.dingtalk.com/i/nodes/OG9lyrgJPzaqQx70uPBPb5E0WzN67Mw4',
+  },
+  cs_video: {
+    t: '《外部客服 V3 子模块全流程专项讲解 MP4（720p · 57:58）》',
+    ver: '720p 专项片',
+    u: 'https://alidocs.dingtalk.com/i/nodes/P0MALyR8kl5DyXpYsMZd5O1vW3bzYmDO',
+  },
+  tutorial_index: {
+    t: '《销售（含外部客服）｜节点通用视频覆盖与原生教程台账索引》',
+    ver: 'V6-20261124',
+    u: 'https://alidocs.dingtalk.com/i/nodes/GZLxjv9VGqMl2mDpIqYNLrrO86EDybno',
+  },
+  employee_pdf: {
+    t: '《销售（含外部客服 V3）员工操作手册-可爱小动物风-V6.pdf》',
+    ver: '9 页图文 PDF',
+    u: 'https://alidocs.dingtalk.com/i/nodes/vNG4YZ7JnPBj0zyKToqMNz7qW2LD0oRE',
+  },
 };
 
 export const HELP = {
@@ -75,7 +106,7 @@ export const HELP = {
       viewer: '客服本人看个人达标进度；主管看全团排行与反作弊明细',
     },
     video: null,
-    wiki: ['ext_manual', 'ui_charter', 'no_close_order'],
+    wiki: ['ext_manual', 'tutorial_index', 'employee_pdf', 'ui_charter', 'no_close_order'],
   },
   copilot_card: {
     title: '右侧「当前步骤小卡片」与静默自动发货规则',

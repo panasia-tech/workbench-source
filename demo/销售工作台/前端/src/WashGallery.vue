@@ -2,25 +2,23 @@
   <div class="wg-page">
     <header class="wg-head">
       <div>
-        <div class="wg-eyebrow">全量历史库存清洗总台 · {{ counts.all || 260 }} 件真实在库 SKU / {{ counts.spu_total || 165 }} 个 SPU · 零主管审批直发</div>
         <h1>全量历史库存清洗 Gallery</h1>
-        <p class="wg-sub">
-          已全量挂载仓库清洗清单（{{ counts.all }} 件在库单品 / {{ counts.spu_total || spuGroups.length }} 个 SPU），支持按 SPU 归并洗价或单件挑图直发：
-        </p>
+        <p class="wg-sub">在库 {{ counts.all }} 件商品（{{ counts.spu_total || spuGroups.length }} 个 SPU），点选商品步入洗价与三栏选图直发。</p>
       </div>
       <div class="wg-tools">
+        <button class="btn" @click="showPipe = !showPipe">📖 {{ showPipe ? '收起流程说明' : '两步流程说明 ▾' }}</button>
         <label class="wg-search">
           <Icon name="search" />
           <input v-model="q" placeholder="搜品牌、型号、SPU码、货号…" @input="page = 1" />
         </label>
         <button class="btn" :disabled="loading" @click="load">
-          <Icon name="refresh" />{{ loading ? '读取中…' : '刷新全量库' }}
+          <Icon name="refresh" />{{ loading ? '读取中…' : '刷新' }}
         </button>
       </div>
     </header>
 
-    <!-- 流程总览 + SPU归并/单件视图切换 -->
-    <section class="wg-pipeline">
+    <!-- 流程总览（默认折叠，点上方按钮展开） -->
+    <section v-if="showPipe" class="wg-pipeline">
       <div class="wp-node on">
         <i>☷</i>
         <div>
@@ -287,6 +285,7 @@ const q = ref('')
 const page = ref(1)
 const loading = ref(false)
 const zoomImg = ref(null)
+const showPipe = ref(false)
 
 async function load() {
   loading.value = true
@@ -372,17 +371,17 @@ onMounted(load)
 </script>
 
 <style scoped>
-.wg-page { padding: 28px 34px 72px; max-width: 1680px; margin: 0 auto; }
-.wg-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
+.wg-page { padding: 12px 28px 56px; max-width: 1680px; margin: 0 auto; }
+.wg-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 14px; flex-wrap: wrap; }
 .wg-eyebrow { font-size: 13px; font-weight: 800; color: var(--acc); letter-spacing: .02em; }
-.wg-head h1 { font-size: 32px; font-weight: 900; letter-spacing: -.02em; margin: 4px 0 6px; }
-.wg-sub { color: var(--mute); font-size: 14.5px; margin: 0; }
-.wg-tools { display: flex; gap: 10px; align-items: center; }
-.wg-search { display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 12px; background: var(--panel); border: 1px solid var(--line); }
+.wg-head h1 { font-size: 25px; font-weight: 900; letter-spacing: -.02em; margin: 0 0 2px; }
+.wg-sub { color: var(--mute); font-size: 13px; margin: 0; }
+.wg-tools { display: flex; gap: 8px; align-items: center; }
+.wg-search { display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border-radius: 10px; background: var(--panel); border: 1px solid var(--line); }
 .wg-search svg { width: 16px; height: 16px; color: var(--mute); }
-.wg-search input { border: 0; background: none; outline: none; width: 230px; font-size: 14px; color: var(--ink); }
+.wg-search input { border: 0; background: none; outline: none; width: 210px; font-size: 13.5px; color: var(--ink); }
 
-.wg-pipeline { margin-top: 18px; padding: 14px 20px; border-radius: 18px; background: var(--panel); border: 1px solid var(--line); display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.wg-pipeline { margin-top: 12px; padding: 12px 16px; border-radius: 16px; background: var(--panel); border: 1px solid var(--line); display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
 .wp-node { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 220px; }
 .wp-node i { width: 32px; height: 32px; border-radius: 10px; background: var(--soft); color: var(--ink); font-style: normal; font-weight: 900; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .wp-node.on i { background: var(--acc); color: #fff; }
@@ -391,32 +390,32 @@ onMounted(load)
 .wp-node small { font-size: 12px; color: var(--mute); }
 .wp-arrow { color: var(--mute); font-weight: 800; font-size: 18px; }
 
-.wg-filter-deck { margin-top: 16px; padding: 14px 18px; border-radius: 18px; background: var(--panel); border: 1px solid var(--line); display: grid; gap: 12px; }
+.wg-filter-deck { margin-top: 8px; padding: 8px 14px; border-radius: 14px; background: var(--panel); border: 1px solid var(--line); display: grid; gap: 6px; }
 .wfd-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-.mode-seg { display: inline-flex; background: var(--soft); padding: 4px; border-radius: 12px; gap: 4px; }
-.mode-seg button { border: 0; background: transparent; padding: 7px 14px; border-radius: 9px; font-size: 13px; font-weight: 800; color: var(--mute); cursor: pointer; }
+.mode-seg { display: inline-flex; background: var(--soft); padding: 3px; border-radius: 10px; gap: 4px; }
+.mode-seg button { border: 0; background: transparent; padding: 5px 12px; border-radius: 8px; font-size: 12.5px; font-weight: 800; color: var(--mute); cursor: pointer; }
 .mode-seg button.on { background: var(--panel); color: var(--acc); box-shadow: 0 2px 6px rgba(15,23,42,.08); }
 
 .wg-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
-.wg-tabs button { height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); font-weight: 700; font-size: 13px; color: var(--ink); display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
-.wg-tabs button.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+.wg-tabs button { height: 32px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); font-weight: 700; font-size: 12.5px; color: var(--ink); display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+.wg-tabs button.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 .wg-tabs button b { font-size: 12px; opacity: .86; }
 .sdot { width: 8px; height: 8px; border-radius: 99px; }
 .sdot.amb { background: var(--amb); }
 .sdot.acc { background: var(--acc); }
 .sdot.grn { background: var(--grn); }
 
-.sub-filters { padding-top: 10px; border-top: 1px dashed var(--line); justify-content: flex-start; gap: 18px; }
+.sub-filters { padding-top: 6px; border-top: 1px dashed var(--line); justify-content: flex-start; gap: 14px; }
 .chip-group { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .cg-lbl { font-size: 12.5px; font-weight: 700; color: var(--mute); }
-.fchip { height: 30px; padding: 0 11px; border-radius: 8px; border: 1px solid var(--line); background: var(--soft); font-size: 12.5px; font-weight: 700; color: var(--ink); cursor: pointer; }
+.fchip { height: 28px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--soft); font-size: 12px; font-weight: 700; color: var(--ink); cursor: pointer; }
 .fchip.on { background: var(--acc-soft); border-color: var(--acc); color: var(--acc); }
 .fchip.red-chip.on { background: #fee2e2; border-color: #ef4444; color: #b91c1c; }
 .fchip.grn-chip.on { background: #dcfce7; border-color: #22c55e; color: #15803d; }
 .fchip.amb-chip.on { background: #fef3c7; border-color: #f59e0b; color: #b45309; }
-.cat-sel { height: 30px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); padding: 0 10px; font-size: 12.5px; font-weight: 700; }
+.cat-sel { height: 28px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); padding: 0 10px; font-size: 12px; font-weight: 700; color: var(--ink); }
 
-.wg-grid { margin-top: 18px; display: grid; grid-template-columns: repeat(auto-fill, minmax(335px, 1fr)); gap: 18px; }
+.wg-grid { margin-top: 12px; display: grid; grid-template-columns: repeat(auto-fill, minmax(335px, 1fr)); gap: 16px; }
 .wg-card { background: var(--panel); border-radius: 20px; border: 1.5px solid var(--line); overflow: hidden; display: flex; flex-direction: column; cursor: pointer; transition: transform .15s, box-shadow .15s, border-color .15s; }
 .wg-card:hover { transform: translateY(-3px); box-shadow: var(--sh-up); border-color: var(--acc); }
 .wg-card.step2_image { border-color: rgba(37, 99, 235, .42); }

@@ -15,10 +15,12 @@
 
     <header class="card hero-bar">
       <div>
-        <p class="eyebrow">IN-SALE SMART REPRICING · 市场快照建议 + 人工复核直发（零主管审批流）</p>
-        <h1>存量在售商品 · 智能调价与批量复核台</h1>
-        <p class="sub">{{ data.principle }}</p>
-        <p class="boundary-tip">💡 <b>AdsPower 网页版改价边界适配：</b>{{ data.web_boundary_note }}</p>
+        <div class="hero-top">
+          <h1>存量在售商品 · 智能调价与批量复核台</h1>
+          <button class="btn sm ghost" @click="showRule = !showRule">📖 改价原则与网页边界 {{ showRule ? '▴' : '▾' }}</button>
+        </div>
+        <p v-if="showRule" class="sub">{{ data.principle }}</p>
+        <p v-if="showRule" class="boundary-tip">💡 <b>AdsPower 网页版改价边界适配：</b>{{ data.web_boundary_note }}</p>
       </div>
     </header>
 
@@ -166,6 +168,7 @@ const data = reactive({ principle: '', web_boundary_note: '', counts: {}, items:
 const badges = reactive({})
 const flt = ref('pending')
 const busy = ref(false)
+const showRule = ref(false)
 const selectedIds = ref([])
 const draftPrices = reactive({})
 const reasons = reactive({})
@@ -260,8 +263,8 @@ onMounted(load)
 </script>
 
 <style scoped>
-.gc-page { padding: 24px 36px 80px; max-width: 1720px; display: grid; gap: 18px; }
-.gc-nav { display: flex; justify-content: space-between; align-items: center; gap: 14px; padding: 12px 18px; flex-wrap: wrap; }
+.gc-page { padding: 18px 32px 64px; max-width: 1720px; display: grid; gap: 12px; }
+.gc-nav { display: flex; justify-content: space-between; align-items: center; gap: 14px; padding: 10px 16px; flex-wrap: wrap; }
 .gn-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
 .gn-tab { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 999px; background: var(--soft); color: var(--ink2); font-weight: 700; font-size: 14px; }
 .gn-tab i { width: 22px; height: 22px; border-radius: 50%; background: var(--panel); display: inline-flex; align-items: center; justify-content: center; font-style: normal; font-size: 12px; font-weight: 800; }
@@ -270,16 +273,17 @@ onMounted(load)
 .nb { font-style: normal; padding: 1px 7px; border-radius: 999px; background: var(--red); color: #fff; font-size: 11.5px; font-weight: 800; }
 .nb.amb { background: var(--amb); color: #2c1d00; }
 
-.hero-bar { padding: 22px 26px; }
+.hero-bar { padding: 14px 20px; }
+.hero-top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .eyebrow { margin: 0; font-size: 12px; font-weight: 800; letter-spacing: .05em; color: var(--acc); }
-.hero-bar h1 { margin: 4px 0 6px; font-size: 28px; }
-.hero-bar .sub { margin: 0 0 8px; color: var(--ink2); font-size: 14px; line-height: 1.55; }
+.hero-bar h1 { margin: 0; font-size: 24px; }
+.hero-bar .sub { margin: 8px 0; color: var(--ink2); font-size: 13.5px; line-height: 1.5; }
 .boundary-tip { margin: 0; padding: 8px 13px; border-radius: 10px; background: var(--acc-soft); color: var(--ink); font-size: 13px; }
 
 .batch-bar { padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; }
 .seg { display: inline-flex; gap: 4px; padding: 4px; background: var(--soft); border-radius: 12px; flex-wrap: wrap; }
 .seg button { height: 32px; padding: 0 12px; border-radius: 9px; font-weight: 700; font-size: 13px; color: var(--ink2); }
-.seg button.on { background: var(--ink); color: #fff; }
+.seg button.on { background: var(--ink); color: var(--bg); }
 .batch-acts { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .sel-all { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--ink2); cursor: pointer; }
 

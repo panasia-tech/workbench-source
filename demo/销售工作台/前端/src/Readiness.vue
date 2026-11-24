@@ -2,7 +2,7 @@
   <div class="page rd">
     <header class="head">
       <div><p class="eyebrow">交付自检 · 禅道 62 条</p><h1>缺口闭环看板<Q k="rd-main" /></h1>
-        <p class="zen">禅道产品 3 现 <b>65 条</b>：62 条原有 + 3 条新草稿 <a href="https://erp.example.invalid/story-view-112.html" target="_blank">#112 步入式价格清洗</a> · <a href="https://erp.example.invalid/story-view-113.html" target="_blank">#113 BOOKOFF 类目映射</a> · <a href="https://erp.example.invalid/story-view-114.html" target="_blank">#114 爬取资产取舍</a>（草稿，等评审）。</p>
+        <p class="zen">禅道产品 3 现 <b>65 条</b>：62 条原有 + 3 条新草稿 <a href="https://zentao.panasia.fun/story-view-112.html" target="_blank">#112 步入式价格清洗</a> · <a href="https://zentao.panasia.fun/story-view-113.html" target="_blank">#113 BOOKOFF 类目映射</a> · <a href="https://zentao.panasia.fun/story-view-114.html" target="_blank">#114 爬取资产取舍</a>（草稿，等评审）。</p>
         <p class="sub">这是这次 UI 整改的验收入口：哪条已经在演示里闭环、哪条本来就覆盖、哪条归 ERP / 群控 / 仓管 / 钉钉 / 程序员。点「去看」直接到对应页面。演示闭环不等于生产完成，真数据接口在右侧写明。</p></div>
       <button class="btn" @click="exportCsv">导出清单 CSV</button>
     </header>
@@ -75,5 +75,5 @@ function exportCsv() {
 .zen { margin: 10px 0 0; padding: 9px 12px; border-radius: 10px; background: var(--amb-soft); color: var(--amb-ink); font-size: 12.5px; line-height: 1.7; } .prog { margin: 18px 0 10px; } .prog .bar { height: 16px; } .pl { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 8px; font-size: 13px; color: var(--ink2); } .pl i { margin-right: 5px; }
 .filters { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin: 10px 0 12px; } .filters button { height: 34px; padding: 0 14px; border-radius: 999px; background: var(--panel); box-shadow: var(--sh); font-weight: 700; font-size: 13px; display: inline-flex; gap: 6px; align-items: center; } .filters button.on { background: var(--ink); color: var(--bg); } .filters em { font-style: normal; font-size: 12px; opacity: .7; } .filters input { margin-left: auto; height: 36px; border: 1px solid var(--line); border-radius: 10px; padding: 0 12px; background: var(--panel); color: var(--ink); min-width: 200px; }
 .tblwrap { padding: 0; overflow-x: auto; } .tbl { min-width: 1080px; } .tbl td { vertical-align: top; } .tbl b { font-size: 13.5px; } .ms { color: var(--mute); font-size: 12.5px; max-width: 520px; } .ac { white-space: nowrap; }
-.notes { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px; } @media (max-width: 1000px) { .notes { grid-template-columns: 1fr; } } .notes h4 { margin: 0 0 6px; font-size: 15px; } .notes p { font-size: 13px; line-height: 1.7; }
+.notes { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px; } .notes h4 { margin: 0 0 6px; font-size: 15px; } .notes p { font-size: 13px; line-height: 1.7; }
 </style>

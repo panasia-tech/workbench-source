@@ -218,9 +218,6 @@ watch(() => props.code, load)
 .act-row { display: flex; gap: 10px; flex-wrap: wrap; }
 
 .two-step-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-@media (max-width: 960px) {
-  .two-step-cards { grid-template-columns: 1fr; }
-}
 .step-card { background: var(--soft); border: 2px solid var(--line); border-radius: 20px; padding: 20px 22px; display: flex; flex-direction: column; gap: 12px; }
 .step-card.active { background: #f8fbff; border-color: #60a5fa; box-shadow: 0 8px 24px rgba(37,99,235,.08); }
 .step-card.done { background: #f4fdf8; border-color: #86efac; }

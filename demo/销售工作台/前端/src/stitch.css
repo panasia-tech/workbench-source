@@ -25,7 +25,7 @@
   --sh-up: 0 8px 24px rgba(23, 35, 59, .14);
   --font: Inter, "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, sans-serif;
 }
-body { font-variant-numeric: tabular-nums; }
+body { font-variant-numeric: tabular-nums; min-width: 1200px; }
 :where(button, a, input, select, textarea, summary, [tabindex]):focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
 button, a { -webkit-tap-highlight-color: transparent; }
 .btn { border: 1px solid var(--line); border-radius: 7px; background: var(--panel); }
@@ -67,7 +67,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .pop .di { white-space: nowrap; }
 .main { overflow-y: auto; overflow-x: hidden; min-width: 0; min-height: 0; }
 .main.main-cs-flush { overflow: hidden; height: 100%; padding: 0; }
-.cs-sandbox-shell { width: 100%; height: 100dvh; overflow: hidden; }
+.cs-sandbox-shell { width: 100%; min-width: 1200px; height: 100dvh; overflow: hidden; }
 .main > :is(.page, .gal, .dpage) { margin: 0 auto; }
 .main > :is(.page, .gal, .dpage) > .head { gap: 12px; }
 .main > :is(.page, .gal, .dpage) > .head h1 { font-size: clamp(25px, 2.3vw, 32px); letter-spacing: -.02em; line-height: 1.25; font-weight: 650; }
@@ -142,35 +142,6 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .clean-list { padding-left: 16px; }
 .clean-proof > div { padding: 16px; }
 .clean-proof pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 13px; }
-@media (max-width: 1140px) {
-  .today-layout { grid-template-columns: minmax(0, 1fr); grid-template-areas: "queue" "aside"; }
-  .work-today .today-aside .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-@media (max-width: 820px) {
-  .shell { display: block; height: auto; min-height: 100dvh; }
-  .dock, .desktop-label { display: none; }
-  .workspace { display: block; }
-  .topbar { height: 53px; position: sticky; top: 0; padding: 0 13px; gap: 8px; }
-  .toptools { gap: 5px; }
-  .topsearch, .account { min-height: 44px; gap: 4px; padding: 2px 4px; }
-  .main { padding-bottom: calc(58px + env(safe-area-inset-bottom)); overflow: clip; }
-  .main > :is(.page,.gal,.dpage) { padding-bottom: 32px !important; }
-  .mbdock { box-shadow: none; }
-  .mdi { min-height: 44px; border-radius: 7px; }
-  .finder { margin: auto 0 0; width: 100%; max-width: none; border-radius: 12px 12px 0 0; max-height: 82dvh; }
-  .finder .di, .main .btn.sm { min-height: 36px; }
-  .main :is(.card, .gc, .oc) { border-radius: 12px !important; }
-  .main :is(.tblwrap, .tbl-wrap, .bystaff) { max-width: 100%; overflow-x: auto; }
-  .work-today .task-summary { padding: 7px; gap: 4px; }
-  .task-summary > span { flex: 1 0 100%; }
-  .work-today .today-aside .cards { grid-template-columns: 1fr; }
-  .work-today .today-queue .tr .mid { order: 2 !important; }
-  .work-today .today-queue .tr .act { order: 3 !important; }
-  .clean-layout { grid-template-columns: minmax(0, 1fr); }
-  .clean-steps { display: flex; overflow-x: auto; }
-  .clean-steps li { white-space: nowrap; }
-  .toast { bottom: calc(69px + env(safe-area-inset-bottom)); width: max-content; max-width: calc(100% - 26px); }
-}
 
 /* Product and conversation layouts from the Stitch reference frames. */
 .gal { padding: 24px 25px 56px; }
@@ -203,70 +174,9 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .cs .g3 { grid-template-columns: minmax(230px, .85fr) minmax(340px, 1.65fr) minmax(230px, .9fr); }
   .cs .g3 > .rp { grid-column: auto; }
 }
-@media (max-width: 820px) {
-  .gal { padding: 16px; }
-  .gal .tools { width: 100%; gap: 6px; }
-  .gal .search { flex-basis: calc(100% - 32px); width: auto; }
-  .gal .search input { min-width: 0; }
-  .gal .bar2 .seg { flex-wrap: wrap; }
-  .gal .seg button { padding: 0 8px; }
-  .gal .grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 10px !important; }
-  .gal .gc .kind { top: auto; bottom: 7px; right: 6px; height: 20px; padding: 0 5px; font-size: 10px; }
-  .gal .gc .srcb { bottom: 7px; left: 6px; height: 20px; padding: 0 5px; font-size: 10px; }
-  .gal .gc .body { padding: 8px; }
-  .gal .gc .body h3 { font-size: 13px; }
-  .gal .gc .img .noimg { padding: 15px 6px; }
-  .gal .gc .img .noimg span { font-size: 10px; }
-  .gal .gc .img .noimg b { font-size: 15px; }
-  .gal .gc .m { flex-wrap: wrap; gap: 3px; }
-  .sg .dict, .man .tag { max-width: 100%; height: auto; min-height: 24px; white-space: normal; overflow-wrap: anywhere; }
-  .iq .cols, .personal .cols { grid-template-columns: minmax(0, 1fr) !important; }
-  .main :is(.iq,.pg,.personal) .tblwrap { min-width: 0; }
-  .main :is(.iq,.pg,.personal) .card { min-width: 0; }
-  .iq .dh { flex-wrap: wrap; }
-  .cs .cs-q { max-height: 360px; position: static; }
-  .cs .rp { min-width: 0; }
-  .cs .th { min-height: 0; }
-  .cs .g3 > .card.th { padding: 0 !important; }
-  .cs .bystaff table { min-width: 520px; }
-}
 
 .main .gal .gc.red, .main .gal .gc.amb, .main .gal .gc.red:hover { box-shadow: var(--sh); }
 .main .gal .seg button.on { background: var(--acc-soft); color: var(--acc); }
 .main .gal .gc .noimg { background: var(--soft); }
 .work-today .today-aside .big { font-size: 30px; }
 .work-today .today-aside .picks.todo { border: 1px solid var(--line); }
-@media (max-width: 820px) {
-  .main .gal { padding-inline: 16px; }
-  .main .gal .bar2 { margin-top: 13px; gap: 6px; }
-  .main .gal .bar2 .seg { width: max-content; max-width: 100%; }
-  .main .gal .tools { row-gap: 6px; }
-  .main .gal .sum .big { padding: 4px 6px; }
-  .work-today .today-queue .tr { display: grid; grid-template-columns: 12px minmax(0, 1fr) auto; gap: 7px !important; }
-  .work-today .today-queue .tr .ic { width: 12px !important; height: 20px !important; font-size: 14px; align-self: start; }
-  .work-today .today-queue .tr .mid { grid-column: 2; width: auto !important; }
-  .work-today .today-queue .tr .th { grid-row: 1; grid-column: 3; width: 40px !important; height: 40px !important; align-self: start; }
-  .work-today .today-queue .tr .th.ph { display: none; }
-  .work-today .today-queue .tr .act { grid-column: 2 / -1; margin-left: 0 !important; justify-content: flex-end; }
-  .work-today .today-queue .tr .line { gap: 4px; }
-  .work-today .today-queue .tr .line h3 { flex-basis: 100%; }
-}
-
-@media (max-width: 820px) {
-  .dpage .secs { grid-template-columns: minmax(0, 1fr) !important; }
-  .dpage .secs > *, .dpage .hero > *, .dpage .fb, .dpage .cs-l { min-width: 0; }
-  .dpage .tblwrap, .dpage .rail, .dpage .steps { max-width: 100%; overflow-x: auto; }
-  .dpage .fh { flex-wrap: wrap; gap: 7px; padding: 11px 12px; }
-  .dpage .fh .chips { order: 3; flex-basis: 100%; }
-  .dpage .fh .tg { margin-left: auto; }
-  .dpage .chip { white-space: normal; }
-  .dpage .dbar { flex-wrap: wrap; }
-  .dpage .dbar .crumb { overflow-wrap: anywhere; }
-  .dpage .issuebox li a { white-space: normal; flex: none; }
-  .dpage .curstep { flex-wrap: wrap; }
-  .dpage .flow4 { flex-wrap: wrap; }
-}
-
-@media (max-width: 820px) {
-  .dpage .sf .tag { max-width: 100%; height: auto; min-height: 24px; white-space: normal; overflow-wrap: anywhere; }
-}

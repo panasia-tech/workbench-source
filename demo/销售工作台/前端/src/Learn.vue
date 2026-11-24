@@ -23,8 +23,20 @@
       </div>
     </section>
 
-    <section class="card wiki"><h3>钉钉 Wiki / 公司网盘</h3><p class="muted">每个功能页右上角的「怎么用」会带你到对应的说明和视频。<b>Wiki 说明节点：待补</b>（还没有已发布的持久链接，不编造）。视频现在是本机外接盘里的文件；业务传到网盘后，在这里配置链接即可。</p>
-      <button class="btn" @click="again">一键从头再学（只重置学习进度）</button><p class="muted" style="margin-top: 6px">真实任务、库存、订单、审批、提成都不会动。</p></section>
+    <section class="card wiki">
+      <h3>钉钉 Wiki 与原生「教程与视频台账」</h3>
+      <p class="muted">每个业务页面右上角「？」直达本节点通用视频章节、Codex/Skill 指引与人工兜底入口。合并后的外部客服在销售工作台内保留独立岗位视图。</p>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0">
+        <button class="btn pri" @click="goTutorials">打开原生「教程与视频台账」（20 节点全清单）›</button>
+        <a :href="WIKI.sales_home.u" target="_blank" rel="noopener" class="btn">销售工作台 Wiki 首页 ↗</a>
+        <a :href="WIKI.sales_h5.u" target="_blank" rel="noopener" class="btn">同版双视角需求 H5 ↗</a>
+        <a :href="WIKI.main_video.u" target="_blank" rel="noopener" class="btn">全量业务主讲视频（57:33）↗</a>
+        <a :href="WIKI.cs_video.u" target="_blank" rel="noopener" class="btn">外部客服 V3 专项视频 ↗</a>
+        <a v-if="WIKI.employee_pdf.u" :href="WIKI.employee_pdf.u" target="_blank" rel="noopener" class="btn">员工小动物操作 PDF ↗</a>
+        <button class="btn" @click="again">一键从头再学（只重置学习进度）</button>
+      </div>
+      <p class="muted" style="margin-top: 6px">真实任务、库存、订单、审批、提成都不会动。</p>
+    </section>
   </div>
 </template>
 <script setup>
@@ -34,6 +46,7 @@ import Icon from './Icon.vue'
 import { state, loadAll } from './store.js'
 import { ui, openHelp, openVideo, toast } from './ui.js'
 import { VIDEOS, FULL } from './help.js'
+import { WIKI } from './wiki.js'
 import { post } from './api.js'
 
 const me = computed(() => state.me || { practice: {}, watched: [], practice_done: true, dept: '', post: '' })
@@ -49,12 +62,13 @@ const SERIES = [
 ]
 const seen = (k, i) => (me.value.watched || []).includes(k + '-' + i) || (me.value.watched || []).includes(String(Number(k) / 10 - 2) + '-' + i)
 const play = (v, key) => openVideo({ ...v, key })
+const goTutorials = () => { location.hash = '#/tutorials' }
 async function again() { await post('/demo/learning/reset'); await loadAll(true); toast('学习进度已重置；真实业务没有动') }
 </script>
 <style scoped>
 .page { padding: 34px 44px 80px; max-width: 1400px; } .head { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; } .acts svg { width: 18px; height: 18px; }
 .eyebrow { color: var(--acc); font-weight: 700; font-size: 14px; } h1 { font-size: 38px; font-weight: 800; letter-spacing: -.02em; } .sub { color: var(--mute); margin-top: 8px; max-width: 720px; }
-.prac { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin: 28px 0; } @media (max-width: 1100px) { .prac { grid-template-columns: 1fr; } }
+.prac { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin: 28px 0; }
 .ph { display: flex; justify-content: space-between; } .pc h3 { font-size: 19px; margin: 12px 0 6px; line-height: 1.35; }
 .series { margin-top: 34px; } .series h2 { display: flex; gap: 12px; align-items: center; font-size: 22px; } .clips { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin-top: 14px; }
 .clip { display: flex; align-items: center; gap: 12px; text-align: left; padding: 14px 16px; background: var(--panel); border-radius: 18px; box-shadow: var(--sh); transition: transform .12s; } .clip:hover { transform: translateY(-2px); } .clip svg { width: 28px; height: 28px; color: var(--acc); flex: none; }

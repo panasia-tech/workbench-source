@@ -21,9 +21,11 @@
 
     <header class="card hero-bar">
       <div>
-        <p class="eyebrow">DAILY 15:30 SHOP METRICS · 原图留存 + 异常标红 + ERP 智能体直查</p>
-        <h1>闲鱼小铺每日经营数据总览 &amp; 异常诊断台</h1>
-        <p class="sub">{{ data.schedule_rule }}</p>
+        <div class="hero-top">
+          <h1>闲鱼小铺每日经营数据总览 &amp; 异常诊断台</h1>
+          <button class="btn sm ghost" @click="showRule = !showRule">📖 抓取口径说明 {{ showRule ? '▴' : '▾' }}</button>
+        </div>
+        <p v-if="showRule" class="sub">{{ data.schedule_rule }}</p>
       </div>
     </header>
 
@@ -240,6 +242,7 @@ const data = reactive({ schedule_rule: '', summary: {}, traffic_sources: [], ale
 const badges = reactive({})
 const reportOpen = ref(false)
 const busy = ref(false)
+const showRule = ref(false)
 const shotAccount = ref(null)
 
 const PRESET_QS = [
@@ -307,8 +310,8 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.gc-page { padding: 24px 36px 80px; max-width: 1720px; display: grid; gap: 18px; }
-.gc-nav { display: flex; justify-content: space-between; align-items: center; gap: 14px; padding: 12px 18px; flex-wrap: wrap; }
+.gc-page { padding: 18px 32px 64px; max-width: 1720px; display: grid; gap: 12px; }
+.gc-nav { display: flex; justify-content: space-between; align-items: center; gap: 14px; padding: 10px 16px; flex-wrap: wrap; }
 .gn-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
 .gn-tab { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 999px; background: var(--soft); color: var(--ink2); font-weight: 700; font-size: 14px; }
 .gn-tab i { width: 22px; height: 22px; border-radius: 50%; background: var(--panel); display: inline-flex; align-items: center; justify-content: center; font-style: normal; font-size: 12px; font-weight: 800; }
@@ -319,12 +322,13 @@ onMounted(async () => {
 .nb.amb { background: var(--amb); color: #2c1d00; }
 .seg { display: inline-flex; gap: 4px; padding: 4px; background: var(--soft); border-radius: 12px; }
 .seg button { height: 32px; padding: 0 12px; border-radius: 9px; font-weight: 700; font-size: 13px; color: var(--ink2); }
-.seg button.on { background: var(--ink); color: #fff; }
+.seg button.on { background: var(--ink); color: var(--bg); }
 
-.hero-bar { padding: 22px 26px; }
+.hero-bar { padding: 14px 20px; }
+.hero-top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .eyebrow { margin: 0; font-size: 12px; font-weight: 800; letter-spacing: .05em; color: var(--acc); }
-.hero-bar h1 { margin: 4px 0 6px; font-size: 28px; }
-.hero-bar .sub { margin: 0; color: var(--mute); font-size: 13.5px; }
+.hero-bar h1 { margin: 0; font-size: 24px; }
+.hero-bar .sub { margin: 6px 0 0; color: var(--mute); font-size: 13px; }
 
 .md-report { padding: 18px 22px; display: grid; gap: 10px; background: #0f172a; color: #e2e8f0; }
 .mr-head { display: flex; justify-content: space-between; align-items: center; }
@@ -340,11 +344,9 @@ onMounted(async () => {
 .al-card p { margin: 0; font-size: 13px; line-height: 1.45; }
 
 .ovw-two { display: grid; grid-template-columns: 1.25fr 1fr; gap: 18px; }
-@media (max-width: 1150px) { .ovw-two { grid-template-columns: 1fr; } }
 .kpi-matrix, .funnel-box, .agent-qa, .tbl-sec { padding: 22px 26px; display: grid; gap: 14px; }
 .kpi-matrix h3, .funnel-box h3, .agent-qa h3 { margin: 0; font-size: 18px; }
 .km-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
-@media (max-width: 900px) { .km-grid { grid-template-columns: repeat(2, 1fr); } }
 .km-grid > div { padding: 12px 14px; border-radius: 14px; background: var(--soft); }
 .km-grid span { display: block; font-size: 12px; color: var(--mute); }
 .km-grid b { font-size: 22px; font-weight: 800; letter-spacing: -.02em; }

@@ -2,7 +2,7 @@
   <div class="page cr">
     <header class="head">
       <div><p class="eyebrow">客户资源（简单概述）</p><h1>群 / 渠道统筹<Q k="crm-main" /></h1>
-        <p class="sub"><button class="btn sm" @click="goCycles">浙江餐饮 / 新品牌研究 ›</button> 哪个群、哪个渠道对应哪个产品，一眼看清：这个是星巴克，那个是肯德基，这个是三角洲服务。<b>这里只是概述</b>，完整的客户资源管理（买家、群聊、供货关系）以后用专门的 SaaS；现在先把「谁对应哪个产品、到了哪一步」统起来。</p></div>
+        <p class="sub"><button class="btn sm" @click="goCycles">浙江餐饮 / 新品牌研究 ›</button> <button class="btn sm pri" @click="goVirtChannels">授权群每小时增量游标与情报挂载 ›</button> 哪个群、哪个渠道对应哪个产品，一眼看清。<b>这里只是概述</b>，完整的客户资源管理（买家、群聊、供货关系）以后用专门的 SaaS；现在先把「谁对应哪个产品、到了哪一步」统起来。</p></div>
       <button class="btn pri" @click="openAdd()">+ 登记一个群 / 渠道</button>
     </header>
 
@@ -63,6 +63,7 @@ const tree = computed(() => { const m = new Map(); for (const p of d.value.produ
 const next = (g) => d.value.states[d.value.states.indexOf(g.state) + 1] || ''
 const needNote = (g) => ['已核验', '已合作'].includes(next(g))
 const goCycles = () => { location.hash = '#/cycles' }
+const goVirtChannels = () => { location.hash = '#/virt-intel?tab=channels' }
 const extra = (g) => finalDb.crm[g.id] || {}
 const openAdd = (pid = '') => { add.value = { pid, role: '', name: '', platform: '', size: '', owner: '', note: '', quote: '', currency: 'CNY', valid: '', primary: '', leadTime: '', quota: '', qualify: '', trial: '' }; err.value = '' }
 async function save() { err.value = ''; try { const g = await post('/demo/crm/groups', add.value); if (g && g.id) finalDb.crm[g.id] = { quote: add.value.quote, currency: add.value.currency, valid: add.value.valid, primary: add.value.primary, leadTime: add.value.leadTime, quota: add.value.quota, qualify: add.value.qualify, trial: add.value.trial }; add.value = null; await load(); toast('已登记，供货条款一起存了（演示）') } catch (e) { err.value = e.message } }

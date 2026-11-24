@@ -16,9 +16,11 @@
 
     <header class="card hero-bar">
       <div>
-        <p class="eyebrow">ADSPOWER BROWSER MATRIX · 全浏览器执行端（已全面弃用安卓手机真机）</p>
-        <h1>AdsPower 环境 × 闲鱼店铺矩阵对账台</h1>
-        <p class="sub">{{ data.architecture_note || 'Local API (127.0.0.1:50325) + Playwright CDP 接管 + 一窗一号一独享家宽 IP + 免明文密码/动态码托管' }}</p>
+        <div class="hero-top">
+          <h1>AdsPower 环境 × 闲鱼店铺矩阵对账台</h1>
+          <button class="btn sm ghost" @click="showRule = !showRule">📖 架构说明 {{ showRule ? '▴' : '▾' }}</button>
+        </div>
+        <p v-if="showRule" class="sub">{{ data.architecture_note || 'Local API (127.0.0.1:50325) + Playwright CDP 接管 + 一窗一号一独享家宽 IP + 免明文密码/动态码托管' }}</p>
       </div>
       <div class="totp-pop" v-if="totpBox">
         <span class="tp-lbl">🔑 {{ totpBox.shop_nick }} (#{{ totpBox.env_id }}) 实时动态码</span>
@@ -181,6 +183,7 @@ const data = reactive({ architecture_note: '', workstations: [], summary: {}, it
 const badges = reactive({})
 const flt = ref('all')
 const busy = ref(false)
+const showRule = ref(false)
 const totpBox = ref(null)
 const drawerEnv = ref(null)
 
@@ -296,8 +299,8 @@ onMounted(load)
 </script>
 
 <style scoped>
-.gc-page { padding: 24px 36px 80px; max-width: 1720px; display: grid; gap: 18px; }
-.gc-nav { display: flex; justify-content: space-between; align-items: center; gap: 14px; padding: 12px 18px; flex-wrap: wrap; }
+.gc-page { padding: 18px 32px 64px; max-width: 1720px; display: grid; gap: 12px; }
+.gc-nav { display: flex; justify-content: space-between; align-items: center; gap: 14px; padding: 10px 16px; flex-wrap: wrap; }
 .gn-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
 .gn-tab { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 999px; background: var(--soft); color: var(--ink2); font-weight: 700; font-size: 14px; }
 .gn-tab i { width: 22px; height: 22px; border-radius: 50%; background: var(--panel); display: inline-flex; align-items: center; justify-content: center; font-style: normal; font-size: 12px; font-weight: 800; }
@@ -307,10 +310,11 @@ onMounted(load)
 .nb { font-style: normal; padding: 1px 7px; border-radius: 999px; background: var(--red); color: #fff; font-size: 11.5px; font-weight: 800; }
 .nb.amb { background: var(--amb); color: #2c1d00; }
 
-.hero-bar { padding: 22px 26px; display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
+.hero-bar { padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+.hero-top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .eyebrow { margin: 0; font-size: 12px; font-weight: 800; letter-spacing: .05em; color: var(--acc); }
-.hero-bar h1 { margin: 4px 0 6px; font-size: 28px; }
-.hero-bar .sub { margin: 0; color: var(--mute); font-size: 13.5px; max-width: 900px; }
+.hero-bar h1 { margin: 0; font-size: 24px; }
+.hero-bar .sub { margin: 6px 0 0; color: var(--mute); font-size: 13px; max-width: 900px; }
 
 .totp-pop { padding: 12px 18px; border-radius: 16px; background: #0f172a; color: #fff; display: grid; gap: 4px; min-width: 280px; }
 .tp-lbl { font-size: 12px; color: #93c5fd; font-weight: 700; }
@@ -319,13 +323,11 @@ onMounted(load)
 .totp-pop small { font-size: 11.5px; color: #94a3b8; }
 
 .host-kpi-row { display: grid; grid-template-columns: 310px 310px 1fr; gap: 14px; }
-@media (max-width: 1260px) { .host-kpi-row { grid-template-columns: 1fr; } }
 .ws-card { padding: 16px 18px; display: grid; gap: 6px; font-size: 13px; }
 .ws-top { display: flex; justify-content: space-between; align-items: center; }
 .ws-card p { margin: 0; color: var(--ink2); }
 .ws-card p span { color: var(--mute); }
 .kpi-strip { padding: 16px 22px; display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; align-items: center; }
-@media (max-width: 900px) { .kpi-strip { grid-template-columns: repeat(3, 1fr); } }
 .kpi-strip span { display: block; font-size: 12px; color: var(--mute); }
 .kpi-strip b { font-size: 26px; font-weight: 800; letter-spacing: -.02em; }
 .kpi-strip b.grn { color: var(--grn); }
@@ -340,7 +342,6 @@ onMounted(load)
 .seg button.on { background: var(--ink); color: var(--bg); }
 
 .env-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(500px, 1fr)); gap: 18px; }
-@media (max-width: 600px) { .env-grid { grid-template-columns: 1fr; } }
 .env-card { padding: 20px 22px; display: grid; gap: 13px; }
 .env-card.red { box-shadow: 0 0 0 2.5px var(--red), var(--sh); }
 .env-card.amb { box-shadow: 0 0 0 2px #f6cf72, var(--sh); }
@@ -363,7 +364,6 @@ onMounted(load)
 .ec-ok { padding: 8px 12px; border-radius: 10px; background: var(--grn-soft); color: var(--grn-ink); font-size: 13px; font-weight: 600; }
 
 .quota-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-@media (max-width: 640px) { .quota-grid { grid-template-columns: 1fr; } }
 .q-box { padding: 10px 12px; border-radius: 12px; background: var(--soft); display: grid; gap: 5px; }
 .qh { display: flex; justify-content: space-between; font-size: 12px; }
 .qh span { color: var(--mute); }

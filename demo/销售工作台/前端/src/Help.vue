@@ -15,8 +15,34 @@
           <p class="sm">给你的话：{{ g.tip }}</p><p class="sm">恢复：{{ g.recover }}　接手：{{ g.owner }}　证据：{{ g.evidence }}</p>
         </div>
       </div>
-      <h4>教程</h4>
-      <div class="vid"><button v-if="h.video" class="btn pri" @click="play(h.video)"><Icon name="play" />看这一步的小视频</button><span v-else class="tag amb">这一步的视频还没录：按上面的步骤录，录好放网盘，在这里配置链接</span><button v-if="!isSvc" class="btn" @click="play(FULL.new)">看完整版（虚拟产品体系）</button></div>
+      <h4>原生教程台账 · 当前节点直达</h4>
+      <div v-if="ledgerNode" class="ledger-box">
+        <div class="lb-head">
+          <code>{{ ledgerNode.node_id }}</code>
+          <span class="tag" :class="ledgerNode.coverage_status === '可用' ? 'grn' : 'amb'">{{ ledgerNode.coverage_status }}</span>
+          <span class="tag">{{ ledgerNode.skill_status }} · {{ ledgerNode.skill_name }}</span>
+        </div>
+        <p class="sm" style="margin: 6px 0">{{ ledgerNode.title }}</p>
+        <div class="vid">
+          <a v-if="ledgerNode.wiki_url" :href="ledgerNode.wiki_url" target="_blank" rel="noopener" class="btn sm pri">怎么做（Wiki）↗</a>
+          <a v-if="ledgerNode.video_wiki_url" :href="ledgerNode.video_wiki_url" target="_blank" rel="noopener" class="btn sm">通用讲解（{{ ledgerNode.timecode }}）↗</a>
+          <a v-if="ledgerNode.h5_url" :href="ledgerNode.h5_url" target="_blank" rel="noopener" class="btn sm">双视角 H5 ↗</a>
+          <a v-if="ledgerNode.pdf_url" :href="ledgerNode.pdf_url" target="_blank" rel="noopener" class="btn sm">员工 PDF ↗</a>
+          <a v-if="ledgerNode.manual_fallback_doc" :href="ledgerNode.manual_fallback_doc" target="_blank" rel="noopener" class="btn sm">人工兜底说明 ↗</a>
+          <button class="btn sm" @click="toLedger(ledgerNode.node_id)">在教程台账打开 ›</button>
+        </div>
+        <p class="sm" style="margin-top: 6px; color: var(--mute)">
+          <b>Codex 交办：</b>{{ ledgerNode.codex_prompt_hint }}
+        </p>
+        <p class="sm" style="margin-top: 4px; color: var(--mute)">
+          <b>停手转人工：</b>{{ ledgerNode.manual_trigger }}
+        </p>
+      </div>
+      <div class="vid" style="margin-top: 10px">
+        <button v-if="h.video" class="btn" @click="play(h.video)"><Icon name="play" />本地章节试看：{{ h.video.title }}</button>
+        <button v-if="!isSvc" class="btn" @click="play(FULL.new)">虚拟产品体系片（旧版）</button>
+        <button class="btn" @click="toLedger(ledgerNode?.node_id)">打开全量「教程与视频台账」›</button>
+      </div>
       <h4>公司制度（跳到 Wiki 看解读）</h4>
       <div class="wk"><template v-for="k in wikiKeys" :key="k"><a v-if="WIKI[k].u" :href="WIKI[k].u" target="_blank" rel="noopener" class="btn sm">{{ WIKI[k].t }} ↗</a><span v-else class="tag">{{ WIKI[k].t }}：Wiki 节点待补</span></template></div>
       <p class="muted" style="margin-top: 8px">这里只讲怎么操作；制度怎么解读以 Wiki 为准。<a @click="toManual">打开完整说明书 ›</a></p>
@@ -26,7 +52,7 @@
   </div>
 </template>
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import Icon from './Icon.vue'
 import { ui, toast, openVideo } from './ui.js'
 import { HELP, FULL } from './help.js'
@@ -36,10 +62,25 @@ import { TOUR_OF_HELP, tourPos } from './tour.js'
 import { post } from './api.js'
 import { loadAll } from './store.js'
 const h = computed(() => HELP[ui.help])
+const ledgerNode = ref(null)
+watch(
+  () => ui.help,
+  async (key) => {
+    ledgerNode.value = null
+    if (!key) return
+    try {
+      const actor = localStorage.getItem('erp_user') || 'chenxm'
+      const r = await fetch(`/api/tutorials/by-help/${encodeURIComponent(key)}?actor=${encodeURIComponent(actor)}`)
+      const d = await r.json()
+      if (r.ok && d.ok) ledgerNode.value = d.node
+    } catch { /* 静默回退到本地帮助 */ }
+  },
+)
 const close = () => (ui.help = null)
 const isSvc = computed(() => String(ui.help || '').startsWith('svc-'))
-const wikiKeys = computed(() => (h.value?.wiki?.length ? h.value.wiki : ['entry', 'rules']))
+const wikiKeys = computed(() => (h.value?.wiki?.length ? h.value.wiki : ['sales_home', 'sales_spec', 'dev_norm']).filter((k) => WIKI[k]))
 const toManual = () => { const k = ui.help; ui.help = null; location.hash = '#/manual?k=' + encodeURIComponent(k) }
+const toLedger = (nid) => { ui.help = null; location.hash = nid ? '#/tutorials?node=' + encodeURIComponent(nid) : '#/tutorials' }
 const tourPage = computed(() => TOUR_OF_HELP[ui.help])
 const pos = computed(() => (tourPage.value ? tourPos(tourPage.value) : 0))
 function startT(i) { const page = tourPage.value; ui.help = null; ui.tour = { page, i } }
@@ -59,4 +100,6 @@ h4 { margin: 22px 0 10px; font-size: 15px; }
 .tour { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line); }
 .terms { margin-top: 6px; } .tm { display: grid; grid-template-columns: 96px 1fr; gap: 10px; padding: 8px 0; border-top: 1px solid var(--line); font-size: 13.5px; } .tm b { color: var(--acc); } .tm span { color: var(--ink2); line-height: 1.55; }
 .wk { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.ledger-box { background: var(--soft); border-radius: 14px; padding: 12px 14px; border: 1px solid var(--line); }
+.lb-head { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
 </style>

@@ -49,11 +49,17 @@
 
       <!-- 右侧折叠功能入口（不堆满屏幕，点开即得） -->
       <div class="header-actions">
+        <button type="button" class="btn sm soft" @click="store.ui.tutorialDrawerOpen = true">
+          📚 教程台账
+        </button>
         <button type="button" class="btn sm soft" @click="store.ui.autoRuleModalOpen = true">
           🖼 自动发图({{ enabledRuleCount }})
         </button>
         <button type="button" class="btn sm" @click="store.ui.autoShipDrawerOpen = true">
           📦 自动发货池({{ activeAutoShipCount }})
+        </button>
+        <button v-if="!embedded" type="button" class="btn sm" @click="toggleSkin">
+          {{ store.ui.darkMode ? '☀️ 浅色皮肤' : '🌙 Claude 黑色皮肤' }}
         </button>
 
         <!-- 更多与四角色视角切换折叠菜单 -->
@@ -108,14 +114,17 @@
               <button type="button" class="md-btn" @click="startSpotlightTour">
                 ✨ 60秒界面聚光灯导览
               </button>
+              <button type="button" class="md-btn" @click="openTutorialDrawer">
+                📚 客服独立教程与视频台账
+              </button>
               <button type="button" class="md-btn" @click="openManualDrawer">
                 📖 职责红线与审计日志
               </button>
               <button type="button" class="md-btn" @click="store.ui.largeFont = !store.ui.largeFont">
                 🔤 {{ store.ui.largeFont ? '切回标准字号' : '开启大字模式' }}
               </button>
-              <button type="button" class="md-btn" @click="store.ui.darkMode = !store.ui.darkMode">
-                {{ store.ui.darkMode ? '☀️ 切回浅色模式' : '🌙 开启夜间模式' }}
+              <button type="button" class="md-btn" @click="toggleSkin">
+                {{ store.ui.darkMode ? '☀️ 切回 Stitch 浅色皮肤' : '🌙 切换 Claude 黑色皮肤' }}
               </button>
               <button type="button" class="md-btn warn" @click="resetDemo">
                 ↻ 重置全部演示数据
@@ -433,8 +442,9 @@
       />
     </div>
 
-    <!-- 全局折叠抽屉与弹窗（考核大盘 / 自动发货看板 / 自动发图配置 / 手册审计 / 十要素帮助 / 视频灯箱 / 导览与练兵） -->
+    <!-- 全局折叠抽屉与弹窗（考核大盘 / 自动发货看板 / 自动发图配置 / 手册审计 / 独立教程台账 / 十要素帮助 / 视频灯箱 / 导览与练兵） -->
     <WorkspaceDrawers />
+    <CsTutorialDrawer />
     <HelpDrawer />
     <VideoPlayerModal />
     <OnboardingOverlays />
@@ -477,8 +487,25 @@ import {
   sendRuleCardImage,
 } from './store.js';
 import { ROLES, QUICK_REPLIES } from './data/seed.js';
+import { ui as salesUi, setSkin, toggleSkin } from '../ui.js';
+
+watch(
+  () => salesUi.skin,
+  (s) => {
+    const wantDark = s === 'dark';
+    if (store.ui.darkMode !== wantDark) store.ui.darkMode = wantDark;
+  },
+  { immediate: true },
+);
+watch(
+  () => store.ui.darkMode,
+  (d) => {
+    if ((salesUi.skin === 'dark') !== d) setSkin(d ? 'dark' : 'light');
+  },
+);
 import RightFoldedCopilot from './components/RightFoldedCopilot.vue';
 import WorkspaceDrawers from './components/WorkspaceDrawers.vue';
+import CsTutorialDrawer from './components/CsTutorialDrawer.vue';
 import HelpDrawer from './components/HelpDrawer.vue';
 import VideoPlayerModal from './components/VideoPlayerModal.vue';
 import OnboardingOverlays from './components/OnboardingOverlays.vue';
@@ -647,6 +674,11 @@ function openManualDrawer() {
   store.ui.manualDrawerOpen = true;
 }
 
+function openTutorialDrawer() {
+  store.ui.moreMenuOpen = false;
+  store.ui.tutorialDrawerOpen = true;
+}
+
 async function onSend() {
   if (!currentConv.value || !draft.value.trim()) return;
   const ok = await sendChatMessage(currentConv.value.id, draft.value);
@@ -691,12 +723,14 @@ onMounted(async () => {
   display: grid;
   grid-template-rows: 52px minmax(0, 1fr);
   width: 100%;
+  min-width: 1200px;
   max-width: 100vw;
   height: 100vh;
   overflow: hidden;
 }
 .folded-app.embedded {
   height: 100%;
+  min-width: 978px;
   max-width: 100%;
 }
 
@@ -1353,7 +1387,7 @@ onMounted(async () => {
   gap: 4px;
 }
 .scene-card-img {
-  max-width: 390px;
+  max-width: 420px;
   width: 100%;
   border-radius: 10px;
   border: 1px solid var(--line);

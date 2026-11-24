@@ -61,9 +61,9 @@ void reactive
 </script>
 
 <style scoped>
-.ue { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; } .wide { grid-column: 1 / -1; } @media (max-width: 1100px) { .ue { grid-template-columns: 1fr; } }
+.ue { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; } .wide { grid-column: 1 / -1; }
 .card h4 { margin: 0 0 10px; font-size: 16px; } .card h4 small { font-weight: 400; }
-.tf { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; } @media (max-width: 700px) { .tf { grid-template-columns: 1fr; } } .tf label { display: grid; gap: 3px; font-size: 12px; color: var(--mute); } .tf input, .tf select { height: 34px; border: 1px solid var(--line); border-radius: 9px; padding: 0 9px; background: var(--soft); color: var(--ink); }
+.tf { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; } .tf label { display: grid; gap: 3px; font-size: 12px; color: var(--mute); } .tf input, .tf select { height: 34px; border: 1px solid var(--line); border-radius: 9px; padding: 0 9px; background: var(--soft); color: var(--ink); }
 .widein { width: 100%; height: 36px; border: 1px solid var(--line); border-radius: 9px; padding: 0 10px; background: var(--soft); color: var(--ink); margin: 8px 0; } .ck { display: flex; gap: 8px; align-items: center; font-size: 13.5px; margin: 6px 0; } .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .thumb { width: 64px; height: 64px; border-radius: 10px; object-fit: cover; background: var(--soft); } .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; } .ac { white-space: nowrap; } .sm { font-size: 12px; }
 </style>

@@ -42,4 +42,5 @@ python3 -m venv .venv
 - 正式系统地址已换成占位，平台链接用于展示或在本地解析。发布、爬取、聊天、群控、仓储、老板台账、Wiki 和教程媒体均为本地演示或留作界面入口。配置、业务状态都由本机演示代码处理。教程模块使用现有文字和交互导览，录制视频未随包提供。
 - 销售演示后端默认新建临时目录，设置 `SALES_RUNTIME_DIR` 可以保存演示配置。后端重启重置业务样例，BOOKOFF 样本在本目录 `.demo-runtime/`。
 
-- **并入的外部客服工作台 V3（单应用合入）**：在销售侧导航「工作 → 外部客服」（`#/cs-workbench`）使用内嵌三栏外部客服 V3；通过右上角切到 `林小鹿` / `周小萌` 或打开 `http://127.0.0.1:5341/?as=outsource_lu#/cs-workbench` 即进入隐藏内部销售栏的极窄 C 端外包沙盒，由 `cs_api.py`（挂载在 `h5_server.py`）提供 SQLite WAL 状态同步、`/api/cs/guard-check` 外发守卫与服务端 RBAC 进价/供应商脱敏。
+- **并入的外部客服工作台 V3（单应用合入 · 纯桌面 min-width: 1200px）**：在销售侧导航「工作 → 外部客服」（`#/cs-workbench`）使用内嵌三栏外部客服 V3；通过右上角切到 `林小鹿` / `周小萌` 或打开 `http://127.0.0.1:5341/?as=outsource_lu#/cs-workbench` 即进入隐藏内部销售栏的纯桌面脱敏沙盒，由 `cs_api.py`（挂载在 `h5_server.py`）提供 SQLite WAL 状态同步、`/api/cs/guard-check` 外发守卫与服务端 RBAC 进价/供应商脱敏；客服顶部「📚 教程台账」仅展示 5 个受控节点。
+- **工作台原生「教程与视频台账」（`#/tutorials`）与虚拟情报 Gallery**：由 `tutorial_ledger_api.py` 与 `virt_intel_api.py` 挂载于 `h5_server.py`（`/api/tutorials/*` 与 `/api/virt-intel/*`），支持 20 节点覆盖率跟踪（含 CAD `SALES-VIRT-CAD-09` 与三角洲 `SALES-SVC-DELTA-11` 模板）、Codex Skill 与主管兜底字段审计，以及页面 `?` 抽屉直连；纯电脑宽屏桌面端硬锁定 `min-width: 1200px`（`1440px` 基准）。

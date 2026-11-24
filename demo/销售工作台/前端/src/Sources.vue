@@ -1,16 +1,17 @@
 <template>
   <div class="page sc">
     <header class="head">
-      <div><p class="eyebrow">选品的源头 · 双口径分工</p><h1>来源大台账<Q k="sel-src" /></h1>
-        <p class="sub">所有大平台、榜单、评论区、卖家库放在一张台账里。<b>宏观站（如 BookOff）管「全品类大纲覆盖」，垂类站（如屏库/中关村）管「单品类 1 万个具体型号与规格」</b>。大平台目录整库抓一次；<b>榜单和评论区长期抓</b>。</p></div>
+      <div><h1>来源大台账<Q k="sel-src" /></h1>
+        <p class="sub">100 个货源站、榜单、评论区与卖家库视觉总览（有数据标实况，缺数据标缺口）。</p></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" @click="showCaliber = !showCaliber">📐 {{ showCaliber ? '收起双口径说明' : '双口径分工说明 ▾' }}</button>
         <button class="btn" @click="goSpecBase">规格与兜底基准台 ›</button>
         <button class="btn pri" @click="goBookoff">BOOKOFF 全量库 611 万条 ›</button>
       </div>
     </header>
 
-    <!-- 双口径来源站定位说明卡 -->
-    <section class="dual-caliber">
+    <!-- 双口径来源站定位说明卡（渐进披露：默认折叠不占首屏，点上方按钮展开） -->
+    <section v-if="showCaliber" class="dual-caliber">
       <div class="dc-box macro">
         <span class="tag amb">口径 1 · 宏观全品类大纲站</span>
         <b>类型全覆盖，具体型号不强求</b>
@@ -23,12 +24,14 @@
       </div>
     </section>
 
-    <div class="tabs"><button v-for="t in TABS" :key="t.k" :class="{ on: tab === t.k }" @click="tab = t.k">{{ t.t }}<em>{{ t.n }}</em></button></div>
+    <div class="tabs-bar">
+      <div class="tabs"><button v-for="t in TABS" :key="t.k" :class="{ on: tab === t.k }" @click="tab = t.k">{{ t.t }}<em>{{ t.n }}</em></button></div>
+      <div v-if="tab === 'sites'" class="sum"><span class="tag grn">样本 {{ cnt('样本') }}</span><span class="tag acc">部分目录 {{ cnt('部分目录') }}</span><span class="tag red">受阻 {{ cnt('受阻') }}</span><span class="tag amb">待适配 {{ cnt('待适配') }}</span>
+        <span class="muted sm" title="来自交付包 100 站程序（2026-10-28 一页有界采集，非整库同步）">共 {{ sites.length }} 站 · {{ total }} 条</span></div>
+    </div>
 
     <!-- 平台来源（100 站） -->
     <section v-if="tab === 'sites'">
-      <div class="sum"><span class="tag grn">样本 {{ cnt('样本') }}</span><span class="tag acc">部分目录 {{ cnt('部分目录') }}</span><span class="tag red">受阻 {{ cnt('受阻') }}</span><span class="tag amb">待适配 {{ cnt('待适配') }}</span>
-        <span class="muted">来自交付包 100 站程序（2026-10-28 一页有界采集，<b>不是整库同步，不能称 100 站已抓通</b>）。共 {{ sites.length }} 站、{{ total }} 条记录。</span></div>
       <div class="flt"><button v-for="b in BIZ" :key="b.k" :class="{ on: biz === b.k }" @click="biz = b.k">{{ b.t }}</button>
         <span class="vw"><button :class="{ on: view === 'gallery' }" @click="setView('gallery')">Gallery</button><button :class="{ on: view === 'table' }" @click="setView('table')">表格</button></span><input v-model="qs" placeholder="搜站名" /></div>
 
@@ -83,7 +86,7 @@
 import { computed, onMounted, ref } from 'vue'
 import Q from './Q.vue'
 
-const tab = ref('sites'), biz = ref('all'), qs = ref(''), sites = ref([]), imgs = ref({})
+const tab = ref('sites'), biz = ref('all'), qs = ref(''), sites = ref([]), imgs = ref({}), showCaliber = ref(false)
 const VKEY = 'src_view'
 const view = ref((() => { try { return localStorage.getItem(VKEY) === 'table' ? 'table' : 'gallery' } catch { return 'gallery' } })())
 const goBookoff = () => { location.hash = '#/bookoff' }
@@ -128,21 +131,22 @@ const allGaps = computed(() => [
 </script>
 
 <style scoped>
-.sc { padding: 26px 40px 80px; max-width: 1560px; } .head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; } .head h1 { font-size: 34px; margin: 6px 0; letter-spacing: -.02em; } .eyebrow { margin: 0; font-size: 13px; font-weight: 700; color: var(--acc); } .sub { margin: 0; color: var(--mute); max-width: 860px; line-height: 1.7; }
-.dual-caliber { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 14px; margin: 16px 0 6px; }
+.sc { padding: 16px 28px 64px; max-width: 1560px; } .head { display: flex; justify-content: space-between; align-items: flex-end; gap: 14px; flex-wrap: wrap; } .head h1 { font-size: 28px; margin: 2px 0; letter-spacing: -.02em; } .eyebrow { margin: 0; font-size: 13px; font-weight: 700; color: var(--acc); } .sub { margin: 0; color: var(--mute); max-width: 860px; line-height: 1.5; font-size: 13.5px; }
+.dual-caliber { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 14px; margin: 12px 0 6px; }
 .dc-box { background: var(--panel); border-radius: 16px; padding: 14px 18px; box-shadow: var(--sh); display: grid; gap: 6px; border-left: 5px solid var(--acc); }
 .dc-box.macro { border-left-color: var(--amb); }
 .dc-box b { font-size: 15.5px; }
 .dc-box p { margin: 0; font-size: 13px; color: var(--mute); line-height: 1.6; }
-.tabs { display: flex; gap: 6px; margin: 18px 0 14px; flex-wrap: wrap; } .tabs button { height: 38px; padding: 0 16px; border-radius: 12px; background: var(--soft); font-weight: 700; color: var(--ink2); display: inline-flex; gap: 8px; align-items: center; } .tabs button.on { background: var(--acc); color: #fff; } .tabs em { font-style: normal; font-size: 12.5px; opacity: .8; }
-.sum { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; } .flt { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin: 8px 0 12px; } .flt button { height: 30px; padding: 0 12px; border-radius: 999px; background: var(--soft); font-weight: 600; font-size: 13px; } .flt button.on { background: var(--acc-soft); color: var(--acc); } .flt input { height: 32px; border: 1px solid var(--line); border-radius: 10px; padding: 0 10px; background: var(--soft); color: var(--ink); margin-left: auto; }
+.tabs-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 10px 0 6px; flex-wrap: wrap; }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; } .tabs button { height: 34px; padding: 0 14px; border-radius: 10px; background: var(--soft); font-weight: 700; color: var(--ink2); display: inline-flex; gap: 8px; align-items: center; } .tabs button.on { background: var(--acc); color: #fff; } .tabs em { font-style: normal; font-size: 12px; opacity: .8; }
+.sum { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; } .flt { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin: 4px 0 8px; } .flt button { height: 28px; padding: 0 12px; border-radius: 999px; background: var(--soft); font-weight: 600; font-size: 13px; } .flt button.on { background: var(--acc-soft); color: var(--acc); } .flt input { height: 30px; border: 1px solid var(--line); border-radius: 10px; padding: 0 10px; background: var(--soft); color: var(--ink); margin-left: auto; }
 .named { margin-bottom: 14px; display: grid; gap: 6px; } .nm { display: flex; gap: 10px; align-items: baseline; font-size: 14px; flex-wrap: wrap; }
 .tbl { width: 100%; border-collapse: collapse; font-size: 13.5px; background: var(--panel); border-radius: 16px; overflow: hidden; } .tbl th { text-align: left; padding: 10px 12px; color: var(--mute); font-size: 12.5px; background: var(--soft); } .tbl td { padding: 9px 12px; border-top: 1px solid var(--line); vertical-align: top; } .tbl td small { display: block; color: var(--mute); font-size: 11.5px; } .nt { color: var(--ink2); line-height: 1.6; max-width: 520px; }
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 14px; } .rc { display: grid; gap: 6px; } .rh { display: flex; justify-content: space-between; gap: 8px; align-items: center; } .rc p { margin: 0; font-size: 13.5px; } .rc dl { display: grid; grid-template-columns: 44px 1fr; gap: 4px 10px; margin: 6px 0 0; font-size: 13px; } .rc dt { color: var(--mute); } .rc dd { margin: 0; } .gap { color: var(--red-ink); }
 .kpis { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin: 12px 0; } .kp { background: var(--panel); border-radius: 16px; padding: 14px 16px; display: grid; gap: 2px; box-shadow: var(--sh); } .kp span { color: var(--mute); font-size: 13px; } .kp b { font-size: 34px; color: var(--mute); } .kp small { color: var(--mute); font-size: 12px; } .roles { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 12px; }
 
 .vw { display: inline-flex; gap: 4px; background: var(--soft); padding: 3px; border-radius: 12px; margin-left: 10px; } .vw button { height: 28px; padding: 0 12px; border-radius: 9px; font-weight: 700; font-size: 13px; background: none; } .vw button.on { background: var(--panel); box-shadow: var(--sh); }
-.gh3 { margin: 18px 0 10px; font-size: 17px; display: flex; gap: 10px; align-items: baseline; } .gh3 small { color: var(--mute); font-weight: 500; font-size: 13px; }
+.gh3 { margin: 10px 0 8px; font-size: 16px; display: flex; gap: 10px; align-items: baseline; } .gh3 small { color: var(--mute); font-weight: 500; font-size: 13px; }
 .sgal { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; } .sc2 { background: var(--panel); border-radius: 18px; overflow: hidden; box-shadow: var(--sh); display: grid; grid-template-rows: auto 1fr; } .sc2.star { outline: 2px solid var(--acc); }
 .si { position: relative; aspect-ratio: 16 / 10; background: var(--soft); display: flex; align-items: center; justify-content: center; overflow: hidden; } .si.promo img { width: 100%; height: 100%; object-fit: cover; display: block; } .si.logo { background: linear-gradient(135deg, #f3f4f8, #dfe3ee); } .si.logo img { max-width: 46%; max-height: 62%; object-fit: contain; image-rendering: auto; filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .18)); }
 .si.tiny img { width: 44px; height: 44px; max-width: none; max-height: none; padding: 8px; box-sizing: content-box; background: #fff; border-radius: 14px; filter: drop-shadow(0 3px 8px rgba(0, 0, 0, .18)); } .si.wide { background: #0e1020; } .si.wide::before { content: ''; position: absolute; inset: -24px; background: var(--bg) center / cover; filter: blur(20px) saturate(1.15) brightness(.85); } .si.wide img { position: relative; width: 100%; height: 100%; object-fit: contain; }

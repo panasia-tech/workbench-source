@@ -6,6 +6,7 @@
 
     <nav class="toc">
       <a v-for="s in SECTIONS" :key="s.k" @click="go('sec-' + s.k)">{{ s.t }}</a>
+      <a @click="goTutorials" style="background: var(--acc-soft); color: var(--acc)">打开原生教程与视频台账 ›</a>
     </nav>
 
     <section id="sec-flow" class="card">
@@ -44,9 +45,9 @@
     </section>
 
     <section id="sec-video" class="card">
-      <h2>五、视频清单</h2>
-      <p class="muted">有的是已经录好的（实物 / 虚拟的旧口径版，待按新口径重录），服务的 13 个节点还没录，按各节点步骤录。</p>
-      <div v-for="n in nodeList" :key="'v' + n.k" class="wr"><b>{{ n.h.title }}</b><span class="tag" :class="n.h.video ? 'grn' : 'amb'">{{ n.h.video ? '有：' + n.h.video.title : '待录' }}</span></div>
+      <h2>五、通用视频章节与节点覆盖清单</h2>
+      <p class="muted">全工作台 20 个核心业务节点已在原生「教程与视频台账」登记同版钉钉 Wiki 通用视频与时间码，支持一条视频按不同章节时间码覆盖多个节点。<a @click="goTutorials">查看台账覆盖、Codex Skill 与人工兜底状态 ›</a></p>
+      <div v-for="n in nodeList" :key="'v' + n.k" class="wr"><b>{{ n.h.title }}</b><span class="tag" :class="n.h.video ? 'grn' : 'amb'">{{ n.h.video ? '有：' + n.h.video.title : '分步小片见通用总片章节（单步精细版待录）' }}</span></div>
     </section>
   </div>
 </template>
@@ -74,6 +75,7 @@ const nodeList = computed(() => {
 })
 const termsShown = computed(() => { const kw = q.value.trim(); return Object.entries(GLOSSARY).map(([k, v]) => ({ k, ...v })).filter((t) => !kw || t.k.includes(kw) || t.d.includes(kw)) })
 const go = (id) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+const goTutorials = () => { location.hash = '#/tutorials' }
 onMounted(async () => {
   const qs = new URLSearchParams(location.hash.split('?')[1] || '')
   await nextTick()

@@ -73,7 +73,6 @@ a { color: var(--acc); cursor: pointer; text-decoration: none; }
 .pic .big { cursor: zoom-in; } .hero.zoom .pic .big { cursor: zoom-out; }
 .hero:not(.zoom) .thumbs { gap: 6px; margin-top: 8px; } .hero:not(.zoom) .thumbs button { width: 36px; height: 36px; border-radius: 9px; border-width: 2px; }
 .hero:not(.zoom) .info h1 { font-size: 27px; margin: 10px 0 4px; } .hero:not(.zoom) .issuebox { margin: 14px 0; padding: 14px 16px; } .hero:not(.zoom) .facts b { font-size: 21px; } .hero:not(.zoom) .facts div { padding: 10px 14px; }
-@media (max-width: 760px) { .hero, .hero.zoom { grid-template-columns: 1fr; } }
 .pic .big { aspect-ratio: 1 / 1; border-radius: 22px; overflow: hidden; background: var(--soft); border: 4px solid transparent; }
 .pic .big.red { border-color: var(--red); } .pic .big.amb { border-color: #f6cf72; } .pic .big.grn { border-color: #9bdcc0; }
 .pic .big img { width: 100%; height: 100%; object-fit: cover; }
@@ -102,7 +101,6 @@ a { color: var(--acc); cursor: pointer; text-decoration: none; }
 .pills a { height: 36px; padding: 0 16px; display: inline-flex; align-items: center; border-radius: 999px; background: var(--panel); box-shadow: var(--sh); color: var(--ink2); font-weight: 700; font-size: 14px; }
 .pills a:hover { background: var(--ink); color: var(--bg); }
 .secs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
-@media (max-width: 1200px) { .secs { grid-template-columns: 1fr; } }
 .secs .wide { grid-column: 1 / -1; }
 .secs section { scroll-margin-top: 70px; }
 .gauge { margin: 8px 0 30px; }

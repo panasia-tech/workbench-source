@@ -13,7 +13,7 @@ export const VIDEOS = {
 export const FULL = {
   phys: { src: '/videos/21_full.mp4', title: '实物销售业务员 · 完整版', note: '11-09 旧口径版，待重录' },
   virt: { src: '/videos/31_full.mp4', title: '虚拟产品业务员 · 完整版', note: '11-09 旧口径版，待重录' },
-  new: { src: '/videos/61_full.mp4', title: '销售业务员 · 虚拟产品体系（9 分 36 秒）', note: '教程录制未随本地源码包提供' }
+  new: { src: '/videos/61_full.mp4', title: '销售业务员 · 虚拟产品体系（9 分 36 秒）', note: '11-10 新版，Vivian 配音' }
 }
 
 export const HELP = {

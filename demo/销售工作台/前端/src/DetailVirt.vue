@@ -350,7 +350,7 @@ async function saveVirtPricing(prod) {
 .hitline { display: block; margin-top: 3px; color: var(--red-ink); font-size: 12.5px; font-weight: 600; }
 .sigs { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; } .sig { background: var(--soft); border-radius: 18px; padding: 16px 18px; } .sig b { font-size: 16px; }
 .sig p { margin-top: 5px; font-size: 14px; } .sn2 { font-size: 30px; font-weight: 800; letter-spacing: -.02em; } .sn2 small { font-size: 13px; font-weight: 500; color: var(--mute); }
-.two { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; } @media (max-width: 1100px) { .two { grid-template-columns: 1fr; } }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; }
 .law { display: flex; list-style: none; padding: 0; margin: 16px 0 0; gap: 8px; } .law li { flex: 1; text-align: center; padding: 11px 0; border-radius: 12px; background: var(--soft); color: var(--mute); font-weight: 700; font-size: 14px; }
 .law li.on { background: var(--grn-soft); color: var(--grn-ink); } .law li.risk { background: var(--red-soft); color: var(--red-ink); }
 </style>

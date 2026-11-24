@@ -2,25 +2,28 @@
   <div class="pc-page">
     <!-- 顶部全流程向导导航条（严格保留 Gallery -> 第1步洗价格 -> 第2步洗图片直发） -->
     <nav class="wizard-bar card">
-      <button class="btn sm" @click="goGallery">← 返回历史库存 Gallery</button>
+      <button class="btn sm" @click="goGallery">← 返回 Gallery</button>
 
       <div class="wiz-steps">
         <button class="wstep done" @click="goGallery">
-          <i>☷</i><span>Gallery 选商品</span>
+          <i>☷</i><span>Gallery 选品</span>
         </button>
         <span class="wsep">→</span>
         <button class="wstep cur">
-          <i>1</i><span>第 1 步：洗价格（闲鱼多词原版快照 + 机器五重筛选）</span>
+          <i>1</i><span>① 洗价格（闲鱼快照去噪）</span>
         </button>
         <template v-if="!isPricebookItem">
           <span class="wsep">→</span>
           <button class="wstep" :class="{ done: c?.step === 'active' }" @click="goImageStep">
-            <i>2</i><span>第 2 步：洗图片（三栏图池选图）并直接上架</span>
+            <i>2</i><span>② 洗图片并上架</span>
           </button>
         </template>
       </div>
 
       <div class="wiz-switch" v-if="filteredQueueCases.length">
+        <button class="btn sm" :class="{ pri: showQueueBar }" @click="showQueueBar = !showQueueBar">
+          📋 队列 ({{ queueCounts.all || allCases.length }}) {{ showQueueBar ? '▴' : '▾' }}
+        </button>
         <select class="sku-sel" :value="currentCode" @change="pickCode($event.target.value)" aria-label="切换待洗商品">
           <option v-for="it in filteredQueueCases" :key="it.code" :value="it.code">
             {{ it.step === 'active' ? '✓ ' : it.reviewOnly ? '⚠ ' : '① ' }}{{ it.brand ? it.brand + ' ' : '' }}{{ it.model }} ({{ it.code }})
@@ -29,8 +32,8 @@
       </div>
     </nav>
 
-    <!-- xianyu-seller-pilot v0.2.0 五大任务队列与利润档位巡航条 -->
-    <section class="card queue-cruise-bar">
+    <!-- xianyu-seller-pilot v0.2.0 五大任务队列与利润档位巡航条（默认折叠，点顶栏按钮按需展开） -->
+    <section v-if="showQueueBar" class="card queue-cruise-bar">
       <div class="qcb-top">
         <div class="q-tabs">
           <button :class="{ on: activeQueue === 'all' }" @click="setQueue('all')">
@@ -87,27 +90,27 @@
           <div class="dp-sku">
             <div class="dp-badges">
               <span class="tag acc">货号 {{ c.code }}</span>
-              <span class="tag">任务 SPU <code>{{ c.spuCode }}</code></span>
+              <span class="tag">SPU <code>{{ c.spuCode }}</code></span>
               <span v-if="c.siblingCodes?.length" class="tag grn" :title="'同SPU共享多词策略与快照：' + c.siblingCodes.join(', ')">
-                🔗 同 SPU 兄弟件共享（+{{ c.siblingCodes.length }} 件联动）
+                🔗 +{{ c.siblingCodes.length }} 兄弟件共享
               </span>
               <span class="tag" :class="c.step === 'active' ? 'grn' : cp.reviewOnly ? 'amb' : 'acc'">
                 {{ c.step === 'active' ? `✓ 已生效 ¥${c.confirmedPrice}` : (cp.queueLabel || '机器已初筛 · 待确认') }}
               </span>
               <span v-if="c.stockAgeDays >= 15" class="tag" :class="c.stockAgeDays >= 28 ? 'red' : 'amb'">
-                在库 {{ c.stockAgeDays }} 天 · {{ c.stats?.clearanceLabel }}
+                在库 {{ c.stockAgeDays }} 天
               </span>
-              <button class="link-mini" @click="showApiMeta = !showApiMeta">
-                {{ showApiMeta ? '收起 API 四字段溯源' : '🔍 API 四字段隔离溯源' }}
-              </button>
+              <span class="tag">成本 {{ c.cost ? `¥${c.cost}` : '无' }}</span>
+              <span v-if="c.stats?.median" class="tag grn">中位 ¥{{ c.stats.median }} / 均 ¥{{ c.stats?.cleanedAverage || '—' }}</span>
+              <span v-if="c.baselineEval?.sanityBlocked" class="tag red">🚨 假低价已拦（兜底 ¥{{ c.baselineEval.fallbackSalePrice }}）</span>
             </div>
 
             <h1>
               {{ c.spuPolicy?.localization?.displayName || ((c.brand ? c.brand + ' ' : '') + c.model) }}
-              <small>WMS 原名：{{ c.name }} · {{ c.config }}</small>
+              <small>WMS：{{ c.name }}</small>
             </h1>
 
-            <!-- API 四字段严格隔离展示条（复刻 v0.2.0 任务SPU / API SPU / 原名 / #清洗候选） -->
+            <!-- API 四字段严格隔离展示条（点击工具栏「API溯源」展开） -->
             <div v-if="showApiMeta" class="api-meta-strip">
               <div><span>1. 任务 SPU 编码</span><code>{{ c.spuPolicy?.apiMeta?.taskSpuCode || c.spuCode }}</code></div>
               <div><span>2. 上游 API SPU</span><code>{{ c.spuPolicy?.apiMeta?.apiSpuCode || '未绑定（待归并）' }}</code></div>
@@ -116,28 +119,48 @@
             </div>
           </div>
 
-          <!-- 右上工具簇：SPU 12词策略 + AI 纠改 + 联网证据 + 回写 WMS + 作废重爬 -->
+          <!-- 右上精简控制簇（四事实/门禁、策略与 AI 证据按需折叠展开，首屏优先露快照卡片） -->
           <div class="dp-top-acts">
-            <button class="btn sm" :class="{ pri: policyOpen }" @click="policyOpen = !policyOpen">
-              ⚙ SPU 多关键词策略 ({{ effectiveQueries.length }}/12词)
+            <button class="btn sm" :class="{ pri: factsOpen }" @click="factsOpen = !factsOpen">
+              📊 {{ factsOpen ? '收起四事实与门禁' : '四事实与门禁详情 ▾' }}
             </button>
-            <button class="btn sm" :disabled="busy" @click="runAiCorrect(false)">
-              🤖 AI 型号纠改/找俗称
+            <button
+              v-if="c.aiSuggestion || c.aiWebSearchResults?.length || c.wmsWritebacks?.length"
+              class="btn sm"
+              :class="{ pri: aiOpen }"
+              @click="aiOpen = !aiOpen"
+            >
+              🤖 {{ aiOpen ? '收起 AI 证据' : 'AI 证据/回写 ▾' }}
             </button>
-            <button class="btn sm" :disabled="busy" @click="runWebEvidence">
-              🌐 联网核查证据
-            </button>
-            <button class="btn sm" @click="openWmsModal">
-              📝 回写 WMS 名称
+            <button class="btn sm" :class="{ pri: toolsOpen }" @click="toolsOpen = !toolsOpen">
+              ⚙ {{ toolsOpen ? '收起策略工具' : `策略工具 (${effectiveQueries.length}/12词) ▾` }}
             </button>
             <button class="btn sm amb-btn" :disabled="busy" @click="doInvalidateRecrawl('员工手动触发作废重爬')">
-              ↺ 作废重新爬
+              ↺ 作废重爬
             </button>
           </div>
         </div>
 
-        <!-- AI 型号纠改建议 + 联网核查证据面板（按需展开） -->
-        <div v-if="c.aiSuggestion || c.aiWebSearchResults?.length || c.wmsWritebacks?.length" class="ai-evidence-box">
+        <div v-if="toolsOpen" class="dp-top-acts secondary-tools">
+          <button class="btn sm" :class="{ pri: policyOpen }" @click="policyOpen = !policyOpen">
+            ⚙ SPU 多关键词策略 ({{ effectiveQueries.length }}/12词)
+          </button>
+          <button class="btn sm" :disabled="busy" @click="runAiCorrect(false)">
+            🤖 AI 型号纠改/找俗称
+          </button>
+          <button class="btn sm" :disabled="busy" @click="runWebEvidence">
+            🌐 联网核查证据
+          </button>
+          <button class="btn sm" @click="openWmsModal">
+            📝 回写 WMS 名称
+          </button>
+          <button class="btn sm" @click="showApiMeta = !showApiMeta">
+            🔍 {{ showApiMeta ? '收起 API 四字段溯源' : 'API 四字段溯源' }}
+          </button>
+        </div>
+
+        <!-- AI 型号纠改建议 + 联网核查证据面板（默认折叠，点击右上「AI 证据/回写」展开） -->
+        <div v-if="aiOpen && (c.aiSuggestion || c.aiWebSearchResults?.length || c.wmsWritebacks?.length)" class="ai-evidence-box">
           <div v-if="c.aiSuggestion" class="ai-sug-card">
             <div class="asc-left">
               <span class="tag acc">🤖 AI 型号别名诊断（置信度 {{ Math.round((c.aiSuggestion.confidence || 0.94) * 100) }}%）</span>
@@ -263,83 +286,99 @@
           </div>
         </div>
 
-        <!-- 四事实并列对比条（严格复刻 price-candidate.js：绝不把 API 价格混进闲鱼样本！） -->
-        <div class="four-facts-strip">
-          <div class="ff-card">
-            <span>事实 1 · API 当前在售价</span>
-            <b>{{ cp.fourFacts?.apiCurrentSalePrice ? `¥${cp.fourFacts.apiCurrentSalePrice}` : '暂未在售' }}</b>
-            <small>WMS/闲管家在架同步值</small>
-          </div>
-          <div class="ff-card">
-            <span>事实 2 · API 历史建议价</span>
-            <b>{{ cp.fourFacts?.apiSuggestPrice ? `¥${cp.fourFacts.apiSuggestPrice}` : '—' }}</b>
-            <small>仅并列参考 · 不混入样本</small>
-          </div>
-          <div class="ff-card">
-            <span>事实 3 · 本件采购成本价</span>
-            <b>{{ c.cost ? `¥${c.cost}` : '选品无成本' }}</b>
-            <small>硬底线围栏（防亏损倒挂）</small>
-          </div>
-          <div class="ff-card highlight">
-            <span>事实 4 · 闲鱼行情中位价 / 清洗均价</span>
-            <b>
-              {{ c.stats?.median ? `¥${c.stats.median}` : '—' }}
-              <em v-if="c.stats?.cleanedAverage"> / 均 ¥{{ c.stats.cleanedAverage }}</em>
-            </b>
-            <small>有效同款 {{ c.stats?.validCount || 0 }} 条 · 离散度 {{ c.stats?.spreadPct ?? 0 }}%</small>
-          </div>
-        </div>
-
-        <!-- 规格基准防呆尺 & 95%走量同档兜底核验条（拦截 2K240 错爬 ¥200 等假低价 + 无在售同档兜底） -->
-        <div
-          v-if="c.baselineEval?.supported"
-          class="baseline-sanity-strip"
-          :class="c.baselineEval.sanityBlocked ? 'blocked' : c.baselineEval.track === 'highend_5' ? 'hi' : 'ok'"
-        >
-          <div class="bss-main">
-            <span class="tag" :class="c.baselineEval.sanityBlocked ? 'red' : c.baselineEval.track === 'zowie_independent' ? 'amb' : c.baselineEval.track === 'highend_5' ? 'acc' : 'grn'">
-              {{ c.baselineEval.trackLabel }}
-            </span>
-            <span class="tag" v-if="c.baselineEval.spec">
-              {{ c.baselineEval.spec.size }}″ · {{ c.baselineEval.spec.res }} · 超频{{ c.baselineEval.spec.hz }}Hz · {{ c.baselineEval.spec.panel }}
-            </span>
-            <span class="bss-meta" v-if="c.baselineEval.buyBaseline">手册收货基准：<b>¥{{ c.baselineEval.buyBaseline }}</b></span>
-            <span class="bss-meta" v-if="c.baselineEval.bucketCrawledMedian">同档走量实爬中位：<b>¥{{ c.baselineEval.bucketCrawledMedian }}</b></span>
-            <span class="bss-meta" v-if="c.baselineEval.fallbackSalePrice">同档兜底价：<b>¥{{ c.baselineEval.fallbackSalePrice }}</b></span>
-          </div>
-          <p class="bss-reason">{{ c.baselineEval.sanityReason }}</p>
-        </div>
-
-        <!-- 三道硬安全门禁条（24h新鲜度 · 有效样本≥3 · 离散度≤25%） -->
-        <div v-if="c.samples?.length" class="gate-banner" :class="cp.reviewOnly ? 'locked' : 'ok'">
-          <div class="gb-left">
-            <span class="gb-id">预览单号 <code>{{ cp.previewId || 'PV-INIT' }}</code></span>
-            <span class="gchip" :class="cp.gates?.fresh24h ? 'ok' : 'bad'">
-              {{ cp.gates?.fresh24h ? '✓ 24h新鲜度达标' : '✕ 快照超24h' }}
-            </span>
-            <span class="gchip" :class="cp.gates?.samplesGe3 ? 'ok' : 'bad'">
-              {{ cp.gates?.samplesGe3 ? `✓ 有效样本 ${cp.gates.validCount}≥3` : `✕ 有效样本仅 ${cp.gates?.validCount || 0}<3` }}
-            </span>
-            <span class="gchip" :class="cp.gates?.spreadLe25Pct ? 'ok' : 'bad'">
-              {{ cp.gates?.spreadLe25Pct ? `✓ 离散度 ${cp.gates.spreadPct}%≤25%` : `✕ 离散度 ${cp.gates?.spreadPct}%>25%` }}
-            </span>
-            <span v-if="finalPrice && c.cost" class="verdict-chip" :class="purchaseVerdict.lvl">{{ purchaseVerdict.text }}</span>
-          </div>
-
-          <div v-if="cp.reviewOnly" class="gb-lock-box">
-            <div class="gbl-warn">
-              🔒 <b>待复核锁定 (review_only)：</b>{{ (cp.reviewReasons || []).join('；') }}
+        <!-- 四事实 + 规格兜底 + 三道安全门禁详情（默认折叠，点右上按钮展开） -->
+        <div v-if="factsOpen" class="facts-drawer">
+          <!-- 四事实并列对比条（严格复刻 price-candidate.js：绝不把 API 价格混进闲鱼样本！） -->
+          <div class="four-facts-strip">
+            <div class="ff-card">
+              <span>事实 1 · API 当前在售价</span>
+              <b>{{ cp.fourFacts?.apiCurrentSalePrice ? `¥${cp.fourFacts.apiCurrentSalePrice}` : '暂未在售' }}</b>
+              <small>WMS/闲管家在架同步值</small>
             </div>
-            <label class="gbl-chk">
-              <input type="checkbox" v-model="forceReviewOverride" />
-              <span>我已人工核查下方闲鱼原版快照，确认放行采用选定售价：</span>
-              <input
-                v-model="overrideReason"
-                class="gbl-inp"
-                placeholder="填写复核/放行说明（≥2字，如：成色跨度正常已核实）"
-              />
-            </label>
+            <div class="ff-card">
+              <span>事实 2 · API 历史建议价</span>
+              <b>{{ cp.fourFacts?.apiSuggestPrice ? `¥${cp.fourFacts.apiSuggestPrice}` : '—' }}</b>
+              <small>仅并列参考 · 不混入样本</small>
+            </div>
+            <div class="ff-card">
+              <span>事实 3 · 本件采购成本价</span>
+              <b>{{ c.cost ? `¥${c.cost}` : '选品无成本' }}</b>
+              <small>硬底线围栏（防亏损倒挂）</small>
+            </div>
+            <div class="ff-card highlight">
+              <span>事实 4 · 闲鱼行情中位价 / 清洗均价</span>
+              <b>
+                {{ c.stats?.median ? `¥${c.stats.median}` : '—' }}
+                <em v-if="c.stats?.cleanedAverage"> / 均 ¥{{ c.stats.cleanedAverage }}</em>
+              </b>
+              <small>有效同款 {{ c.stats?.validCount || 0 }} 条 · 离散度 {{ c.stats?.spreadPct ?? 0 }}%</small>
+            </div>
           </div>
+
+          <!-- 规格基准防呆尺 & 95%走量同档兜底核验条（一行结论 + 折叠看推演详情） -->
+          <div
+            v-if="c.baselineEval?.supported"
+            class="baseline-sanity-strip"
+            :class="c.baselineEval.sanityBlocked ? 'blocked' : c.baselineEval.track === 'highend_5' ? 'hi' : 'ok'"
+          >
+            <div class="bss-main">
+              <span class="tag" :class="c.baselineEval.sanityBlocked ? 'red' : c.baselineEval.track === 'zowie_independent' ? 'amb' : c.baselineEval.track === 'highend_5' ? 'acc' : 'grn'">
+                {{ c.baselineEval.trackLabel }}
+              </span>
+              <span class="tag" v-if="c.baselineEval.spec">
+                {{ c.baselineEval.spec.size }}″ · {{ c.baselineEval.spec.res }} · {{ c.baselineEval.spec.hz }}Hz · {{ c.baselineEval.spec.panel }}
+              </span>
+              <span class="bss-meta" v-if="c.baselineEval.buyBaseline">收货基准：<b>¥{{ c.baselineEval.buyBaseline }}</b></span>
+              <span class="bss-meta" v-if="c.baselineEval.bucketCrawledMedian">同档中位：<b>¥{{ c.baselineEval.bucketCrawledMedian }}</b></span>
+              <span class="bss-meta" v-if="c.baselineEval.fallbackSalePrice">兜底：<b>¥{{ c.baselineEval.fallbackSalePrice }}</b></span>
+              <details v-if="c.baselineEval.sanityReason" class="bss-fold">
+                <summary>{{ c.baselineEval.sanityBlocked ? '🚨 拦截异常低价 · 展开推演' : '展开推演详情' }}</summary>
+                <p class="bss-reason">{{ c.baselineEval.sanityReason }}</p>
+              </details>
+            </div>
+          </div>
+
+          <!-- 三道硬安全门禁条（24h新鲜度 · 有效样本≥3 · 离散度≤25%） -->
+          <div v-if="c.samples?.length" class="gate-banner" :class="cp.reviewOnly ? 'locked' : 'ok'">
+            <div class="gb-left">
+              <span class="gb-id">预览单号 <code>{{ cp.previewId || 'PV-INIT' }}</code></span>
+              <span class="gchip" :class="cp.gates?.fresh24h ? 'ok' : 'bad'">
+                {{ cp.gates?.fresh24h ? '✓ 24h新鲜度达标' : '✕ 快照超24h' }}
+              </span>
+              <span class="gchip" :class="cp.gates?.samplesGe3 ? 'ok' : 'bad'">
+                {{ cp.gates?.samplesGe3 ? `✓ 有效样本 ${cp.gates.validCount}≥3` : `✕ 有效样本仅 ${cp.gates?.validCount || 0}<3` }}
+              </span>
+              <span class="gchip" :class="cp.gates?.spreadLe25Pct ? 'ok' : 'bad'">
+                {{ cp.gates?.spreadLe25Pct ? `✓ 离散度 ${cp.gates.spreadPct}%≤25%` : `✕ 离散度 ${cp.gates?.spreadPct}%>25%` }}
+              </span>
+              <span v-if="finalPrice && c.cost" class="verdict-chip" :class="purchaseVerdict.lvl">{{ purchaseVerdict.text }}</span>
+            </div>
+
+            <div v-if="cp.reviewOnly" class="gb-lock-box">
+              <div class="gbl-warn">
+                🔒 <b>待复核锁定 (review_only)：</b>{{ (cp.reviewReasons || []).join('；') }}
+              </div>
+              <label class="gbl-chk">
+                <input type="checkbox" v-model="forceReviewOverride" />
+                <span>我已人工核查下方闲鱼原版快照，确认放行采用选定售价：</span>
+                <input
+                  v-model="overrideReason"
+                  class="gbl-inp"
+                  placeholder="填写复核/放行说明（≥2字，如：成色跨度正常已核实）"
+                />
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- 折叠状态下如触发 review_only，保留一行紧凑复核放行栏 -->
+        <div v-if="cp.reviewOnly && !factsOpen && c.samples?.length" class="review-inline-bar">
+          <span class="rib-msg">🔒 <b>待复核：</b>{{ ((cp.reviewReasons || [])[0] || '触发安全门禁，请核查下方快照').slice(0, 48) }}… <button class="link-mini" @click="factsOpen = true">展开推演 ▾</button></span>
+          <label class="gbl-chk">
+            <input type="checkbox" v-model="forceReviewOverride" />
+            <span>人工核实放行：</span>
+            <input v-model="overrideReason" class="gbl-inp" placeholder="填放行说明（≥2字）" />
+          </label>
         </div>
 
         <!-- 尚未抓取快照时的引导 -->
@@ -428,21 +467,26 @@
         <header class="sb-head">
           <div>
             <h2>
-              闲鱼搜索挂牌快照与机器过滤预览
-              <small>第 {{ c.crawlBatch }} 轮抓拍 @ {{ c.crawledAt }} · 点击任意商品图片高清放大看细节，点右下角按钮剔除或恢复</small>
+              闲鱼搜索挂牌快照与过滤预览
+              <small>第 {{ c.crawlBatch }} 轮 · 点图放大 · 底部剔除恢复</small>
             </h2>
           </div>
 
           <div class="sb-mode-tools">
+            <div v-if="snapMode !== 'dom'" class="grid-subfilter">
+              <button :class="{ on: viewFilter === 'all' }" @click="viewFilter = 'all'">全部 ({{ tabSamples.length }})</button>
+              <button :class="{ on: viewFilter === 'included' }" @click="viewFilter = 'included'">✓ 有效 ({{ tabSamples.filter((x) => x.include).length }})</button>
+              <button :class="{ on: viewFilter === 'excluded' }" @click="viewFilter = 'excluded'">✕ 已剔除 ({{ tabSamples.filter((x) => !x.include).length }})</button>
+            </div>
             <button class="btn sm" @click="showComposition = !showComposition">
-              {{ showComposition ? '▲ 收起价格构成与判定日志' : '📊 查看价格构成与逐词判定日志' }}
+              {{ showComposition ? '▲ 收起价格构成' : '📊 价格构成与日志' }}
             </button>
             <div class="view-seg">
               <button :class="{ on: snapMode === 'dom' }" @click="snapMode = 'dom'">
                 🐟 原版闲鱼网页 DOM 快照
               </button>
               <button :class="{ on: snapMode === 'grid' }" @click="snapMode = 'grid'">
-                🃏 卡片逐条快审网格
+                🃏 卡片快审网格
               </button>
             </div>
           </div>
@@ -520,12 +564,6 @@
 
         <!-- 视图 B：原生卡片快审网格（点击图片放大看清细节，点击底部按钮剔除/恢复，绝不误触！） -->
         <template v-else>
-          <div class="grid-subfilter">
-            <button :class="{ on: viewFilter === 'all' }" @click="viewFilter = 'all'">当前页签全部 ({{ tabSamples.length }})</button>
-            <button :class="{ on: viewFilter === 'included' }" @click="viewFilter = 'included'">✓ 有效计入 ({{ tabSamples.filter((x) => x.include).length }})</button>
-            <button :class="{ on: viewFilter === 'excluded' }" @click="viewFilter = 'excluded'">✕ 已剔除噪音 ({{ tabSamples.filter((x) => !x.include).length }})</button>
-          </div>
-
           <div class="xianyu-cards-grid">
             <article
               v-for="s in filteredSamples"
@@ -720,9 +758,13 @@ const customInputEl = ref(null)
 const overrideReason = ref('')
 const forceReviewOverride = ref(false)
 const policyOpen = ref(false)
+const toolsOpen = ref(false)
+const aiOpen = ref(false)
+const factsOpen = ref(false)
 const showApiMeta = ref(false)
 const showComposition = ref(false)
-const snapMode = ref('dom')
+const showQueueBar = ref(false)
+const snapMode = ref('grid')
 const snapRefreshTick = ref(0)
 const activeQueryTab = ref('all')
 const viewFilter = ref('all')
@@ -912,7 +954,7 @@ async function bootstrap() {
     readCodeFromPropOrHash() ||
     allCases.value.find((x) => x.step !== 'active')?.code ||
     allCases.value[0]?.code ||
-    '990001549229'
+    '513211549229'
   await loadCase(target)
 }
 
@@ -1232,43 +1274,46 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.pc-page { padding: 18px 28px 92px; max-width: 1720px; margin: 0 auto; display: grid; gap: 14px; }
+.pc-page { padding: 12px 24px 86px; max-width: 1720px; margin: 0 auto; display: grid; gap: 8px; }
 .pc-loading { padding: 64px 24px; text-align: center; color: var(--mute); font-weight: 700; }
 
-.wizard-bar { padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+.wizard-bar { padding: 8px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
 .wiz-steps { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.wstep { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--soft); color: var(--mute); font-weight: 700; font-size: 13px; cursor: pointer; }
-.wstep i { width: 20px; height: 20px; border-radius: 99px; background: rgba(15,23,42,.1); font-style: normal; font-size: 11.5px; font-weight: 900; display: inline-flex; align-items: center; justify-content: center; }
-.wstep.cur { background: var(--ink); color: #fff; border-color: var(--ink); }
+.wstep { display: inline-flex; align-items: center; gap: 7px; height: 32px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--soft); color: var(--mute); font-weight: 700; font-size: 12.5px; cursor: pointer; }
+.wstep i { width: 19px; height: 19px; border-radius: 99px; background: rgba(15,23,42,.1); font-style: normal; font-size: 11px; font-weight: 900; display: inline-flex; align-items: center; justify-content: center; }
+.wstep.cur { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 .wstep.cur i { background: var(--acc); color: #fff; }
 .wstep.done { background: #ecfdf5; color: #15803d; border-color: #bbf7d0; }
 .wstep.done i { background: #16a34a; color: #fff; }
 .wsep { color: var(--mute); font-weight: 800; }
-.sku-sel { height: 36px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel); padding: 0 12px; font-weight: 700; font-size: 13px; max-width: 320px; }
+.wiz-switch { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.sku-sel { height: 30px; border-radius: 9px; border: 1px solid var(--line); background: var(--panel); padding: 0 9px; font-weight: 700; font-size: 12px; max-width: 210px; }
 
 /* 5大队列巡航条 */
-.queue-cruise-bar { padding: 12px 16px; display: grid; gap: 10px; }
-.qcb-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-.q-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
-.q-tabs button { height: 34px; padding: 0 13px; border-radius: 999px; border: 1px solid var(--line); background: var(--soft); font-size: 12.5px; font-weight: 800; color: var(--ink); display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
-.q-tabs button.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+.queue-cruise-bar { padding: 8px 14px; display: grid; gap: 6px; }
+.qcb-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.q-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.q-tabs button { height: 30px; padding: 0 11px; border-radius: 999px; border: 1px solid var(--line); background: var(--soft); font-size: 12px; font-weight: 800; color: var(--ink); display: inline-flex; align-items: center; gap: 5px; cursor: pointer; }
+.q-tabs button.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 .qdot { width: 8px; height: 8px; border-radius: 99px; display: inline-block; }
 .qdot.red { background: #ef4444; }
 .qdot.amb { background: #f59e0b; }
 .qdot.pur { background: #8b5cf6; }
 .qdot.grn { background: #22c55e; }
-.sub-band-row { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; padding-top: 8px; border-top: 1px dashed var(--line); }
+.sub-band-row { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; padding-top: 6px; border-top: 1px dashed var(--line); }
 .sb-lbl { font-size: 12px; font-weight: 700; color: var(--mute); }
-.sb-chip { height: 28px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--line); background: #fff; font-size: 12px; font-weight: 700; cursor: pointer; }
+.sb-chip { height: 26px; padding: 0 9px; border-radius: 8px; border: 1px solid var(--line); background: #fff; font-size: 12px; font-weight: 700; cursor: pointer; }
 .sb-chip.on { background: var(--acc-soft); border-color: var(--acc); color: var(--acc); }
 
-.decision-panel { padding: 18px 22px; display: grid; gap: 14px; }
-.dp-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
-.dp-badges { display: flex; gap: 7px; flex-wrap: wrap; align-items: center; margin-bottom: 6px; }
+.decision-panel { padding: 9px 14px; display: grid; gap: 6px; }
+.dp-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: nowrap; }
+.dp-sku { flex: 1; min-width: 0; }
+.dp-badges { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-bottom: 3px; }
 .link-mini { border: 0; background: none; color: var(--acc); font-size: 12px; font-weight: 800; cursor: pointer; text-decoration: underline; }
-.dp-sku h1 { margin: 0; font-size: 24px; font-weight: 900; letter-spacing: -.02em; }
-.dp-sku h1 small { font-size: 13.5px; font-weight: 600; color: var(--mute); margin-left: 8px; }
-.dp-top-acts { display: flex; gap: 7px; flex-wrap: wrap; }
+.dp-sku h1 { margin: 0; font-size: 20px; font-weight: 900; letter-spacing: -.02em; }
+.dp-sku h1 small { font-size: 12.5px; font-weight: 600; color: var(--mute); margin-left: 8px; }
+.dp-top-acts { display: flex; gap: 6px; flex-wrap: wrap; }
+.secondary-tools { padding-top: 4px; border-top: 1px dashed var(--line); }
 .amb-btn { background: #fffbeb; border-color: #fde68a; color: #92400e; font-weight: 800; }
 
 .api-meta-strip { margin-top: 8px; padding: 9px 12px; border-radius: 10px; background: #f8fafc; border: 1px solid var(--line); display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; font-size: 12px; }
@@ -1304,65 +1349,66 @@ onUnmounted(() => {
 .pf-btns { display: flex; gap: 8px; flex-wrap: wrap; }
 
 /* 四事实并列对比条 */
-.four-facts-strip { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
-@media (max-width: 960px) { .four-facts-strip { grid-template-columns: repeat(2, 1fr); } }
-.ff-card { padding: 11px 14px; border-radius: 13px; background: #f8fafc; border: 1px solid var(--line); display: grid; gap: 3px; }
+.four-facts-strip { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.ff-card { padding: 6px 11px; border-radius: 10px; background: #f8fafc; border: 1px solid var(--line); display: grid; gap: 1px; }
 .ff-card.highlight { background: #f0fdf4; border-color: #86efac; }
-.ff-card span { font-size: 12px; font-weight: 700; color: var(--mute); }
-.ff-card b { font-size: 20px; font-weight: 900; color: var(--ink); }
-.ff-card b em { font-style: normal; font-size: 13.5px; color: #15803d; }
-.ff-card small { font-size: 11.5px; color: var(--mute); }
+.ff-card span { font-size: 11px; font-weight: 700; color: var(--mute); }
+.ff-card b { font-size: 16px; font-weight: 900; color: var(--ink); }
+.ff-card b em { font-style: normal; font-size: 12.5px; color: #15803d; }
+.ff-card small { display: none; }
 
 /* 三道安全门禁条 */
-.gate-banner { padding: 10px 14px; border-radius: 12px; border: 1px solid #bbf7d0; background: #f0fdf4; display: grid; gap: 8px; }
+.gate-banner { padding: 7px 12px; border-radius: 10px; border: 1px solid #bbf7d0; background: #f0fdf4; display: grid; gap: 5px; }
 .gate-banner.locked { background: #fffbeb; border-color: #fcd34d; }
-.gb-left { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 12px; }
+.gb-left { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; font-size: 12px; }
 .gb-id code { font-family: ui-monospace, SFMono-Regular, monospace; font-weight: 800; }
-.gchip { padding: 2px 8px; border-radius: 999px; font-weight: 800; font-size: 11.5px; }
+.gchip { padding: 2px 8px; border-radius: 999px; font-weight: 800; font-size: 11px; }
 .gchip.ok { background: #dcfce7; color: #166534; }
 .gchip.bad { background: #fee2e2; color: #b91c1c; }
-.verdict-chip { padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 800; }
+.verdict-chip { padding: 2px 9px; border-radius: 999px; font-size: 11.5px; font-weight: 800; }
 .verdict-chip.grn { background: #dcfce7; color: #15803d; }
 .verdict-chip.amb { background: #fef3c7; color: #92400e; }
 .verdict-chip.red { background: #fee2e2; color: #b91c1c; }
-.gb-lock-box { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-top: 6px; border-top: 1px dashed #fcd34d; font-size: 12.5px; }
+.gb-lock-box { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; padding-top: 5px; border-top: 1px dashed #fcd34d; font-size: 12px; }
 .gbl-warn { color: #b45309; }
 .gbl-chk { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-weight: 700; }
-.gbl-inp { height: 30px; min-width: 240px; border-radius: 8px; border: 1px solid #d97706; padding: 0 9px; font-size: 12.5px; background: #fff; }
+.gbl-inp { height: 28px; min-width: 240px; border-radius: 7px; border: 1px solid #d97706; padding: 0 9px; font-size: 12px; background: #fff; }
 
-.crawl-empty-box { padding: 22px; border-radius: 14px; background: #fffbeb; border: 1.5px dashed #f59e0b; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
-.candidates-bar { display: flex; gap: 14px; align-items: stretch; flex-wrap: wrap; padding-top: 4px; }
-.cand-options { flex: 1; min-width: 320px; display: grid; grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); gap: 10px; }
-.p-opt { padding: 11px 13px; border-radius: 14px; border: 2px solid var(--line); background: var(--soft); cursor: pointer; display: grid; gap: 3px; }
+.facts-drawer { display: grid; gap: 6px; padding-top: 4px; border-top: 1px dashed var(--line); }
+.review-inline-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; padding: 6px 12px; border-radius: 10px; background: var(--amb-soft); color: var(--amb-ink); font-size: 12px; }
+.crawl-empty-box { padding: 14px 18px; border-radius: 12px; background: #fffbeb; border: 1.5px dashed #f59e0b; display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; }
+.candidates-bar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; padding-top: 2px; }
+.cand-options { flex: 1; min-width: 320px; display: grid; grid-template-columns: repeat(auto-fit, minmax(122px, 1fr)); gap: 8px; }
+.p-opt { padding: 7px 11px; border-radius: 11px; border: 2px solid var(--line); background: var(--soft); cursor: pointer; display: grid; gap: 1px; }
 .p-opt.active { border-color: var(--acc); background: #eff6ff; }
 .po-top { display: flex; align-items: center; gap: 6px; }
-.rdot { width: 14px; height: 14px; border-radius: 99px; border: 2px solid #94a3b8; display: inline-block; position: relative; flex-shrink: 0; }
+.rdot { width: 13px; height: 13px; border-radius: 99px; border: 2px solid #94a3b8; display: inline-block; position: relative; flex-shrink: 0; }
 .rdot.on { border-color: var(--acc); }
 .rdot.on::after { content: ''; position: absolute; inset: 2px; border-radius: 99px; background: var(--acc); }
-.po-lbl { font-size: 12.5px; font-weight: 800; }
-.rec-tag { margin-left: auto; font-size: 10.5px; font-weight: 900; padding: 1px 6px; border-radius: 99px; background: var(--acc); color: #fff; }
-.po-price { font-size: 24px; font-weight: 900; letter-spacing: -.02em; }
-.po-price.muted-p { font-size: 17px; color: var(--mute); }
-.p-opt small { font-size: 11.5px; color: var(--mute); line-height: 1.32; }
-.custom-inp-wrap { display: flex; align-items: center; gap: 4px; background: #fff; border: 1.5px solid var(--acc); border-radius: 9px; padding: 0 9px; height: 34px; }
-.custom-inp-wrap input { border: 0; outline: none; width: 100%; font-size: 18px; font-weight: 900; background: none; }
-.confirm-cta-col { display: flex; flex-direction: column; justify-content: center; gap: 8px; min-width: 265px; }
-.main-confirm-btn { height: 48px; padding: 0 20px; font-size: 14.5px; font-weight: 900; justify-content: center; border-radius: 13px; }
+.po-lbl { font-size: 12px; font-weight: 800; }
+.rec-tag { margin-left: auto; font-size: 10px; font-weight: 900; padding: 1px 6px; border-radius: 99px; background: var(--acc); color: #fff; }
+.po-price { font-size: 19px; font-weight: 900; letter-spacing: -.02em; }
+.po-price.muted-p { font-size: 14px; color: var(--mute); }
+.p-opt small { display: none; }
+.custom-inp-wrap { display: flex; align-items: center; gap: 4px; background: #fff; border: 1.5px solid var(--acc); border-radius: 8px; padding: 0 8px; height: 28px; }
+.custom-inp-wrap input { border: 0; outline: none; width: 100%; font-size: 15px; font-weight: 900; background: none; }
+.confirm-cta-col { display: flex; flex-direction: column; justify-content: center; gap: 6px; min-width: 220px; }
+.main-confirm-btn { height: 42px; padding: 0 16px; font-size: 13.5px; font-weight: 900; justify-content: center; border-radius: 11px; }
 .below-cost-box { display: grid; gap: 4px; padding: 8px 10px; border-radius: 10px; background: #fef2f2; border: 1px solid #fecaca; font-size: 12px; color: #b91c1c; font-weight: 700; }
 .below-cost-box input { height: 30px; border-radius: 7px; border: 1px solid #fca5a5; padding: 0 8px; background: #fff; }
 
 /* 快照主面板 */
-.snapshot-board { padding: 18px 22px; display: grid; gap: 14px; }
-.sb-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
-.sb-head h2 { margin: 0; font-size: 19px; font-weight: 900; }
-.sb-head h2 small { font-size: 12.5px; font-weight: 600; color: var(--mute); margin-left: 8px; }
-.sb-mode-tools { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.view-seg { display: inline-flex; background: var(--soft); padding: 3px; border-radius: 10px; gap: 3px; }
-.view-seg button { border: 0; background: transparent; padding: 6px 12px; border-radius: 8px; font-size: 12.5px; font-weight: 800; color: var(--mute); cursor: pointer; }
+.snapshot-board { padding: 10px 16px; display: grid; gap: 8px; }
+.sb-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.sb-head h2 { margin: 0; font-size: 16.5px; font-weight: 900; }
+.sb-head h2 small { font-size: 12px; font-weight: 600; color: var(--mute); margin-left: 8px; }
+.sb-mode-tools { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.view-seg { display: inline-flex; background: var(--soft); padding: 3px; border-radius: 9px; gap: 3px; }
+.view-seg button { border: 0; background: transparent; padding: 5px 10px; border-radius: 7px; font-size: 12px; font-weight: 800; color: var(--mute); cursor: pointer; }
 .view-seg button.on { background: #fff; color: var(--ink); box-shadow: 0 1px 5px rgba(0,0,0,.08); }
 
-.kw-tabs-bar { display: flex; gap: 7px; flex-wrap: wrap; padding-bottom: 4px; border-bottom: 1px solid var(--line); }
-.kw-tabs-bar button { height: 32px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--soft); font-size: 12.5px; font-weight: 800; color: var(--ink); cursor: pointer; }
+.kw-tabs-bar { display: flex; gap: 6px; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; border-bottom: 1px solid var(--line); scrollbar-width: thin; }
+.kw-tabs-bar button { height: 28px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--soft); font-size: 12px; font-weight: 800; color: var(--ink); cursor: pointer; white-space: nowrap; flex-shrink: 0; }
 .kw-tabs-bar button.on { background: #ffe60f; border-color: #111; color: #111; }
 
 .composition-panel { padding: 14px; border-radius: 13px; background: #f8fafc; border: 1px solid var(--line); display: grid; gap: 12px; }
@@ -1377,9 +1423,9 @@ onUnmounted(() => {
 .dom-iframe-wrap { border-radius: 16px; overflow: hidden; border: 2px solid #e2e8f0; background: #f5f6f9; }
 .gf-iframe { width: 100%; height: 760px; border: 0; display: block; }
 
-.grid-subfilter { display: flex; gap: 8px; flex-wrap: wrap; }
-.grid-subfilter button { height: 30px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--soft); font-size: 12px; font-weight: 700; cursor: pointer; }
-.grid-subfilter button.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+.grid-subfilter { display: flex; gap: 5px; flex-wrap: wrap; }
+.grid-subfilter button { height: 26px; padding: 0 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--soft); font-size: 11.5px; font-weight: 700; color: var(--ink); cursor: pointer; }
+.grid-subfilter button.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 
 .xianyu-cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 13px; }
 .xy-card { background: #fff; border-radius: 15px; border: 2px solid #86efac; overflow: hidden; display: flex; flex-direction: column; }
@@ -1416,7 +1462,6 @@ onUnmounted(() => {
 .hrow { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; padding: 6px 10px; border-radius: 9px; background: var(--soft); font-size: 12.5px; }
 
 .sticky-foot { position: fixed; left: 240px; right: 0; bottom: 0; z-index: 40; background: rgba(255,255,255,.96); backdrop-filter: blur(10px); border-top: 1px solid var(--line); padding: 11px 28px; display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; box-shadow: 0 -6px 20px rgba(15,23,42,.06); }
-@media (max-width: 960px) { .sticky-foot { left: 0; padding: 10px 16px; } }
 .sf-metrics { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 13.5px; }
 .sep { color: #cbd5e1; }
 .acc-txt { color: var(--acc); font-size: 16px; }
@@ -1426,7 +1471,6 @@ onUnmounted(() => {
 /* 弹窗：高清预览 + 6大品类 + WMS回写 */
 .pc-modal-mask { position: fixed; inset: 0; z-index: 95; background: rgba(10, 15, 28, .82); display: grid; place-items: center; padding: 20px; }
 .pc-zoom-dialog { background: #fff; border-radius: 20px; padding: 20px; width: min(880px, 95vw); display: grid; grid-template-columns: 1.1fr 1fr; gap: 20px; align-items: center; }
-@media (max-width: 780px) { .pc-zoom-dialog { grid-template-columns: 1fr; } }
 .pzd-img { background: #f8fafc; border-radius: 14px; overflow: hidden; display: grid; place-items: center; }
 .pzd-img img { width: 100%; max-height: 68vh; object-fit: contain; }
 .pzd-info { display: grid; gap: 10px; }
@@ -1444,11 +1488,13 @@ onUnmounted(() => {
 .cat-row div { display: grid; gap: 2px; }
 .cat-row small { font-size: 11.5px; color: var(--mute); }
 .pcd-foot { display: flex; justify-content: flex-end; gap: 10px; margin-top: 6px; }
-.baseline-sanity-strip { padding: 12px 15px; border-radius: 14px; background: #f0fdf4; border: 1px solid #bbf7d0; display: grid; gap: 6px; margin-bottom: 10px; }
+.baseline-sanity-strip { padding: 7px 12px; border-radius: 10px; background: #f0fdf4; border: 1px solid #bbf7d0; display: grid; gap: 4px; margin-bottom: 2px; }
 .baseline-sanity-strip.blocked { background: #fef2f2; border: 1.5px solid #ef4444; }
 .baseline-sanity-strip.hi { background: #eff6ff; border: 1px solid #bfdbfe; }
-.bss-main { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 13px; }
+.bss-main { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 12.5px; }
 .bss-meta { color: #334155; }
-.bss-reason { margin: 0; font-size: 13px; line-height: 1.55; font-weight: 600; color: #1e293b; }
+.bss-fold { margin-left: auto; }
+.bss-fold summary { cursor: pointer; font-size: 12px; font-weight: 800; color: var(--red-ink, #b91c1c); }
+.bss-reason { margin: 6px 0 0; font-size: 12.5px; line-height: 1.5; font-weight: 600; color: #1e293b; }
 .baseline-sanity-strip.blocked .bss-reason { color: #b91c1c; }
 </style>

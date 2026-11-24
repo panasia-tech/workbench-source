@@ -81,9 +81,9 @@ const seed = () => ({
   reservations: {},
   // MCP 配置（A03）
   mcp: [
-    { id: 'M1', name: '禅道 MCP', addr: 'https://erp.example.invalid/mcp', use: '只读需求 / 验收', enabled: true, secret: '••••••', test: '正常' },
+    { id: 'M1', name: '禅道 MCP', addr: 'https://zentao.panasia.fun/mcp', use: '只读需求 / 验收', enabled: true, secret: '••••••', test: '正常' },
     { id: 'M2', name: '向日葵 MCP', addr: 'https://sunlogin.oray.com/mcp', use: '远控客户电脑', enabled: true, secret: '••••••', test: '正常' },
-    { id: 'M3', name: 'ERP 只读 API', addr: 'https://erp.example.invalid', use: '库存 / 商品 / 会话', enabled: true, secret: '本机会话', test: '正常' }
+    { id: 'M3', name: 'ERP 只读 API', addr: 'https://api.panasia.fun', use: '库存 / 商品 / 会话', enabled: true, secret: '本机会话', test: '正常' }
   ],
   // 订单费用与净收益（按订单 id）
   orderFees: {},

@@ -174,5 +174,4 @@ onMounted(load)
 .fg label { display: grid; gap: 4px; font-size: 12.5px; color: var(--mute); }
 .fg input { height: 36px; border: 1px solid var(--line); border-radius: 10px; padding: 0 10px; background: var(--soft); }
 .calc-res { margin-top: 10px; font-size: 15px; }
-@media (max-width: 980px) { .kpis, .fg { grid-template-columns: 1fr 1fr; } .cm { padding: 16px; } }
 </style>

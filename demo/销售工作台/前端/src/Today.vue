@@ -5,7 +5,7 @@
         <h1>今天</h1>
         <p class="sub">{{ me.name || '读取账号中…' }}<template v-if="me.post"> · {{ me.post }}</template> · {{ sup ? '全队任务' : '我的任务' }}</p>
       </div>
-      <div class="acts"><button class="btn" @click="openHelp('today')"><Icon name="help" />怎么用</button><button class="btn" data-tour="today-exc" @click="excOpen = true">遇到没见过的情况</button><Q k="d-exc" /><button class="btn" @click="devOpen = true">提给开发</button><Q k="d-dev" /></div>
+      <div class="acts"><button class="btn pri" @click="goGallery">🖼 问题商品 Gallery</button><button class="btn" @click="openHelp('today')"><Icon name="help" />怎么用</button><button class="btn" data-tour="today-exc" @click="excOpen = true">遇到没见过的情况</button><Q k="d-exc" /><button class="btn" @click="devOpen = true">提给开发</button><Q k="d-dev" /></div>
     </header>
 
 
@@ -205,6 +205,7 @@ import { api, post } from './api.js'
 import { openHelp, toast } from './ui.js'
 
 const me = computed(() => state.me || { name: '', post: '', dept: '销售部', practice_done: true, supervisor: false })
+const goGallery = () => { location.hash = '#/gallery/all' }
 const sup = computed(() => me.value.supervisor)
 const locked = computed(() => !me.value.practice_done)
 const comm = computed(() => ({ day_ok: 0, day_pend: 0, mon_ok: 0, mon_pend: 0, ...me.value.commission }))
@@ -352,7 +353,7 @@ onMounted(async () => { try { ents.value = await api('/demo/entities') } catch {
 .head { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; } .acts { display: flex; gap: 10px; } .acts svg { width: 18px; height: 18px; }
 .eyebrow { color: var(--acc); font-weight: 700; font-size: 14px; } h1 { font-size: 38px; letter-spacing: -.02em; font-weight: 800; line-height: 1.15; margin-top: 4px; } .sub { color: var(--mute); margin-top: 8px; font-size: 15px; }
 .gate { display: flex; align-items: center; gap: 16px; margin-top: 22px; padding: 18px 22px; background: var(--amb-soft); color: var(--amb-ink); border-radius: 20px; font-size: 15px; } .gate svg { width: 26px; height: 26px; flex: none; } .gate div { flex: 1; }
-.cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-top: 26px; } @media (max-width: 1100px) { .cards { grid-template-columns: 1fr; } }
+.cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-top: 26px; }
 .k { color: var(--mute); font-weight: 600; font-size: 13.5px; } .big { font-size: 44px; font-weight: 800; letter-spacing: -.03em; line-height: 1.1; margin: 4px 0 8px; } .big small { font-size: 15px; font-weight: 600; color: var(--mute); letter-spacing: 0; }
 .m { display: flex; gap: 8px; flex-wrap: wrap; } .k2 { color: var(--mute); font-size: 13px; margin-top: 10px; }
 .cards .bar { margin: 10px 0 4px; }
@@ -361,7 +362,7 @@ onMounted(async () => { try { ents.value = await api('/demo/entities') } catch {
 .grp { margin-top: 34px; } .grp h2 { display: flex; align-items: center; gap: 10px; font-size: 21px; margin-bottom: 14px; } .grp h2 em { font-style: normal; font-size: 13px; font-weight: 700; background: var(--soft); color: var(--mute); border-radius: 999px; padding: 1px 10px; }
 .empty { color: var(--mute); padding: 18px 4px; }
 .srow { margin-bottom: 12px; } .re { display: flex; align-items: center; gap: 10px; margin: -4px 0 0 28px; padding: 8px 14px; background: var(--soft); border-radius: 0 0 16px 16px; } .re select { height: 32px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel); padding: 0 10px; }
-.two { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 26px; } @media (max-width: 1100px) { .two { grid-template-columns: 1fr; } }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 26px; }
 .who { display: grid; grid-template-columns: 90px 1fr; gap: 4px 12px; align-items: center; margin-bottom: 12px; } .who .bar { grid-column: 1 / -1; height: 9px; }
 .asg { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; } .asg input[type=text], .asg input:not([type]) { flex: 1; min-width: 260px; } .asg select, .asg input:not([type=checkbox]) { height: 40px; border-radius: 12px; border: 1px solid var(--line); background: var(--panel); padding: 0 12px; } .file { font-size: 14px; display: flex; gap: 6px; align-items: center; }
 .exc { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-top: 1px solid var(--line); } .exc div { flex: 1; font-size: 14px; }
@@ -370,11 +371,11 @@ onMounted(async () => { try { ents.value = await api('/demo/entities') } catch {
 .more { color: var(--mute); font-size: 14px; margin: 4px 0 8px; padding-left: 6px; }
 
 .picks { margin-top: 22px; } .picks.todo { border: 2px solid #f6cf72; } .pk-h { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; } .pk-h h3 { margin: 0; } .pk-h .btn { margin-left: auto; }
-.pk-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 12px; } @media (max-width: 1100px) { .pk-row { grid-template-columns: 1fr; } }
+.pk-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 12px; }
 .pk-c { background: var(--soft); border-radius: 14px; padding: 10px 14px; display: grid; gap: 2px; } .pk-c b { font-size: 15.5px; } .pk-c small { color: var(--mute); font-size: 13px; }
 .pk-team { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 12px; }
 .modal.big { width: min(720px, 94vw); max-height: 90vh; overflow: auto; } .modal.big input:not([type]), .modal.big input[type=text] { width: 100%; height: 40px; border: 1px solid var(--line); border-radius: 10px; padding: 0 12px; background: var(--panel); color: var(--ink); font: inherit; margin: 6px 0; }
 .pk-blk { border-top: 1px solid var(--line); padding: 10px 0 4px; } .pk-blk h4 { margin: 0 0 2px; font-size: 16px; } .ck { display: flex; gap: 8px; align-items: center; font-size: 14px; margin: 4px 0; } .rw2 { display: flex; gap: 18px; flex-wrap: wrap; margin: 8px 0; }
 .dv-r { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
-.histc, .entc { margin-top: 22px; } .histc .bar { margin: 10px 0; } .rm { margin-right: 12px; font-weight: 600; } .ent { display: grid; grid-template-columns: 170px 1fr 220px auto; gap: 6px 14px; align-items: center; padding: 8px 0; border-top: 1px solid var(--line); } .ent .bar { margin: 0; height: 9px; } @media (max-width: 1100px) { .ent { grid-template-columns: 1fr; } } .entc .sm { font-size: 12.5px; margin: 8px 0 0; }
+.histc, .entc { margin-top: 22px; } .histc .bar { margin: 10px 0; } .rm { margin-right: 12px; font-weight: 600; } .ent { display: grid; grid-template-columns: 170px 1fr 220px auto; gap: 6px 14px; align-items: center; padding: 8px 0; border-top: 1px solid var(--line); } .ent .bar { margin: 0; height: 9px; } .entc .sm { font-size: 12.5px; margin: 8px 0 0; }
 </style>

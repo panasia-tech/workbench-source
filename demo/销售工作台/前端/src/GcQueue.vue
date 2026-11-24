@@ -16,11 +16,13 @@
 
     <header class="card hero-bar">
       <div>
-        <p class="eyebrow">ASYNC PUBLISH · LINKED DELIST · PLAYWRIGHT EVIDENCE</p>
-        <h1>AdsPower 上下架排期队列 &amp; 锁单全号联动下架台</h1>
-        <p class="sub">{{ data.stagger_rule }}</p>
+        <div class="hero-top">
+          <h1>AdsPower 上下架排期队列 &amp; 锁单全号联动下架台</h1>
+          <button class="btn sm ghost" @click="showRule = !showRule">📖 上下架与联动规则 {{ showRule ? '▴' : '▾' }}</button>
+        </div>
+        <p v-if="showRule" class="sub">{{ data.stagger_rule }}</p>
       </div>
-      <div class="rule-compare">
+      <div v-if="showRule" class="rule-compare">
         <div class="rc-pill red">
           <b>孤品实物（一机一码）</b>
           <span>任一闲鱼号拍下锁单 → 其余挂同款的号必须全号联动下架防超卖</span>
@@ -188,6 +190,7 @@ const data = reactive({ stagger_rule: '', linked_conflicts: [], aged_listings: [
 const badges = reactive({})
 const tflt = ref('all')
 const busy = ref(false)
+const showRule = ref(false)
 const shotTask = ref(null)
 
 const go = (k) => { location.hash = '#/' + k }
@@ -288,8 +291,8 @@ onMounted(load)
 </script>
 
 <style scoped>
-.gc-page { padding: 24px 36px 80px; max-width: 1720px; display: grid; gap: 18px; }
-.gc-nav { display: flex; justify-content: space-between; align-items: center; gap: 14px; padding: 12px 18px; flex-wrap: wrap; }
+.gc-page { padding: 18px 32px 64px; max-width: 1720px; display: grid; gap: 12px; }
+.gc-nav { display: flex; justify-content: space-between; align-items: center; gap: 14px; padding: 10px 16px; flex-wrap: wrap; }
 .gn-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
 .gn-tab { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 999px; background: var(--soft); color: var(--ink2); font-weight: 700; font-size: 14px; }
 .gn-tab i { width: 22px; height: 22px; border-radius: 50%; background: var(--panel); display: inline-flex; align-items: center; justify-content: center; font-style: normal; font-size: 12px; font-weight: 800; }
@@ -299,10 +302,11 @@ onMounted(load)
 .nb { font-style: normal; padding: 1px 7px; border-radius: 999px; background: var(--red); color: #fff; font-size: 11.5px; font-weight: 800; }
 .nb.amb { background: var(--amb); color: #2c1d00; }
 
-.hero-bar { padding: 22px 26px; display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
+.hero-bar { padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+.hero-top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .eyebrow { margin: 0; font-size: 12px; font-weight: 800; letter-spacing: .05em; color: var(--acc); }
-.hero-bar h1 { margin: 4px 0 6px; font-size: 28px; }
-.hero-bar .sub { margin: 0; color: var(--mute); font-size: 13.5px; max-width: 780px; }
+.hero-bar h1 { margin: 0; font-size: 24px; }
+.hero-bar .sub { margin: 6px 0 0; color: var(--mute); font-size: 13px; max-width: 780px; }
 .rule-compare { display: grid; gap: 8px; max-width: 520px; }
 .rc-pill { padding: 9px 14px; border-radius: 12px; font-size: 12.5px; display: grid; gap: 2px; }
 .rc-pill.red { background: var(--red-soft); color: var(--red-ink); }
@@ -327,7 +331,7 @@ onMounted(load)
 
 .seg { display: inline-flex; gap: 4px; padding: 4px; background: var(--soft); border-radius: 12px; flex-wrap: wrap; }
 .seg button { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border-radius: 9px; font-weight: 700; font-size: 13px; color: var(--ink2); }
-.seg button.on { background: var(--ink); color: #fff; }
+.seg button.on { background: var(--ink); color: var(--bg); }
 
 .errrow td { background: rgba(254, 226, 226, .35); }
 .detail-cell { max-width: 420px; }

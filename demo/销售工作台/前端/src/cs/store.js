@@ -58,6 +58,7 @@ export const store = reactive({
     autoShipDrawerOpen: false,
     autoRuleModalOpen: false,
     manualDrawerOpen: false,
+    tutorialDrawerOpen: false,
     moreMenuOpen: false,
     // 零培训与媒体预览状态（与 HelpDrawer / OnboardingOverlays / VideoPlayerModal 联动）
     helpKey: null,

@@ -72,9 +72,33 @@
         </section>
 
         <section class="sec">
-          <h3>操作短视频与制度出处</h3>
-          <div class="empty-video">
-            🎬 本节点 45 秒操作短视频状态：<b>待录</b>（遵循数据诚实原则，未录制绝不编造假链接）
+          <h3>原生教程台账与同版视频（通用讲解 + 人工兜底）</h3>
+          <div v-if="ledgerNode" class="guard-card" style="border-left: 3px solid var(--pri)">
+            <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap">
+              <code>{{ ledgerNode.node_id }}</code>
+              <span class="tag sm grn">{{ ledgerNode.skill_status }} · {{ ledgerNode.skill_name }}</span>
+              <span class="tag sm">{{ ledgerNode.fallback_status }}</span>
+            </div>
+            <div><b>通用视频时间码：</b>{{ ledgerNode.timecode }}（{{ ledgerNode.video_source_status }}）</div>
+            <div><b>Codex 交办：</b>{{ ledgerNode.codex_prompt_hint }}</div>
+            <div><b>停手兜底：</b>{{ ledgerNode.manual_trigger }}</div>
+            <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px">
+              <a v-if="ledgerNode.video_wiki_url" :href="ledgerNode.video_wiki_url" target="_blank" rel="noreferrer" class="btn sm pri">
+                ▶ 通用讲解（{{ ledgerNode.timecode }}）↗
+              </a>
+              <a v-if="ledgerNode.manual_fallback_video" :href="ledgerNode.manual_fallback_video" target="_blank" rel="noreferrer" class="btn sm soft">
+                🎬 客服 V3 专项片 ↗
+              </a>
+              <a v-if="ledgerNode.pdf_url" :href="ledgerNode.pdf_url" target="_blank" rel="noreferrer" class="btn sm">
+                员工小动物 PDF ↗
+              </a>
+              <button type="button" class="btn sm" @click="openTutorialLedger">
+                📚 打开客服独立教程台账 ›
+              </button>
+            </div>
+          </div>
+          <div v-else class="empty-video">
+            🎬 可点下方「打开客服独立教程台账」查看共用开场 + 外部客服 4 项节点的 720p Wiki 视频与时间码。
           </div>
           <div v-if="H.wiki?.length" class="wiki-stack">
             <div v-for="wk in H.wiki" :key="wk" class="wiki-row">
@@ -88,8 +112,9 @@
 
       <footer class="drawer-foot">
         <button type="button" class="btn sm pri" @click="startTour">✨ 开启页面聚光灯导览</button>
-        <button type="button" class="btn sm" @click="goManual">打开完整手册总表 ›</button>
-        <button type="button" class="btn sm" @click="resetPractice">重置当前角色新手练习进度</button>
+        <button type="button" class="btn sm" @click="openTutorialLedger">📚 客服教程台账</button>
+        <button type="button" class="btn sm" @click="goManual">📖 职责红线总表</button>
+        <button type="button" class="btn sm" @click="resetPractice">重置新手练习</button>
       </footer>
     </aside>
   </div>
@@ -102,12 +127,27 @@ import { HELP, TERMS, WIKI_LINKS } from '../data/helpAndRules.js';
 import Icon from './Icon.vue';
 
 const selectedTerm = ref('');
+const ledgerNode = ref(null);
 const H = computed(() => (store.ui.helpKey ? HELP[store.ui.helpKey] || HELP.chat : null));
+
+function resolveQueryActor() {
+  if (store.actorId === 'supervisor') return 'admin';
+  if (store.actorId === 'internal_chen') return 'chenxm';
+  if (store.actorId === 'newbie') return 'cs_newbie';
+  return 'outsource_lu';
+}
 
 watch(
   () => store.ui.helpKey,
-  () => {
+  async (key) => {
     selectedTerm.value = '';
+    ledgerNode.value = null;
+    if (!key) return;
+    try {
+      const r = await fetch(`/api/tutorials/by-help/${encodeURIComponent(key)}?actor=${encodeURIComponent(resolveQueryActor())}`);
+      const d = await r.json();
+      if (r.ok && d.ok) ledgerNode.value = d.node;
+    } catch { /* 静默回退 */ }
   },
 );
 
@@ -121,7 +161,11 @@ function startTour() {
 }
 function goManual() {
   close();
-  store.ui.route = 'manual';
+  store.ui.manualDrawerOpen = true;
+}
+function openTutorialLedger() {
+  close();
+  store.ui.tutorialDrawerOpen = true;
 }
 async function resetPractice() {
   await resetPracticeForCurrentActor();

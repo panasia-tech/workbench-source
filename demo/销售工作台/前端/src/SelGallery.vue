@@ -2,36 +2,35 @@
   <div class="page sg">
     <header class="head">
       <div>
-        <p class="eyebrow">{{ isPhys ? '实物选品 · 多视角与95%走量兜底' : '虚拟选品' }}</p>
         <h1>{{ isPhys ? '实物选品 Gallery' : '虚拟选品 Gallery' }}<Q :k="isPhys ? 'sel-phys' : 'sel-virt'" /></h1>
-        <p class="sub">{{ isPhys
-          ? '默认按「品牌 + 规格」下钻，也可一键切换「95%走量 vs 5%高端 vs 卓威」「规格档位」「面板类型」「清洗防呆状态」视角。'
-          : '大类 → 细分 → 子类 → SKU 产品卡，一层层点进去。每张卡标着：处在哪个阶段、榜单需求信号有没有、还缺什么。' }}</p>
+        <p class="sub">{{ isPhys ? '按品牌与规格视觉下钻选品，支持多视角切换。' : '大类 → 细分 → 子类 → 产品卡逐层视觉选品。' }}</p>
       </div>
       <div class="srch">
+        <button class="btn" @click="showRules = !showRules">📊 {{ showRules ? '收起覆盖与规则' : '覆盖与分流规则 ▾' }}</button>
         <button v-if="isPhys" class="btn" @click="goBaselineHub">⚙ 规格与兜底基准台</button>
-        <button v-if="isPhys" class="btn" @click="exportCsv">导出当前清单 CSV</button>
-        <button v-else class="btn pri" @click="goVirtNew">+ 新增虚拟商品卡</button>
+        <button v-if="isPhys" class="btn" @click="exportCsv">导出 CSV</button>
+        <button v-if="!isPhys" class="btn" @click="goVirtIntel">外部情报与同题赛马中心 →</button>
+        <button v-if="!isPhys" class="btn pri" @click="goVirtNew">+ 新增虚拟商品卡</button>
         <input v-model="q" :placeholder="isPhys ? '搜型号 / 品牌 / OLED / 240Hz（全库）' : '搜产品名 / 品牌'" @input="page = 1" />
       </div>
     </header>
 
-    <section class="gaps" :class="{ hot: isPhys }">
+    <section v-if="showRules" class="gaps" :class="{ hot: isPhys }">
       <div class="gh"><b>这一块现在覆盖与缺口实况</b><span class="muted">（95%千元内走量款自动同档兜底+防呆；5%高端款直接按实爬算；卓威独立表）</span></div>
       <div class="gc"><span v-for="g in gapChips" :key="g.t" class="gp" :class="g.cls"><b>{{ g.n }}</b>{{ g.t }}<small>{{ g.who }}</small></span></div>
     </section>
 
     <!-- 实物选品多视角切换栏（默认：品牌 + 规格） -->
     <section v-if="isPhys" class="persp-bar">
-      <span class="p-lbl">切换 Gallery 视角：</span>
+      <span class="p-lbl">视角：</span>
       <button v-for="pv in PERSPECTIVES" :key="pv.k" class="p-btn" :class="{ on: perspective === pv.k }" @click="setPerspective(pv.k)">
         {{ pv.t }}
       </button>
-      <button v-if="path[1] !== '显示器'" class="p-jump" @click="jumpMonitors">直达显示器 7,790+ 款多维视图 ›</button>
+      <button v-if="path[1] !== '显示器'" class="p-jump" @click="jumpMonitors">直达显示器 7,790+ 款 ›</button>
     </section>
 
-    <!-- 当前品类预留规格坑位提示条（非显示器品类自动提示：复杂3C已预留坑位 vs 简单家电不折腾） -->
-    <section v-if="isPhys && curCatSlot" class="cat-slot-banner" :class="curCatSlot.mode">
+    <!-- 当前品类预留规格坑位提示条（随规则面板按需展开） -->
+    <section v-if="showRules && isPhys && curCatSlot" class="cat-slot-banner" :class="curCatSlot.mode">
       <div>
         <span class="tag" :class="curCatSlot.mode === 'reserved' ? 'acc' : 'grn'">
           {{ curCatSlot.mode === 'reserved' ? '复杂品类 · 规格坑位已预留' : '简单标品 · 极简直爬不折腾' }}
@@ -47,7 +46,6 @@
       <template v-for="(s, i) in path" :key="i"><span>›</span><button @click="go(path.slice(0, i + 1))">{{ s }}</button></template>
       <button v-if="isPhys && groups.length && path.length >= 2 && !flatHere" class="btn sm flat-btn" @click="flatHere = true">同屏平铺本层全部型号</button>
       <button v-else-if="flatHere" class="btn sm flat-btn" @click="flatHere = false">恢复分组卡片视图</button>
-      <span v-if="isPhys && !path.length" class="tag amb dict">默认视角：品牌 + 规格（可随时在上方切走量/档位/面板视角）</span>
     </nav>
 
     <!-- 中间层：大类 / 品类 / 品牌 / 规格档 / 面板 / 分流轨道 -->
@@ -217,6 +215,7 @@ const UN = UNCLS, PAGE = 48
 const q = ref(''), page = ref(1), sel = ref(null), fs = ref(''), fr = ref(''), fhz = ref(''), ftrack = ref(''), onlyGap = ref(false), state2 = ref('未选'), to = ref('chenxm')
 const vf = ref('')
 const flatHere = ref(false)
+const showRules = ref(false)
 
 // 多视角切换（A6：默认按「品牌 + 规格」）
 const perspective = ref('brand_spec')
@@ -498,26 +497,27 @@ function goClean(m) {
 }
 function goBaselineHub() { location.hash = '#/spec-baseline' }
 function goVirtNew() { location.hash = '#/virt-new' }
+function goVirtIntel() { location.hash = '#/virt-intel' }
 </script>
 
 <style scoped>
-.sg { padding: 26px 40px 80px; max-width: 1640px; } .head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; } .sg h1 { font-size: 34px; margin: 6px 0; letter-spacing: -.02em; } .eyebrow { margin: 0; font-size: 13px; font-weight: 700; color: var(--acc); } .sub { margin: 0; color: var(--mute); max-width: 820px; line-height: 1.7; }
+.sg { padding: 12px 28px 56px; max-width: 1640px; } .head { display: flex; justify-content: space-between; align-items: flex-end; gap: 14px; flex-wrap: wrap; } .sg h1 { font-size: 26px; margin: 0 0 2px; letter-spacing: -.02em; } .eyebrow { margin: 0; font-size: 13px; font-weight: 700; color: var(--acc); } .sub { margin: 0; color: var(--mute); max-width: 820px; line-height: 1.45; font-size: 13px; }
 .srch { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-.srch input { width: 290px; height: 42px; border: 1px solid var(--line); border-radius: 14px; padding: 0 16px; background: var(--panel); color: var(--ink); font: inherit; }
-.gaps { margin: 16px 0 12px; padding: 12px 16px; border-radius: 16px; background: var(--soft); } .gaps.hot { background: var(--amb-soft); } .gh { display: flex; gap: 10px; align-items: baseline; font-size: 14px; flex-wrap: wrap; } .gc { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.srch input { width: 240px; height: 34px; border: 1px solid var(--line); border-radius: 10px; padding: 0 12px; background: var(--panel); color: var(--ink); font: inherit; }
+.gaps { margin: 10px 0 6px; padding: 12px 16px; border-radius: 16px; background: var(--soft); } .gaps.hot { background: var(--amb-soft); } .gh { display: flex; gap: 10px; align-items: baseline; font-size: 14px; flex-wrap: wrap; } .gc { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
 .gp { display: inline-flex; align-items: baseline; gap: 6px; padding: 5px 12px; border-radius: 12px; background: var(--panel); font-size: 13px; } .gp b { font-size: 18px; } .gp small { color: var(--mute); font-size: 11.5px; } .gp.red b { color: var(--red); } .gp.grn b { color: var(--grn); } .gp.amb b { color: var(--amb); } .gp.acc b { color: var(--acc); }
 
-.persp-bar { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; padding: 10px 14px; border-radius: 14px; background: var(--panel); box-shadow: var(--sh); margin: 8px 0 12px; }
-.p-lbl { font-size: 13px; font-weight: 700; color: var(--mute); margin-right: 4px; }
-.p-btn { height: 32px; padding: 0 13px; border-radius: 10px; background: var(--soft); font-size: 13px; font-weight: 700; color: var(--ink2); }
+.persp-bar { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; padding: 6px 12px; border-radius: 12px; background: var(--panel); box-shadow: var(--sh); margin: 6px 0; }
+.p-lbl { font-size: 12.5px; font-weight: 700; color: var(--mute); margin-right: 4px; }
+.p-btn { height: 30px; padding: 0 11px; border-radius: 9px; background: var(--soft); font-size: 12.5px; font-weight: 700; color: var(--ink2); }
 .p-btn.on { background: var(--acc); color: #fff; }
-.p-jump { margin-left: auto; font-size: 13px; font-weight: 700; color: var(--acc); background: var(--acc-soft); padding: 5px 12px; border-radius: 999px; }
+.p-jump { margin-left: auto; font-size: 12.5px; font-weight: 700; color: var(--acc); background: var(--acc-soft); padding: 4px 10px; border-radius: 999px; }
 
 .cat-slot-banner { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding: 10px 16px; border-radius: 14px; background: var(--acc-soft); margin-bottom: 10px; font-size: 13.5px; }
 .cat-slot-banner.simple { background: var(--soft); }
 .cat-slot-banner div { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
-.crumb { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin: 6px 0 12px; font-size: 15px; } .crumb button { font-weight: 700; color: var(--acc); padding: 3px 8px; border-radius: 8px; } .crumb button:hover { background: var(--acc-soft); } .crumb span { color: var(--mute); } .dict { margin-left: auto; } .flat-btn { margin-left: 8px; color: var(--ink) !important; }
+.crumb { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin: 4px 0 8px; font-size: 14px; } .crumb button { font-weight: 700; color: var(--acc); padding: 3px 8px; border-radius: 8px; } .crumb button:hover { background: var(--acc-soft); } .crumb span { color: var(--mute); } .dict { margin-left: auto; } .flat-btn { margin-left: 8px; color: var(--ink) !important; }
 .grid.g { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; } .gcard { background: var(--panel); border-radius: 22px; padding: 22px 22px 18px; cursor: pointer; box-shadow: var(--sh); transition: transform .12s; border-top: 6px solid var(--acc); } .gcard:hover { transform: translateY(-3px); } .gcard.warn { border-top-color: var(--red); }
 .gbig { font-size: 46px; font-weight: 800; letter-spacing: -.03em; line-height: 1; } .gbig small { font-size: 14px; font-weight: 600; color: var(--mute); margin-left: 8px; letter-spacing: 0; } .gcard h3 { margin: 10px 0 8px; font-size: 20px; } .gst { display: flex; gap: 6px; flex-wrap: wrap; } .sub2 { margin: 10px 0 0; font-size: 13px; color: var(--mute); }
 .facets { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin: 4px 0 10px; } .facets .lb { color: var(--mute); font-size: 13px; } .facets button { height: 30px; padding: 0 12px; border-radius: 999px; background: var(--soft); font-weight: 600; font-size: 13px; color: var(--ink2); } .facets button.on { background: var(--acc); color: #fff; }

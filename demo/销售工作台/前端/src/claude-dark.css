@@ -1,0 +1,494 @@
+/* 销售工作台 · 可切换皮肤「Claude 黑色皮肤（星夜黑 Obsidian Indigo）」
+   还原 2026-11-11~12 Claude 原版星夜黑设计系统，同时兼容 V4-V6 全部桌面端组件与 CS V3。 */
+
+.skin-btn {
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid #0f172a;
+  background: #0f172a;
+  color: #f8fafc;
+  font-size: 12px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform .08s, filter .14s, background .14s;
+}
+.skin-btn:hover { filter: brightness(1.12); }
+.skin-btn:active { transform: scale(.97); }
+
+html[data-skin="dark"] .skin-btn {
+  background: linear-gradient(135deg, rgba(52, 84, 255, .28), rgba(122, 92, 255, .28));
+  border-color: rgba(123, 147, 255, .52);
+  color: #eef1f6;
+}
+
+html[data-skin="dark"] {
+  color-scheme: dark;
+  --bg: #0d1017;
+  --panel: #161b25;
+  --ink: #eef1f6;
+  --ink2: #c5ccd8;
+  --mute: #8a96a8;
+  --line: #262d3b;
+  --soft: #1b2230;
+  --acc: #7b93ff;
+  --acc-soft: #1d2547;
+  --red: #ff6b70;
+  --red-soft: #3a1c1f;
+  --red-ink: #ff9a9d;
+  --amb: #ffc04d;
+  --amb-soft: #3a2d10;
+  --amb-ink: #ffd27d;
+  --grn: #3ed398;
+  --grn-soft: #11332a;
+  --grn-ink: #7ce6b8;
+  --sh: 0 1px 2px rgba(0, 0, 0, .45), 0 10px 30px rgba(0, 0, 0, .32);
+  --sh-up: 0 18px 44px rgba(0, 0, 0, .62);
+}
+
+html[data-skin="dark"] body {
+  background: var(--bg);
+  color: var(--ink);
+}
+
+html[data-skin="dark"] body .dock,
+html[data-skin="dark"] body .topbar {
+  background: var(--panel);
+  border-color: var(--line);
+}
+
+html[data-skin="dark"] body .brand span {
+  background: linear-gradient(135deg, #3454ff, #7a5cff);
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(52, 84, 255, .38);
+}
+
+html[data-skin="dark"] body .btn {
+  background: var(--soft);
+  border-color: var(--line);
+  color: var(--ink);
+}
+html[data-skin="dark"] body .btn:hover {
+  background: #232c3d;
+}
+html[data-skin="dark"] body .btn.pri {
+  background: linear-gradient(180deg, #6882ff, #4c68f5);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 4px 14px rgba(76, 104, 245, .32);
+}
+html[data-skin="dark"] body .btn.ok {
+  background: #18a974;
+  color: #fff;
+  border-color: transparent;
+}
+html[data-skin="dark"] body .btn.bad {
+  background: var(--red-soft);
+  color: var(--red-ink);
+  border-color: rgba(255, 107, 112, .35);
+}
+
+html[data-skin="dark"] body .card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  box-shadow: var(--sh);
+}
+
+html[data-skin="dark"] body .pic .big.amb { border-color: rgba(255, 192, 77, .65); }
+html[data-skin="dark"] body .pic .big.grn { border-color: rgba(62, 211, 152, .55); }
+html[data-skin="dark"] body .pic .big.red { border-color: rgba(255, 107, 112, .7); }
+
+html[data-skin="dark"] body .gauge .z.red { background: #6b2529; }
+html[data-skin="dark"] body .gauge .z.grn { background: #195944; }
+html[data-skin="dark"] body .gauge .z.amb { background: #644b18; }
+
+html[data-skin="dark"] body .gal .gc,
+html[data-skin="dark"] body .main .gal .gc {
+  background: var(--panel);
+  border: 1px solid var(--line);
+}
+html[data-skin="dark"] body .gal .gc.red,
+html[data-skin="dark"] body .main .gal .gc.red {
+  box-shadow: 0 0 0 2px var(--red), var(--sh);
+}
+html[data-skin="dark"] body .gal .gc.amb,
+html[data-skin="dark"] body .main .gal .gc.amb {
+  box-shadow: 0 0 0 1.5px rgba(255, 192, 77, .68), var(--sh);
+}
+html[data-skin="dark"] body .gal .gc .badge.red { background: var(--red); color: #fff; }
+html[data-skin="dark"] body .gal .gc .badge.amb { background: var(--amb); color: #241800; }
+html[data-skin="dark"] body .gal .gc .badge.grn { background: var(--grn); color: #052619; }
+
+html[data-skin="dark"] body .task-summary,
+html[data-skin="dark"] body .clean-notice {
+  border-color: #2c3a66;
+  background: #151d33;
+  color: var(--ink2);
+}
+html[data-skin="dark"] body .task-summary button.selected {
+  border-color: var(--acc);
+  color: var(--acc);
+}
+
+html[data-skin="dark"] body .work-today .today-aside .collab {
+  border-color: rgba(255, 107, 112, .55);
+}
+html[data-skin="dark"] body .work-today .today-aside .picks.todo {
+  border-color: rgba(255, 192, 77, .55);
+}
+
+html[data-skin="dark"] body .finder::backdrop,
+html[data-skin="dark"] body .clean-proof::backdrop {
+  background: rgba(5, 8, 15, .68);
+}
+
+/* 通用输入框 / 选择框 / 弹窗兜底 */
+html[data-skin="dark"] body select,
+html[data-skin="dark"] body textarea,
+html[data-skin="dark"] body input:not([type="checkbox"]):not([type="radio"]) {
+  background: #111620;
+  color: var(--ink);
+  border-color: var(--line);
+}
+html[data-skin="dark"] body .pc-zoom-dialog,
+html[data-skin="dark"] body .pc-cat-dialog,
+html[data-skin="dark"] body .wg-zoom-box {
+  background: var(--panel);
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+
+/* Gallery banner */
+html[data-skin="dark"] body .wash-banner {
+  background: linear-gradient(90deg, #17203a 0%, #122b26 100%);
+  border-color: rgba(123, 147, 255, .45);
+}
+html[data-skin="dark"] body .wash-banner.virt-banner {
+  background: linear-gradient(90deg, #221b3d 0%, #122b26 100%);
+  border-color: rgba(167, 139, 250, .45);
+}
+html[data-skin="dark"] body .wash-banner span {
+  color: var(--ink2);
+}
+
+/* WashGallery.vue */
+html[data-skin="dark"] body .wg-img,
+html[data-skin="dark"] body .wg-zoom-box img {
+  background: var(--soft);
+}
+html[data-skin="dark"] body .fchip.red-chip.on,
+html[data-skin="dark"] body .age-pill.red {
+  background: var(--red-soft);
+  border-color: rgba(255, 107, 112, .5);
+  color: var(--red-ink);
+}
+html[data-skin="dark"] body .fchip.grn-chip.on,
+html[data-skin="dark"] body .stage-pill.published {
+  background: var(--grn-soft);
+  border-color: rgba(62, 211, 152, .5);
+  color: var(--grn-ink);
+}
+html[data-skin="dark"] body .fchip.amb-chip.on,
+html[data-skin="dark"] body .stage-pill,
+html[data-skin="dark"] body .age-pill {
+  background: var(--amb-soft);
+  border-color: rgba(255, 192, 77, .5);
+  color: var(--amb-ink);
+}
+html[data-skin="dark"] body .stage-pill.step2_image {
+  background: var(--acc-soft);
+  border-color: rgba(123, 147, 255, .45);
+  color: var(--acc);
+}
+html[data-skin="dark"] body .srow-item .sn {
+  background: var(--line);
+  color: var(--ink);
+}
+
+/* PriceCleaning.vue (第 1 步：洗价格) */
+html[data-skin="dark"] body .sb-chip,
+html[data-skin="dark"] body .wev-item,
+html[data-skin="dark"] body .asc-left code,
+html[data-skin="dark"] body .eff-preview code,
+html[data-skin="dark"] body .vp-chip,
+html[data-skin="dark"] body .log-tbl,
+html[data-skin="dark"] body .xy-card,
+html[data-skin="dark"] body .custom-inp-wrap {
+  background: var(--panel);
+  color: var(--ink);
+  border-color: var(--line);
+}
+html[data-skin="dark"] body .xy-card {
+  border-color: rgba(62, 211, 152, .55);
+}
+html[data-skin="dark"] body .xy-card.excluded {
+  background: #121722;
+  border-color: var(--line);
+}
+html[data-skin="dark"] body .api-meta-strip,
+html[data-skin="dark"] body .ff-card,
+html[data-skin="dark"] body .composition-panel,
+html[data-skin="dark"] body .pzd-img,
+html[data-skin="dark"] body .pzd-reason,
+html[data-skin="dark"] body .log-tbl th,
+html[data-skin="dark"] body .xyc-cond,
+html[data-skin="dark"] body .xyc-img,
+html[data-skin="dark"] body .dom-iframe-wrap {
+  background: var(--soft);
+  color: var(--ink2);
+  border-color: var(--line);
+}
+html[data-skin="dark"] body .log-tbl td,
+html[data-skin="dark"] body .log-tbl th {
+  border-bottom-color: var(--line);
+}
+html[data-skin="dark"] body .ai-evidence-box,
+html[data-skin="dark"] body .p-opt.active,
+html[data-skin="dark"] body .baseline-sanity-strip.hi,
+html[data-skin="dark"] body .xyc-badge.restore,
+html[data-skin="dark"] body .xyc-toggle-btn.to-keep {
+  background: var(--acc-soft);
+  border-color: rgba(123, 147, 255, .45);
+  color: var(--ink);
+}
+html[data-skin="dark"] body .ff-card.highlight,
+html[data-skin="dark"] body .gate-banner,
+html[data-skin="dark"] body .wstep.done,
+html[data-skin="dark"] body .baseline-sanity-strip,
+html[data-skin="dark"] body .xyc-reason.in,
+html[data-skin="dark"] body .gchip.ok,
+html[data-skin="dark"] body .verdict-chip.grn,
+html[data-skin="dark"] body .xyc-badge.valid,
+html[data-skin="dark"] body .vp-chip.med {
+  background: var(--grn-soft);
+  border-color: rgba(62, 211, 152, .45);
+  color: var(--grn-ink);
+}
+html[data-skin="dark"] body .wstep.done i {
+  background: var(--grn);
+  color: #052619;
+}
+html[data-skin="dark"] body .gate-banner.locked,
+html[data-skin="dark"] body .amb-btn,
+html[data-skin="dark"] body .inv-warn,
+html[data-skin="dark"] body .crawl-empty-box,
+html[data-skin="dark"] body .verdict-chip.amb {
+  background: var(--amb-soft);
+  border-color: rgba(255, 192, 77, .45);
+  color: var(--amb-ink);
+}
+html[data-skin="dark"] body .below-cost-box,
+html[data-skin="dark"] body .baseline-sanity-strip.blocked,
+html[data-skin="dark"] body .xyc-reason.out,
+html[data-skin="dark"] body .gchip.bad,
+html[data-skin="dark"] body .verdict-chip.red,
+html[data-skin="dark"] body .xyc-badge.rej {
+  background: var(--red-soft);
+  border-color: rgba(255, 107, 112, .48);
+  color: var(--red-ink);
+}
+html[data-skin="dark"] body .asc-left p,
+html[data-skin="dark"] body .wev-title,
+html[data-skin="dark"] body .wev-item p,
+html[data-skin="dark"] body .bss-meta,
+html[data-skin="dark"] body .bss-reason {
+  color: var(--ink2);
+}
+html[data-skin="dark"] body .baseline-sanity-strip.blocked .bss-reason {
+  color: var(--red-ink);
+}
+html[data-skin="dark"] body .grn-txt {
+  color: var(--grn);
+}
+html[data-skin="dark"] body .sep {
+  color: var(--line);
+}
+html[data-skin="dark"] body .view-seg button.on {
+  background: var(--panel);
+  color: var(--ink);
+}
+html[data-skin="dark"] body .xyc-toggle-btn.to-drop {
+  background: var(--soft);
+  color: var(--ink2);
+  border-color: var(--line);
+}
+html[data-skin="dark"] body .sticky-foot {
+  background: rgba(22, 27, 37, .94);
+  border-top-color: var(--line);
+  color: var(--ink);
+  box-shadow: 0 -10px 28px rgba(0, 0, 0, .45);
+}
+
+/* ImageCleaning.vue (第 2 步：洗图片三栏) */
+html[data-skin="dark"] body .pcard,
+html[data-skin="dark"] body .sbox {
+  background: var(--panel);
+  border-color: var(--line);
+  color: var(--ink);
+}
+html[data-skin="dark"] body .pcard.picked-cur,
+html[data-skin="dark"] body .sbox.active {
+  border-color: var(--acc);
+}
+html[data-skin="dark"] body .pcard.picked-other {
+  border-color: var(--grn);
+}
+html[data-skin="dark"] body .pcard.filtered {
+  border-color: var(--amb);
+}
+html[data-skin="dark"] body .col-rec {
+  background: linear-gradient(180deg, rgba(17, 51, 42, .62) 0%, var(--panel) 140px);
+  border-color: rgba(62, 211, 152, .42);
+}
+html[data-skin="dark"] body .col-notrec {
+  background: linear-gradient(180deg, rgba(58, 45, 16, .62) 0%, var(--panel) 140px);
+  border-color: rgba(255, 192, 77, .42);
+}
+html[data-skin="dark"] body .col-sel {
+  background: linear-gradient(180deg, rgba(29, 37, 71, .68) 0%, var(--panel) 140px);
+  border-color: rgba(123, 147, 255, .45);
+}
+html[data-skin="dark"] body .unified-price-box,
+html[data-skin="dark"] body .pcard-img,
+html[data-skin="dark"] body .sthumb,
+html[data-skin="dark"] body .sbox-empty,
+html[data-skin="dark"] body .cbtn {
+  background: var(--soft);
+  border-color: var(--line);
+  color: var(--ink2);
+}
+html[data-skin="dark"] body .zoom-ic {
+  background: rgba(13, 16, 23, .82);
+  color: var(--ink);
+}
+html[data-skin="dark"] body .cbtn:hover {
+  background: #263146;
+  color: var(--ink);
+}
+html[data-skin="dark"] body .cbtn.pick,
+html[data-skin="dark"] body .cnt-pill.acc {
+  background: var(--acc-soft);
+  color: var(--acc);
+}
+html[data-skin="dark"] body .pub-done-banner,
+html[data-skin="dark"] body .price-pill,
+html[data-skin="dark"] body .cnt-pill.grn {
+  background: var(--grn-soft);
+  border-color: rgba(62, 211, 152, .45);
+  color: var(--grn-ink);
+}
+html[data-skin="dark"] body .step1-remind,
+html[data-skin="dark"] body .cnt-pill.amb {
+  background: var(--amb-soft);
+  border-color: rgba(255, 192, 77, .45);
+  color: var(--amb-ink);
+}
+html[data-skin="dark"] body .bad-reason {
+  background: var(--red-soft);
+  border-color: rgba(255, 107, 112, .35);
+  color: var(--red-ink);
+}
+html[data-skin="dark"] body .pcard-rsn {
+  color: var(--ink2);
+}
+html[data-skin="dark"] body .pf-override input {
+  background: var(--amb-soft);
+  border-color: var(--amb);
+  color: var(--ink);
+}
+html[data-skin="dark"] body .publish-footer {
+  background: rgba(22, 27, 37, .94);
+  border-color: rgba(123, 147, 255, .52);
+  color: var(--ink);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .52);
+}
+
+/* VirtCreate.vue / FlowPhys.vue / GcQueue.vue / Console.vue / Sources.vue */
+html[data-skin="dark"] body .tpl-bar {
+  background: linear-gradient(90deg, #172038 0%, #142b29 100%);
+  border-color: var(--line);
+}
+html[data-skin="dark"] body .tpl-left b { color: var(--acc); }
+html[data-skin="dark"] body .step-banner.grn {
+  background: var(--grn-soft);
+  border-color: rgba(62, 211, 152, .55);
+  color: var(--grn-ink);
+}
+html[data-skin="dark"] body .step-banner.amb {
+  background: var(--amb-soft);
+  border-color: rgba(255, 192, 77, .55);
+  color: var(--amb-ink);
+}
+html[data-skin="dark"] body .sb-pill {
+  background: rgba(22, 27, 37, .82);
+  color: var(--ink);
+}
+html[data-skin="dark"] body .step-card.active {
+  background: var(--acc-soft);
+  border-color: var(--acc);
+}
+html[data-skin="dark"] body .step-card.done {
+  background: var(--grn-soft);
+  border-color: var(--grn);
+}
+html[data-skin="dark"] body .lg-chip {
+  background: var(--soft);
+  color: var(--ink);
+}
+html[data-skin="dark"] body .errrow td {
+  background: rgba(255, 107, 112, .14);
+}
+html[data-skin="dark"] body .si.tiny img {
+  background: var(--soft);
+}
+
+/* CS V3 弹窗暗色覆盖 */
+.cs-embed-root[data-cs-theme="dark"] .modal-card,
+.cs-embed-root[data-cs-theme="dark"] .r-input,
+.cs-embed-root[data-cs-theme="dark"] .add-grid input {
+  background: var(--panel);
+  color: var(--ink);
+  border-color: var(--line);
+}
+.cs-embed-root[data-cs-theme="dark"] .rule-item,
+.cs-embed-root[data-cs-theme="dark"] .simple-tbl th {
+  background: var(--panel-alt);
+  color: var(--ink2);
+}
+.cs-embed-root[data-cs-theme="dark"] .simple-tbl tr.warn {
+  background: var(--red-soft);
+}
+
+/* VirtIntelHub.vue / Orders.vue / TutorialLedger.vue 暗黑皮肤微调 */
+html[data-skin="dark"] body .vi-toolbar,
+html[data-skin="dark"] body .vi-sidebar,
+html[data-skin="dark"] body .g-card,
+html[data-skin="dark"] body .cand-card,
+html[data-skin="dark"] body .vi-drawer,
+html[data-skin="dark"] body .ord-toolbar,
+html[data-skin="dark"] body .qn-order,
+html[data-skin="dark"] body .sync-drawer,
+html[data-skin="dark"] body .tl .toolbar,
+html[data-skin="dark"] body .tl .tree,
+html[data-skin="dark"] body .tl .tbl-wrap {
+  background: var(--panel);
+  border-color: var(--line);
+}
+html[data-skin="dark"] body .qn-row-top,
+html[data-skin="dark"] body .vi-modal,
+html[data-skin="dark"] body .tl .tbl2 th {
+  background: var(--soft);
+  color: var(--ink2);
+}
+html[data-skin="dark"] body .vi-page code,
+html[data-skin="dark"] body .ord-page code,
+html[data-skin="dark"] body .tl code {
+  background: var(--soft);
+  color: var(--acc);
+  padding: 1px 5px;
+  border-radius: 4px;
+}

@@ -2,12 +2,15 @@
   <div class="page sbh">
     <header class="head">
       <div>
-        <p class="eyebrow">选品前置工程 · 规格贴标 / 防呆拦截 / 95%走量兜底</p>
         <h1>选品规格与兜底基准台 <Q k="spec-base" /></h1>
-        <p class="sub">
-          业务员在选品阶段先把复杂品类的规格坑位立好：<b>95% 千元内走量款</b>套用「同档兜底 + 假低价防呆尺 + 大盘反向调优」；
-          <b>5% 千元以上高端稀缺款</b>（如 OLED / ROG 旗舰 / 双模）货少无参考，<b>不套公式直接按闲鱼实爬价算</b>；唯独 <b>卓威 ZOWIE</b> 走独立价格体系。
-        </p>
+        <p class="sub">按品类立规格坑位与价格防呆尺，保护 95% 走量款与 5% 高端稀缺款利润。</p>
+        <details class="rule-fold">
+          <summary>📖 查看口径分工：95% 走量兜底 vs 5% 稀缺 / 卓威独立价 ▾</summary>
+          <p>
+            <b>95% 千元内走量款</b>套用「同档兜底 + 假低价防呆尺 + 大盘反向调优」；
+            <b>5% 千元以上高端稀缺款</b>（如 OLED / ROG 旗舰 / 双模）货少无参考，<b>不套公式直接按闲鱼实爬价算</b>；唯独 <b>卓威 ZOWIE</b> 走独立价格体系。
+          </p>
+        </details>
       </div>
       <div class="head-acts">
         <button class="btn" @click="goGallery">打开多视角实物选品 Gallery ›</button>
@@ -560,11 +563,14 @@ onMounted(loadOverview)
 </script>
 
 <style scoped>
-.sbh { padding: 26px 38px 80px; max-width: 1640px; display: grid; gap: 16px; }
+.sbh { padding: 18px 34px 64px; max-width: 1640px; display: grid; gap: 12px; }
 .head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
-.head h1 { font-size: 32px; margin: 6px 0; letter-spacing: -.02em; }
-.eyebrow { margin: 0; font-size: 13px; font-weight: 700; color: var(--acc); }
-.sub { margin: 0; color: var(--mute); max-width: 920px; line-height: 1.65; }
+.head h1 { font-size: 26px; margin: 0 0 4px; letter-spacing: -.02em; }
+.sub { margin: 0; color: var(--mute); font-size: 13.5px; line-height: 1.5; }
+.rule-fold { margin-top: 6px; font-size: 12.5px; color: var(--ink2); }
+.rule-fold summary { cursor: pointer; font-weight: 700; color: var(--acc); list-style: none; display: inline-flex; align-items: center; gap: 4px; }
+.rule-fold summary::-webkit-details-marker { display: none; }
+.rule-fold p { margin: 6px 0 0; padding: 8px 12px; border-radius: 10px; background: var(--soft); max-width: 900px; line-height: 1.55; }
 .head-acts { display: flex; gap: 8px; flex-wrap: wrap; }
 
 .kpi-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
@@ -613,7 +619,6 @@ onMounted(loadOverview)
 .p-chip.on { background: var(--acc); color: #fff; }
 
 .sanity-split { display: grid; grid-template-columns: 1fr 1.15fr; gap: 16px; }
-@media (max-width: 980px) { .sanity-split, .cal-layout { grid-template-columns: 1fr !important; } }
 .form-box, .res-box { display: grid; gap: 12px; align-content: start; }
 .form-box h3, .res-box h3 { margin: 0; }
 .f-grid { display: grid; gap: 10px; }

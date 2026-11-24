@@ -313,5 +313,4 @@ onMounted(load)
 .mform label { display: grid; gap: 4px; font-size: 12.5px; color: var(--mute); }
 .mform input, .mform select { height: 36px; border: 1px solid var(--line); border-radius: 9px; padding: 0 10px; background: var(--soft); }
 .mfoot { display: flex; justify-content: flex-end; gap: 8px; }
-@media (max-width: 980px) { .iq-grid { grid-template-columns: 1fr; } .iq { padding: 16px; } }
 </style>

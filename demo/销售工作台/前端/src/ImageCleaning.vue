@@ -2,20 +2,20 @@
   <div class="ic-page">
     <!-- 顶部全流程向导导航条（一步一个独立大页面） -->
     <nav class="wizard-bar card">
-      <button class="btn sm" @click="goGallery">← 返回商品 Gallery</button>
+      <button class="btn sm" @click="goGallery">← 返回 Gallery</button>
 
       <div class="wiz-steps">
         <button class="wstep done" @click="goGallery">
-          <i>☷</i><span>Gallery 选商品</span>
+          <i>☷</i><span>Gallery 选品</span>
         </button>
         <span class="wsep">→</span>
         <button class="wstep" :class="{ done: priceConfirmed }" @click="goPriceStep">
           <i>{{ priceConfirmed ? '✓' : '1' }}</i>
-          <span>第 1 步：洗价格{{ unifiedPrice ? `（¥${unifiedPrice}）` : '' }}</span>
+          <span>① 洗价格{{ unifiedPrice ? `（¥${unifiedPrice}）` : '' }}</span>
         </button>
         <span class="wsep">→</span>
         <button class="wstep cur">
-          <i>2</i><span>第 2 步：洗图片（大库三栏选图）并直接上架</span>
+          <i>2</i><span>② 洗图片（三栏选图）并直接上架</span>
         </button>
       </div>
 
@@ -56,18 +56,16 @@
         </div>
       </section>
 
-      <!-- 若第 1 步尚未人工确认价格，给出清晰引导条 -->
+      <!-- 若第 1 步尚未人工确认价格，给出清晰紧凑引导条 -->
       <section v-if="!priceConfirmed" class="card step1-remind">
         <div class="sr-left">
-          <span class="tag amb">提示：第 1 步尚未人工确认</span>
+          <span class="tag amb">第 1 步待确认</span>
           <span v-if="ps.recommendedPrice">
-            当前展示电脑初筛闲鱼均价 <b>¥{{ ps.recommendedPrice }}</b>（留 {{ ps.validCount }} 条有效挂牌 / 去 {{ ps.rejectedCount }} 条噪音），建议先核对第 1 步闲鱼快照确认价格。
+            暂显初筛均价 <b>¥{{ ps.recommendedPrice }}</b>（{{ ps.validCount }} 条有效挂牌）
           </span>
-          <span v-else>
-            该商品尚未抓取闲鱼价格快照，请先前往第 1 步抓取闲鱼挂牌页并确认统一售价。
-          </span>
+          <span v-else>尚未抓取闲鱼快照，请先去第 1 步确认统一售价。</span>
         </div>
-        <button class="btn pri sm" @click="goPriceStep">← 先去第 1 步：洗价格</button>
+        <button class="btn pri sm" @click="goPriceStep">← 去第 1 步：洗价格</button>
       </section>
 
       <!-- 顶部商品摘要 + 大库搜索与档位控制条（只读展示第1步确认好的统一售价，绝无逐店填价框） -->
@@ -91,7 +89,7 @@
             <h1>{{ lib.brand ? lib.brand + ' ' : '' }}{{ lib.model }} <small>{{ lib.name }}</small></h1>
           </div>
 
-          <!-- 右侧：第 1 步已锁定的统一售价徽章（只读展示 + 点此回第1步改价） -->
+          <!-- 右侧：第 1 步已锁定的统一售价徽章 + 快捷操作（检索/档位面板默认折叠，三栏照片区上移首屏） -->
           <div class="unified-price-box">
             <div class="up-item">
               <span>采购成本</span>
@@ -99,15 +97,21 @@
             </div>
             <div class="up-sep"></div>
             <div class="up-item main">
-              <span>{{ priceConfirmed ? '第 1 步已确认统一售价' : '电脑初筛推荐售价' }}</span>
+              <span>{{ priceConfirmed ? '已确认统一售价' : '初筛推荐售价' }}</span>
               <b>{{ unifiedPrice ? `¥${unifiedPrice}` : '待定' }}</b>
             </div>
-            <button class="btn sm" @click="goPriceStep">回第 1 步改价</button>
+            <button class="btn sm" @click="goPriceStep">改价</button>
+            <button class="btn sm" :class="{ pri: libToolsOpen }" @click="libToolsOpen = !libToolsOpen">
+              ⚙ 重搜/档位 {{ libToolsOpen ? '▴' : '▾' }}
+            </button>
+            <button class="btn sm pri" :disabled="busy" @click="autoAssignImages">
+              ⚡ 自动配图
+            </button>
           </div>
         </div>
 
-        <!-- 大库图库检索词、过滤档位、一键自动配图工具条 -->
-        <div class="lib-toolbar">
+        <!-- 大库图库检索词与过滤档位工具条（默认折叠，点右侧按钮展开） -->
+        <div v-if="libToolsOpen" class="lib-toolbar">
           <div class="lt-left">
             <span class="lt-label">大库检索型号：<b>{{ lib.query }}</b></span>
             <div class="search-box">
@@ -128,9 +132,6 @@
                 @click="changeTier(t.key)"
               >{{ t.label }}</button>
             </div>
-            <button class="btn sm pri" :disabled="busy" @click="autoAssignImages">
-              ⚡ 一键按闲鱼号不重样自动配图
-            </button>
           </div>
         </div>
       </section>
@@ -405,6 +406,7 @@ async function refillImageLane() {
   }
 }
 const loading = ref(false)
+const libToolsOpen = ref(false)
 const busy = ref(false)
 const justPublished = ref(false)
 const lastPublishedPrice = ref(0)
@@ -478,7 +480,7 @@ async function bootstrap() {
     props.caseId ||
     skuQueue.value.find((x) => x.overallStage === 'step2_image')?.code ||
     skuQueue.value[0]?.code ||
-    '990001549229'
+    '513211549229'
   await loadCase(target)
 }
 
@@ -759,23 +761,23 @@ onUnmounted(() => clearInterval(undoTimer))
 </script>
 
 <style scoped>
-.ic-page { padding: 20px 32px 96px; max-width: 1780px; display: grid; gap: 16px; }
+.ic-page { padding: 10px 24px 80px; max-width: 1780px; display: grid; gap: 7px; }
 .ic-loading { padding: 64px 20px; text-align: center; color: var(--mute); font-weight: 600; }
 
 /* 顶部步骤向导条（与第 1 步 PriceCleaning 完全统一） */
-.wizard-bar { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 12px 18px; flex-wrap: wrap; }
-.wiz-steps { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.wstep { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px; border-radius: 10px; background: var(--soft); color: var(--mute); font-weight: 700; font-size: 13.5px; border: 1.5px solid transparent; }
-.wstep i { width: 22px; height: 22px; border-radius: 50%; background: var(--panel); display: grid; place-items: center; font-style: normal; font-size: 12px; font-weight: 800; }
+.wizard-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 7px 12px; flex-wrap: nowrap; }
+.wiz-steps { display: flex; align-items: center; gap: 6px; flex-wrap: nowrap; }
+.wstep { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 11px; border-radius: 10px; background: var(--soft); color: var(--mute); font-weight: 700; font-size: 12px; border: 1.5px solid transparent; white-space: nowrap; }
+.wstep i { width: 18px; height: 18px; border-radius: 50%; background: var(--panel); display: grid; place-items: center; font-style: normal; font-size: 11px; font-weight: 800; }
 .wstep.cur { background: var(--acc); color: #fff; box-shadow: 0 4px 12px rgba(37,99,235,.22); }
 .wstep.cur i { background: rgba(255,255,255,.22); color: #fff; }
 .wstep.done { background: #ecfdf5; color: #047857; border-color: #a7f3d0; }
 .wstep.done i { background: #10b981; color: #fff; }
 .wsep { color: var(--mute); font-weight: 800; }
-.sku-sel { height: 36px; border-radius: 10px; border: 1px solid var(--line); background: var(--soft); padding: 0 12px; font-weight: 700; font-size: 13px; color: var(--ink); max-width: 300px; }
+.sku-sel { height: 30px; border-radius: 9px; border: 1px solid var(--line); background: var(--soft); padding: 0 9px; font-weight: 700; font-size: 12px; color: var(--ink); max-width: 220px; }
 
 /* 上架完成横幅 */
-.pub-done-banner { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; background: #ecfdf5; border: 2px solid #34d399; padding: 16px 22px; }
+.pub-done-banner { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; background: #ecfdf5; border: 2px solid #34d399; padding: 12px 18px; }
 .pdb-left { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
 .done-badge { background: #059669; color: #fff; font-weight: 800; font-size: 13.5px; padding: 6px 14px; border-radius: 999px; }
 .pdb-left b { font-size: 16px; color: #064e3b; display: block; }
@@ -783,24 +785,24 @@ onUnmounted(() => clearInterval(undoTimer))
 .pdb-acts { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 
 /* 第1步未确认提醒 */
-.step1-remind { display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; background: #fffbeb; border: 1.5px solid #fcd34d; padding: 12px 18px; font-size: 13.5px; }
-.sr-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.step1-remind { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; background: #fffbeb; border: 1px solid #fcd34d; padding: 6px 14px; font-size: 12.5px; }
+.sr-left { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
 /* 顶部商品信息 + 已锁定统一售价 + 大库工具条 */
-.top-summary-card { padding: 18px 22px; display: grid; gap: 14px; }
-.tsc-main { display: flex; justify-content: space-between; align-items: center; gap: 18px; flex-wrap: wrap; }
-.tsc-badges { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 6px; }
-.tsc-info h1 { font-size: 24px; font-weight: 800; margin: 0; letter-spacing: -.01em; }
-.tsc-info h1 small { font-size: 14px; font-weight: 500; color: var(--mute); margin-left: 8px; }
+.top-summary-card { padding: 10px 16px; display: grid; gap: 8px; }
+.tsc-main { display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; }
+.tsc-badges { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-bottom: 3px; }
+.tsc-info h1 { font-size: 20px; font-weight: 800; margin: 0; letter-spacing: -.01em; }
+.tsc-info h1 small { font-size: 13px; font-weight: 500; color: var(--mute); margin-left: 8px; }
 
-.unified-price-box { display: flex; align-items: center; gap: 16px; background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 16px; padding: 10px 16px; flex-wrap: wrap; }
-.up-item { display: grid; gap: 2px; }
-.up-item span { font-size: 11.5px; color: var(--mute); font-weight: 600; }
-.up-item b { font-size: 19px; font-weight: 800; color: var(--ink); }
-.up-item.main b { font-size: 24px; color: #059669; }
-.up-sep { width: 1px; height: 32px; background: #cbd5e1; }
+.unified-price-box { display: flex; align-items: center; gap: 12px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 12px; padding: 6px 12px; flex-wrap: wrap; }
+.up-item { display: grid; gap: 1px; }
+.up-item span { font-size: 11px; color: var(--mute); font-weight: 600; }
+.up-item b { font-size: 16px; font-weight: 800; color: var(--ink); }
+.up-item.main b { font-size: 19px; color: #059669; }
+.up-sep { width: 1px; height: 26px; background: #cbd5e1; }
 
-.lib-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; padding-top: 12px; border-top: 1px solid var(--line); }
+.lib-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; padding-top: 8px; border-top: 1px solid var(--line); }
 .lt-left, .lt-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .lt-label { font-size: 13px; color: var(--mute); }
 .lt-label b { color: var(--ink); }
@@ -812,9 +814,6 @@ onUnmounted(() => clearInterval(undoTimer))
 
 /* 整屏大库图库三栏看板 */
 .three-cols-board { display: grid; grid-template-columns: 1.22fr 1fr 1.05fr; gap: 16px; align-items: start; }
-@media (max-width: 1260px) {
-  .three-cols-board { grid-template-columns: 1fr; }
-}
 
 .lib-col { border-radius: 20px; padding: 16px; border: 2px solid var(--line); background: var(--panel); display: grid; gap: 14px; box-shadow: var(--sh); }
 .col-rec { border-color: #86efac; background: linear-gradient(180deg, #f3fdf6 0%, #ffffff 140px); }

@@ -1,0 +1,2344 @@
+{
+  "meta": {
+    "version": "V6-VirtIntel-20261124",
+    "xianyuBatchId": "85690338-79c8-4e98-9909-a1370fc53a92",
+    "xianyuCount": 30,
+    "sellerCount": 27,
+    "sellerHomesDone": 0,
+    "qqTotalMessages": 1513,
+    "qqCutoff": "2026-11-24T08:27:55Z"
+  },
+  "thresholds": {
+    "followTrackFastPass": true,
+    "roadTestRequireDualRepro": true,
+    "minMarginPct": 30,
+    "warnRefundPct": 5,
+    "haltRefundPct": 8,
+    "hourlyLaborCost": 50
+  },
+  "businessTree": [
+    {
+      "id": "all",
+      "label": "全部虚拟业务",
+      "parent": null,
+      "countHint": 37
+    },
+    {
+      "id": "ai-service",
+      "label": "AI 操作服务",
+      "parent": "root",
+      "children": [
+        "cad-trace",
+        "ecom-photo"
+      ]
+    },
+    {
+      "id": "cad-trace",
+      "label": "CAD 描图",
+      "parent": "ai-service",
+      "subDeliverables": [
+        "纸图转 DWG",
+        "PDF 改图",
+        "工程作业转换"
+      ]
+    },
+    {
+      "id": "ecom-photo",
+      "label": "AI 商品图制作",
+      "parent": "ai-service",
+      "subDeliverables": [
+        "白底换景套图",
+        "详情主图精修"
+      ]
+    },
+    {
+      "id": "local-voucher",
+      "label": "本地生活票券",
+      "parent": "root",
+      "children": [
+        "dining-double"
+      ]
+    },
+    {
+      "id": "dining-double",
+      "label": "餐饮电子券 (30真样)",
+      "parent": "local-voucher",
+      "subDeliverables": [
+        "连锁快餐券",
+        "正餐双人套餐券"
+      ]
+    },
+    {
+      "id": "remote-tech",
+      "label": "远程技术服务",
+      "parent": "root",
+      "children": [
+        "delta-force"
+      ]
+    },
+    {
+      "id": "delta-force",
+      "label": "三角洲游戏排障",
+      "parent": "remote-tech",
+      "subDeliverables": [
+        "虚拟化报错排查",
+        "ACE 环境冲突"
+      ]
+    },
+    {
+      "id": "general-groups",
+      "label": "综合交流群与待分拣",
+      "parent": "root",
+      "children": [
+        "qq-960955831",
+        "qq-791889555",
+        "pending-triage"
+      ]
+    },
+    {
+      "id": "qq-960955831",
+      "label": "油条AI交流群 (960955831)",
+      "parent": "general-groups",
+      "subDeliverables": [
+        "综合源消息"
+      ]
+    },
+    {
+      "id": "qq-791889555",
+      "label": "油条AI资料二群 (791889555)",
+      "parent": "general-groups",
+      "subDeliverables": [
+        "运营防风控"
+      ]
+    },
+    {
+      "id": "pending-triage",
+      "label": "待归类/待补证池",
+      "parent": "general-groups",
+      "subDeliverables": [
+        "不可复现拦截"
+      ]
+    }
+  ],
+  "sourceTree": {
+    "cluePlatforms": [
+      {
+        "id": "QQ",
+        "label": "QQ 授权业务群"
+      },
+      {
+        "id": "X",
+        "label": "X (Twitter) 博主"
+      },
+      {
+        "id": "Workflow",
+        "label": "公开工作流 (n8n/Comfy)"
+      },
+      {
+        "id": "WeCom",
+        "label": "企业微信试点群"
+      },
+      {
+        "id": "Web",
+        "label": "独立站点 / 小红书经验"
+      }
+    ],
+    "listingPlatforms": [
+      {
+        "id": "xianyu",
+        "label": "闲鱼 (Goofish · 34件)"
+      },
+      {
+        "id": "taobao",
+        "label": "淘宝"
+      },
+      {
+        "id": "xhs",
+        "label": "小红书在售"
+      }
+    ]
+  },
+  "clues": [
+    {
+      "id": "CLUE-QQ-CAD-01",
+      "nodeId": "cad-trace",
+      "sourceChannelId": "CH-QQ-960955831",
+      "platform": "QQ",
+      "platformLabel": "QQ授权群",
+      "title": "群主实测：bingcad.top 跑完群内 CAD 转换测试仅花 ¥0.50 API 成本",
+      "author": "油条（群主 · QQ 960955831）",
+      "date": "2026-11-24 16:05",
+      "evidenceLevel": "group_log",
+      "evidenceLabel": "群实测原始记录",
+      "status": "已挂细分节点",
+      "messageRef": "m1.eTtxbkeryFxh0e_T3L_XJg.uydsiFWCHpiSa8uJu4A4oLwKKb9PRHDgm72A4Dtf5K8",
+      "messageId": "558870447",
+      "sourceUrl": "https://bingcad.top/register?ref=WPS6HY",
+      "image": "virt-intel-thumbs/cad-result-dxf.png",
+      "summary": "群内充 ¥10 跑完真实群测试仅消耗 ¥0.50（API 中转），同时产出 `result.dxf` 与《吊顶与铺装作业.pdf》。",
+      "reusableMethod": "用 AI 工作流完成 85% 矢量化底层结构，人工/Codex Skill 只花 5 分钟复核比例和标注。",
+      "openQuestions": "中转站模型稳定性及复杂多专业施工图缩放精度待赛马复测。",
+      "attachedFiles": [
+        "0001-吊顶与铺装作业.pdf",
+        "0003-result.dxf"
+      ],
+      "linkedListingIds": [
+        "XY-CAD-STD-02",
+        "TB-CAD-STD-03"
+      ]
+    },
+    {
+      "id": "CLUE-QQ-CAD-02",
+      "nodeId": "cad-trace",
+      "sourceChannelId": "CH-QQ-960955831",
+      "platform": "QQ",
+      "platformLabel": "QQ授权群",
+      "title": "群内真实复杂图纸样本 + Codex 启动 CAD 权限异常边界记录",
+      "author": "七七（群成员 · QQ 960955831）",
+      "date": "2026-11-24 16:45",
+      "evidenceLevel": "group_log",
+      "evidenceLabel": "群实测问题记录",
+      "status": "已挂兜底边界",
+      "messageRef": "m1.XGTlpDn9ww6CLwmUYjLsOg.4Ojx_VJv2igzF3wqmo9d_tAximl5NAL0Wp8Jm2AfuDQ",
+      "messageId": "460652080",
+      "sourceUrl": "qq://group/960955831/msg/460652080",
+      "image": "virt-intel-thumbs/cad-tank-pdf.png",
+      "summary": "群文件已沉淀 100L 酸奶发酵罐总装配图、A2O 工艺高程图与普洱施工图；同时群友反馈本地 CAD 启动授权易反复失效。",
+      "reusableMethod": "写入《CAD 描图》人工兜底触发器：本地客户端启动权限定位失败或遇多专业施工图时立即停止自动直出。",
+      "openQuestions": "需为普通销售准备「不依赖本地 AutoCAD GUI」的轻量 DXF 在线复测校验器。",
+      "attachedFiles": [
+        "0004-100L酸奶发酵罐_总装配图.pdf",
+        "0006-47_作业1_A2O工艺高程图.pdf",
+        "0020-云南普洱建筑施工图.pdf"
+      ],
+      "linkedListingIds": [
+        "XHS-CAD-FULL-04"
+      ]
+    },
+    {
+      "id": "CLUE-X-YOUTIAO-03",
+      "nodeId": "cad-trace",
+      "platform": "X",
+      "platformLabel": "X (Twitter)",
+      "title": "X 博主「油条」CAD 副业变现贴（自述数据与群内实查拆分样本）",
+      "author": "@油条（X 线索）",
+      "date": "2026-11-23 19:20",
+      "evidenceLevel": "self_claimed",
+      "evidenceLabel": "博主自述·待核",
+      "status": "待核原帖链接",
+      "messageRef": "x://search?q=%E6%B2%B9%E6%9D%A1%20CAD",
+      "sourceUrl": "https://docs.x.com/x-api/posts/search/introduction",
+      "image": "virt-intel-thumbs/cad-ceiling-pdf.png",
+      "summary": "博主自述用 AI 做 CAD 描图副业月入可观；经巡航初筛，自述收入与群内实测 `result.dxf` 分层展示，不能把自述当成交依据。",
+      "reusableMethod": "把客户手绘/PDF 输入方式与引流话术抽入赛马对比，结合闲鱼 ¥68 / 淘宝 ¥79 可比价做毛利核算。",
+      "openQuestions": "具体高转化原帖 ID 与博主私域成交客单分布待 GrokBot 通过 X 官方检索接口补采。",
+      "attachedFiles": [],
+      "linkedListingIds": [
+        "XY-CAD-HOOK-01",
+        "XY-CAD-STD-02"
+      ]
+    },
+    {
+      "id": "CLUE-WF-ECOM-04",
+      "nodeId": "ecom-photo",
+      "platform": "Workflow",
+      "platformLabel": "公开工作流",
+      "title": "n8n #10250｜Airtable + Gemini Nano Banana 电商产品场景图工作流",
+      "author": "n8n Official Library",
+      "date": "2026-11-24 11:00",
+      "evidenceLevel": "verified",
+      "evidenceLabel": "已核可运行模板",
+      "status": "已进赛马池",
+      "messageRef": "n8n://workflow/10250",
+      "sourceUrl": "https://n8n.io/workflows/10250-create-stylized-product-photography-with-airtable-and-gemini-nano-banana/",
+      "image": "virt-intel-thumbs/ai-ecom-workflow.png",
+      "summary": "公开可复现工作流：上传 1 张商品白底图+风格词，自动产出多张电商场景主图，关联闲鱼同款 ¥39/组。",
+      "reusableMethod": "适合作为 AI 商品图制作 2 号候选选手，与 ComfyUI 局部重绘流进行同原图赛马。",
+      "openQuestions": "中文包装文字在 AI 生图后是否畸变需写入实测检查表。",
+      "attachedFiles": [],
+      "linkedListingIds": [
+        "XY-ECOM-05"
+      ]
+    },
+    {
+      "id": "CLUE-QQ-VOUCHER-05",
+      "nodeId": "dining-double",
+      "platform": "QQ",
+      "platformLabel": "闲鱼巡航 + 群",
+      "title": "餐饮券 30 件 Chrome 真机重采批：江小肴/麦当劳/遇见小面核价入库",
+      "author": "闲鱼卖家巡航台 Batch 85690338",
+      "date": "2026-10-31 22:07",
+      "evidenceLevel": "verified",
+      "evidenceLabel": "30件实机截图+详情核验",
+      "status": "27卖家主页待补",
+      "messageRef": "xianyu://batch/85690338-79c8-4e98-9909-a1370fc53a92",
+      "sourceUrl": "https://www.goofish.com/item?id=1054465155281",
+      "image": "virt-intel-thumbs/xy-1054465155281.jpg",
+      "summary": "30 件商品详情与真实图片 100% 重采完成，覆盖上海江小肴 ¥33.50、广州遇见小面 ¥32.60、全国麦当劳 ¥47.66–49.99 等。",
+      "reusableMethod": "直接作为跟卖型自动发卡餐饮券基准价带，上架前核对城市/门店适用范围与有效期。",
+      "openQuestions": "关联 27 个同行卖家主页（0/27 完成）待启用补抓调度，确认卖家常卖矩阵品类。",
+      "attachedFiles": [
+        "票券详情重采30条.xlsx"
+      ],
+      "linkedListingIds": [
+        "XY-1054465155281",
+        "XY-1092138643727",
+        "XY-1084382196124"
+      ]
+    },
+    {
+      "id": "CLUE-QQ-RISK-06",
+      "nodeId": "qq-791889555",
+      "sourceChannelId": "CH-QQ-791889555",
+      "platform": "QQ",
+      "platformLabel": "QQ授权群",
+      "title": "跨平台私信风控与闲鱼多店防封避坑备忘（二群 & 一群实录）",
+      "author": "油条 / Lawson（QQ 791889555 / 960955831）",
+      "date": "2026-11-24 15:49",
+      "evidenceLevel": "group_log",
+      "evidenceLabel": "群实操风控规则",
+      "status": "已同步群控规范",
+      "messageRef": "m1.5hjVKt4uylegpZydFo6CUg.4kss_7RkvXAwriN3XGSlK38MGXsOERjCzUA4l2YyX-s",
+      "sourceUrl": "qq://group/791889555/msg/1873746049",
+      "image": "virt-intel-thumbs/qq-rule-guard.png",
+      "summary": "二群提示：抖音/小红书严禁主动高频私信别人、私聊禁直接发微信号；一群提示：闲鱼风控严，多店铺需差异化素材与防重名。",
+      "reusableMethod": "已纳入销售台外发守卫词库与《账号矩阵》跨店差异化发品校验。",
+      "openQuestions": "企业微信试点群接入后将沿用同套风控标签机制。",
+      "attachedFiles": [],
+      "linkedListingIds": []
+    },
+    {
+      "id": "CLUE-BAD-DEMO-07",
+      "nodeId": "pending-triage",
+      "platform": "Web",
+      "platformLabel": "小红书待核",
+      "title": "【反面待补证案例】某 AI 全自动接单月入 ¥30,000+ 晒单贴（无步骤无法复现）",
+      "author": "待核外部账号",
+      "date": "2026-11-24 09:40",
+      "evidenceLevel": "self_claimed",
+      "evidenceLabel": "仅晒结果·无法复现",
+      "status": "系统拦截在待补证",
+      "messageRef": "triage://unreproducible-01",
+      "sourceUrl": "",
+      "image": "virt-intel-thumbs/qq-rule-guard.png",
+      "summary": "仅有收款截图无工作流、无客户原始输入、无闲鱼在售可比商品。按《共用开场》异常处理规则拦截在本池，禁止建卡。",
+      "reusableMethod": "需由运营补充原始工作流链接或同行可比页面，否则 7 天后归档关闭。",
+      "openQuestions": "缺工作流步骤、缺实测输入样例、缺同口径价格对比。",
+      "attachedFiles": [],
+      "linkedListingIds": []
+    }
+  ],
+  "listings": [
+    {
+      "id": "XY-1054465155281",
+      "itemId": "1054465155281",
+      "nodeId": "dining-double",
+      "platform": "xianyu",
+      "platformLabel": "闲鱼",
+      "title": "【自动发货】江小肴·鲜辣江西菜 双人套餐电子券 到店核销",
+      "priceText": "¥33.50",
+      "numericPrice": 33.5,
+      "pricingUnit": "按份电子券",
+      "isHookPrice": false,
+      "comparableGroup": "区域正餐特色双人电子券",
+      "deliveryScope": "上海通用 · 全天通用/到店核销 · 电子码/代下",
+      "status": "在售",
+      "sellerId": "2222511621902",
+      "sellerName": "超给力美食",
+      "sellerUrl": "https://www.goofish.com/personal?userId=2222511621902",
+      "itemUrl": "https://www.goofish.com/item?id=1054465155281&categoryId=201417003",
+      "capturedAt": "2026-10-31 13:46:08",
+      "image": "virt-intel-thumbs/xy-1054465155281.jpg",
+      "imageSource": "screen-001.jpg (cropped)",
+      "trackType": "跟卖型",
+      "estCost": 18.76,
+      "estFeeRate": 0.01,
+      "estHours": 0.02,
+      "description": "【自动发货】江小肴·鲜辣江西菜 双人套餐电子券 到店核销  拍下后自动发码，上海所有门店通用，只能到店核销使用，不支持外卖。  双人套餐内容： 酸菜黑鱼片(1份) ¥39.00 番茄拉丝鸡蛋(1份) ¥29.00 油渣菜心(1份) ¥22.00  汤(三选二) 玉米排骨汤 ¥16.00 皮蛋肉饼汤 ¥16.00 雪梨肉饼汤 ¥16.00  【注意事项】虚拟商品质保3天，售出后非券码质量问题不退换。",
+      "observations": [
+        {
+          "time": "2026-10-31 13:46:08",
+          "price": "¥33.50",
+          "status": "在售（Chrome真机重采核验通过）",
+          "source": "Chrome真实逐屏重采 30 件批次"
+        }
+      ]
+    },
+    {
+      "id": "XY-1063753468982",
+      "itemId": "1063753468982",
+      "nodeId": "dining-double",
+      "platform": "xianyu",
+      "platformLabel": "闲鱼",
+      "title": "乌鲁木齐丨双人餐丨云聚汇牛很鲜潮汕牛肉火锅丨优质双人餐9店通",
+      "priceText": "¥55.00",
+      "numericPrice": 55.0,
+      "pricingUnit": "按份电子券",
+      "isHookPrice": false,
+      "comparableGroup": "火锅烧烤双人套餐券",
+      "deliveryScope": "指定城市门店 · 全天通用/到店核销 · 电子码/代下",
+      "status": "在售",
+      "sellerId": "2321027460",
+      "sellerName": "隅记卡券",
+      "sellerUrl": "https://www.goofish.com/personal?userId=2321027460",
+      "itemUrl": "https://www.goofish.com/item?id=1063753468982&categoryId=201417003",
+      "capturedAt": "2026-10-31 13:46:25",
+      "image": "virt-intel-thumbs/xy-1063753468982.jpg",
+      "imageSource": "screen-001.jpg (cropped)",
+      "trackType": "跟卖型",
+      "estCost": 30.8,
+      "estFeeRate": 0.01,
+      "estHours": 0.02,
+      "description": "乌鲁木齐丨双人餐丨云聚汇牛很鲜潮汕牛肉火锅丨优质双人餐9店通用｜电子券码即买即用 剩的不多啦，卖完就不卖了 ，大甩卖！ 一、【产品亮点】 原价138元，现价55元。标价就是卖价。  · 优质双人餐，性价比高，适合聚餐 · 覆盖乌鲁木齐9家热门门店，选择灵活 · 电子券码即买即用，无需预约  二、【适用门店】 经开万达店、南湖东路店、时代广场店(暂时不可用)、天津路店、日月星光店、德港万达店、高新万达店、新医路店、会展吾悦店  三、【使用说明】  · 购买后7天内有效，请及时使用 · 周一到周日通用（部分门店节假日可",
+      "observations": [
+        {
+          "time": "2026-10-31 13:46:25",
+          "price": "¥55.00",
+          "status": "在售（Chrome真机重采核验通过）",
+          "source": "Chrome真实逐屏重采 30 件批次"
+        }
+      ]
+    },
+    {
+      "id": "XY-1092138643727",
+      "itemId": "1092138643727",
+      "nodeId": "dining-double",
+      "platform": "xianyu",
+      "platformLabel": "闲鱼",
+      "title": "【广州】遇见小面（面食4选2+脆皮鸡）招牌双人餐",
+      "priceText": "¥32.60",
+      "numericPrice": 32.6,
+      "pricingUnit": "按份电子券",
+      "isHookPrice": false,
+      "comparableGroup": "区域正餐特色双人电子券",
+      "deliveryScope": "指定城市门店 · 全天通用/到店核销 · 电子码/代下",
+      "status": "在售",
+      "sellerId": "2218446960922",
+      "sellerName": "探小小鱼",
+      "sellerUrl": "https://www.goofish.com/personal?userId=2218446960922",
+      "itemUrl": "https://www.goofish.com/item?id=1092138643727&categoryId=201420903",
+      "capturedAt": "2026-10-31 13:46:42",
+      "image": "virt-intel-thumbs/xy-1092138643727.jpg",
+      "imageSource": "image-0-O1CN01eTrpk3z7gNB37MJM___4611686018427386138-2-fleamarket.png_790x10000.jpg_.webp",
+      "trackType": "跟卖型",
+      "estCost": 18.26,
+      "estFeeRate": 0.01,
+      "estHours": 0.02,
+      "description": "【广州】遇见小面（面食4选2+脆皮鸡）招牌双人餐  【使用门店】仅限广州城市门店可用！   【双人餐】 ①主食四选二 红碗豌杂面 酸菜卤肉面 软骨丸子番茄阳光汤面 炭烧多肉鸡架菌菇鲜汤面 ②小吃一份 脆皮半只鸡  温馨提示： ①下单后发兑换码和兑换核销流程，到店核销使用 ②非劵码本身问题，个人原因不去使用的订单不可退款 ③本店劵码均保证可用，建议当天用当天拍，不可开任何单据 ④以下图片仅供参考，具体以门店实物为准，有需要随时咨询~ ⑤机场，车站，新开门店，北大研究院店/青茂口岸店/新世界凯粤湾店/会展中心店等特殊场",
+      "observations": [
+        {
+          "time": "2026-10-31 13:46:42",
+          "price": "¥32.60",
+          "status": "在售（Chrome真机重采核验通过）",
+          "source": "Chrome真实逐屏重采 30 件批次"
+        }
+      ]
+    },
+    {
+      "id": "XY-1064718884848",
+      "itemId": "1064718884848",
+      "nodeId": "dining-double",
+      "platform": "xianyu",
+      "platformLabel": "闲鱼",
+      "title": "【24小时自动发货】华莱士套餐西式快餐7件套双人餐温州200",
+      "priceText": "¥5.45",
+      "numericPrice": 5.45,
+      "pricingUnit": "按份电子券",
+      "isHookPrice": false,
+      "comparableGroup": "连锁西式快餐套餐券",
+      "deliveryScope": "指定城市门店 · 全天通用/到店核销 · 电子码/代下",
+      "status": "在售",
+      "sellerId": "855333566",
+      "sellerName": "仰***m",
+      "sellerUrl": "https://www.goofish.com/personal?userId=855333566",
+      "itemUrl": "https://www.goofish.com/item?id=1064718884848&categoryId=201421503",
+      "capturedAt": "2026-10-31 13:57:58",
+      "image": "virt-intel-thumbs/xy-1064718884848.jpg",
+      "imageSource": "screen-001.jpg (cropped)",
+      "trackType": "跟卖型",
+      "estCost": 3.05,
+      "estFeeRate": 0.01,
+      "estHours": 0.02,
+      "description": "【24小时自动发货】华莱士套餐西式快餐7件套双人餐温州200家门店通用标价就是售价秒发货  【仅温州！仅温州】 【仅温州！仅温州】  双人餐内容: 香辣鸡腿堡(2个) 黑椒鸡块(1份) 华香脆骨串(2串) 招牌原味0酒精气泡饮(2杯)  拍下之后发核销码，到店找店长手机扫码核销，现买现用，随时可用，售出不退  仅限到店，可以打包，不能外卖  ❗️券码特殊，拍付发券不退换哦",
+      "observations": [
+        {
+          "time": "2026-10-31 13:57:58",
+          "price": "¥5.45",
+          "status": "在售（Chrome真机重采核验通过）",
+          "source": "Chrome真实逐屏重采 30 件批次"
+        }
+      ]
+    },
+    {
+      "id": "XY-1067714477206",
+      "itemId": "1067714477206",
+      "nodeId": "dining-double",
+      "platform": "xianyu",
+      "platformLabel": "闲鱼",
+      "title": "汴梁嘉宴灌汤包龙亭店双人餐电子券同款团购108，现58出！周",
+      "priceText": "¥58",
+      "numericPrice": 58.0,
+      "pricingUnit": "按份电子券",
+      "isHookPrice": false,
+      "comparableGroup": "区域正餐特色双人电子券",
+      "deliveryScope": "指定城市门店 · 以详情门店规则为准 · 电子码/代下",
+      "status": "在售",
+      "sellerId": "890306283",
+      "sellerName": "美食优惠卡券大全",
+      "sellerUrl": "https://www.goofish.com/personal?userId=890306283",
+      "itemUrl": "https://www.goofish.com/item?id=1067714477206&categoryId=201417003",
+      "capturedAt": "2026-10-31 13:47:53",
+      "image": "virt-intel-thumbs/xy-1067714477206.jpg",
+      "imageSource": "image-3-O1CN0112Bc111wHfdRYmGwq___4611686018427387627-0-xy_item.jpg_790x10000Q90.jpg_.webp",
+      "trackType": "跟卖型",
+      "estCost": 32.48,
+      "estFeeRate": 0.01,
+      "estHours": 0.02,
+      "description": "汴梁嘉宴灌汤包龙亭店双人餐电子券同款团购108，现58出！周六节假日不可用！不讲价 开封特色菜+主食+汤品都有 堂食用 有效期350天 周六节假日不可用 需要的直接拍不讲价",
+      "observations": [
+        {
+          "time": "2026-10-31 13:47:53",
+          "price": "¥58",
+          "status": "在售（Chrome真机重采核验通过）",
+          "source": "Chrome真实逐屏重采 30 件批次"
+        }
+      ]
+    },
+    {
+      "id": "XY-1093999156707",
+      "itemId": "1093999156707",
+      "nodeId": "dining-double",
+      "platform": "xianyu",
+      "platformLabel": "闲鱼",
+      "title": "郭淑芬鲜切自助老火锅|单人/双人/多人自助|全国144家门店",
+      "priceText": "¥60",
+      "numericPrice": 60.0,
+      "pricingUnit": "按份电子券",
+      "isHookPrice": false,
+      "comparableGroup": "火锅烧烤双人套餐券",
+      "deliveryScope": "全国多店通用 · 全天通用/到店核销 · 电子码/代下",
+      "status": "在售",
+      "sellerId": "2215354770746",
+      "sellerName": "关你西红柿哦",
+      "sellerUrl": "https://www.goofish.com/personal?userId=2215354770746",
+      "itemUrl": "https://www.goofish.com/item?id=1093999156707&categoryId=201417003",
+      "capturedAt": "2026-10-31 13:48:08",
+      "image": "virt-intel-thumbs/xy-1093999156707.jpg",
+      "imageSource": "image-0-O1CN01NUo3g4yWm6K2b0Qo___4611686018427381050-0-xy_item.jpg_790x10000Q90.jpg_.webp",
+      "trackType": "跟卖型",
+      "estCost": 33.6,
+      "estFeeRate": 0.01,
+      "estHours": 0.02,
+      "description": "郭淑芬鲜切自助老火锅|单人/双人/多人自助|全国144家门店可用广州、杭州、合肥、襄阳等多家门店  标价就是售价(不砍刀)  [火]拍前先发门店咨询客服当地是否可用  使用事项 最长可用餐100分钟 调料门店要收费6元/份 不包锅底，具体收费看门店  [钉子]【购买须知及使用流程】 1.拍前发我城市和门店，确认可用后再下单 2.下单后给您券码，到店扫码核销即可 3.当天购买当天使用，切勿囤券，核销后请及时确认收货，谢谢 4.特殊商品售出后不退不换，券码发出后，因为买家个人原因退款收取10%手续费，谢谢合作 5.商品",
+      "observations": [
+        {
+          "time": "2026-10-31 13:48:08",
+          "price": "¥60",
+          "status": "在售（Chrome真机重采核验通过）",
+          "source": "Chrome真实逐屏重采 30 件批次"
+        }
+      ]
+    },
+    {
+      "id": "XY-1082501390718",
+      "itemId": "1082501390718",
+      "nodeId": "dining-double",
+      "platform": "xianyu",
+      "platformLabel": "闲鱼",
+      "title": "【自动发货】麦当劳堡卷炸鸡小食吃喝双人桶",
+      "priceText": "¥55.89",
+      "numericPrice": 55.89,
+      "pricingUnit": "按份电子券",
+      "isHookPrice": false,
+      "comparableGroup": "连锁西式快餐套餐券",
+      "deliveryScope": "指定城市门店 · 以详情门店规则为准 · 电子码/代下",
+      "status": "在售",
+      "sellerId": "2222232784213",
+      "sellerName": "椰蓉绿豆",
+      "sellerUrl": "https://www.goofish.com/personal?userId=2222232784213",
+      "itemUrl": "https://www.goofish.com/item?id=1082501390718&categoryId=201421503",
+      "capturedAt": "2026-10-31 13:48:23",
+      "image": "virt-intel-thumbs/xy-1082501390718.jpg",
+      "imageSource": "screen-001.jpg (cropped)",
+      "trackType": "跟卖型",
+      "estCost": 31.3,
+      "estFeeRate": 0.01,
+      "estHours": 0.02,
+      "description": "【自动发货】麦当劳堡卷炸鸡小食吃喝双人桶  不用问在不在全自动发货 自助机核销 有需要直接拍就行 门店不可用或当天未使用的可退！ 自助机扫码核销 【注意事项】 1.下单成功后不支持任何原因退款退货 2.非外卖，只能到餐厅取餐， 秒发货 3.景点机场火车站交交通枢纽等特殊位置餐厅 无法代下 4请务必在店内核实餐品， 餐品配错或少数量 请与店员沟通，离店概不负责 5.拍下后请当天使用，不能当天使用请及时申请仅退款，被自动确认收货导致无法申请退款的不退。 #麦当劳#麦当劳",
+      "observations": [
+        {
+          "time": "2026-10-31 13:48:23",
+          "price": "¥55.89",
+          "status": "在售（Chrome真机重采核验通过）",
+          "source": "Chrome真实逐屏重采 30 件批次"
+        }
+      ]
+    },
+    {
+      "id": "XY-1091240689963",
+      "itemId": "1091240689963",
+      "nodeId": "dining-double",
+      "platform": "xianyu",
+      "platformLabel": "闲鱼",
+      "title": "上海馋三尺蟹粉全家福双人餐 馋三尺蟹粉小笼特价双人餐全天可用",
+      "priceText": "¥39 - 65",
+      "numericPrice": 52.0,
+      "pricingUnit": "区间双人套餐",
+      "isHookPrice": false,
+      "comparableGroup": "区域正餐特色双人电子券",
+      "deliveryScope": "上海通用 · 全天通用/到店核销 · 电子码/代下",
+      "status": "在售",
+      "sellerId": "2655396617",
+      "sellerName": "鸡蛋仔呀",
+      "sellerUrl": "https://www.goofish.com/personal?userId=2655396617",
+      "itemUrl": "https://www.goofish.com/item?id=1091240689963&categoryId=201417003",
+      "capturedAt": "2026-10-31 13:49:12",
+      "image": "virt-intel-thumbs/xy-1091240689963.jpg",
+      "imageSource": "image-0-O1CN01dfUCykXxLVB2deLs___4611686018427380489-0-xy_item.jpg_790x10000Q90.jpg_.webp",
+      "trackType": "跟卖型",
+      "estCost": 29.12,
+      "estFeeRate": 0.01,
+      "estHours": 0.02,
+      "description": "上海馋三尺蟹粉全家福双人餐 馋三尺蟹粉小笼特价双人餐全天可用  自动发码 到店核销 套餐详情（图2） ✔蟹粉小笼(8只) ✔蟹粉拌面(1份) ✔蟹粉小馄饨(1份) ✔蟹黄鱼春卷(2只) 某团原价175 现特价！比原价便宜一大半！超值！ 门店价格不同，需要可咨询  【使用门店】 上海荟聚店、世博源店、中环百联店、人民广场店、凯德闵行商业中心店、恒基名人店、文峰广场店、漕河泾印象城店、维璟印象城店、金虹桥店、静安寺店、龙华会店、新嘉中心店、前湾印象城店  拍下后自动发码到店核销 发码后不退换 确认需要在拍！即买即用！！",
+      "observations": [
+        {
+          "time": "2026-10-31 13:49:12",
+          "price": "¥39 - 65",
+          "status": "在售（Chrome真机重采核验通过）",
+          "source": "Chrome真实逐屏重采 30 件批次"
+        }
+      ]
+    },
+    {
+      "id": "XY-1091075417903",
+      "itemId": "1091075417903",
+      "nodeId": "dining-double",
+      "platform": "xianyu",
+      "platformLabel": "闲鱼",
+      "title": "成都小饕荟雅安贡椒鱼鲜馆（广福桥店//百花潭店）双人餐电子券",
+      "priceText": "¥59.55",
+      "numericPrice": 59.55,
+      "pricingUnit": "按份电子券",
+      "isHookPrice": false,
+      "comparableGroup": "区域正餐特色双人电子券",
+      "deliveryScope": "指定城市门店 · 全天通用/到店核销 · 电子码/代下",
+      "status": "在售",
+      "sellerId": "1692406654",
+      "sellerName": "糖糖YY美食",
+      "sellerUrl": "https://www.goofish.com/personal?userId=1692406654",
+      "itemUrl": "https://www.goofish.com/item?id=1091075417903&categoryId=201417003",
+      "capturedAt": "2026-10-31 13:49:28",
+      "image": "virt-intel-thumbs/xy-1091075417903.jpg",
+      "imageSource": "image-0-O1CN01f6iZqWcucdI1nHnA___4611686018427384702-0-xy_item.jpg_790x10000Q90.jpg_.webp",
+      "trackType": "跟卖型",
+      "estCost": 33.35,
+      "estFeeRate": 0.01,
+      "estHours": 0.02,
+      "description": "成都小饕荟雅安贡椒鱼鲜馆（广福桥店//百花潭店）双人餐电子券 套餐内容见图，锅底4选1，招牌鱼蛙2选1，特色酸菜+烫菜+味碟+抽纸 周一至周日通用，营业时间内可用，无需预约，到店出示券码核销 电子券码，拍下即发，确定要拍再下单，券码当天有效 发码后不退不换，特殊商品，拍下默认已知交易须知 有问题随时私聊，喜欢直接拍",
+      "observations": [
+        {
+          "time": "2026-10-31 13:49:28",
+          "price": "¥59.55",
+          "status": "在售（Chrome真机重采核验通过）",
+          "source": "Chrome真实逐屏重采 30 件批次"
+        }
+      ]
+    },
+    {
+      "id": "XY-1090214212354",
+      "itemId": "1090214212354",
+      "nodeId": "dining-double",
+      "platform": "xianyu",
+      "platformLabel": "闲鱼",
+      "title": "麦当劳不爱吃辣双人餐7件套 2个板烧鸡腿堡套餐",
+      "priceText": "¥49.99",
+      "numericPrice": 49.99,
+      "pricingUnit": "按份电子券",
+      "isHookPrice": false,
+      "comparableGroup": "连锁西式快餐套餐券",
+      "deliveryScope": "全国多店通用 · 全天通用/到店核销 · 电子码/代下",
+      "status": "在售",
+      "sellerId": "2208020918868",
+      "sellerName": "麦当劳中国区",
+      "sellerUrl": "https://www.goofish.com/personal?userId=2208020918868",
+      "itemUrl": "https://www.goofish.com/item?id=1090214212354&categoryId=201421503",
+      "capturedAt": "2026-10-31 13:49:45",
+      "image": "virt-intel-thumbs/xy-1090214212354.jpg",
+      "imageSource": "image-0-O1CN01493r9rWNusL1chua___4611686018427384404-0-xy_item.jpg_790x10000Q90.jpg_.webp",
+      "trackType": "跟卖型",
+      "estCost": 27.99,
+      "estFeeRate": 0.01,
+      "estHours": 0.02,
+      "description": "麦当劳不爱吃辣双人餐7件套 2个板烧鸡腿堡套餐 全国门店通用！  套餐内容：板烧鸡腿堡*2+中薯条*1+香芋派/菠萝派*1+鸡块5块*1+可乐*2 （饮品可选中可乐/无糖可乐/雪碧/锡兰红茶，小食可换口味）  【到店扫码核销】拍下自动发券码，到店直接取餐，不用等快递，出餐快！  使用时间：10:30-23:59 堂食/打包都能用，不支持外卖 其他服务：可发门店给客服帮你下单  高铁站/机场/景区/服务区/特殊餐厅不可用，港澳台及海南三亚地区不可用  虚拟商品，拍下自动发券码，随时可用～  【注意事项】 1.下单成功",
+      "observations": [
+        {
+          "time": "2026-10-31 13:49:45",
+          "price": "¥49.99",
+          "status": "在售（Chrome真机重采核验通过）",
+          "source": "Chrome真实逐屏重采 30 件批次"
+        }
+      ]
+    },
+    {
+      "id": "XY-1084382196124",
+      "itemId": "1084382196124",
+      "nodeId": "dining-double",
+      "platform": "xianyu",
+      "platformLabel": "闲鱼",
+      "title": "全新麦当劳鸡牛双堡双人餐电子券，全国门店通用，堂食外卖都能用",
+      "priceText": "¥47.66",
+      "numericPrice": 47.66,
+      "pricingUnit": "按份电子券",
+      "isHookPrice": false,
+      "comparableGroup": "连锁西式快餐套餐券",
+      "deliveryScope": "全国多店通用 · 全天通用/到店核销 · 电子码/代下",
+      "status": "在售",
+      "sellerId": "3346632633",
+      "sellerName": "啦啦啦啦1爱剁手",
+      "sellerUrl": "https://www.goofish.com/personal?userId=3346632633",
+      "itemUrl": "https://www.goofish.com/item?id=1084382196124&categoryId=201421503",
+      "capturedAt": "2026-10-31 13:50:26",
+      "image": "virt-intel-thumbs/xy-1084382196124.jpg",
+      "imageSource": "image-0-O1CN01fWzF5lhmu7G2MuDx___4611686018427383737-0-xy_item.jpg_790x10000Q90.jpg_.webp",
+      "trackType": "跟卖型",
+      "estCost": 26.69,
+      "estFeeRate": 0.01,
+      "estHours": 0.02,
+      "description": "全新麦当劳鸡牛双堡双人餐电子券，全国门店通用，堂食外卖都能用。汉堡、小食、饮品任选，具体内容看图。拍下发券码，到店扫码直接兑。用不到了要的来拿。",
+      "observations": [
+        {
+          "time": "2026-10-31 13:50:26",
+          "price": "¥47.66",
+          "status": "在售（Chrome真机重采核验通过）",
+          "source": "Chrome真实逐屏重采 30 件批次"
+        }
+      ]
+    },
+    {
+      "id": "XY-1001871654070",
+      "itemId": "1001871654070",
+      "nodeId": "dining-double",
+      "platform": "xianyu",
+      "platformLabel": "闲鱼",
+      "title": "遇见小面双人餐（面4选2+小吃1）特色招牌双人套餐 全国可用",
+      "priceText": "¥32.60",
+      "numericPrice": 32.6,
+      "pricingUnit": "按份电子券",
+      "isHookPrice": false,
+      "comparableGroup": "区域正餐特色双人电子券",
+      "deliveryScope": "全国多店通用 · 以详情门店规则为准 · 电子码/代下",
+      "status": "在售",
+      "sellerId": "2207404331779",
+      "sellerName": "兜兜有券",
+      "sellerUrl": "https://www.goofish.com/personal?userId=2207404331779",
+      "itemUrl": "https://www.goofish.com/item?id=1001871654070&categoryId=201420903",
+      "capturedAt": "2026-10-31 13:50:40",
+      "image": "virt-intel-thumbs/xy-1001871654070.jpg",
+      "imageSource": "image-0-O1CN01raMtnG1P0pjujVwww___4611686018427384579-0-xy_item.jpg_790x10000Q90.jpg_.webp",
+      "trackType": "跟卖型",
+      "estCost": 18.26,
+      "estFeeRate": 0.01,
+      "estHours": 0.02,
+      "description": "遇见小面双人餐（面4选2+小吃1）特色招牌双人套餐 全国可用  ✅团购套餐详情如下： 主食4选2（可重复选）： 1️⃣红碗豌杂面 2️⃣酸菜卤肉面 3️⃣软骨丸子阳光番茄汤面 4️⃣炭烤多肉鸡架菌菇鲜汤面 小吃1份： 1️⃣秘制脆皮半只鸡 可代下单，拍点餐二维码给我。  也可以发兑换码，复制券码，打开遇见小面小程序，选择我的-优惠券，兑换后再扫桌面点餐码自行下单 ⚠️⚠️新世界凯粤湾单人餐可用，双人餐不可用  注意⚠️：机场店、火车站等交通枢纽、新门店不能用。券码发出不退 未到门店营业时间或者门店售罄不属于券码问题",
+      "observations": [
+        {
+          "time": "2026-10-31 13:50:40",
+          "price": "¥32.60",
+          "status": "在售（Chrome真机重采核验通过）",
+          "source": "Chrome真实逐屏重采 30 件批次"
+        }
+      ]
+    },
+    {
+      "id": "XY-1077261668375",
+      "itemId": "1077261668375",
+      "nodeId": "dining-double",
+      "platform": "xianyu",
+      "platformLabel": "闲鱼",
+      "title": "【宁波】每天稻·四季家常菜2店通用宁波四季小鲜双人餐",
+      "priceText": "¥55",
+      "numericPrice": 55.0,
+      "pricingUnit": "按份电子券",
+      "isHookPrice": false,
+      "comparableGroup": "区域正餐特色双人电子券",
+      "deliveryScope": "指定城市门店 · 全天通用/到店核销 · 电子码/代下",
+      "status": "在售",
+      "sellerId": "2218446960922",
+      "sellerName": "探小小鱼",
+      "sellerUrl": "https://www.goofish.com/personal?userId=2218446960922",
+      "itemUrl": "https://www.goofish.com/item?id=1077261668375&categoryId=201417003",
+      "capturedAt": "2026-10-31 13:50:58",
+      "image": "virt-intel-thumbs/xy-1077261668375.jpg",
+      "imageSource": "image-1-O1CN01JknLxR1TnQK0u8xX___4611686018427386138-2-fleamarket.png_790x10000.jpg_.png",
+      "trackType": "跟卖型",
+      "estCost": 30.8,
+      "estFeeRate": 0.01,
+      "estHours": 0.02,
+      "description": "【宁波】每天稻·四季家常菜2店通用宁波四季小鲜双人餐  【套餐内容】原价157￥现价仅需55￥ 1.三味真火烤鸡29￥ 2.原创鲜气海肠捞饭79￥ 3.会跳舞的宁海小土豆24￥ 4.安神小罐母鸡汤25￥  【可用门店】 1.高新宝龙店:浙江省宁波市鄞州区高新宝龙广场3楼006-007(近1/2号电梯) 2.江北万达店:浙江省宁波市江北区江北万达广场室内步行街3楼3-67-68  【可用时间】周一至周日10:00-21:00  【放心拍・三重保障】 ① 正规渠道，到店直接用，保证可用 ② 门店原因用不了，全额退款！ ",
+      "observations": [
+        {
+          "time": "2026-10-31 13:50:58",
+          "price": "¥55",
+          "status": "在售（Chrome真机重采核验通过）",
+          "source": "Chrome真实逐屏重采 30 件批次"
+        }
+      ]
+    },
+    {
+      "id": "XY-1091036843980",
+      "itemId": "1091036843980",
+      "nodeId": "dining-double",
+      "platform": "xianyu",
+      "platformLabel": "闲鱼",
+      "title": "KFC超实在七件套双人餐",
+      "priceText": "¥31.50",
+      "numericPrice": 31.5,
+      "pricingUnit": "按份电子券",
+      "isHookPrice": false,
+      "comparableGroup": "连锁西式快餐套餐券",
+      "deliveryScope": "指定城市门店 · 全天通用/到店核销 · 电子码/代下",
+      "status": "在售",
+      "sellerId": "2212486813843",
+      "sellerName": "小白爱吃肉",
+      "sellerUrl": "https://www.goofish.com/personal?userId=2212486813843",
+      "itemUrl": "https://www.goofish.com/item?id=1091036843980&categoryId=201421503",
+      "capturedAt": "2026-10-31 13:51:25",
+      "image": "virt-intel-thumbs/xy-1091036843980.jpg",
+      "imageSource": "screen-001.jpg (cropped)",
+      "trackType": "跟卖型",
+      "estCost": 17.64,
+      "estFeeRate": 0.01,
+      "estHours": 0.02,
+      "description": "KFC超实在七件套双人餐 【套餐内容】 1️⃣黄金SPA鸡排堡（藤椒味）1份 2️⃣滋滋YES烤鸡腿堡1份 3️⃣黄金鸡块（5块）1份 4️⃣红豆派1只 5️⃣醇香土豆泥1份 6️⃣饮料2杯（百事可乐中杯/桂花酸梅汤大杯，任选） 发二维码到店给店员核销",
+      "observations": [
+        {
+          "time": "2026-10-31 13:51:25",
+          "price": "¥31.50",
+          "status": "在售（Chrome真机重采核验通过）",
+          "source": "Chrome真实逐屏重采 30 件批次"
+        }
+      ]
+    },
+    {
+      "id": "XY-1085949541251",
+      "itemId": "1085949541251",
+      "nodeId": "dining-double",
+      "platform": "xianyu",
+      "platformLabel": "闲鱼",
+      "title": "【西部马华牛肉面双人餐券】北京81家门店通用，鲜牛棒骨汤面2",
+      "priceText": "¥48",
+      "numericPrice": 48.0,
+      "pricingUnit": "按份电子券",
+      "isHookPrice": false,
+      "comparableGroup": "区域正餐特色双人电子券",
+      "deliveryScope": "指定城市门店 · 以详情门店规则为准 · 电子码/代下",
+      "status": "在售",
+      "sellerId": "672547856",
+      "sellerName": "只要挣钱就卖",
+      "sellerUrl": "https://www.goofish.com/personal?userId=672547856",
+      "itemUrl": "https://www.goofish.com/item?id=1085949541251&categoryId=201420903",
+      "capturedAt": "2026-10-31 13:51:44",
+      "image": "virt-intel-thumbs/xy-1085949541251.jpg",
+      "imageSource": "image-0-O1CN01g3ehkELzrzB1klNs___4611686018427380752-0-xy_item.jpg_790x10000Q90.jpg_.webp",
+      "trackType": "跟卖型",
+      "estCost": 26.88,
+      "estFeeRate": 0.01,
+      "estHours": 0.02,
+      "description": "【西部马华牛肉面双人餐券】北京81家门店通用，鲜牛棒骨汤面2碗+素凉菜三拼2份+藤椒鸡肉串2串+丝路茶饮12元任选2杯，套餐内容丰富，牛肉面+小串+饮料+凉菜，适合两个人吃！  周一-周日10:00-21:00都能用，下单后发兑换码，复制粘贴去西部马华小程序兑换即可。绑定后有效期到2027年4月30日，券码特殊，发出不退不换，超期作废！  喜欢直接拍，标价就是卖价，细节私聊~",
+      "observations": [
+        {
+          "time": "2026-10-31 13:51:44",
+          "price": "¥48",
+          "status": "在售（Chrome真机重采核验通过）",
+          "source": "Chrome真实逐屏重采 30 件批次"
+        }
+      ]
+    },
+    {
+      "id": "XY-877619541760",
+      "itemId": "877619541760",
+      "nodeId": "dining-double",
+      "platform": "xianyu",
+      "platformLabel": "闲鱼",
+      "title": "谷田稻香｜臻选双人䬸（全国220+门店可用）！！",
+      "priceText": "¥27.20",
+      "numericPrice": 27.2,
+      "pricingUnit": "按份电子券",
+      "isHookPrice": false,
+      "comparableGroup": "区域正餐特色双人电子券",
+      "deliveryScope": "全国多店通用 · 以详情门店规则为准 · 电子码/代下",
+      "status": "在售",
+      "sellerId": "630008880",
+      "sellerName": "无敌七彩草履虫",
+      "sellerUrl": "https://www.goofish.com/personal?userId=630008880",
+      "itemUrl": "https://www.goofish.com/item?id=877619541760&categoryId=201420903",
+      "capturedAt": "2026-10-31 13:51:57",
+      "image": "virt-intel-thumbs/xy-877619541760.jpg",
+      "imageSource": "image-0-O1CN01REc8X232ZIG2Roei___4611686018427382832-0-xy_item.jpg_790x10000Q90.jpg_.webp",
+      "trackType": "跟卖型",
+      "estCost": 15.23,
+      "estFeeRate": 0.01,
+      "estHours": 0.02,
+      "description": "谷田稻香｜臻选双人䬸（全国220+门店可用）！！ 红烧狮子头粉丝煲・茄子肉糜煲+限定蔬菜 原价83元，现价27.8 元 划重点：代下单！代下单！！代下单！！！ 1、请直接发：所在城市+店名 2、确认可以使用后发台码！ 3、选一下米饭和配菜，坐等即可 4、虚拟物品，不退不换。 5、出餮后，请及时确认收货。 6、拍下后即认可以上条款。",
+      "observations": [
+        {
+          "time": "2026-10-31 13:51:57",
+          "price": "¥27.20",
+          "status": "在售（Chrome真机重采核验通过）",
+          "source": "Chrome真实逐屏重采 30 件批次"
+        }
+      ]
+    },
+    {
+      "id": "XY-1088416883804",
+      "itemId": "1088416883804",
+      "nodeId": "dining-double",
+      "platform": "xianyu",
+      "platformLabel": "闲鱼",
+      "title": "厦门 打渔船厦门菜·正宗姜母鸭 某团198元2店通用双人餐",
+      "priceText": "¥59.66",
+      "numericPrice": 59.66,
+      "pricingUnit": "按份电子券",
+      "isHookPrice": false,
+      "comparableGroup": "区域正餐特色双人电子券",
+      "deliveryScope": "指定城市门店 · 以详情门店规则为准 · 电子码/代下",
+      "status": "在售",
+      "sellerId": "3121309869",
+      "sellerName": "西瓜很甜分享美食",
+      "sellerUrl": "https://www.goofish.com/personal?userId=3121309869",
+      "itemUrl": "https://www.goofish.com/item?id=1088416883804&categoryId=201417003",
+      "capturedAt": "2026-10-31 13:52:35",
+      "image": "virt-intel-thumbs/xy-1088416883804.jpg",
+      "imageSource": "image-0-O1CN01WpYnrSwu0lB1lGuy___4611686018427381933-0-xy_item.jpg_790x10000Q90.jpg_.webp",
+      "trackType": "跟卖型",
+      "estCost": 33.41,
+      "estFeeRate": 0.01,
+      "estHours": 0.02,
+      "description": "厦门 打渔船厦门菜·正宗姜母鸭 某团198元2店通用双人餐 老厦门本地菜·20年老字号.正宗姜母鸭(厦大分店) 地址：顶澳仔路10号之7.8（厦大西村站旁） 打渔船厦门菜·正宗姜母鸭(沙坡尾店)地址：大学路183号 经典老厦门姜母鸭+本港海鲜+应季时蔬+有机食蔬+香米+餐具 周一至周日通用，每桌限用1张 具体门店地址见图 拍下发码，核销后请及时确认收货 特殊商品，发码后不退",
+      "observations": [
+        {
+          "time": "2026-10-31 13:52:35",
+          "price": "¥59.66",
+          "status": "在售（Chrome真机重采核验通过）",
+          "source": "Chrome真实逐屏重采 30 件批次"
+        }
+      ]
+    },
+    {
+      "id": "XY-1079558949781",
+      "itemId": "1079558949781",
+      "nodeId": "dining-double",
+      "platform": "xianyu",
+      "platformLabel": "闲鱼",
+      "title": "【直拍秒发】青岛粥全粥到·青岛菜双人餐 标价即卖价 4折特价",
+      "priceText": "¥44.27",
+      "numericPrice": 44.27,
+      "pricingUnit": "按份电子券",
+      "isHookPrice": false,
+      "comparableGroup": "区域正餐特色双人电子券",
+      "deliveryScope": "指定城市门店 · 全天通用/到店核销 · 电子码/代下",
+      "status": "在售",
+      "sellerId": "2655396617",
+      "sellerName": "鸡蛋仔呀",
+      "sellerUrl": "https://www.goofish.com/personal?userId=2655396617",
+      "itemUrl": "https://www.goofish.com/item?id=1079558949781&categoryId=201417003",
+      "capturedAt": "2026-10-31 13:52:48",
+      "image": "virt-intel-thumbs/xy-1079558949781.jpg",
+      "imageSource": "image-0-O1CN010G8ClyLKwrF2cOIQ___4611686018427380489-0-xy_item.jpg_790x10000Q90.jpg_.webp",
+      "trackType": "跟卖型",
+      "estCost": 24.79,
+      "estFeeRate": 0.01,
+      "estHours": 0.02,
+      "description": "【直拍秒发】青岛粥全粥到·青岛菜双人餐 标价即卖价 4折特价 原价180元  自动发码 到店秒核销  套餐内容（图2）： 招牌蛤蜊鸡1份 老青岛炸肉1份 渔家小白菜1份 八宝粥和皮蛋瘦肉粥各1份 湿巾2份  青岛适用门店：新业广场店、悦荟广场店、延吉路店、长沙路店、江西路店、丽达茂店、李沧万达店、黄岛家佳源店、黄岛融创茂店、延安三路店、金鼎广场店、热河路店、崂山丽达广场店、乐客城店 粥全粥道～可用一张 不与其他优惠共享  拍下后自动发券码到店核销即可 发码后不退换 确认需要再拍 即买即用！",
+      "observations": [
+        {
+          "time": "2026-10-31 13:52:48",
+          "price": "¥44.27",
+          "status": "在售（Chrome真机重采核验通过）",
+          "source": "Chrome真实逐屏重采 30 件批次"
+        }
+      ]
+    },
+    {
+      "id": "XY-1068436356856",
+      "itemId": "1068436356856",
+      "nodeId": "dining-double",
+      "platform": "xianyu",
+      "platformLabel": "闲鱼",
+      "title": "大家乐｜脆皮烧春鸡（配薯条）➕冰柠檬茶*2杯双人套餐",
+      "priceText": "¥49.99",
+      "numericPrice": 49.99,
+      "pricingUnit": "按份电子券",
+      "isHookPrice": false,
+      "comparableGroup": "区域正餐特色双人电子券",
+      "deliveryScope": "指定城市门店 · 以详情门店规则为准 · 电子码/代下",
+      "status": "在售",
+      "sellerId": "2726727846",
+      "sellerName": "波兰丰盈的鳗鱼",
+      "sellerUrl": "https://www.goofish.com/personal?userId=2726727846",
+      "itemUrl": "https://www.goofish.com/item?id=1068436356856&categoryId=201420903",
+      "capturedAt": "2026-10-31 13:53:00",
+      "image": "virt-intel-thumbs/xy-1068436356856.jpg",
+      "imageSource": "screen-001.jpg (cropped)",
+      "trackType": "跟卖型",
+      "estCost": 27.99,
+      "estFeeRate": 0.01,
+      "estHours": 0.02,
+      "description": "大家乐｜脆皮烧春鸡（配薯条）➕冰柠檬茶*2杯双人套餐 可外卖可堂食可自取 拍前请提供收货地址 售出不退不换！ 收到餐品后请及时收货！",
+      "observations": [
+        {
+          "time": "2026-10-31 13:53:00",
+          "price": "¥49.99",
+          "status": "在售（Chrome真机重采核验通过）",
+          "source": "Chrome真实逐屏重采 30 件批次"
+        }
+      ]
+    },
+    {
+      "id": "XY-1083478967299",
+      "itemId": "1083478967299",
+      "nodeId": "dining-double",
+      "platform": "xianyu",
+      "platformLabel": "闲鱼",
+      "title": "（现拍现用，现拍现用，不支持囤券，不支持囤券）",
+      "priceText": "¥41.25",
+      "numericPrice": 41.25,
+      "pricingUnit": "按份电子券",
+      "isHookPrice": false,
+      "comparableGroup": "区域正餐特色双人电子券",
+      "deliveryScope": "指定城市门店 · 全天通用/到店核销 · 电子码/代下",
+      "status": "在售",
+      "sellerId": "2206442011530",
+      "sellerName": "爱吃番茄鸡蛋面",
+      "sellerUrl": "https://www.goofish.com/personal?userId=2206442011530",
+      "itemUrl": "https://www.goofish.com/item?id=1083478967299&categoryId=201421503",
+      "capturedAt": "2026-10-31 13:53:56",
+      "image": "virt-intel-thumbs/xy-1083478967299.jpg",
+      "imageSource": "screen-001.jpg (cropped)",
+      "trackType": "跟卖型",
+      "estCost": 23.1,
+      "estFeeRate": 0.01,
+      "estHours": 0.02,
+      "description": "（现拍现用，现拍现用，不支持囤券，不支持囤券） 麦当劳麦当劳套餐 麦当劳热爱麦辣双人套餐 发券码发券码 到店核销  麦当劳热爱麦辣双人套餐： 2个麦辣鸡腿汉堡 +5块麦乐鸡 +蘸酱脆皮鸡柳+中薯条 饮料任选2杯：中杯可乐 /中杯无糖可乐  发一下店铺名字和城市地区 我看一下能不能买 可以买的再拍下 我这边发券码  拍下发券码发券码 到店核销  售出不接受退款售出不接受退款 介意勿扰",
+      "observations": [
+        {
+          "time": "2026-10-31 13:53:56",
+          "price": "¥41.25",
+          "status": "在售（Chrome真机重采核验通过）",
+          "source": "Chrome真实逐屏重采 30 件批次"
+        }
+      ]
+    },
+    {
+      "id": "XY-1061774551527",
+      "itemId": "1061774551527",
+      "nodeId": "dining-double",
+      "platform": "xianyu",
+      "platformLabel": "闲鱼",
+      "title": "无锡丰茂烤串（麦库大厦店）全家福招牌必点双人餐电子券",
+      "priceText": "¥58",
+      "numericPrice": 58.0,
+      "pricingUnit": "按份电子券",
+      "isHookPrice": false,
+      "comparableGroup": "火锅烧烤双人套餐券",
+      "deliveryScope": "指定城市门店 · 全天通用/到店核销 · 电子码/代下",
+      "status": "在售",
+      "sellerId": "611293898",
+      "sellerName": "度假村带薪神游的蓝带鱼",
+      "sellerUrl": "https://www.goofish.com/personal?userId=611293898",
+      "itemUrl": "https://www.goofish.com/item?id=1061774551527&categoryId=201417003",
+      "capturedAt": "2026-10-31 13:54:10",
+      "image": "virt-intel-thumbs/xy-1061774551527.jpg",
+      "imageSource": "image-2-O1CN0121dGjl1efL0zeLn3u___4611686018427386570-0-xy_item.jpg_790x10000Q90.jpg_.webp",
+      "trackType": "跟卖型",
+      "estCost": 32.48,
+      "estFeeRate": 0.01,
+      "estHours": 0.02,
+      "description": "无锡丰茂烤串（麦库大厦店）全家福招牌必点双人餐电子券  套餐内容如图所示，如有变动，具体以商家实际为准  【购买须知】 1.电子券码，到店核销，一张桌子只能用一张券，不能与其他优惠券共享 2.数量有限，价格动态浮动，拍前私聊报价，勿直拍 3.特殊商品，券码发出后不退不换 4.核销使用后请及时确认收货",
+      "observations": [
+        {
+          "time": "2026-10-31 13:54:10",
+          "price": "¥58",
+          "status": "在售（Chrome真机重采核验通过）",
+          "source": "Chrome真实逐屏重采 30 件批次"
+        }
+      ]
+    },
+    {
+      "id": "XY-1092672884959",
+      "itemId": "1092672884959",
+      "nodeId": "dining-double",
+      "platform": "xianyu",
+      "platformLabel": "闲鱼",
+      "title": "宁波田波泡椒牛蛙 单人餐 双人餐",
+      "priceText": "¥44.20",
+      "numericPrice": 44.2,
+      "pricingUnit": "按份电子券",
+      "isHookPrice": false,
+      "comparableGroup": "火锅烧烤双人套餐券",
+      "deliveryScope": "指定城市门店 · 以详情门店规则为准 · 电子码/代下",
+      "status": "在售",
+      "sellerId": "3000147772",
+      "sellerName": "小口香糖",
+      "sellerUrl": "https://www.goofish.com/personal?userId=3000147772",
+      "itemUrl": "https://www.goofish.com/item?id=1092672884959&categoryId=201417003",
+      "capturedAt": "2026-10-31 13:54:23",
+      "image": "virt-intel-thumbs/xy-1092672884959.jpg",
+      "imageSource": "screen-001.jpg (cropped)",
+      "trackType": "跟卖型",
+      "estCost": 24.75,
+      "estFeeRate": 0.01,
+      "estHours": 0.02,
+      "description": "宁波田波泡椒牛蛙 单人餐 双人餐  原价59元牛蛙一份  单次可用两张 可叠加12一份的玉米粒或者土豆丝❗️  电子券码拍下后不退不换 吃完请及时收货！",
+      "observations": [
+        {
+          "time": "2026-10-31 13:54:23",
+          "price": "¥44.20",
+          "status": "在售（Chrome真机重采核验通过）",
+          "source": "Chrome真实逐屏重采 30 件批次"
+        }
+      ]
+    },
+    {
+      "id": "XY-1083955117684",
+      "itemId": "1083955117684",
+      "nodeId": "dining-double",
+      "platform": "xianyu",
+      "platformLabel": "闲鱼",
+      "title": "太原鲁小鲜双人餐（茂业店）",
+      "priceText": "¥49",
+      "numericPrice": 49.0,
+      "pricingUnit": "按份电子券",
+      "isHookPrice": false,
+      "comparableGroup": "区域正餐特色双人电子券",
+      "deliveryScope": "指定城市门店 · 以详情门店规则为准 · 电子码/代下",
+      "status": "在售",
+      "sellerId": "2207136589318",
+      "sellerName": "深海做美食的瓜子",
+      "sellerUrl": "https://www.goofish.com/personal?userId=2207136589318",
+      "itemUrl": "https://www.goofish.com/item?id=1083955117684&categoryId=201417003",
+      "capturedAt": "2026-10-31 13:55:12",
+      "image": "virt-intel-thumbs/xy-1083955117684.jpg",
+      "imageSource": "image-0-O1CN01Ro68RERKjiD2LeBl___4611686018427381254-0-xy_item.jpg_790x10000Q90.jpg_.webp",
+      "trackType": "跟卖型",
+      "estCost": 27.44,
+      "estFeeRate": 0.01,
+      "estHours": 0.02,
+      "description": "太原鲁小鲜双人餐（茂业店） 地址:太原市小店区亲贤北街79号茂业天地二期L5 #餐饮美食券+ 数量有限，尽量提前下单 购买须知： 1️⃣ 购买前，请先与我确认是否能出票； 2️⃣标价为大概参考价，实时报价； 3️⃣购买前请咨询券码使用效期  ❗️❗️❗️券码特殊，非券码问题拍付发券不退换哦",
+      "observations": [
+        {
+          "time": "2026-10-31 13:55:12",
+          "price": "¥49",
+          "status": "在售（Chrome真机重采核验通过）",
+          "source": "Chrome真实逐屏重采 30 件批次"
+        }
+      ]
+    },
+    {
+      "id": "XY-893236994750",
+      "itemId": "893236994750",
+      "nodeId": "dining-double",
+      "platform": "xianyu",
+      "platformLabel": "闲鱼",
+      "title": "塔斯汀双人餐外卖，双堡外卖，塔斯汀外卖",
+      "priceText": "¥31.28",
+      "numericPrice": 31.28,
+      "pricingUnit": "按份电子券",
+      "isHookPrice": false,
+      "comparableGroup": "连锁西式快餐套餐券",
+      "deliveryScope": "全国多店通用 · 以详情门店规则为准 · 电子码/代下",
+      "status": "在售",
+      "sellerId": "1056158581",
+      "sellerName": "用户_50509345",
+      "sellerUrl": "https://www.goofish.com/personal?userId=1056158581",
+      "itemUrl": "https://www.goofish.com/item?id=893236994750&categoryId=201421503",
+      "capturedAt": "2026-10-31 13:55:26",
+      "image": "virt-intel-thumbs/xy-893236994750.jpg",
+      "imageSource": "screen-001.jpg (cropped)",
+      "trackType": "跟卖型",
+      "estCost": 17.52,
+      "estFeeRate": 0.01,
+      "estHours": 0.02,
+      "description": "塔斯汀双人餐外卖，双堡外卖，塔斯汀外卖  2个汉堡+3小食，全国可用  请提供城市和收货地址，电话～  拍前请咨询！！！  套餐内容：  1️⃣香辣/藤椒鸡腿汉堡*2 （换培根堡+1r，  避风塘蟹堡+3r，板烧凤梨堡+3r，安格斯+6r）  2️⃣鸡块/鸡米花/双享翅根/粗薯/酒酿糍耙 5选3  小食可换可乐，另加可乐+3r/杯  塔斯汀外卖，塔斯汀双人餐外卖，塔斯汀双堡，塔斯汀代下单，塔斯汀配送，美团外卖，塔斯汀饿了么  部分地区可能用不了，请发城市和收货地址，手机号  #我是美味魔法师 #餐饮美食券",
+      "observations": [
+        {
+          "time": "2026-10-31 13:55:26",
+          "price": "¥31.28",
+          "status": "在售（Chrome真机重采核验通过）",
+          "source": "Chrome真实逐屏重采 30 件批次"
+        }
+      ]
+    },
+    {
+      "id": "XY-1093626803218",
+      "itemId": "1093626803218",
+      "nodeId": "dining-double",
+      "platform": "xianyu",
+      "platformLabel": "闲鱼",
+      "title": "青岛 33号大院·青岛本帮菜 5店可用 双人餐 2人餐",
+      "priceText": "¥37 - 67",
+      "numericPrice": 52.0,
+      "pricingUnit": "区间双人套餐",
+      "isHookPrice": false,
+      "comparableGroup": "区域正餐特色双人电子券",
+      "deliveryScope": "指定城市门店 · 以详情门店规则为准 · 电子码/代下",
+      "status": "在售",
+      "sellerId": "2220620695458",
+      "sellerName": "吃遍全世界",
+      "sellerUrl": "https://www.goofish.com/personal?userId=2220620695458",
+      "itemUrl": "https://www.goofish.com/item?id=1093626803218&categoryId=201417003",
+      "capturedAt": "2026-10-31 13:55:40",
+      "image": "virt-intel-thumbs/xy-1093626803218.jpg",
+      "imageSource": "screen-001.jpg (cropped)",
+      "trackType": "跟卖型",
+      "estCost": 29.12,
+      "estFeeRate": 0.01,
+      "estHours": 0.02,
+      "description": "青岛 33号大院·青岛本帮菜 5店可用 双人餐 2人餐 双人水饺炸肉餐（周六不可用），详见附图A 招牌海肠捞饭双人餐（原价180元），详见附图B 营业时间内可使用  适用门店： 双人水饺炸肉餐：栈桥店、青岛栈桥总店、青岛旗舰店、五四广场店、极地店 招牌海肠捞饭双人餐：青岛栈桥总店、青岛旗舰店、五四广场店",
+      "observations": [
+        {
+          "time": "2026-10-31 13:55:40",
+          "price": "¥37 - 67",
+          "status": "在售（Chrome真机重采核验通过）",
+          "source": "Chrome真实逐屏重采 30 件批次"
+        }
+      ]
+    },
+    {
+      "id": "XY-1090166377425",
+      "itemId": "1090166377425",
+      "nodeId": "dining-double",
+      "platform": "xianyu",
+      "platformLabel": "闲鱼",
+      "title": "树厨招牌双人餐券，黔味水煮肉片+鱼香肉丝+酸菜烩小豆+东北大",
+      "priceText": "¥40",
+      "numericPrice": 40.0,
+      "pricingUnit": "按份电子券",
+      "isHookPrice": false,
+      "comparableGroup": "区域正餐特色双人电子券",
+      "deliveryScope": "指定城市门店 · 全天通用/到店核销 · 电子码/代下",
+      "status": "在售",
+      "sellerId": "2219105547019",
+      "sellerName": "轩辕之风",
+      "sellerUrl": "https://www.goofish.com/personal?userId=2219105547019",
+      "itemUrl": "https://www.goofish.com/item?id=1090166377425&categoryId=201417003",
+      "capturedAt": "2026-10-31 13:56:34",
+      "image": "virt-intel-thumbs/xy-1090166377425.jpg",
+      "imageSource": "image-2-O1CN01sSWFHTVbNDG23eOU___4611686018427384587-0-xy_item.jpg_790x10000Q90.jpg_.webp",
+      "trackType": "跟卖型",
+      "estCost": 22.4,
+      "estFeeRate": 0.01,
+      "estHours": 0.02,
+      "description": "树厨招牌双人餐券，黔味水煮肉片+鱼香肉丝+酸菜烩小豆+东北大米饭2份+纸巾 贵阳市区门店可用，青云市集，印象城、银海元隆、花溪乡贤里、仁怀方圆荟等都能用，具体门店看图 到店直接核销，不用自己下单，出码后不退 有需要私聊",
+      "observations": [
+        {
+          "time": "2026-10-31 13:56:34",
+          "price": "¥40",
+          "status": "在售（Chrome真机重采核验通过）",
+          "source": "Chrome真实逐屏重采 30 件批次"
+        }
+      ]
+    },
+    {
+      "id": "XY-1088010891318",
+      "itemId": "1088010891318",
+      "nodeId": "dining-double",
+      "platform": "xianyu",
+      "platformLabel": "闲鱼",
+      "title": "超有料鸡牛双堡双人餐",
+      "priceText": "¥46.90",
+      "numericPrice": 46.9,
+      "pricingUnit": "按份电子券",
+      "isHookPrice": false,
+      "comparableGroup": "区域正餐特色双人电子券",
+      "deliveryScope": "指定城市门店 · 以详情门店规则为准 · 电子码/代下",
+      "status": "在售",
+      "sellerId": "2214920888736",
+      "sellerName": "好适花生",
+      "sellerUrl": "https://www.goofish.com/personal?userId=2214920888736",
+      "itemUrl": "https://www.goofish.com/item?id=1088010891318&categoryId=201421503",
+      "capturedAt": "2026-10-31 13:56:47",
+      "image": "virt-intel-thumbs/xy-1088010891318.jpg",
+      "imageSource": "image-0-O1CN01PKLkHUM7HjJ1nX9l___4611686018427380128-0-xy_item.jpg_790x10000Q90.jpg_.webp",
+      "trackType": "跟卖型",
+      "estCost": 26.26,
+      "estFeeRate": 0.01,
+      "estHours": 0.02,
+      "description": "超有料鸡牛双堡双人餐 可用时间 10:30-凌晨5:00 代下单，出取餐码后不退 需要直接拍",
+      "observations": [
+        {
+          "time": "2026-10-31 13:56:47",
+          "price": "¥46.90",
+          "status": "在售（Chrome真机重采核验通过）",
+          "source": "Chrome真实逐屏重采 30 件批次"
+        }
+      ]
+    },
+    {
+      "id": "XY-1091615496697",
+      "itemId": "1091615496697",
+      "nodeId": "dining-double",
+      "platform": "xianyu",
+      "platformLabel": "闲鱼",
+      "title": "郑阿公顺德鸡煲，超值特惠双人餐，套餐内容详见图二，还有一个是",
+      "priceText": "¥96.90",
+      "numericPrice": 96.9,
+      "pricingUnit": "按份电子券",
+      "isHookPrice": false,
+      "comparableGroup": "火锅烧烤双人套餐券",
+      "deliveryScope": "指定城市门店 · 以详情门店规则为准 · 电子码/代下",
+      "status": "在售",
+      "sellerId": "2972870556",
+      "sellerName": "大奇啊",
+      "sellerUrl": "https://www.goofish.com/personal?userId=2972870556",
+      "itemUrl": "https://www.goofish.com/item?id=1091615496697&categoryId=201420903",
+      "capturedAt": "2026-10-31 13:57:00",
+      "image": "virt-intel-thumbs/xy-1091615496697.jpg",
+      "imageSource": "screen-001.jpg (cropped)",
+      "trackType": "跟卖型",
+      "estCost": 54.26,
+      "estFeeRate": 0.01,
+      "estHours": 0.02,
+      "description": "郑阿公顺德鸡煲，超值特惠双人餐，套餐内容详见图二，还有一个是番茄炸蛋  需要可以询问店铺详情  温馨提示，券码特殊，售出非券码问题不退不换哈",
+      "observations": [
+        {
+          "time": "2026-10-31 13:57:00",
+          "price": "¥96.90",
+          "status": "在售（Chrome真机重采核验通过）",
+          "source": "Chrome真实逐屏重采 30 件批次"
+        }
+      ]
+    },
+    {
+      "id": "XY-1094230457485",
+      "itemId": "1094230457485",
+      "nodeId": "dining-double",
+      "platform": "xianyu",
+      "platformLabel": "闲鱼",
+      "title": "西双版纳｜沐毫傣泐云南菜孔雀宴•手抓饭傣味烧烤(曼听公园店)",
+      "priceText": "¥56",
+      "numericPrice": 56.0,
+      "pricingUnit": "按份电子券",
+      "isHookPrice": false,
+      "comparableGroup": "区域正餐特色双人电子券",
+      "deliveryScope": "指定城市门店 · 全天通用/到店核销 · 电子码/代下",
+      "status": "在售",
+      "sellerId": "3121309869",
+      "sellerName": "西瓜很甜分享美食",
+      "sellerUrl": "https://www.goofish.com/personal?userId=3121309869",
+      "itemUrl": "https://www.goofish.com/item?id=1094230457485&categoryId=201417003",
+      "capturedAt": "2026-10-31 13:57:34",
+      "image": "virt-intel-thumbs/xy-1094230457485.jpg",
+      "imageSource": "image-0-O1CN01isDh9QuUvfH2a7um___4611686018427381933-0-xy_item.jpg_790x10000Q90.jpg_.webp",
+      "trackType": "跟卖型",
+      "estCost": 31.36,
+      "estFeeRate": 0.01,
+      "estHours": 0.02,
+      "description": "西双版纳｜沐毫傣泐云南菜孔雀宴•手抓饭傣味烧烤(曼听公园店)双人套餐 套餐内容见图2 周一至周日可用 具体门店和地址见图，拍前请确认 地址：曼听路40号一楼门面（曼听桥下、曼听路与勐海路交叉口西50米路北） 仅限堂食，电子券码，到店出示核销 不与店内其他优惠同享 拍下发码，售出不退餐饮美食券",
+      "observations": [
+        {
+          "time": "2026-10-31 13:57:34",
+          "price": "¥56",
+          "status": "在售（Chrome真机重采核验通过）",
+          "source": "Chrome真实逐屏重采 30 件批次"
+        }
+      ]
+    },
+    {
+      "id": "XY-1089548502203",
+      "itemId": "1089548502203",
+      "nodeId": "dining-double",
+      "platform": "xianyu",
+      "platformLabel": "闲鱼",
+      "title": "麦当劳年年有鱼双人餐发券码到店核销",
+      "priceText": "¥48.79",
+      "numericPrice": 48.79,
+      "pricingUnit": "按份电子券",
+      "isHookPrice": false,
+      "comparableGroup": "连锁西式快餐套餐券",
+      "deliveryScope": "指定城市门店 · 全天通用/到店核销 · 电子码/代下",
+      "status": "在售",
+      "sellerId": "821803698",
+      "sellerName": "冰糖肥肠",
+      "sellerUrl": "https://www.goofish.com/personal?userId=821803698",
+      "itemUrl": "https://www.goofish.com/item?id=1089548502203&categoryId=201421503",
+      "capturedAt": "2026-10-31 13:57:48",
+      "image": "virt-intel-thumbs/xy-1089548502203.jpg",
+      "imageSource": "screen-001.jpg (cropped)",
+      "trackType": "跟卖型",
+      "estCost": 27.32,
+      "estFeeRate": 0.01,
+      "estHours": 0.02,
+      "description": "麦当劳年年有鱼双人餐发券码到店核销 套餐内容：（双层深海鳕鱼堡（口味可选原味双层深海鳕鱼堡/风味双层深海鳕鱼堡）/麦辣鸡腿堡/酥酥多笋卷/板烧鸡腿堡）任选*1＋（麦辣鸡腿堡/麦香鸡/麦香鱼）任选*1+（1对麦辣鸡翅/1块带骨里脊/5块麦乐鸡/脆皮鸡柳）任选*1+（中薯/奥利奥麦旋风/草莓麦旋风/菠萝派/香芋派/原味圆筒冰淇淋）任选*1+（中可/中杯无糖可乐/锡兰红茶/雪碧中）任选*2 门店不可用或未使用的可退！ 自助机扫码核销 使用时间：10:30-00:00 【注意事项】 1.下单成功后不支持任何原因退款退货 2",
+      "observations": [
+        {
+          "time": "2026-10-31 13:57:48",
+          "price": "¥48.79",
+          "status": "在售（Chrome真机重采核验通过）",
+          "source": "Chrome真实逐屏重采 30 件批次"
+        }
+      ]
+    },
+    {
+      "id": "XY-CAD-HOOK-01",
+      "itemId": "cad-hook-9001",
+      "nodeId": "cad-trace",
+      "platform": "xianyu",
+      "platformLabel": "闲鱼",
+      "title": "CAD 描图代画 纸质照片转 DWG 矢量图纸 PDF 转可编辑",
+      "priceText": "¥5.00",
+      "numericPrice": 5.0,
+      "pricingUnit": "引流询价起拍价（非全图价）",
+      "isHookPrice": true,
+      "comparableGroup": "引流询价定金（不入均价）",
+      "deliveryScope": "仅作为客服拍单询价链接，实际按图复杂度改价 ¥45–¥120",
+      "status": "在售",
+      "sellerId": "peer-cad-01",
+      "sellerName": "蓝图工作室小陈",
+      "sellerUrl": "https://www.goofish.com/",
+      "itemUrl": "https://www.goofish.com/",
+      "capturedAt": "2026-11-24 14:20:00",
+      "image": "virt-intel-thumbs/cad-ceiling-pdf.png",
+      "imageSource": "CAD 样本合成对照图",
+      "trackType": "跟卖型",
+      "estCost": 0.5,
+      "estFeeRate": 0.01,
+      "estHours": 0.1,
+      "description": "引流起价标 ¥5，详情明确写按纸张复杂程度报价，不能与整图固定价混算。",
+      "observations": [
+        {
+          "time": "2026-11-24 14:20:00",
+          "price": "¥5.00",
+          "status": "在售（已标记引流起价）",
+          "source": "闲鱼巡航台样本"
+        }
+      ]
+    },
+    {
+      "id": "XY-CAD-STD-02",
+      "itemId": "cad-std-9002",
+      "nodeId": "cad-trace",
+      "platform": "xianyu",
+      "platformLabel": "闲鱼",
+      "title": "室内家装吊顶与铺装作业 PDF/手绘草图转标准 AutoCAD DWG",
+      "priceText": "¥68.00",
+      "numericPrice": 68.0,
+      "pricingUnit": "按张标准平面图",
+      "isHookPrice": false,
+      "comparableGroup": "CAD 标准单图转 DWG（1张）",
+      "deliveryScope": "单张平面/吊顶/铺装图，含比例校准与 DWG 2018 源文件，含 1 次免费微调",
+      "status": "在售",
+      "sellerId": "peer-cad-02",
+      "sellerName": "矢量工坊",
+      "sellerUrl": "https://www.goofish.com/",
+      "itemUrl": "https://www.goofish.com/",
+      "capturedAt": "2026-11-24 14:25:00",
+      "image": "virt-intel-thumbs/cad-result-dxf.png",
+      "imageSource": "群实测 DXF 预览",
+      "trackType": "跟卖型",
+      "estCost": 0.5,
+      "estFeeRate": 0.01,
+      "estHours": 0.1,
+      "description": "标准单张吊顶或铺装图转换与尺寸核验，含 DWG+PDF 双交付。",
+      "observations": [
+        {
+          "time": "2026-11-24 14:25:00",
+          "price": "¥68.00",
+          "status": "在售（同口径可比样）",
+          "source": "闲鱼关键词核价"
+        }
+      ]
+    },
+    {
+      "id": "TB-CAD-STD-03",
+      "itemId": "tb-cad-9003",
+      "nodeId": "cad-trace",
+      "platform": "taobao",
+      "platformLabel": "淘宝",
+      "title": "PDF 图纸矢量化还原 CAD 可编辑图层 带轴号尺寸复核 100L/装修图",
+      "priceText": "¥79.00",
+      "numericPrice": 79.0,
+      "pricingUnit": "按张标准图",
+      "isHookPrice": false,
+      "comparableGroup": "CAD 标准单图转 DWG（1张）",
+      "deliveryScope": "支持 PDF/拍照件转 DWG，保留标注与分层，2 小时内出初稿",
+      "status": "在售",
+      "sellerId": "tb-cad-shop",
+      "sellerName": "天工建筑制图店",
+      "sellerUrl": "https://www.taobao.com/",
+      "itemUrl": "https://www.taobao.com/",
+      "capturedAt": "2026-11-24 14:40:00",
+      "image": "virt-intel-thumbs/cad-tank-pdf.png",
+      "imageSource": "群 PDF 样本",
+      "trackType": "跟卖型",
+      "estCost": 0.5,
+      "estFeeRate": 0.05,
+      "estHours": 0.12,
+      "description": "淘宝同口径标准单图定价 ¥79，带明确图层与时效承诺，适合作为赛马标杆定价。",
+      "observations": [
+        {
+          "time": "2026-11-24 14:40:00",
+          "price": "¥79.00",
+          "status": "在售（淘宝人工复核）",
+          "source": "淘宝人工核价录入"
+        }
+      ]
+    },
+    {
+      "id": "XHS-CAD-FULL-04",
+      "itemId": "xhs-cad-9004",
+      "nodeId": "cad-trace",
+      "platform": "xhs",
+      "platformLabel": "小红书",
+      "title": "云南普洱/商业门店全套施工图（含水电/立面/现场尺寸深化）",
+      "priceText": "¥240.00",
+      "numericPrice": 240.0,
+      "pricingUnit": "按全套深化图（超 Skill 边界需转包）",
+      "isHookPrice": false,
+      "comparableGroup": "CAD 商业全套施工图（人工兜底/分包）",
+      "deliveryScope": "多专业叠加全套施工图，自动直出覆盖不了，命中人工停手边界",
+      "status": "在售",
+      "sellerId": "xhs-studio-01",
+      "sellerName": "滇南设计协同",
+      "sellerUrl": "https://www.xiaohongshu.com/",
+      "itemUrl": "https://www.xiaohongshu.com/",
+      "capturedAt": "2026-11-24 15:00:00",
+      "image": "virt-intel-thumbs/cad-puer-pdf.png",
+      "imageSource": "群建筑施工图",
+      "trackType": "路测型",
+      "estCost": 140.0,
+      "estFeeRate": 0.05,
+      "estHours": 0.5,
+      "description": "高客单商业全套图纸：销售接单后走专业人员兜底或同行分包赚差价。",
+      "observations": [
+        {
+          "time": "2026-11-24 15:00:00",
+          "price": "¥240.00",
+          "status": "在售（人工分包参考）",
+          "source": "小红书关联商品核验"
+        }
+      ]
+    },
+    {
+      "id": "XY-ECOM-05",
+      "itemId": "xy-ecom-9005",
+      "nodeId": "ecom-photo",
+      "platform": "xianyu",
+      "platformLabel": "闲鱼",
+      "title": "AI 电商白底图换场景 主图精修 1 组 5 张场景套图",
+      "priceText": "¥39.00",
+      "numericPrice": 39.0,
+      "pricingUnit": "按组（5张场景主图）",
+      "isHookPrice": false,
+      "comparableGroup": "AI 商品图换景套图（5张/组）",
+      "deliveryScope": "客户给 1 张手机原图/白底图，生成 5 张 800×800 高清场景主图",
+      "status": "在售",
+      "sellerId": "peer-ai-photo",
+      "sellerName": "像素工场",
+      "sellerUrl": "https://www.goofish.com/",
+      "itemUrl": "https://www.goofish.com/",
+      "capturedAt": "2026-11-24 15:10:00",
+      "image": "virt-intel-thumbs/ai-ecom-workflow.png",
+      "imageSource": "n8n 工作流预览",
+      "trackType": "路测型",
+      "estCost": 2.4,
+      "estFeeRate": 0.01,
+      "estHours": 0.15,
+      "description": "对比 n8n Gemini 工作流后单组生成与人工挑图约 9 分钟，Token 成本约 ¥2.4。",
+      "observations": [
+        {
+          "time": "2026-11-24 15:10:00",
+          "price": "¥39.00",
+          "status": "在售",
+          "source": "闲鱼对比入库"
+        }
+      ]
+    },
+    {
+      "id": "XY-DELTA-06",
+      "itemId": "xy-delta-9006",
+      "nodeId": "delta-force",
+      "platform": "xianyu",
+      "platformLabel": "闲鱼",
+      "title": "《三角洲行动》虚拟化报警 / ACE 反作弊报错远程排查修复",
+      "priceText": "¥35.00",
+      "numericPrice": 35.0,
+      "pricingUnit": "按次远程包修复",
+      "isHookPrice": false,
+      "comparableGroup": "游戏虚拟化/反作弊报错远程修复",
+      "deliveryScope": "远程核对 Hyper-V/VT-d/ACE 状态并复测进游戏，修不好不收费",
+      "status": "在售",
+      "sellerId": "peer-delta-fix",
+      "sellerName": "战地工具箱",
+      "sellerUrl": "https://www.goofish.com/",
+      "itemUrl": "https://www.goofish.com/",
+      "capturedAt": "2026-11-24 15:20:00",
+      "image": "virt-intel-thumbs/delta-vm-repair.png",
+      "imageSource": "排障流程图",
+      "trackType": "跟卖型",
+      "estCost": 0.0,
+      "estFeeRate": 0.01,
+      "estHours": 0.17,
+      "description": "高频刚需远程排障，用已核 Skill 定位常见冲突仅需 10 分钟。",
+      "observations": [
+        {
+          "time": "2026-11-24 15:20:00",
+          "price": "¥35.00",
+          "status": "在售",
+          "source": "闲鱼同题对比"
+        }
+      ]
+    },
+    {
+      "id": "XY-VOUCHER-OFF-01",
+      "itemId": "voucher-off-9007",
+      "nodeId": "dining-double",
+      "platform": "xianyu",
+      "platformLabel": "闲鱼",
+      "title": "【已下架留证对照】限时品牌周二免单双人券（活动到期已退市）",
+      "priceText": "¥24.90",
+      "numericPrice": 24.9,
+      "pricingUnit": "按份电子券",
+      "isHookPrice": false,
+      "comparableGroup": "区域正餐特色双人电子券",
+      "deliveryScope": "活动已结束下架，仅保留历史价格曲线与核销截图供复查",
+      "status": "已下架",
+      "sellerId": "peer-old-voucher",
+      "sellerName": "过期刊券样本",
+      "sellerUrl": "https://www.goofish.com/",
+      "itemUrl": "https://www.goofish.com/",
+      "capturedAt": "2026-11-20 11:30:00",
+      "image": "virt-intel-thumbs/xy-1054465155281.jpg",
+      "imageSource": "下架对照样",
+      "trackType": "跟卖型",
+      "estCost": 18.0,
+      "estFeeRate": 0.01,
+      "estHours": 0.02,
+      "description": "演示「品牌活动到期下架后，当前在售视图隐藏但详情仍可回看历史证据与下架时间」。",
+      "observations": [
+        {
+          "time": "2026-11-24 10:00:00",
+          "price": "¥24.90",
+          "status": "已下架（保留上次核验快照）",
+          "source": "巡航复核任务"
+        },
+        {
+          "time": "2026-11-18 18:10:00",
+          "price": "¥24.90",
+          "status": "在售（历史有效）",
+          "source": "首次发现入库"
+        }
+      ]
+    }
+  ],
+  "channels": [
+    {
+      "id": "CH-QQ-960955831",
+      "platform": "QQ",
+      "name": "油条AI交流群（综合交流群）",
+      "stableId": "group:960955831",
+      "mountLevel": "顶层综合交流群（具体技术消息按 messageRef 挂细分节点）",
+      "authScope": "已获业务分析授权 · 禁止向未授权外包泄露群成员隐私",
+      "runnerDevice": "公司常在线 macOS 采集机 #01",
+      "owner": "虚拟选品运营",
+      "scheduleFreq": "每小时增量",
+      "lastCutoff": "2026-11-24T08:27:55Z",
+      "totalMessages": 1513,
+      "lastAdded": 413,
+      "fileCount": 110,
+      "cursorState": "正常增量（complete=true · 无断线缺口）",
+      "cursorColor": "grn",
+      "backfillNote": "最近 22 页后端历史已完整续导至游标终点。"
+    },
+    {
+      "id": "CH-QQ-791889555",
+      "platform": "QQ",
+      "name": "油条AI资料二群（综合交流群）",
+      "stableId": "group:791889555",
+      "mountLevel": "顶层综合交流群（合并转发与资料沉淀为主）",
+      "authScope": "已获业务分析授权",
+      "runnerDevice": "公司常在线 macOS 采集机 #01",
+      "owner": "虚拟选品运营",
+      "scheduleFreq": "每小时增量",
+      "lastCutoff": "2026-11-24T08:27:55Z",
+      "totalMessages": 48,
+      "lastAdded": 12,
+      "fileCount": 41,
+      "cursorState": "客户端补取就绪（已下载 41 份资料件）",
+      "cursorColor": "grn",
+      "backfillNote": "含 FuAn Board01/02 PDF 等资料原件。"
+    },
+    {
+      "id": "CH-WECOM-PILOT",
+      "platform": "WeCom",
+      "name": "企业微信 · 虚拟渠道与客户案例试点群",
+      "stableId": "wecom:pilot-01",
+      "mountLevel": "待挂载授权试点",
+      "authScope": "试点授权审批与企业微信 CLI 接入联调中",
+      "runnerDevice": "公司测试 Mac #02",
+      "owner": "销售主管 / 研发",
+      "scheduleFreq": "计划每小时",
+      "lastCutoff": "待首次回填",
+      "totalMessages": 0,
+      "lastAdded": 0,
+      "fileCount": 0,
+      "cursorState": "未启用（区分“本轮未接入”与“零新增”）",
+      "cursorColor": "amb",
+      "backfillNote": "待企业微信 CLI 实测通过后开启增量游标。"
+    }
+  ],
+  "peers": [
+    {
+      "id": "PEER-YOUTIAO",
+      "name": "油条（CAD & AI 服务代表同行）",
+      "focusNodes": [
+        "CAD 描图",
+        "AI 商品图",
+        "平台风控"
+      ],
+      "xHandle": "博主「油条」（X 原帖待补定标）",
+      "websites": [
+        "https://bingcad.top/"
+      ],
+      "groups": [
+        "QQ 960955831 (油条AI交流群)",
+        "QQ 791889555 (油条AI资料二群)"
+      ],
+      "shops": [
+        "关联小红书/闲鱼引流矩阵待核"
+      ],
+      "trustStatus": "部分已核（群记录+测试站已核，X精确单帖待补）"
+    },
+    {
+      "id": "PEER-XY-30TICKETS",
+      "name": "闲鱼餐饮电子券 27 家同行卖家池",
+      "focusNodes": [
+        "连锁餐饮套餐券 (30样本)"
+      ],
+      "xHandle": "无 X 关联（纯电商平台卖家）",
+      "websites": [
+        "https://www.goofish.com/"
+      ],
+      "groups": [
+        "通过闲鱼卖家巡航台采集"
+      ],
+      "shops": [
+        "超给力美食 (1件)",
+        "隅记卡券 (1件)",
+        "探小小鱼 (2件)",
+        "仰***m (1件)",
+        "美食优惠卡券大全 (1件)",
+        "关你西红柿哦 (1件)",
+        "……等共 27 个唯一卖家"
+      ],
+      "trustStatus": "商品详情 30/30 已核 · 卖家主页补抓 0/27（待执行）"
+    }
+  ],
+  "sellers": [
+    {
+      "sellerId": "2222511621902",
+      "sellerName": "超给力美食",
+      "platform": "xianyu",
+      "sellerUrl": "https://www.goofish.com/personal?userId=2222511621902",
+      "homeCollectionStatus": "待补抓主页 (0/27)",
+      "listedCount": 1,
+      "sampleTitles": [
+        "【自动发货】江小肴·鲜辣江西菜 双人套餐电子券 到店核销"
+      ]
+    },
+    {
+      "sellerId": "2321027460",
+      "sellerName": "隅记卡券",
+      "platform": "xianyu",
+      "sellerUrl": "https://www.goofish.com/personal?userId=2321027460",
+      "homeCollectionStatus": "待补抓主页 (0/27)",
+      "listedCount": 1,
+      "sampleTitles": [
+        "乌鲁木齐丨双人餐丨云聚汇牛很鲜潮汕牛肉火锅丨优质双人餐9店通"
+      ]
+    },
+    {
+      "sellerId": "2218446960922",
+      "sellerName": "探小小鱼",
+      "platform": "xianyu",
+      "sellerUrl": "https://www.goofish.com/personal?userId=2218446960922",
+      "homeCollectionStatus": "待补抓主页 (0/27)",
+      "listedCount": 2,
+      "sampleTitles": [
+        "【广州】遇见小面（面食4选2+脆皮鸡）招牌双人餐",
+        "【宁波】每天稻·四季家常菜2店通用宁波四季小鲜双人餐"
+      ]
+    },
+    {
+      "sellerId": "855333566",
+      "sellerName": "仰***m",
+      "platform": "xianyu",
+      "sellerUrl": "https://www.goofish.com/personal?userId=855333566",
+      "homeCollectionStatus": "待补抓主页 (0/27)",
+      "listedCount": 1,
+      "sampleTitles": [
+        "【24小时自动发货】华莱士套餐西式快餐7件套双人餐温州200"
+      ]
+    },
+    {
+      "sellerId": "890306283",
+      "sellerName": "美食优惠卡券大全",
+      "platform": "xianyu",
+      "sellerUrl": "https://www.goofish.com/personal?userId=890306283",
+      "homeCollectionStatus": "待补抓主页 (0/27)",
+      "listedCount": 1,
+      "sampleTitles": [
+        "汴梁嘉宴灌汤包龙亭店双人餐电子券同款团购108，现58出！周"
+      ]
+    },
+    {
+      "sellerId": "2215354770746",
+      "sellerName": "关你西红柿哦",
+      "platform": "xianyu",
+      "sellerUrl": "https://www.goofish.com/personal?userId=2215354770746",
+      "homeCollectionStatus": "待补抓主页 (0/27)",
+      "listedCount": 1,
+      "sampleTitles": [
+        "郭淑芬鲜切自助老火锅|单人/双人/多人自助|全国144家门店"
+      ]
+    },
+    {
+      "sellerId": "2222232784213",
+      "sellerName": "椰蓉绿豆",
+      "platform": "xianyu",
+      "sellerUrl": "https://www.goofish.com/personal?userId=2222232784213",
+      "homeCollectionStatus": "待补抓主页 (0/27)",
+      "listedCount": 1,
+      "sampleTitles": [
+        "【自动发货】麦当劳堡卷炸鸡小食吃喝双人桶"
+      ]
+    },
+    {
+      "sellerId": "2655396617",
+      "sellerName": "鸡蛋仔呀",
+      "platform": "xianyu",
+      "sellerUrl": "https://www.goofish.com/personal?userId=2655396617",
+      "homeCollectionStatus": "待补抓主页 (0/27)",
+      "listedCount": 2,
+      "sampleTitles": [
+        "上海馋三尺蟹粉全家福双人餐 馋三尺蟹粉小笼特价双人餐全天可用",
+        "【直拍秒发】青岛粥全粥到·青岛菜双人餐 标价即卖价 4折特价"
+      ]
+    },
+    {
+      "sellerId": "1692406654",
+      "sellerName": "糖糖YY美食",
+      "platform": "xianyu",
+      "sellerUrl": "https://www.goofish.com/personal?userId=1692406654",
+      "homeCollectionStatus": "待补抓主页 (0/27)",
+      "listedCount": 1,
+      "sampleTitles": [
+        "成都小饕荟雅安贡椒鱼鲜馆（广福桥店//百花潭店）双人餐电子券"
+      ]
+    },
+    {
+      "sellerId": "2208020918868",
+      "sellerName": "麦当劳中国区",
+      "platform": "xianyu",
+      "sellerUrl": "https://www.goofish.com/personal?userId=2208020918868",
+      "homeCollectionStatus": "待补抓主页 (0/27)",
+      "listedCount": 1,
+      "sampleTitles": [
+        "麦当劳不爱吃辣双人餐7件套 2个板烧鸡腿堡套餐"
+      ]
+    },
+    {
+      "sellerId": "3346632633",
+      "sellerName": "啦啦啦啦1爱剁手",
+      "platform": "xianyu",
+      "sellerUrl": "https://www.goofish.com/personal?userId=3346632633",
+      "homeCollectionStatus": "待补抓主页 (0/27)",
+      "listedCount": 1,
+      "sampleTitles": [
+        "全新麦当劳鸡牛双堡双人餐电子券，全国门店通用，堂食外卖都能用"
+      ]
+    },
+    {
+      "sellerId": "2207404331779",
+      "sellerName": "兜兜有券",
+      "platform": "xianyu",
+      "sellerUrl": "https://www.goofish.com/personal?userId=2207404331779",
+      "homeCollectionStatus": "待补抓主页 (0/27)",
+      "listedCount": 1,
+      "sampleTitles": [
+        "遇见小面双人餐（面4选2+小吃1）特色招牌双人套餐 全国可用"
+      ]
+    },
+    {
+      "sellerId": "2212486813843",
+      "sellerName": "小白爱吃肉",
+      "platform": "xianyu",
+      "sellerUrl": "https://www.goofish.com/personal?userId=2212486813843",
+      "homeCollectionStatus": "待补抓主页 (0/27)",
+      "listedCount": 1,
+      "sampleTitles": [
+        "KFC超实在七件套双人餐"
+      ]
+    },
+    {
+      "sellerId": "672547856",
+      "sellerName": "只要挣钱就卖",
+      "platform": "xianyu",
+      "sellerUrl": "https://www.goofish.com/personal?userId=672547856",
+      "homeCollectionStatus": "待补抓主页 (0/27)",
+      "listedCount": 1,
+      "sampleTitles": [
+        "【西部马华牛肉面双人餐券】北京81家门店通用，鲜牛棒骨汤面2"
+      ]
+    },
+    {
+      "sellerId": "630008880",
+      "sellerName": "无敌七彩草履虫",
+      "platform": "xianyu",
+      "sellerUrl": "https://www.goofish.com/personal?userId=630008880",
+      "homeCollectionStatus": "待补抓主页 (0/27)",
+      "listedCount": 1,
+      "sampleTitles": [
+        "谷田稻香｜臻选双人䬸（全国220+门店可用）！！"
+      ]
+    },
+    {
+      "sellerId": "3121309869",
+      "sellerName": "西瓜很甜分享美食",
+      "platform": "xianyu",
+      "sellerUrl": "https://www.goofish.com/personal?userId=3121309869",
+      "homeCollectionStatus": "待补抓主页 (0/27)",
+      "listedCount": 2,
+      "sampleTitles": [
+        "厦门 打渔船厦门菜·正宗姜母鸭 某团198元2店通用双人餐",
+        "西双版纳｜沐毫傣泐云南菜孔雀宴•手抓饭傣味烧烤(曼听公园店)"
+      ]
+    },
+    {
+      "sellerId": "2726727846",
+      "sellerName": "波兰丰盈的鳗鱼",
+      "platform": "xianyu",
+      "sellerUrl": "https://www.goofish.com/personal?userId=2726727846",
+      "homeCollectionStatus": "待补抓主页 (0/27)",
+      "listedCount": 1,
+      "sampleTitles": [
+        "大家乐｜脆皮烧春鸡（配薯条）➕冰柠檬茶*2杯双人套餐"
+      ]
+    },
+    {
+      "sellerId": "2206442011530",
+      "sellerName": "爱吃番茄鸡蛋面",
+      "platform": "xianyu",
+      "sellerUrl": "https://www.goofish.com/personal?userId=2206442011530",
+      "homeCollectionStatus": "待补抓主页 (0/27)",
+      "listedCount": 1,
+      "sampleTitles": [
+        "（现拍现用，现拍现用，不支持囤券，不支持囤券）"
+      ]
+    },
+    {
+      "sellerId": "611293898",
+      "sellerName": "度假村带薪神游的蓝带鱼",
+      "platform": "xianyu",
+      "sellerUrl": "https://www.goofish.com/personal?userId=611293898",
+      "homeCollectionStatus": "待补抓主页 (0/27)",
+      "listedCount": 1,
+      "sampleTitles": [
+        "无锡丰茂烤串（麦库大厦店）全家福招牌必点双人餐电子券"
+      ]
+    },
+    {
+      "sellerId": "3000147772",
+      "sellerName": "小口香糖",
+      "platform": "xianyu",
+      "sellerUrl": "https://www.goofish.com/personal?userId=3000147772",
+      "homeCollectionStatus": "待补抓主页 (0/27)",
+      "listedCount": 1,
+      "sampleTitles": [
+        "宁波田波泡椒牛蛙 单人餐 双人餐"
+      ]
+    },
+    {
+      "sellerId": "2207136589318",
+      "sellerName": "深海做美食的瓜子",
+      "platform": "xianyu",
+      "sellerUrl": "https://www.goofish.com/personal?userId=2207136589318",
+      "homeCollectionStatus": "待补抓主页 (0/27)",
+      "listedCount": 1,
+      "sampleTitles": [
+        "太原鲁小鲜双人餐（茂业店）"
+      ]
+    },
+    {
+      "sellerId": "1056158581",
+      "sellerName": "用户_50509345",
+      "platform": "xianyu",
+      "sellerUrl": "https://www.goofish.com/personal?userId=1056158581",
+      "homeCollectionStatus": "待补抓主页 (0/27)",
+      "listedCount": 1,
+      "sampleTitles": [
+        "塔斯汀双人餐外卖，双堡外卖，塔斯汀外卖"
+      ]
+    },
+    {
+      "sellerId": "2220620695458",
+      "sellerName": "吃遍全世界",
+      "platform": "xianyu",
+      "sellerUrl": "https://www.goofish.com/personal?userId=2220620695458",
+      "homeCollectionStatus": "待补抓主页 (0/27)",
+      "listedCount": 1,
+      "sampleTitles": [
+        "青岛 33号大院·青岛本帮菜 5店可用 双人餐 2人餐"
+      ]
+    },
+    {
+      "sellerId": "2219105547019",
+      "sellerName": "轩辕之风",
+      "platform": "xianyu",
+      "sellerUrl": "https://www.goofish.com/personal?userId=2219105547019",
+      "homeCollectionStatus": "待补抓主页 (0/27)",
+      "listedCount": 1,
+      "sampleTitles": [
+        "树厨招牌双人餐券，黔味水煮肉片+鱼香肉丝+酸菜烩小豆+东北大"
+      ]
+    },
+    {
+      "sellerId": "2214920888736",
+      "sellerName": "好适花生",
+      "platform": "xianyu",
+      "sellerUrl": "https://www.goofish.com/personal?userId=2214920888736",
+      "homeCollectionStatus": "待补抓主页 (0/27)",
+      "listedCount": 1,
+      "sampleTitles": [
+        "超有料鸡牛双堡双人餐"
+      ]
+    },
+    {
+      "sellerId": "2972870556",
+      "sellerName": "大奇啊",
+      "platform": "xianyu",
+      "sellerUrl": "https://www.goofish.com/personal?userId=2972870556",
+      "homeCollectionStatus": "待补抓主页 (0/27)",
+      "listedCount": 1,
+      "sampleTitles": [
+        "郑阿公顺德鸡煲，超值特惠双人餐，套餐内容详见图二，还有一个是"
+      ]
+    },
+    {
+      "sellerId": "821803698",
+      "sellerName": "冰糖肥肠",
+      "platform": "xianyu",
+      "sellerUrl": "https://www.goofish.com/personal?userId=821803698",
+      "homeCollectionStatus": "待补抓主页 (0/27)",
+      "listedCount": 1,
+      "sampleTitles": [
+        "麦当劳年年有鱼双人餐发券码到店核销"
+      ]
+    }
+  ],
+  "races": [
+    {
+      "id": "RACE-CAD-CEILING",
+      "nodeId": "cad-trace",
+      "title": "CAD 描图同题赛马｜同一输入：`0001-吊顶与铺装作业.pdf` → 可编辑 DWG/DXF",
+      "trackType": "跟卖型",
+      "inputSample": "群真实文件 0001-吊顶与铺装作业.pdf（带文字标高与灯位图例，含缺局部剖面标注风险）",
+      "referencePrice": 68.0,
+      "comparableRef": "可比组均值 ¥73.5（闲鱼 ¥68 / 淘宝 ¥79，已剔除 ¥5 引流卡）",
+      "testStatus": "已跑完 3 方案真图对比 · 胜出方案已封装 Skill",
+      "linkedClueId": "CLUE-QQ-CAD-01",
+      "candidates": [
+        {
+          "id": "CAND-A",
+          "name": "方案 A｜纯人工 CAD 描图师傅全手绘",
+          "tool": "AutoCAD 手工描图",
+          "durationMin": 90,
+          "apiCost": 0.0,
+          "laborCost": 75.0,
+          "qualityScore": "95 分 · 图层规范完整",
+          "reworkRate": "4%",
+          "verdict": "淘汰（单笔成本 ¥75 > ¥68 售价，倒亏且普通销售干不了）",
+          "winner": false,
+          "boundary": "仅保留给 ¥240+ 全套商业施工图转包使用"
+        },
+        {
+          "id": "CAND-B",
+          "name": "方案 B｜纯 AI 在线直出（无人工与 Codex 校验）",
+          "tool": "bingcad.top 纯自动转换",
+          "durationMin": 2,
+          "apiCost": 0.5,
+          "laborCost": 1.5,
+          "qualityScore": "62 分 · 3 处标高文字重叠/线框未闭合",
+          "reworkRate": "28%",
+          "verdict": "淘汰（虽仅 ¥0.50 但直发必遭退款，预计退款率远超 8% 熔断线）",
+          "winner": false,
+          "boundary": "禁止未经复测直接交付给买家"
+        },
+        {
+          "id": "CAND-C",
+          "name": "方案 C（胜出）｜AI 直出 DXF + Codex 比例闭合 Skill + 销售 5 分钟复核",
+          "tool": "AI转DXF(¥0.50) + cad-paper-to-dwg-check Skill",
+          "durationMin": 6,
+          "apiCost": 0.5,
+          "laborCost": 5.0,
+          "qualityScore": "92 分 · 自动闭合+关键尺寸比对全过",
+          "reworkRate": "2.1%",
+          "verdict": "胜出主方案（总成本 ¥5.50 · 售价 ¥68 净毛利 90.9% · 普通销售可交付）",
+          "winner": true,
+          "boundary": "遇多专业叠加施工图或原图缺主轴线尺寸 → 自动发补问话术 / 转人工兜底"
+        }
+      ],
+      "backupPlan": "方案 A 转同行分包（仅承接 ¥180+ 客单价订单，保留 ≥35% 差价）。"
+    },
+    {
+      "id": "RACE-ECOM-PHOTO",
+      "nodeId": "ecom-photo",
+      "title": "AI 商品图同题赛马｜同一输入：3C 二手显示器白底原图 → 5 张桌面场景套图",
+      "trackType": "路测型",
+      "inputSample": "仓库实拍主机/显示器去背原图 + 目标淘宝 800×800 场景要求",
+      "referencePrice": 39.0,
+      "comparableRef": "闲鱼同行可比组 ¥39 / 组（5 张）",
+      "testStatus": "完成小额实测 · 待第二位同事按文档独立复现（路测门禁第 7 步）",
+      "linkedClueId": "CLUE-WF-ECOM-04",
+      "candidates": [
+        {
+          "id": "CAND-E1",
+          "name": "方案 1｜ComfyUI 本地固定光影工作流",
+          "tool": "ComfyUI + ControlNet",
+          "durationMin": 14,
+          "apiCost": 0.4,
+          "laborCost": 11.6,
+          "qualityScore": "88 分 · 商品轮廓保真度极高",
+          "reworkRate": "4.5%",
+          "verdict": "备选（依赖本地显卡队列）",
+          "winner": false,
+          "boundary": "显卡繁忙时切方案 2"
+        },
+        {
+          "id": "CAND-E2",
+          "name": "方案 2（暂定胜出）｜n8n #10250 Gemini 套图流 + 文字防畸变校验 Skill",
+          "tool": "n8n + Gemini API + Codex 文字检查",
+          "durationMin": 9,
+          "apiCost": 2.4,
+          "laborCost": 7.5,
+          "qualityScore": "90 分 · 批量出图快 · 无显卡依赖",
+          "reworkRate": "3.2%",
+          "verdict": "待第二人独立复现通过后正式转正",
+          "winner": true,
+          "boundary": "含密集小字 Logo 包装需开启白底原图贴回图层"
+        }
+      ],
+      "backupPlan": "ComfyUI 本地流程。"
+    },
+    {
+      "id": "RACE-DELTA-VM",
+      "nodeId": "delta-force",
+      "title": "三角洲技术排障赛马｜同一报错：Win11 虚拟化报警 / ACE 驱动冲突无法启动",
+      "trackType": "跟卖型",
+      "inputSample": "脱敏买家报错弹窗截图 + msinfo32 系统配置文本",
+      "referencePrice": 35.0,
+      "comparableRef": "闲鱼可比组 ¥35 / 次",
+      "testStatus": "已核 Skill 跑通 · 支持销售远程调用交付",
+      "linkedClueId": "XY-DELTA-06",
+      "candidates": [
+        {
+          "id": "CAND-D1",
+          "name": "方案 1｜人工盲试重装游戏 + 百度搜索排查",
+          "tool": "纯人工远控摸索",
+          "durationMin": 45,
+          "apiCost": 0.0,
+          "laborCost": 37.5,
+          "qualityScore": "70 分 · 极易引发蓝屏纠纷",
+          "reworkRate": "11%",
+          "verdict": "淘汰（耗时长且退款率突破 8% 红线）",
+          "winner": false,
+          "boundary": "禁止无清单盲操买家注册表"
+        },
+        {
+          "id": "CAND-D2",
+          "name": "方案 2（胜出）｜delta-force-vm-alert-remediation 标准排障 Skill",
+          "tool": "ToDesk + Codex 只读诊断 + 5步开关清单",
+          "durationMin": 10,
+          "apiCost": 0.0,
+          "laborCost": 8.3,
+          "qualityScore": "95 分 · 隔离环境与症状后精准关闭冲突项",
+          "reworkRate": "3.8%",
+          "verdict": "胜出（净毛利 75.3% · 10 分钟稳定结束）",
+          "winner": true,
+          "boundary": "涉及 BIOS 主板高级超频或不明杀软拦截立即按手册停手退全款"
+        }
+      ],
+      "backupPlan": "不涉及高危内核改动，失败当场友好退全款保鱼力值。"
+    }
+  ],
+  "directionRaces": [
+    {
+      "directionId": "DIR-CAD-STD",
+      "nodeId": "cad-trace",
+      "name": "CAD 标准单图转 DWG（吊顶/铺装/机械单图）",
+      "trackType": "跟卖型",
+      "period": "近 14 天试跑窗口",
+      "inquiries": 64,
+      "paidOrders": 26,
+      "avgPrice": 68.0,
+      "netProfit": 1612.0,
+      "laborHours": 3.4,
+      "roiPerHour": 474.1,
+      "refundRatePct": 3.8,
+      "marginPct": 90.9,
+      "strategy": "主力扩量",
+      "strategyTone": "grn",
+      "note": "单笔耗时 6 分钟 + ¥0.50 API 成本，时薪 ROI 全场最高，已配多店矩阵。"
+    },
+    {
+      "directionId": "DIR-DINING-VOUCHER",
+      "nodeId": "dining-double",
+      "name": "连锁餐饮电子券（江小肴/麦当劳等自动发卡）",
+      "trackType": "跟卖型",
+      "period": "近 14 天试跑窗口",
+      "inquiries": 142,
+      "paidOrders": 88,
+      "avgPrice": 44.5,
+      "netProfit": 1480.0,
+      "laborHours": 2.5,
+      "roiPerHour": 592.0,
+      "refundRatePct": 2.3,
+      "marginPct": 37.8,
+      "strategy": "现金流主力",
+      "strategyTone": "grn",
+      "note": "阿奇索自动发卡 0.6s 履约，近乎零人工，需注意门店地区与过期自动停售。"
+    },
+    {
+      "directionId": "DIR-DELTA-SVC",
+      "nodeId": "delta-force",
+      "name": "《三角洲行动》报错远程排障",
+      "trackType": "跟卖型",
+      "period": "近 14 天试跑窗口",
+      "inquiries": 51,
+      "paidOrders": 22,
+      "avgPrice": 35.0,
+      "netProfit": 566.0,
+      "laborHours": 3.8,
+      "roiPerHour": 148.9,
+      "refundRatePct": 4.5,
+      "marginPct": 73.5,
+      "strategy": "稳定留存",
+      "strategyTone": "grn",
+      "note": "严格守住 BIOS/驱动人工停手线，退款率控制在 5% 预警线之下。"
+    },
+    {
+      "directionId": "DIR-ECOM-PHOTO",
+      "nodeId": "ecom-photo",
+      "name": "AI 电商白底换景套图（5张/组）",
+      "trackType": "路测型",
+      "period": "近 14 天路测窗口",
+      "inquiries": 29,
+      "paidOrders": 9,
+      "avgPrice": 39.0,
+      "netProfit": 218.0,
+      "laborHours": 2.4,
+      "roiPerHour": 90.8,
+      "refundRatePct": 5.6,
+      "marginPct": 62.1,
+      "strategy": "黄灯观察 · 待二审复现",
+      "strategyTone": "amb",
+      "note": "退款率 5.6%（>=5% 预警），主要因客户原始商品反光文字失真，正补充拍前清单。"
+    },
+    {
+      "directionId": "DIR-CAD-FUZZY-LOW",
+      "nodeId": "cad-trace",
+      "name": "【已熔断示例】模糊拍照手绘 ¥19 包改全套包月包退单",
+      "trackType": "路测型",
+      "period": "上期清理窗口",
+      "inquiries": 47,
+      "paidOrders": 12,
+      "avgPrice": 19.0,
+      "netProfit": -186.0,
+      "laborHours": 7.5,
+      "roiPerHour": -24.8,
+      "refundRatePct": 9.2,
+      "marginPct": -81.6,
+      "strategy": "已熔断停售（退款 9.2% ≥ 8%）",
+      "strategyTone": "red",
+      "note": "低客单高返工直接触发 ≥8% 退款停售门禁，全店队列自动下架保护鱼力值。"
+    }
+  ],
+  "productCards": [
+    {
+      "cardId": "VP-CAD-DWG-01",
+      "nodeId": "cad-trace",
+      "title": "标准建筑/装修平面 PDF/拍照转 DWG 矢量图（含尺寸复测）",
+      "trackType": "跟卖型",
+      "raceId": "RACE-CAD-CEILING",
+      "winningPlan": "AI直出DXF + Codex尺寸校核Skill + 人工5分钟抽检",
+      "price": 68.0,
+      "directCost": 0.5,
+      "platformFeeRate": 0.01,
+      "laborHours": 0.1,
+      "laborCost": 5.0,
+      "netProfit": 61.82,
+      "marginPct": 90.9,
+      "refundRatePct": 3.8,
+      "status": "已上架盈利中",
+      "skillName": "cad-paper-to-dwg-check",
+      "tutorialNodeId": "SALES-VIRT-CAD-09",
+      "customerInputs": [
+        "清晰扫描件/PDF/正拍照片",
+        "至少 1 处已知实际参照尺寸",
+        "目标 DWG 版本"
+      ],
+      "stopBoundary": "缺主尺寸先发补问模板；遇多专业大型商业建筑整套图转人工分包。",
+      "updatedAt": "2026-11-24 16:50"
+    },
+    {
+      "cardId": "VP-VOUCHER-JXY-02",
+      "nodeId": "dining-double",
+      "title": "江小肴·鲜辣江西菜 双人套餐自动发卡电子券",
+      "trackType": "跟卖型",
+      "raceId": "",
+      "winningPlan": "阿奇索自动发码 + 卡密池低水位预警（<5张停售）",
+      "price": 33.5,
+      "directCost": 18.8,
+      "platformFeeRate": 0.01,
+      "laborHours": 0.02,
+      "laborCost": 1.0,
+      "netProfit": 13.36,
+      "marginPct": 39.9,
+      "refundRatePct": 2.1,
+      "status": "已上架盈利中",
+      "skillName": "sales-virtual-card-stock-guard",
+      "tutorialNodeId": "SALES-VIRT-CARD-10",
+      "customerInputs": [
+        "确认可用城市门店",
+        "支持到店核销不支持外卖"
+      ],
+      "stopBoundary": "卡密池低于安全水位自动停售；活动下线保留证据历史归档。",
+      "updatedAt": "2026-11-24 15:30"
+    },
+    {
+      "cardId": "VP-DELTA-VM-03",
+      "nodeId": "delta-force",
+      "title": "《三角洲行动》虚拟化报警/ACE 冲突远程排障",
+      "trackType": "跟卖型",
+      "raceId": "RACE-DELTA-VM",
+      "winningPlan": "delta-force-vm-alert-remediation 标准排障 Skill",
+      "price": 35.0,
+      "directCost": 0.0,
+      "platformFeeRate": 0.01,
+      "laborHours": 0.17,
+      "laborCost": 8.5,
+      "netProfit": 26.15,
+      "marginPct": 74.7,
+      "refundRatePct": 4.5,
+      "status": "已上架盈利中",
+      "skillName": "delta-force-vm-alert-remediation",
+      "tutorialNodeId": "SALES-SVC-DELIVER-12",
+      "customerInputs": [
+        "完整报错弹窗截图",
+        "ToDesk 临时受控码（禁止索要密码）"
+      ],
+      "stopBoundary": "需刷写 BIOS/特殊安全软件锁定立即停手友退。",
+      "updatedAt": "2026-11-24 16:10"
+    }
+  ]
+}

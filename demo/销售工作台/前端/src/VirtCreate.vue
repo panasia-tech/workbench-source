@@ -3,6 +3,7 @@
     <!-- 顶部全流程向导导航条（一步一个大页面 + 同行工具软件调研对标切换） -->
     <nav class="wizard-bar card">
       <button class="btn sm" @click="goBack">← 返回虚拟商品 Gallery</button>
+      <button class="btn sm" @click="goVirtIntelRacing">对照同题赛马与可比价带 →</button>
 
       <div class="wiz-steps">
         <button class="wstep" :class="{ cur: step === 1, done: step1Ok && step !== 1 }" @click="step = 1">
@@ -25,10 +26,7 @@
 
     <!-- 一键载入真实业务样板条（4 种核心虚拟商品形态） -->
     <section v-if="step !== 'bench'" class="tpl-bar card">
-      <div class="tpl-left">
-        <b>⚡ 一键填入样板（快速体验 4 类典型场景）：</b>
-        <span class="muted">也可以直接在下方从零填写；机器会自动做通道初审、底线核算与卡密去重。</span>
-      </div>
+      <b>⚡ 一键填入样板：</b>
       <div class="tpl-btns">
         <button
           v-for="t in meta.templates"
@@ -947,6 +945,9 @@ function goStep(n) {
 function goBack() {
   location.hash = '#/gallery/virt'
 }
+function goVirtIntelRacing() {
+  location.hash = '#/virt-intel?tab=racing'
+}
 
 async function submitProduct(directPublish) {
   submitErr.value = ''
@@ -999,8 +1000,8 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.vc-page { padding: 24px 36px 80px; max-width: 1720px; display: grid; gap: 18px; }
-.wizard-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 20px; flex-wrap: wrap; }
+.vc-page { padding: 18px 32px 64px; max-width: 1720px; display: grid; gap: 12px; }
+.wizard-bar { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 10px 18px; flex-wrap: wrap; }
 .wiz-steps { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .wstep { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 999px; background: var(--soft); color: var(--ink2); font-weight: 700; font-size: 14px; transition: all .15s; }
 .wstep i { width: 24px; height: 24px; border-radius: 50%; background: var(--panel); display: inline-flex; align-items: center; justify-content: center; font-style: normal; font-size: 12.5px; font-weight: 800; }
@@ -1009,7 +1010,7 @@ onMounted(async () => {
 .wstep.done { background: var(--grn-soft); color: var(--grn-ink); }
 .wstep.done i { background: var(--grn); color: #fff; }
 .wsep { color: var(--mute); font-weight: 700; }
-.bench-on { background: var(--ink) !important; color: #fff !important; }
+.bench-on { background: var(--ink) !important; color: var(--bg) !important; }
 
 .tpl-bar { padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; background: linear-gradient(90deg, #f8fafc 0%, #eff6ff 100%); border: 1px solid #bfdbfe; }
 .tpl-left b { font-size: 14.5px; color: #1e3a8a; margin-right: 8px; }
@@ -1027,7 +1028,6 @@ onMounted(async () => {
 .step-banner p { margin: 0; font-size: 13.5px; opacity: .88; }
 
 .two-col { display: grid; grid-template-columns: 1.05fr 1fr; gap: 20px; align-items: start; }
-@media (max-width: 1180px) { .two-col { grid-template-columns: 1fr; } }
 .pane { padding: 24px 26px; display: grid; gap: 16px; }
 .pane-head { display: flex; gap: 14px; align-items: flex-start; }
 .step-num { width: 38px; height: 38px; border-radius: 12px; background: var(--acc-soft); color: var(--acc); font-weight: 800; font-size: 15px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -1043,7 +1043,7 @@ onMounted(async () => {
 .sub-cat-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 .lbl { font-size: 13px; font-weight: 700; color: var(--ink2); }
 .sub-pill { padding: 6px 13px; border-radius: 999px; background: var(--soft); font-size: 13px; font-weight: 700; color: var(--ink2); }
-.sub-pill.on { background: var(--ink); color: #fff; }
+.sub-pill.on { background: var(--ink); color: var(--bg); }
 
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 14px; }
 .form-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
@@ -1065,7 +1065,6 @@ onMounted(async () => {
 .peer-toolbar { display: flex; gap: 10px; flex-wrap: wrap; }
 .peer-list { display: grid; gap: 8px; }
 .peer-row { display: grid; grid-template-columns: 92px 1.3fr 98px 92px 1.1fr auto; gap: 8px; align-items: center; }
-@media (max-width: 900px) { .peer-row { grid-template-columns: 1fr 1fr; } }
 .del-btn { color: var(--red-ink); background: var(--red-soft); }
 .empty-peers { padding: 18px; border-radius: 14px; background: var(--amb-soft); color: var(--amb-ink); font-size: 13.5px; line-height: 1.55; }
 .empty-peers b { display: block; font-size: 15px; margin-bottom: 4px; }
@@ -1147,7 +1146,6 @@ onMounted(async () => {
 .bh-head .sub { max-width: 920px; color: var(--ink2); line-height: 1.65; margin: 0; }
 .eyebrow { margin: 0; font-size: 12px; font-weight: 800; letter-spacing: .06em; color: var(--acc); }
 .absorb-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-@media (max-width: 1000px) { .absorb-grid { grid-template-columns: 1fr; } }
 .ab-box { padding: 18px 20px; border-radius: 16px; font-size: 13.5px; line-height: 1.6; }
 .ab-box.grn { background: var(--grn-soft); color: var(--grn-ink); }
 .ab-box.acc { background: var(--acc-soft); color: var(--ink); }
