@@ -58,8 +58,14 @@
         <button type="button" class="btn sm" @click="store.ui.autoShipDrawerOpen = true">
           📦 自动发货池({{ activeAutoShipCount }})
         </button>
-        <button v-if="!embedded" type="button" class="btn sm" @click="toggleSkin">
-          {{ store.ui.darkMode ? '☀️ 浅色皮肤' : '🌙 Claude 黑色皮肤' }}
+        <button
+          type="button"
+          class="cs-skin-btn"
+          :aria-label="store.ui.darkMode ? '切换浅色' : '切换深色'"
+          :title="store.ui.darkMode ? '切换浅色' : '切换深色'"
+          @click="toggleSkin"
+        >
+          <Icon :name="store.ui.darkMode ? 'sun' : 'moon'" size="16" />
         </button>
 
         <!-- 更多与四角色视角切换折叠菜单 -->
@@ -122,9 +128,6 @@
               </button>
               <button type="button" class="md-btn" @click="store.ui.largeFont = !store.ui.largeFont">
                 🔤 {{ store.ui.largeFont ? '切回标准字号' : '开启大字模式' }}
-              </button>
-              <button type="button" class="md-btn" @click="toggleSkin">
-                {{ store.ui.darkMode ? '☀️ 切回 Stitch 浅色皮肤' : '🌙 切换 Claude 黑色皮肤' }}
               </button>
               <button type="button" class="md-btn warn" @click="resetDemo">
                 ↻ 重置全部演示数据
@@ -510,6 +513,7 @@ import HelpDrawer from './components/HelpDrawer.vue';
 import VideoPlayerModal from './components/VideoPlayerModal.vue';
 import OnboardingOverlays from './components/OnboardingOverlays.vue';
 import Q from './components/Q.vue';
+import Icon from './components/Icon.vue';
 
 const PLATFORM_OPTIONS = [
   { k: 'all', label: '全部平台' },
@@ -854,6 +858,21 @@ onMounted(async () => {
   gap: 7px;
   white-space: nowrap;
   flex-shrink: 0;
+}
+.cs-skin-btn {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--panel-alt, var(--soft));
+  color: var(--ink2);
+  display: inline-grid;
+  place-items: center;
+}
+.cs-skin-btn:hover {
+  border-color: var(--pri);
+  color: var(--pri);
 }
 
 /* 更多与视角折叠菜单 */

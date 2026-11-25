@@ -1,0 +1,69 @@
+{
+  "batch_started_at": "2026-11-25T14:52:30+08:00",
+  "revision": "V6.2-CS-HANDDRAWN-20261125",
+  "voice": "Serena",
+  "reference_video_paths": [
+    "/Users/user/Documents/ChatGPT/行政管理/outputs/销售工作台-全量研发发单交付包-20261119/销售工作台-全量业务与研发讲解-20261119.mp4",
+    "/Users/user/Documents/ChatGPT/行政管理/outputs/销售工作台-全量研发发单交付包-20261119/销售工作台-本次改版专项讲解-20261119.mp4"
+  ],
+  "required_nodes": [
+    "CS-ONBOARD-01",
+    "CS-REALSHOT-01",
+    "CS-WARRANTY-02",
+    "CS-REFUND-409-03",
+    "CS-GUARD-KPI-04",
+    "CS-ESCALATE-05",
+    "CS-TAKEOVER-06"
+  ],
+  "entries": [
+    {
+      "node_id": "CS-ONBOARD-01",
+      "title": "新人上岗：做完三关练习解锁真实接待",
+      "revision": "V6.2-CS-HANDDRAWN-20261125",
+      "video_path": "mp4/CS-ONBOARD-01.mp4",
+      "source_path": "源码包/CS-ONBOARD-01-V6.2-CS-HANDDRAWN-20261125-source.tar.gz"
+    },
+    {
+      "node_id": "CS-REALSHOT-01",
+      "title": "发货前挑货：认准绿灯机器发实拍和视频",
+      "revision": "V6.2-CS-HANDDRAWN-20261125",
+      "video_path": "mp4/CS-REALSHOT-01.mp4",
+      "source_path": "源码包/CS-REALSHOT-01-V6.2-CS-HANDDRAWN-20261125-source.tar.gz"
+    },
+    {
+      "node_id": "CS-WARRANTY-02",
+      "title": "激活保修：买家回同意自动推仓与提问暂停",
+      "revision": "V6.2-CS-HANDDRAWN-20261125",
+      "video_path": "mp4/CS-WARRANTY-02.mp4",
+      "source_path": "源码包/CS-WARRANTY-02-V6.2-CS-HANDDRAWN-20261125-source.tar.gz"
+    },
+    {
+      "node_id": "CS-REFUND-409-03",
+      "title": "申请退款：三步引导秒退与拣货中红屏急停",
+      "revision": "V6.2-CS-HANDDRAWN-20261125",
+      "video_path": "mp4/CS-REFUND-409-03.mp4",
+      "source_path": "源码包/CS-REFUND-409-03-V6.2-CS-HANDDRAWN-20261125-source.tar.gz"
+    },
+    {
+      "node_id": "CS-GUARD-KPI-04",
+      "title": "合规与绩效：防加微信拦截与日常考核",
+      "revision": "V6.2-CS-HANDDRAWN-20261125",
+      "video_path": "mp4/CS-GUARD-KPI-04.mp4",
+      "source_path": "源码包/CS-GUARD-KPI-04-V6.2-CS-HANDDRAWN-20261125-source.tar.gz"
+    },
+    {
+      "node_id": "CS-ESCALATE-05",
+      "title": "问题订单：缺视频或链接未绑一键找人处理",
+      "revision": "V6.2-CS-HANDDRAWN-20261125",
+      "video_path": "mp4/CS-ESCALATE-05.mp4",
+      "source_path": "源码包/CS-ESCALATE-05-V6.2-CS-HANDDRAWN-20261125-source.tar.gz"
+    },
+    {
+      "node_id": "CS-TAKEOVER-06",
+      "title": "大额砍价与接管：交给内部销售不乱退回",
+      "revision": "V6.2-CS-HANDDRAWN-20261125",
+      "video_path": "mp4/CS-TAKEOVER-06.mp4",
+      "source_path": "源码包/CS-TAKEOVER-06-V6.2-CS-HANDDRAWN-20261125-source.tar.gz"
+    }
+  ]
+}

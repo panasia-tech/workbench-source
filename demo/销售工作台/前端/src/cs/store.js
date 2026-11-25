@@ -456,13 +456,13 @@ export function inspectLinksInText(text = '', conv = null) {
       return {
         url: u,
         tone: 'amb',
-        label: '⚠️ 本店商品链接未挂接 WMS 货号（严禁盲答有货，请点右侧呼叫内部销售绑货）',
+        label: '⚠️ 本店商品链接还没绑仓库货号（别盲答有货，先点右侧找内部销售绑货）',
       };
     }
     return {
       url: u,
       tone: 'grn',
-      label: '✓ 本店白名单商品链接（已自动关联右侧 WMS 在库实拍）',
+      label: '✓ 本店白名单商品链接（已自动带出右侧仓库实拍）',
     };
   });
 }
@@ -587,7 +587,7 @@ export async function pickSkuAndSendRealShot(convId, chosenSkuCode) {
     id: 'real-' + Date.now(),
     dir: 'out',
     who: currentRole.value.name,
-    autoTag: '📸 WMS 一件一拍核验包',
+    autoTag: '📸 仓库一台一拍核验包',
     time: nowHm(),
     text: `亲您好！已为您核验仓库真机【${rawSku.title} · ${rawSku.grade} · 货号 ${rawSku.skuCode} · 序列号 ${rawSku.sn}】。全检摘要：${rawSku.ahsSummary}。以下为仓管高拍仪录制的本机实拍图与 ${rawSku.video.duration} 通电视频：`,
     mediaSkuCode: rawSku.skuCode,
@@ -638,7 +638,7 @@ export async function simulateBuyerMessage(convId, buyerText) {
     conv.warrantyActivated = true;
     conv.stepState = 'SHIPPED_AUTO';
     conv.autoShipRemainSec = 0;
-    conv.wmsWaveNo = 'WAVE-261118-09（顺丰保价打单待揽）';
+    conv.wmsWaveNo = '拣货波次-09（顺丰保价打单待揽）';
     conv.category = 'pre_sale';
     conv.issueReason = '';
     conv.slaRemainSec = null;
@@ -698,8 +698,8 @@ export async function pushOrderToWmsWave(convId, mode = 'silent_timeout') {
   conv.issueReason = '';
   conv.wmsWaveNo =
     mode === 'silent_timeout'
-      ? 'WAVE-261118-10（静默期满无异议自动推仓）'
-      : 'WAVE-261118-11（人工排障后恢复推仓）';
+      ? '拣货波次-10（静默期满无异议自动推仓）'
+      : '拣货波次-11（人工排障后恢复推仓）';
   conv.category = 'pre_sale';
   conv.statusBadge =
     mode === 'silent_timeout' ? '✅ 静默期满·自动推仓' : '✓ 疑问已解·恢复推仓';
@@ -722,17 +722,17 @@ export async function triggerEmergencyWmsIntercept(convId) {
   const conv = store.data.conversations.find((c) => c.id === convId);
   if (!conv) return;
   conv.stepState = 'INTERCEPTED_409';
-  conv.wmsWaveNo = '🛑 409红屏拦截生效（打包台激光枪蜂鸣锁死面单）';
-  conv.statusBadge = '🛑 409红屏已拦停';
+  conv.wmsWaveNo = '🛑 红屏急停生效（打包台激光枪蜂鸣锁死面单）';
+  conv.statusBadge = '🛑 急停已锁单';
   conv.slaRemainSec = null;
 
   conv.messages.push({
     id: 'int409-' + Date.now(),
     dir: 'sys',
     time: nowHm(),
-    text: '🛑 已向 WMS 下发【409 红屏急停拦截指令】！仓管打包台扫该货号将触发三连蜂鸣并物理锁死电子面单，强制退回原货架。',
+    text: '🛑 已向仓库下发【打包台红屏急停指令】！仓管打包台扫该货号将三声报警并锁死快递单，强制退回原货架。',
   });
-  showToast('🛑 409 红屏急停指令已送达仓管打包台，面单已物理锁死！');
+  showToast('🛑 红屏急停指令已送达仓管打包台，快递面单已锁死！');
   await syncBackend('wms_409_intercept', `对订单 ${conv.orderNo} 发起 409 红屏打包台急停拦截`);
 }
 
@@ -813,7 +813,7 @@ export async function createCollabEscalation(convId, kind, noteText = '') {
 
   const labelMap = {
     rush_video: '📸 催仓管 60s 补拍高拍仪通电视频',
-    bind_link: '🔗 呼叫内部销售 60s 绑定商品链接与 WMS 货号',
+    bind_link: '🔗 呼叫内部销售 60s 绑定商品链接与仓库货号',
     bargain_sales: '💰 超权限砍价 / 大客户议价呼叫内部销售',
     aftersale_tech: '🛠️ 疑难技术售后呼叫内部专员',
   };
@@ -900,7 +900,7 @@ export async function handleInternalCollabAction(convId, actionType, payload = {
       id: 'bind-done-' + Date.now(),
       dir: 'sys',
       time: nowHm(),
-      text: '🔗 内部销售陈小满已完成链接挂接 → 关联 WMS 在库单品【LG 27GP850-B · 货号 513211440512 · 95新】，现可安全发送实拍！',
+      text: '🔗 内部销售陈小满已完成链接挂接 → 已绑仓库在库单品【LG 27GP850-B · 货号 513211440512 · 95新】，现可安全发送实拍！',
     });
     showToast('🔗 内部销售已完成商品链接绑定，右侧在库实拍已就绪！');
   } else if (actionType === 'internal_claim') {
@@ -1009,7 +1009,7 @@ export function exportKpiCsv() {
     '当前状态',
     '在岗时长(h)',
     '小休(min)',
-    '今日接待UV',
+    '今日接待人数',
     '总会话数',
     '人工真回会话',
     '仅50s机器人兜底(剔除)',
@@ -1065,6 +1065,6 @@ export function exportKpiCsv() {
   link.click();
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
-  pushLocalAudit('export_csv', '导出外包团队 14 项全维考核 CSV 结算单');
+  pushLocalAudit('export_csv', '导出外包团队 14 项全维考核结算表格');
   showToast('📥 已导出《外包客服14项全维考核结算单.csv》');
 }

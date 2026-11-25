@@ -85,7 +85,7 @@
           <p class="sub">自动统计人工真实回复，夜间 23:00–09:00 免考</p>
         </div>
         <div style="display: flex; gap: 8px">
-          <button type="button" class="btn sm pri" @click="exportCsv">导出结算表 CSV</button>
+          <button type="button" class="btn sm pri" @click="exportCsv">导出结算表格</button>
           <button type="button" class="btn sm" @click="store.ui.kpiModalOpen = false">✕ 关闭</button>
         </div>
       </header>
@@ -234,7 +234,7 @@ function exportCsv() {
   a.href = URL.createObjectURL(blob);
   a.download = '客服绩效考核表.csv';
   a.click();
-  showToast('已导出客服绩效考核表 CSV');
+  showToast('已导出客服绩效考核结算表格');
 }
 </script>
 

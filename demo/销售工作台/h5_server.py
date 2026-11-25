@@ -13,7 +13,7 @@ ROOT = os.path.join(HERE, 'dist')
 CS_TUTORIAL_MP4_DIR = os.path.abspath(
     os.environ.get(
         'CS_TUTORIAL_MP4_DIR',
-        os.path.join(HERE, '..', '..', 'outputs', '外部客服V3-独立节点教程与源码-20261124', 'mp4'),
+        os.path.join(HERE, '..', '..', 'outputs', '外部客服V3-手绘教程全量重制-20261125', 'mp4'),
     )
 )
 BACKEND = f"http://127.0.0.1:{int(os.environ.get('STITCH_DEMO_PORT', '5342'))}"

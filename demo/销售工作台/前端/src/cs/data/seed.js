@@ -32,7 +32,7 @@ export const ROLES = [
     name: '周安（主管/老板）',
     role: 'SUPERVISOR',
     roleLabel: '考核主管 / 发包总控',
-    desc: '全局管理视角：查看 14 项全维反作弊考核表、真实采购成本对比与月度 CSV 结算单导出',
+    desc: '全局管理视角：查看 14 项全维反作弊考核表、真实采购成本对比与月度结算表格导出',
   },
 ];
 
@@ -700,7 +700,7 @@ export function buildInitialConversations() {
       warrantySent: true,
       warrantyActivated: true,
       autoShipRemainSec: 0,
-      wmsWaveNo: 'WAVE-261116-04（仓管正在 A 区拣货中）',
+      wmsWaveNo: '拣货波次-04（仓管正在 A 区拣货中）',
       refundReasonOk: false,
       autoRepliedOnly: false,
       owner: { type: 'outsource', id: 'outsource_lu', name: '林小鹿' },
@@ -842,8 +842,8 @@ export function buildInitialConversations() {
       commitments: [],
       internalNotes: [],
       collabTicket: null,
-      issueReason: '商品链接 ID 未挂接 WMS 货号（且买家消息含外部网盘风险链接），严禁盲答有货，需一键呼叫内部销售绑定',
-      statusBadge: '🛑 链接未绑WMS货号',
+      issueReason: '商品链接还没绑仓库货号（且买家消息带外部网盘链接），严禁盲答有货，需一键呼叫内部销售绑定',
+      statusBadge: '🛑 链接未绑仓库货号',
       messages: [
         {
           id: 'm80',

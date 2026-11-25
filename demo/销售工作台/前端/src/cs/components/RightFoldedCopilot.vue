@@ -93,17 +93,17 @@
       <!-- 4. 409 红屏已紧急拦停 -->
       <div v-else-if="conv.stepState === 'INTERCEPTED_409'" class="guide-box warn">
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 4px">
-          <span>🛑 <b>409 截单已生效</b></span>
-          <Q k="auto_refund" label="退款与409急停" />
+          <span>🛑 <b>急停截单已生效</b></span>
+          <Q k="auto_refund" label="退款与急停" />
         </div>
-        <p>🛑 <b>409 红屏急停已锁死打包台面单！</b>仓管无法出库，请引导买家申请退款选“不想要了/协商一致”。</p>
+        <p>🛑 <b>打包台已红屏急停锁单！</b>仓管无法出库，请引导买家申请退款选“不想要了/协商一致”。</p>
       </div>
 
       <!-- 5. 售后：已自动发出 3 步手机 UI 退款引导图 -->
       <div v-else-if="conv.stepState === 'REFUND_GUIDE_SENT'" class="guide-box">
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 4px">
           <span>📱 <b>0 秒退款 UI 指引</b></span>
-          <Q k="auto_refund" label="退款与409急停" />
+          <Q k="auto_refund" label="退款与急停" />
         </div>
         <p>
           已 0 秒自动发出<b>《手机UI三步选“不想要了/协商一致”引导图》</b>。买家照图修改提交后，系统将自动 0 秒全额退款。
@@ -113,14 +113,14 @@
       <!-- 6. 售后：拣货中买家口头说想退（如 C5） -->
       <div v-else-if="conv.stepState === 'WAIT_BUYER_REFUND_CLICK'" class="guide-box warn">
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 4px">
-          <span>⚠️ <b>WMS 拣货中急停守卫</b></span>
-          <Q k="auto_refund" label="退款与409急停" />
+          <span>⚠️ <b>拣货中急停拦单</b></span>
+          <Q k="auto_refund" label="退款与急停" />
         </div>
         <p>
           ⚠️ 该单已在仓管拣货（{{ conv.wmsWaveNo }}）！请先点<b>紧急拦截仓库面单</b>，等买家点申请退款会自动发引导图。
         </p>
         <button type="button" class="btn red full" @click="triggerEmergencyWmsIntercept(conv.id)">
-          🛑 立即下发 409 红屏急停拦截仓库面单
+          🛑 立即下发红屏急停拦截仓库面单
         </button>
       </div>
 
@@ -179,9 +179,9 @@
           v-if="!conv.collabTicket || conv.collabTicket.status !== 'PENDING'"
           type="button"
           class="btn amb full"
-          @click="createCollabEscalation(conv.id, 'bind_link', '淘宝商品链接未绑WMS货号，请协助挂接')"
+          @click="createCollabEscalation(conv.id, 'bind_link', '淘宝商品链接未绑仓库货号，请协助挂接')"
         >
-          🔗 一键呼叫内部销售 60s 绑定 WMS 货号
+          🔗 一键呼叫内部销售 60s 绑定仓库货号
         </button>
         <button
           type="button"
@@ -304,7 +304,7 @@
       </template>
 
       <div v-else class="unmapped-empty">
-        当前买家发来的商品链接尚未关联 WMS 实物货号，严禁口头盲答“有货”，请点上方按钮呼叫内部销售 60 秒绑货。
+        当前买家发来的商品链接尚未绑定仓库货号，严禁口头盲答“有货”，请点上方按钮呼叫内部销售 60 秒绑货。
       </div>
     </section>
 
@@ -352,7 +352,7 @@
 
     <!-- ==================== 折叠层 2：跨部门60秒协同 · 409红屏拦截 · 内部接管控制台 ==================== -->
     <FoldBox
-      title="🤝 跨部门协同 · 409急停 · 内部接管"
+      title="🤝 跨部门协同 · 红屏急停 · 内部接管"
       :chip="collabChipText"
       :chip-tone="collabChipTone"
     >
@@ -381,7 +381,7 @@
         <button
           type="button"
           class="btn sm"
-          @click="createCollabEscalation(conv.id, 'bind_link', '请内部销售绑定商品链接与WMS货号')"
+          @click="createCollabEscalation(conv.id, 'bind_link', '请内部销售绑定商品链接与仓库货号')"
         >
           🔗 呼销售绑链接
         </button>
@@ -407,14 +407,14 @@
         :ok="Boolean(conv.wmsWaveNo) && conv.stepState !== 'INTERCEPTED_409'"
         :reason="
           conv.stepState === 'INTERCEPTED_409'
-            ? '当前订单已处于 409 红屏锁死状态，无需重复下发'
-            : '仅已推入仓管拣货波次的订单需下发打包台 409 拦截；未推仓订单系统自动停发即可'
+            ? '当前订单已处于红屏锁单状态，无需重复下发'
+            : '仅已进仓库拣货波次的订单需要急停锁单；未推仓订单系统会自动停发'
         "
         kind="red"
         block
         @go="triggerEmergencyWmsIntercept(conv.id)"
       >
-        🛑 下发 WMS 打包台 409 红屏急停拦截
+        🛑 下发仓库打包台红屏急停锁单
       </Lock>
 
       <!-- 永久防呆：禁止主动关闭买家订单（鱼力值 165 红线） -->
@@ -560,7 +560,7 @@ const sendRealShotLockReason = computed(() => {
     return `会话正由内部销售【${props.conv.owner.name}】排他接管中，防止双方重复发消息`;
   }
   if (!props.pickedSku) {
-    return '当前商品链接尚未绑定 WMS 在库货号，请先呼叫内部销售绑货';
+    return '当前商品链接还没绑仓库货号，请先点上面按钮找内部销售';
   }
   if (!props.pickedSku.videoReady) {
     return `货号 ${props.pickedSku.skuCode} 缺少高拍仪通电实拍视频（售前关卡②阻塞），请换选绿灯机器或催仓管补拍`;
@@ -573,13 +573,13 @@ const stepLabel = computed(() => {
     WAIT_PICK_SEND: '待挑货发实拍',
     WAIT_WARRANTY_AGREE: '等回“同意”激活保修',
     SHIPPED_AUTO: '已自动推仓发货',
-    INTERCEPTED_409: '409红屏已拦停',
+    INTERCEPTED_409: '急停已锁单',
     REFUND_GUIDE_SENT: '等买家改退款原因',
     WAIT_BUYER_REFUND_CLICK: '拣货中退单急停',
     REFUND_DONE: '已秒退完结',
     ISSUE_BUYER_QUESTION: '疑问熔断待处理',
     ISSUE_NO_VIDEO: '缺通电视频阻塞',
-    ISSUE_LINK_UNMAPPED: '链接未绑WMS货号',
+    ISSUE_LINK_UNMAPPED: '链接未绑仓库货号',
     INQUIRY: '售前咨询促单',
   };
   return map[props.conv?.stepState] || '接待跟进中';
@@ -668,6 +668,7 @@ async function releaseToOutsource() {
 }
 
 .r-card {
+  flex-shrink: 0;
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 13px;

@@ -18,7 +18,7 @@
         </div>
         <div style="display: flex; align-items: center; gap: 8px">
           <button type="button" class="btn sm soft" @click="exportKpiCsv">
-            <Icon name="download" size="14" /> 导出 CSV 结算单
+            <Icon name="download" size="14" /> 导出结算表格
           </button>
           <button type="button" class="btn sm" @click="store.ui.kpiDrawerOpen = false">
             <Icon name="close" size="15" /> 收起
@@ -30,7 +30,7 @@
         <!-- 个人直观激励战绩卡（清爽 C 端） -->
         <section class="kpi-hero-grid">
           <div class="kh-card">
-            <span>今日接待人数 (UV)</span>
+            <span>今日接待人数</span>
             <b>{{ myKpi.todayUv }}<small>人</small></b>
             <em>在岗 {{ myKpi.onlineHours }}h · 小休 {{ myKpi.breakMinutes }}m</em>
           </div>
@@ -69,7 +69,7 @@
                 <tr>
                   <th>坐席 / 班组</th>
                   <th>状态</th>
-                  <th>接待UV</th>
+                  <th>接待人数</th>
                   <th>人工真回 / 50s兜底</th>
                   <th>首响中位</th>
                   <th>平均回复</th>
@@ -122,8 +122,8 @@
 
         <!-- 折叠：反作弊预警雷达 + 5大平台汇总 + 分时段会话负荷 -->
         <FoldBox
-          title="🛡️ 反作弊预警雷达 · 五大平台 SLA 拆解 · 分时段负荷"
-          chip="KPI五防落地"
+          title="🛡️ 反作弊预警雷达 · 五大平台达标率 · 分时段负荷"
+          chip="五防考核落地"
           :default-open="true"
         >
           <div class="two-col-sub">
@@ -276,7 +276,7 @@
           <!-- 列 4 -->
           <div class="kb-col">
             <div class="kb-head">
-              <b>④ 已推入仓管波次 / 409急停</b>
+              <b>④ 已推仓库拣货 / 急停锁单</b>
               <span class="tag grn">{{ autoShipLanes.pushed.length }}</span>
             </div>
             <div v-for="c in autoShipLanes.pushed" :key="c.id" class="kb-card ok">
@@ -293,7 +293,7 @@
                   class="btn sm red"
                   @click="triggerEmergencyWmsIntercept(c.id)"
                 >
-                  🛑 409拦截
+                  🛑 急停截单
                 </button>
               </div>
             </div>
@@ -431,7 +431,7 @@
             <h4>✅ 外包客服只做这 3 件事</h4>
             <ul>
               <li>30 秒极速礼貌响应买家售前尺码/参数/顺丰发货时效咨询；</li>
-              <li>从右侧 WMS 挑绿灯真机，100% 发出本机实拍照片+视频+保修激活卡；</li>
+              <li>从右侧仓库挑绿灯真机，100% 发出本机实拍照片+视频+保修激活卡；</li>
               <li>退款第一时间引导买家按手机 UI 图选「不想要了/协商一致」秒退。</li>
             </ul>
           </div>

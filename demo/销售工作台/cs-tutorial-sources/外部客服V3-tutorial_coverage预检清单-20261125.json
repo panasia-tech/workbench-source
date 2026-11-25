@@ -1,0 +1,100 @@
+{
+  "version": "V6.2-CS-HANDDRAWN-20261125",
+  "wiki_url": "https://alidocs.dingtalk.com/i/nodes/y20BglGWO2ZB6yQRiDlD25R08A7depqY",
+  "h5_url": "https://alidocs.dingtalk.com/i/nodes/MyQA2dXW7eplaKOETd6dxP3gJzlwrZgb",
+  "business_video_url": "https://alidocs.dingtalk.com/i/nodes/P0MALyR8kl5DyXpYsMEM4e6gW3bzYmDO",
+  "employee_pdf_url": "https://alidocs.dingtalk.com/i/nodes/vNG4YZ7JnPBj0zyKToqMNz7qW2LD0oRE",
+  "scope": "cs",
+  "notes": "外部客服 V3 2026-11-25 全量手绘+实操重制 7 个节点（V6.2-CS-HANDDRAWN-20261125）；未经业务主管最终签字，维持待人工复核。",
+  "tutorial_coverage": {
+    "index_url": "https://alidocs.dingtalk.com/i/nodes/GZLxjv9VGqMl2mDpIqYNLrrO86EDybno",
+    "required_nodes": [
+      "CS-ONBOARD-01",
+      "CS-REALSHOT-01",
+      "CS-WARRANTY-02",
+      "CS-REFUND-409-03",
+      "CS-ESCALATE-05",
+      "CS-TAKEOVER-06",
+      "CS-GUARD-KPI-04"
+    ],
+    "entries": [
+      {
+        "node_id": "CS-ONBOARD-01",
+        "wiki_url": "https://alidocs.dingtalk.com/i/nodes/ZQYprEoWonANyZL4iXDa0lOZ81waOeDk?utm_scene=team_space",
+        "video_url": "https://alidocs.dingtalk.com/i/nodes/P0MALyR8kl5DyXpYsMKdDrKrW3bzYmDO",
+        "timecode": "00:00",
+        "render_project": {
+          "source_url": "https://alidocs.dingtalk.com/i/nodes/14dA3GK8gjnK0MP7SvKLAbZZJ9ekBD76",
+          "revision": "V6.2-CS-HANDDRAWN-20261125",
+          "human_review_status": "pending"
+        }
+      },
+      {
+        "node_id": "CS-REALSHOT-01",
+        "wiki_url": "https://alidocs.dingtalk.com/i/nodes/Exel2BLV5zkl16Oeu7mNpgjRJgk9rpMq",
+        "video_url": "https://alidocs.dingtalk.com/i/nodes/l6Pm2Db8D49lkzyNiy9M7drB8xLq0Ee4",
+        "timecode": "00:00",
+        "render_project": {
+          "source_url": "https://alidocs.dingtalk.com/i/nodes/1DKw2zgV2PMoYdjETdP90Qoy8B5r9YAn",
+          "revision": "V6.2-CS-HANDDRAWN-20261125",
+          "human_review_status": "pending"
+        }
+      },
+      {
+        "node_id": "CS-WARRANTY-02",
+        "wiki_url": "https://alidocs.dingtalk.com/i/nodes/1DKw2zgV2PMoYdjETdPl3BkG8B5r9YAn",
+        "video_url": "https://alidocs.dingtalk.com/i/nodes/14dA3GK8gjnK0MP7SvKLjrodJ9ekBD76",
+        "timecode": "00:00",
+        "render_project": {
+          "source_url": "https://alidocs.dingtalk.com/i/nodes/Amq4vjg890zlavOESYPZQDl9J3kdP0wQ",
+          "revision": "V6.2-CS-HANDDRAWN-20261125",
+          "human_review_status": "pending"
+        }
+      },
+      {
+        "node_id": "CS-REFUND-409-03",
+        "wiki_url": "https://alidocs.dingtalk.com/i/nodes/NkDwLng8ZLDqxG6gcpxGnpvNVKMEvZBY",
+        "video_url": "https://alidocs.dingtalk.com/i/nodes/QPGYqjpJYr9qxAyDc9Zb0mwN8akx1Z5N",
+        "timecode": "00:00",
+        "render_project": {
+          "source_url": "https://alidocs.dingtalk.com/i/nodes/np9zOoBVBY41jp2MUlLx0ALwW1DK0g6l",
+          "revision": "V6.2-CS-HANDDRAWN-20261125",
+          "human_review_status": "pending"
+        }
+      },
+      {
+        "node_id": "CS-ESCALATE-05",
+        "wiki_url": "https://alidocs.dingtalk.com/i/nodes/vNG4YZ7JnPBj0zyKTo93QoLaW2LD0oRE",
+        "video_url": "https://alidocs.dingtalk.com/i/nodes/y20BglGWO2ZB6yQRiD0ApLMk8A7depqY",
+        "timecode": "00:00",
+        "render_project": {
+          "source_url": "https://alidocs.dingtalk.com/i/nodes/b9Y4gmKWrP5pynLDTrjExlpEJGXn6lpz",
+          "revision": "V6.2-CS-HANDDRAWN-20261125",
+          "human_review_status": "pending"
+        }
+      },
+      {
+        "node_id": "CS-TAKEOVER-06",
+        "wiki_url": "https://alidocs.dingtalk.com/i/nodes/QBnd5ExVEvDlXZQrca2rGeNyJyeZqMmz",
+        "video_url": "https://alidocs.dingtalk.com/i/nodes/R4GpnMqJzGrR6xP2hbaQp2G78Ke0xjE3",
+        "timecode": "00:00",
+        "render_project": {
+          "source_url": "https://alidocs.dingtalk.com/i/nodes/X6GRezwJlA5gBpx3ujr7rEav8dqbropQ",
+          "revision": "V6.2-CS-HANDDRAWN-20261125",
+          "human_review_status": "pending"
+        }
+      },
+      {
+        "node_id": "CS-GUARD-KPI-04",
+        "wiki_url": "https://alidocs.dingtalk.com/i/nodes/yQod3RxJKGXlx0zahY4ABMXRJkb4Mw9r",
+        "video_url": "https://alidocs.dingtalk.com/i/nodes/1zknDm0WRanqQP0YUdxq113q8BQEx5rG",
+        "timecode": "00:00",
+        "render_project": {
+          "source_url": "https://alidocs.dingtalk.com/i/nodes/1R7q3QmWeeaQBDjmTKZM69GNWxkXOEP2",
+          "revision": "V6.2-CS-HANDDRAWN-20261125",
+          "human_review_status": "pending"
+        }
+      }
+    ]
+  }
+}

@@ -37,6 +37,7 @@ watch(
 
 <style scoped>
 .fold-box {
+  flex-shrink: 0;
   border: 1px solid var(--line);
   border-radius: 12px;
   background: var(--panel);

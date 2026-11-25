@@ -1,0 +1,88 @@
+## 版本与纯桌面工作台总纲
+- **适用版本**：`V6-20261124-merged-cs`（销售工作台 29 视图 \+ 外部客服 V3 单应用合入 \+ 原生「教程与视频台账」）
+- **GitHub 固定提交**：`panasia-tech/erp-sales-workbench`（`demo/full-dispatch-20261119` @ `391841960cbc2565e1aaaddd165e21a09d6d47dd`）、`panasia-tech/workbench-source`（`main` @ `cbca0c04d0bf5152efbc7e6d4c4e921d4706be8f`）
+- **桌面硬约束**：一律锁定**纯电脑宽屏桌面端**（`min-width: 1200px`，设计基准 `1440px`），已清理全部窄屏断点，不做手机端、小程序、底部 `.mbdock` 或双套响应式适配，对齐《00｜泛亚工作台 UI 设计总纲领 v1.1》（[查看文档](https://alidocs.dingtalk.com/i/nodes/1OQX0akWmxAM02eyfNoOlbyn8GlDd3mE)）。
+- **原生台账实现状态**：已在《销售工作台》实现原生「教程与视频台账」（桌面导航 `帮助 → 教程台账` / `#/tutorials`，服务端 `/api/tutorials/*` SQLite 持久化 \+ 岗位 RBAC），并在合并的《外部客服工作台》顶栏提供独立岗位可见入口「📚 教程台账」（服务端物理隔离内部进价与选品节点，仅展示共用开场与外部客服 7 个独立节点（均配独立专属子页、00:00 起播独立 1080p MP4 与渲染前源码归档））。本页作为钉钉 Wiki 稳定云端节点索引，供共用片片尾业务地图及发单预检引用。
+
+## 同版四项核心交付材料直达入口
+- **销售工作台｜业务说明与发布入口（本版 Wiki 主页）**：[打开首页](https://alidocs.dingtalk.com/i/nodes/y20BglGWO2ZB6yQRiDlD25R08A7depqY)
+- **统一双视角需求与交付 H5（V6 合并定稿版）**：[直接打开双视角 H5](https://alidocs.dingtalk.com/i/nodes/MyQA2dXW7eplaKOETd6dxP3gJzlwrZgb)
+- **销售工作台｜全量业务与实机深度主讲 MP4（720p · 57:33）**：[观看通用主讲 MP4](https://alidocs.dingtalk.com/i/nodes/P0MALyR8kl5DyXpYsMEM4e6gW3bzYmDO)
+- **并入模块｜外部客服 V3 子模块专项讲解 MP4（720p · 57:58）**：[观看客服 V3 专项片](https://alidocs.dingtalk.com/i/nodes/P0MALyR8kl5DyXpYsMZd5O1vW3bzYmDO)
+- **泛亚全公司业务全貌共用开场 MP4（720p · 18:33）**：[观看共用开场 MP4](https://alidocs.dingtalk.com/i/nodes/P0MALyR8kl5DyXpYsMEM4ky4W3bzYmDO)
+- **销售工作台（含外部客服 V3）｜员工可爱小动物风操作手册 PDF（V6）**：[打开员工 PDF 手册](https://alidocs.dingtalk.com/i/nodes/vNG4YZ7JnPBj0zyKToqMNz7qW2LD0oRE)
+
+## 全公司两条业务链点击地图（片尾节点跳转索引）
+
+### 实物二手数码业务链
+1. 老板台账下发预算池与 046 策略 → [共用开场 00:00](https://alidocs.dingtalk.com/i/nodes/P0MALyR8kl5DyXpYsMEM4ky4W3bzYmDO)（`SALES-SHARED-00`）
+2. 采购闲鱼防撞寻源 \+ 买前不追问打质疑标 \+ 顺丰 10 分钟拒签二次议价 \+ 整单全退 T\+1 支付宝对公 → 跨台 409 红线交接
+3. 仓管四关全检、一件一拍高清图与通电视频 → 放行至销售清洗池
+4. 销售选品规格兜底（`SALES-SRC-03` / `SALES-SPEC-04`）→ 第 1 步巡航台洗价格（`SALES-WASH-PRICE-05`）→ 第 2 步大库洗图片直发（`SALES-WASH-IMG-06`）→ 群控 10 票错峰与联动下架（`SALES-GC-07`）→ 订单扫码出库（`SALES-ORDER-13`）
+5. 外部客服新人 3 关通关（`CS-ONBOARD-01`）→ 三栏极简接待与一件一拍直发（`CS-REALSHOT-01`）→ 富阳法院保修激活卡与发问熔断（`CS-WARRANTY-02`）→ 0 秒退款图与 409 急停截单（`CS-REFUND-409-03`）→ 问题订单 60s 呼救（`CS-ESCALATE-05`）→ 内部销售排他接管与防甩锅（`CS-TAKEOVER-06`）→ 外发防封守卫与五防考核（`CS-GUARD-KPI-04`）
+
+### 虚拟产品与远控技术服务业务链
+1. 外部线索入库（X / QQ 授权群 / 企微 / 网站）与同行在售证据对照（`SALES-VIRT-INTEL-08` · 含「同行只晒结果无步骤→留证待补证」例外处理）
+2. 同题复现与赛马、主管核准可用 Skill 与人工兜底条件 → 验证模板① [CAD 描图](https://alidocs.dingtalk.com/i/nodes/vNG4YZ7JnPBj0zyKToEXK4qXW2LD0oRE)（`SALES-VIRT-CAD-09`）与验证模板② 《三角洲行动》技术服务（`SALES-SVC-DELTA-11`）
+3. 虚拟商品三步建卡与卡密低水位防超卖（`SALES-VIRT-CARD-10`）→ 服务程序化预约与 14 节点交付（`SALES-SVC-DELIVER-12`）→ 售后与返工回传至 Codex / Personal Agent 优化
+
+## 全部 23 个业务节点通用视频覆盖与人工兜底台账总表（销售 16 节点 \+ 外部客服 7 独立节点）
+
+| 节点 ID | 适用视角 / 岗位 | 节点名称与入口 | 通用视频与时间码 | Skill 状态 | 人工兜底与当前状态 |
+|---------|---------------------|---------------------|------------------------|------------|---------------------------|
+| `SALES-SHARED-00` | 全司共用 / 销售 / 客服 / 跨台 | 公司共用开场：实物链\+虚拟链\+岗位交接（`#/today`） | [共用开场 MP4](https://alidocs.dingtalk.com/i/nodes/P0MALyR8kl5DyXpYsMEM4ky4W3bzYmDO) · `00:00` | `Skill 已核` · `panasia-cross-workbench-overview` | `待更新`：已配交接红线兜底；待按千问官方预置音色补录虚拟链全单\+片尾节点地图 |
+| `SALES-TODAY-01` | 销售业务员 / 销售主管 | 「今天」红黄绿任务、改派交接与 60s 协同（`#/today`） | [主讲全片 MP4](https://alidocs.dingtalk.com/i/nodes/P0MALyR8kl5DyXpYsMEM4e6gW3bzYmDO) · `21:15` | `Skill 已核` · `sales-today-dispatch-guard` | `可用` · 日常 Skill 覆盖，异常上报主管 |
+| `SALES-LEARN-02` | 新同事 / 销售 / 销售主管 | 新人三关练习与岗前解锁门禁（`#/learn`） | [主讲全片 MP4](https://alidocs.dingtalk.com/i/nodes/P0MALyR8kl5DyXpYsMEM4e6gW3bzYmDO) · `22:40` | `Skill 已核` · `sales-onboarding-3gates` | `可用` · 假数据三关门禁自动解锁 |
+| `SALES-SRC-03` | 销售 / 选品 / 主管 | 来源台账双口径与 BOOKOFF 宏观选品（`#/sources`） | [主讲全片 MP4](https://alidocs.dingtalk.com/i/nodes/P0MALyR8kl5DyXpYsMEM4e6gW3bzYmDO) · `37:00` | `Skill 已核` · `sales-bookoff-macro-taxonomy` | `可用` · 缺型号或别名歧义时上报选品主管 |
+| `SALES-SPEC-04` | 销售 / 选品 / 主管 | 7,901 款显示器三路分流与 2K240 红框防呆（`#/spec-baseline`） | [主讲全片 MP4](https://alidocs.dingtalk.com/i/nodes/P0MALyR8kl5DyXpYsMEM4e6gW3bzYmDO) · `39:53` | `Skill 已核` · `sales-spec-baseline-guard` | `可用` · 含反向校准与超频规则兜底 |
+| `SALES-WASH-PRICE-05` | 销售 / 销售主管 | 第 1 步洗价格：巡航台 12 词与 review\_only 拦截（`#/wash`） | [主讲全片 MP4](https://alidocs.dingtalk.com/i/nodes/P0MALyR8kl5DyXpYsMEM4e6gW3bzYmDO) · `46:07` | `Skill 已核` · `sales-price-cleaning-pilot` | `可用` · 异常价强锁 review\_only 人工核查 |
+| `SALES-WASH-IMG-06` | 销售 / 销售主管 | 第 2 步洗图片：三栏图库、哈希防重与直发（`#/image-cleaning`） | [主讲全片 MP4](https://alidocs.dingtalk.com/i/nodes/P0MALyR8kl5DyXpYsMEM4e6gW3bzYmDO) · `49:08` | `Skill 已核` · `sales-image-dedup-dispatch` | `可用` · 60 秒内自助撤回，超时交主管更正 |
+| `SALES-GC-07` | 销售 / 销售主管 | 群控 8 环境、错峰 10 票、库龄调价与 15:30 日报（`#/gc-matrix`） | [主讲全片 MP4](https://alidocs.dingtalk.com/i/nodes/P0MALyR8kl5DyXpYsMEM4e6gW3bzYmDO) · `51:39` | `Skill 已核` · `sales-group-control-scheduler` | `可用` · 联动下架失败与环境离线转人工重试 |
+| `SALES-VIRT-INTEL-08` | 销售 / 虚拟运营 / 主管 | 虚拟选品：外部线索 Gallery、同行在售与赛马（`#/selvirt`） | [主讲全片 MP4](https://alidocs.dingtalk.com/i/nodes/P0MALyR8kl5DyXpYsMEM4e6gW3bzYmDO) · `54:45` | `待核` · `sales-virtual-intel-gallery` | `待更新`：需按 2026-11-24 Gallery 专项报告补录手绘\+实机片段与主管核准 |
+| `SALES-VIRT-CAD-09` | 销售 / 虚拟专员 / 主管 | 验证模板①·CAD 描图转 DWG、尺寸校核与复杂图层兜底（`#/selvirt`） | [主讲全片 MP4](https://alidocs.dingtalk.com/i/nodes/P0MALyR8kl5DyXpYsMEM4e6gW3bzYmDO) · `55:10` | `Skill 已核` · `cad-paper-to-dwg-check` | `待复核`：已配「缺尺寸补问/复杂图层转主管」兜底；待补录独立 CAD 手绘\+复测片 |
+| `SALES-VIRT-CARD-10` | 销售 / 销售主管 | 虚拟商品三步建卡与卡密池低水位防超卖（`#/virt-new`） | [主讲全片 MP4](https://alidocs.dingtalk.com/i/nodes/P0MALyR8kl5DyXpYsMEM4e6gW3bzYmDO) · `55:30` | `Skill 已核` · `sales-virtual-card-stock-guard` | `可用` · 低水位自动停售 |
+| `SALES-SVC-DELTA-11` | 销售 / 远控技术 / 主管 | 验证模板②·《三角洲行动》虚拟化报警远控排障（`#/skills`） | [主讲全片 MP4](https://alidocs.dingtalk.com/i/nodes/P0MALyR8kl5DyXpYsMEM4e6gW3bzYmDO) · `56:00` | `Skill 已核` · `delta-force-vm-alert-remediation` | `待复核`：已配「保留报错与版本信息转人工」兜底；待补录独立手绘原理\+实操片 |
+| `SALES-SVC-DELIVER-12` | 销售 / 远控技术 / 主管 | 服务程序化预约、核销与 14 节点学习交付闭环（`#/program`） | [主讲全片 MP4](https://alidocs.dingtalk.com/i/nodes/P0MALyR8kl5DyXpYsMEM4e6gW3bzYmDO) · `56:20` | `Skill 已核` · `sales-remote-service-delivery` | `待更新`：总览已覆盖，14 节点精细单步小视频按计划分批补录 |
+| `SALES-ORDER-13` | 销售 / 销售主管 | 订单四种红灯对账、强制扫码核对与出库（`#/orders`） | [主讲全片 MP4](https://alidocs.dingtalk.com/i/nodes/P0MALyR8kl5DyXpYsMEM4e6gW3bzYmDO) · `56:40` | `Skill 已核` · `sales-order-reconcile-ship` | `可用` · 扫码不一致硬拦 |
+| `SALES-OPS-14` | 销售 / 销售主管 | 询单报价锁版、采购价表 7 天版、复盘与提成（`#/ops`） | [主讲全片 MP4](https://alidocs.dingtalk.com/i/nodes/P0MALyR8kl5DyXpYsMEM4e6gW3bzYmDO) · `57:00` | `Skill 已核` · `sales-ops-pricebook-commission` | `可用` · 原订单保留 v1 价表 |
+| `SALES-ASSIST-15` | 销售 / 销售主管 | 销售内部接待、超时排他接管与客户资源（`#/assist`） | [主讲全片 MP4](https://alidocs.dingtalk.com/i/nodes/P0MALyR8kl5DyXpYsMEM4e6gW3bzYmDO) · `34:18` | `Skill 已核` · `sales-internal-assist-takeover` | `可用` · 突破 130% 成本红线由内部接管 |
+| `CS-ONBOARD-01` | 外部新人客服（cs\_newbie）/ 外部外包客服（outsource\_lu） | [CS-ONBOARD-01｜外部新人客服3关情景通关与三栏极简上岗](https://alidocs.dingtalk.com/i/nodes/ZQYprEoWonANyZL4iXDa0lOZ81waOeDk?utm_scene=team_space)（`?as=cs&#95;newbie 或 #/cs-workbench`） | [独立成片 MP4](https://alidocs.dingtalk.com/i/nodes/G53mjyd80pDo1GmEczlNNNey86zbX04v) · `00:00`（[源码包](https://alidocs.dingtalk.com/i/nodes/NkDwLng8ZLDqxG6gcpxGd00jVKMEvZBY)） | `Skill 已核` · `cs-first-day-3step-gate` | `待人工复核` · Serena 1080p 独立成片已回读校验；业务疑问一键呼叫「内部兜底销售（陈小满）」接管；账号或权限异常反馈销售主管核查。 |
+| `CS-REALSHOT-01` | 外部外包客服（主力接待）/ 内部兜底销售 | [CS-REALSHOT-01｜三栏极简接待、WMS四关全绿选机与一件一拍直发](https://alidocs.dingtalk.com/i/nodes/Exel2BLV5zkl16Oeu7mNpgjRJgk9rpMq)（`#/cs-workbench（售前标签）`） | [独立成片 MP4](https://alidocs.dingtalk.com/i/nodes/pGBa2Lm8aGpqdKP2hREXArGoVgN7R35y) · `00:00`（[源码包](https://alidocs.dingtalk.com/i/nodes/b9Y4gmKWrP5pynLDTrjwgg00JGXn6lpz)） | `Skill 已核` · `cs-pre-ship-realshot-select` | `待人工复核` · Serena 1080p 独立成片已回读校验；缺通电视频点右栏「一键催仓管 60 秒补拍」；未绑货号点「一键呼叫内部销售 60 秒绑定 WMS 货号」，绿灯就绪后再发送。 |
+| `CS-WARRANTY-02` | 外部外包客服 / 内部兜底销售 | [CS-WARRANTY-02｜富阳法院保修激活卡自动触发与静默发问毫秒熔断](https://alidocs.dingtalk.com/i/nodes/1DKw2zgV2PMoYdjETdPl3BkG8B5r9YAn)（`#/cs-workbench（售前标签 · 自动发图与自动发货池）`） | [独立成片 MP4](https://alidocs.dingtalk.com/i/nodes/Exel2BLV5zkl16Oeu7mNvXgPJgk9rpMq) · `00:00`（[源码包](https://alidocs.dingtalk.com/i/nodes/dxXB52LJqn5XymZ9i2MD3kg78qjMp697)） | `Skill 已核` · `cs-warranty-silent-ship-fuse` | `待人工复核` · Serena 1080p 独立成片已回读校验；管辖条款异议或特殊质保承诺诉求，一律转交内部销售陈小满或主管核定，外包不得私改法务口径。 |
+| `CS-REFUND-409-03` | 外部外包客服 / 仓管协同 / 内部销售 | [CS-REFUND-409-03｜退款0秒手机UI三步引导图与WMS 409红屏急停截单](https://alidocs.dingtalk.com/i/nodes/NkDwLng8ZLDqxG6gcpxGnpvNVKMEvZBY)（`#/cs-workbench（售后标签）`） | [独立成片 MP4](https://alidocs.dingtalk.com/i/nodes/G53mjyd80pDo1GmEczgxMAP286zbX04v) · `00:00`（[源码包](https://alidocs.dingtalk.com/i/nodes/OG9lyrgJPzaqQx70uPzmnKMDWzN67Mw4)） | `Skill 已核` · `cs-refund-409-hard-stop` | `待人工复核` · Serena 1080p 独立成片已回读校验；已揽收件转仓管与内部销售发起快递拦截并提醒买家拒签；质量索赔纠纷一键转内部销售陈小满判责处理。 |
+| `CS-ESCALATE-05` | 外部外包客服 / 仓管 / 内部兜底销售 | [CS-ESCALATE-05｜问题订单三类判别与60秒一键跨部门呼救](https://alidocs.dingtalk.com/i/nodes/vNG4YZ7JnPBj0zyKTo93QoLaW2LD0oRE)（`#/cs-workbench（问题订单标签）`） | [独立成片 MP4](https://alidocs.dingtalk.com/i/nodes/gpG2NdyVX3v6oEy9c5GNnA4OWMwvDqPk) · `00:00`（[源码包](https://alidocs.dingtalk.com/i/nodes/l6Pm2Db8D49lkzyNiy9lY5qQ8xLq0Ee4)） | `Skill 已核` · `cs-abnormal-60s-escalate` | `待人工复核` · Serena 1080p 独立成片已回读校验；实物补拍由仓管工位 60 秒承接；绑货号、外链核验与超限议价由内部销售陈小满排他接管。 |
+| `CS-TAKEOVER-06` | 内部兜底销售（陈小满）/ 外部外包客服 / 销售主管 | [CS-TAKEOVER-06｜排他接管锁、超限让利与退回防甩锅交接](https://alidocs.dingtalk.com/i/nodes/QBnd5ExVEvDlXZQrca2rGeNyJyeZqMmz)（`?as=chenxm#/cs-workbench（销售工作台左栏：工作 → 外部客服）`） | [独立成片 MP4](https://alidocs.dingtalk.com/i/nodes/y20BglGWO2ZB6yQRiD0zG96m8A7depqY) · `00:00`（[源码包](https://alidocs.dingtalk.com/i/nodes/GZLxjv9VGqMl2mDpIq1Ln9y386EDybno)） | `Skill 已核` · `cs-internal-takeover-handoff` | `待人工复核` · Serena 1080p 独立成片已回读校验；突破商品底价红线或重大客诉赔付，由内部销售升级销售主管（何雨诚/邹主管）拍板核准。 |
+| `CS-GUARD-KPI-04` | 外部外包客服 / 客服与销售主管 / 财务结算 | [CS-GUARD-KPI-04｜外发合规守卫、防作弊与五防绩效考核口径](https://alidocs.dingtalk.com/i/nodes/yQod3RxJKGXlx0zahY4ABMXRJkb4Mw9r)（`#/cs-workbench（底部外发守卫 + 顶栏「全维考核」）`） | [独立成片 MP4](https://alidocs.dingtalk.com/i/nodes/bva6QBXJwa5myYekU72m756XWn4qY5Pr) · `00:00`（[源码包](https://alidocs.dingtalk.com/i/nodes/1zknDm0WRanqQP0YUdxPRgv38BQEx5rG)） | `Skill 已核` · `cs-outbound-guard-and-kpi` | `待人工复核` · Serena 1080p 独立成片已回读校验；绩效异议与申诉导出 CSV 连同会话单号交客服/销售主管复核签字，财务凭核准台账结算。 |
+
+## 业务核对与发单确认状态（business\_review）
+- **当前状态**：`待发起人或受委托对应业务主管本人确认`（Agent 已于 2026-11-24 完成纯桌面 UI 清理、原生教程与视频台账及客服独立视图研发演示、可爱小动物风员工 PDF 手册制作、全量 H5/规格更新及 `prepare_demo_dispatch` 结构预检；按规范要求，未越权代填本人确认记录）。
+- **待确认两项**： 
+    1. 请需求发起人（何雨诚）或委托业务主管实操验证 `V6-20261124-merged-cs` 正常与异常案例，并在本页/禅道/会话留下本人 `business_review` 确认。
+    2. 请确认新版共用开场与手绘\+实机节点重录片采用 **百炼 API 预置音色** 或 **本地 Qwen3-TTS CustomVoice 官方预置音色**。
+
+## 2026-11-24｜销售工作台 21 个独立节点（00:00 起播）专属子页、成片与可编辑源码台账（Serena 女声 · 待人工复核）
+>    
+
+| 节点 ID | 入口 | 专属 Wiki 子页 | 独立成片 (`00:00`) | 可编辑源码包 | 复核/外链状态 |
+|---------|------|------------------|----------------------|------------------|-------------------|
+| `SALES-SHARED-00` | `#/today` | [专属子页](https://alidocs.dingtalk.com/i/nodes/yQod3RxJKGXlx0zahY4AvAEoJkb4Mw9r) | [00:00 独立短片](https://alidocs.dingtalk.com/i/nodes/7dx2rn0JbY2E54kzUb2rPOmvVMGjLRb3) | [源码 ZIP](https://alidocs.dingtalk.com/i/nodes/1DKw2zgV2PMoYdjETdPlDk2E8B5r9YAn) | 待人工复核 |
+| `SALES-TODAY-01` | `#/today` | [专属子页](https://alidocs.dingtalk.com/i/nodes/Amq4vjg890zlavOESYP0yj7GJ3kdP0wQ) | [00:00 独立短片](https://alidocs.dingtalk.com/i/nodes/MyQA2dXW7eplaKOETd5lD0oGJzlwrZgb) | [源码 ZIP](https://alidocs.dingtalk.com/i/nodes/PwkYGxZV3ZjeYo96fr3nNpxbWAgozOKL) | 待人工复核 |
+| `SALES-LEARN-02` | `#/learn` | [专属子页](https://alidocs.dingtalk.com/i/nodes/1OQX0akWmxAM02eyfNvwL7v48GlDd3mE) | [00:00 独立短片](https://alidocs.dingtalk.com/i/nodes/nYMoO1rWxa5ny3PXURzpQqE6V47Z3je9) | [源码 ZIP](https://alidocs.dingtalk.com/i/nodes/1DKw2zgV2PMoYdjETdPlD6ng8B5r9YAn) | 待人工复核 |
+| `SALES-GALLERY-03` | `#/gallery/all` | [专属子页](https://alidocs.dingtalk.com/i/nodes/l6Pm2Db8D49lkzyNiy9lxMmd8xLq0Ee4) | [00:00 独立短片](https://alidocs.dingtalk.com/i/nodes/1OQX0akWmxAM02eyfNvwDAQp8GlDd3mE) | [源码 ZIP](https://alidocs.dingtalk.com/i/nodes/ndMj49yWjX09Bkqbsgw12rKbJ3pmz5aA) | 待人工复核 |
+| `SALES-SRC-04` | `#/sources` | [专属子页](https://alidocs.dingtalk.com/i/nodes/1zknDm0WRanqQP0YUdxPowzg8BQEx5rG) | [00:00 独立短片](https://alidocs.dingtalk.com/i/nodes/9bN7RYPWdMZqQ9xaHRknZX0PVZd1wyK0) | [源码 ZIP](https://alidocs.dingtalk.com/i/nodes/1R7q3QmWeeaQBDjmTKZ2BaEBWxkXOEP2) | 待人工复核；涉外部参考(此内容未经过审查) |
+| `SALES-SPEC-05` | `#/spec-baseline` | [专属子页](https://alidocs.dingtalk.com/i/nodes/9bN7RYPWdMZqQ9xaHRkn04okVZd1wyK0) | [00:00 独立短片](https://alidocs.dingtalk.com/i/nodes/l6Pm2Db8D49lkzyNiy9lYmeQ8xLq0Ee4) | [源码 ZIP](https://alidocs.dingtalk.com/i/nodes/QBnd5ExVEvDlXZQrca2r0yOMJyeZqMmz) | 待人工复核 |
+| `SALES-WASH-PRICE-06` | `#/wash` | [专属子页](https://alidocs.dingtalk.com/i/nodes/LeBq413JAwKlMXygcqrPamdmWDOnGvpb) | [00:00 独立短片](https://alidocs.dingtalk.com/i/nodes/3NwLYZXWyne7Lympi0Z7YAwzVkyEqBQm) | [源码 ZIP](https://alidocs.dingtalk.com/i/nodes/7QG4Yx2JpL5rPazvcpg325OmJ9dEq3XD) | 待人工复核 |
+| `SALES-WASH-IMG-07` | `#/image-cleaning` | [专属子页](https://alidocs.dingtalk.com/i/nodes/GZLxjv9VGqMl2mDpIq1LvMO286EDybno) | [00:00 独立短片](https://alidocs.dingtalk.com/i/nodes/14dA3GK8gjnK0MP7SvKeKaoZJ9ekBD76) | [源码 ZIP](https://alidocs.dingtalk.com/i/nodes/14dA3GK8gjnK0MP7SvKelB7aJ9ekBD76) | 待人工复核 |
+| `SALES-GC-QUEUE-08` | `#/gc-matrix` | [专属子页](https://alidocs.dingtalk.com/i/nodes/1DKw2zgV2PMoYdjETdPlEL918B5r9YAn) | [00:00 独立短片](https://alidocs.dingtalk.com/i/nodes/bva6QBXJwa5myYekU72mqyezWn4qY5Pr) | [源码 ZIP](https://alidocs.dingtalk.com/i/nodes/PwkYGxZV3ZjeYo96fr3nmMN9WAgozOKL) | 待人工复核 |
+| `SALES-GC-REPRICE-09` | `#/gc-reprice` | [专属子页](https://alidocs.dingtalk.com/i/nodes/Exel2BLV5zkl16Oeu7mNAjYmJgk9rpMq) | [00:00 独立短片](https://alidocs.dingtalk.com/i/nodes/0eMKjyp813goPerEcZ41kQNoVxAZB1Gv) | [源码 ZIP](https://alidocs.dingtalk.com/i/nodes/MyQA2dXW7eplaKOETd5l67AgJzlwrZgb) | 待人工复核 |
+| `SALES-VIRT-INTEL-10` | `#/virt-intel` | [专属子页](https://alidocs.dingtalk.com/i/nodes/9E05BDRVQ2mlZOPbiZyXgwEkJ63zgkYA) | [00:00 独立短片](https://alidocs.dingtalk.com/i/nodes/gpG2NdyVX3v6oEy9c5GNrN29WMwvDqPk) | [源码 ZIP](https://alidocs.dingtalk.com/i/nodes/NDoBb60VLQplZbjmhnBA4rydJlemrZQ3) | 待人工复核；涉外部参考(此内容未经过审查)；含演示/待外接项 |
+| `SALES-VIRT-CAD-11` | `#/virt-intel?node=cad-trace&amp;tab=racing` | [专属子页](https://alidocs.dingtalk.com/i/nodes/PwkYGxZV3ZjeYo96fr3nwRYDWAgozOKL) | [00:00 独立短片](https://alidocs.dingtalk.com/i/nodes/1zknDm0WRanqQP0YUdxPoYQK8BQEx5rG) | [源码 ZIP](https://alidocs.dingtalk.com/i/nodes/l6Pm2Db8D49lkzyNiy9lLLnk8xLq0Ee4) | 待人工复核；涉外部参考(此内容未经过审查)；含演示/待外接项 |
+| `SALES-VIRT-CARD-12` | `#/virt-new` | [专属子页](https://alidocs.dingtalk.com/i/nodes/P0MALyR8kl5DyXpYsMKg9zOpW3bzYmDO) | [00:00 独立短片](https://alidocs.dingtalk.com/i/nodes/1R7q3QmWeeaQBDjmTKZ2e95zWxkXOEP2) | [源码 ZIP](https://alidocs.dingtalk.com/i/nodes/PwkYGxZV3ZjeYo96fr3n0axXWAgozOKL) | 待人工复核 |
+| `SALES-SVC-DELTA-13` | `#/skills?template=delta` | [专属子页](https://alidocs.dingtalk.com/i/nodes/9E05BDRVQ2mlZOPbiZyXgpXdJ63zgkYA) | [00:00 独立短片](https://alidocs.dingtalk.com/i/nodes/GZLxjv9VGqMl2mDpIq1LP6aG86EDybno) | [源码 ZIP](https://alidocs.dingtalk.com/i/nodes/7QG4Yx2JpL5rPazvcpg3kY3NJ9dEq3XD) | 待人工复核；涉外部参考(此内容未经过审查)；含演示/待外接项 |
+| `SALES-SVC-FLOW-14` | `#/skills` | [专属子页](https://alidocs.dingtalk.com/i/nodes/1DKw2zgV2PMoYdjETdPl4oY38B5r9YAn) | [00:00 独立短片](https://alidocs.dingtalk.com/i/nodes/3NwLYZXWyne7Lympi0Z74oe9VkyEqBQm) | [源码 ZIP](https://alidocs.dingtalk.com/i/nodes/Exel2BLV5zkl16Oeu7mNdj67Jgk9rpMq) | 待人工复核；涉外部参考(此内容未经过审查)；含演示/待外接项 |
+| `SALES-SVC-PROGRAM-15` | `#/program` | [专属子页](https://alidocs.dingtalk.com/i/nodes/gpG2NdyVX3v6oEy9c5GNpMdGWMwvDqPk) | [00:00 独立短片](https://alidocs.dingtalk.com/i/nodes/QPGYqjpJYr9qxAyDc9Z5ZOGZ8akx1Z5N) | [源码 ZIP](https://alidocs.dingtalk.com/i/nodes/LeBq413JAwKlMXygcqrPGnDoWDOnGvpb) | 待人工复核；含演示/待外接项 |
+| `SALES-ORDER-16` | `#/orders` | [专属子页](https://alidocs.dingtalk.com/i/nodes/bva6QBXJwa5myYekU72mxeZzWn4qY5Pr) | [00:00 独立短片](https://alidocs.dingtalk.com/i/nodes/vNG4YZ7JnPBj0zyKTo93ZEYnW2LD0oRE) | [源码 ZIP](https://alidocs.dingtalk.com/i/nodes/DnRL6jAJMG2qyYXnhAXQa0XkWyMoPYe1) | 待人工复核 |
+| `SALES-OPS-QUOTE-17` | `#/inquiry` | [专属子页](https://alidocs.dingtalk.com/i/nodes/14dA3GK8gjnK0MP7SvKeD659J9ekBD76) | [00:00 独立短片](https://alidocs.dingtalk.com/i/nodes/Exel2BLV5zkl16Oeu7mNeQabJgk9rpMq) | [源码 ZIP](https://alidocs.dingtalk.com/i/nodes/7QG4Yx2JpL5rPazvcpg345wPJ9dEq3XD) | 待人工复核 |
+| `SALES-OPS-SETTLE-18` | `#/cycles` | [专属子页](https://alidocs.dingtalk.com/i/nodes/1R7q3QmWeeaQBDjmTKZ2eO3aWxkXOEP2) | [00:00 独立短片](https://alidocs.dingtalk.com/i/nodes/14dA3GK8gjnK0MP7SvKer1PwJ9ekBD76) | [源码 ZIP](https://alidocs.dingtalk.com/i/nodes/X6GRezwJlA5gBpx3ujrEZKdQ8dqbropQ) | 待人工复核 |
+| `SALES-RECEPTION-19` | `#/reception` | [专属子页](https://alidocs.dingtalk.com/i/nodes/y20BglGWO2ZB6yQRiD0zZ9QK8A7depqY) | [00:00 独立短片](https://alidocs.dingtalk.com/i/nodes/R4GpnMqJzGrR6xP2hbazDeXD8Ke0xjE3) | [源码 ZIP](https://alidocs.dingtalk.com/i/nodes/PwkYGxZV3ZjeYo96fr3ngx9EWAgozOKL) | 待人工复核；含演示/待外接项 |
+| `SALES-ASSIST-CRM-20` | `#/assist` | [专属子页](https://alidocs.dingtalk.com/i/nodes/ZQYprEoWonANyZL4iXDaOgOY81waOeDk) | [00:00 独立短片](https://alidocs.dingtalk.com/i/nodes/LeBq413JAwKlMXygcqrPaN9qWDOnGvpb) | [源码 ZIP](https://alidocs.dingtalk.com/i/nodes/R4GpnMqJzGrR6xP2hbazaMlM8Ke0xjE3) | 待人工复核；含演示/待外接项 |

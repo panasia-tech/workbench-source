@@ -1,0 +1,16 @@
+{
+  "batch_started_at": "2026-11-25T14:52:30+08:00",
+  "revision": "V6.2-CS-HANDDRAWN-20261125",
+  "project_slug": "cs_remake",
+  "voice": "Serena",
+  "workbench": "外部客服工作台 V3（并入销售工作台独立视图）",
+  "required_nodes": [
+    "CS-ONBOARD-01",
+    "CS-REALSHOT-01",
+    "CS-WARRANTY-02",
+    "CS-REFUND-409-03",
+    "CS-GUARD-KPI-04",
+    "CS-ESCALATE-05",
+    "CS-TAKEOVER-06"
+  ]
+}

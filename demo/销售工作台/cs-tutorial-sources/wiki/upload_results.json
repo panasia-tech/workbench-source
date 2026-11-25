@@ -1,0 +1,163 @@
+{
+  "CS-ONBOARD-01": {
+    "status": "uploaded_verified",
+    "node_id": "CS-ONBOARD-01",
+    "workspace": "gBVzxOgnqwlNMGOa",
+    "folder": "9E05BDRVQ2mlZOPbiZ2zb3LvJ63zgkYA",
+    "files": {
+      "video": {
+        "node_id": "P0MALyR8kl5DyXpYsMKdDrKrW3bzYmDO",
+        "name": "CS-ONBOARD-01-V6-2-CS-HANDDRAWN-20261125-video-4df49d76c41a.mp4",
+        "sha256": "4df49d76c41af5cb86a7e6171905faf717f1f3dc73ac46bcaf74e3379fc25248",
+        "url": "https://alidocs.dingtalk.com/i/nodes/P0MALyR8kl5DyXpYsMKdDrKrW3bzYmDO",
+        "byte_verified": true
+      },
+      "source": {
+        "node_id": "14dA3GK8gjnK0MP7SvKLAbZZJ9ekBD76",
+        "name": "CS-ONBOARD-01-V6-2-CS-HANDDRAWN-20261125-source-8e4707f069d3.gz",
+        "sha256": "8e4707f069d3f21ae06b1807856954bc4e1a73128ceeb2c612bbf842d98bb528",
+        "url": "https://alidocs.dingtalk.com/i/nodes/14dA3GK8gjnK0MP7SvKLAbZZJ9ekBD76",
+        "byte_verified": true
+      }
+    },
+    "ready": true
+  },
+  "CS-REALSHOT-01": {
+    "status": "uploaded_verified",
+    "node_id": "CS-REALSHOT-01",
+    "workspace": "gBVzxOgnqwlNMGOa",
+    "folder": "9E05BDRVQ2mlZOPbiZ2zb3LvJ63zgkYA",
+    "files": {
+      "video": {
+        "node_id": "l6Pm2Db8D49lkzyNiy9M7drB8xLq0Ee4",
+        "name": "CS-REALSHOT-01-V6-2-CS-HANDDRAWN-20261125-video-a479f03db703.mp4",
+        "sha256": "a479f03db703e02a2bdffc57bd8f479751f1bd61f4beabf313cf8968e2abcdd3",
+        "url": "https://alidocs.dingtalk.com/i/nodes/l6Pm2Db8D49lkzyNiy9M7drB8xLq0Ee4",
+        "byte_verified": true
+      },
+      "source": {
+        "node_id": "1DKw2zgV2PMoYdjETdP90Qoy8B5r9YAn",
+        "name": "CS-REALSHOT-01-V6-2-CS-HANDDRAWN-20261125-source-f57f4632c4e7.gz",
+        "sha256": "f57f4632c4e7a6d82ebf8f62c6dc818a1af4a7d2b36e662d16645665416fa252",
+        "url": "https://alidocs.dingtalk.com/i/nodes/1DKw2zgV2PMoYdjETdP90Qoy8B5r9YAn",
+        "byte_verified": true
+      }
+    },
+    "ready": true
+  },
+  "CS-WARRANTY-02": {
+    "status": "uploaded_verified",
+    "node_id": "CS-WARRANTY-02",
+    "workspace": "gBVzxOgnqwlNMGOa",
+    "folder": "9E05BDRVQ2mlZOPbiZ2zb3LvJ63zgkYA",
+    "files": {
+      "video": {
+        "node_id": "14dA3GK8gjnK0MP7SvKLjrodJ9ekBD76",
+        "name": "CS-WARRANTY-02-V6-2-CS-HANDDRAWN-20261125-video-64bf546a5ab8.mp4",
+        "sha256": "64bf546a5ab87713894d93098fd1971deae0bea9fd298c4c89626418d1f6aae1",
+        "url": "https://alidocs.dingtalk.com/i/nodes/14dA3GK8gjnK0MP7SvKLjrodJ9ekBD76",
+        "byte_verified": true
+      },
+      "source": {
+        "node_id": "Amq4vjg890zlavOESYPZQDl9J3kdP0wQ",
+        "name": "CS-WARRANTY-02-V6-2-CS-HANDDRAWN-20261125-source-7d6ab5a2a768.gz",
+        "sha256": "7d6ab5a2a768e096e00a7e70e1d67725e252cb6beef1c6b34bc8ecf22f474111",
+        "url": "https://alidocs.dingtalk.com/i/nodes/Amq4vjg890zlavOESYPZQDl9J3kdP0wQ",
+        "byte_verified": true
+      }
+    },
+    "ready": true
+  },
+  "CS-REFUND-409-03": {
+    "status": "uploaded_verified",
+    "node_id": "CS-REFUND-409-03",
+    "workspace": "gBVzxOgnqwlNMGOa",
+    "folder": "9E05BDRVQ2mlZOPbiZ2zb3LvJ63zgkYA",
+    "files": {
+      "video": {
+        "node_id": "QPGYqjpJYr9qxAyDc9Zb0mwN8akx1Z5N",
+        "name": "CS-REFUND-409-03-V6-2-CS-HANDDRAWN-20261125-video-58426f977c28.mp4",
+        "sha256": "58426f977c28bc431b1da06cf444b2323e19b50ea02f9f180bec19c531559058",
+        "url": "https://alidocs.dingtalk.com/i/nodes/QPGYqjpJYr9qxAyDc9Zb0mwN8akx1Z5N",
+        "byte_verified": true
+      },
+      "source": {
+        "node_id": "np9zOoBVBY41jp2MUlLx0ALwW1DK0g6l",
+        "name": "CS-REFUND-409-03-V6-2-CS-HANDDRAWN-20261125-source-19afe122f8c4.gz",
+        "sha256": "19afe122f8c4836e7d361f1976a5c9e98f02f7b19c9b82f0d05ccdc684b7f86e",
+        "url": "https://alidocs.dingtalk.com/i/nodes/np9zOoBVBY41jp2MUlLx0ALwW1DK0g6l",
+        "byte_verified": true
+      }
+    },
+    "ready": true
+  },
+  "CS-ESCALATE-05": {
+    "status": "uploaded_verified",
+    "node_id": "CS-ESCALATE-05",
+    "workspace": "gBVzxOgnqwlNMGOa",
+    "folder": "9E05BDRVQ2mlZOPbiZ2zb3LvJ63zgkYA",
+    "files": {
+      "video": {
+        "node_id": "y20BglGWO2ZB6yQRiD0ApLMk8A7depqY",
+        "name": "CS-ESCALATE-05-V6-2-CS-HANDDRAWN-20261125-video-c8b060cf72d1.mp4",
+        "sha256": "c8b060cf72d1249cfff510dc6609b40c54be472a6b1502336b57e30d9ceec3f8",
+        "url": "https://alidocs.dingtalk.com/i/nodes/y20BglGWO2ZB6yQRiD0ApLMk8A7depqY",
+        "byte_verified": true
+      },
+      "source": {
+        "node_id": "b9Y4gmKWrP5pynLDTrjExlpEJGXn6lpz",
+        "name": "CS-ESCALATE-05-V6-2-CS-HANDDRAWN-20261125-source-09ef9d0578d0.gz",
+        "sha256": "09ef9d0578d0be9984b14e38d3f9890c92abb1cca67340547b5129da0654954f",
+        "url": "https://alidocs.dingtalk.com/i/nodes/b9Y4gmKWrP5pynLDTrjExlpEJGXn6lpz",
+        "byte_verified": true
+      }
+    },
+    "ready": true
+  },
+  "CS-TAKEOVER-06": {
+    "status": "uploaded_verified",
+    "node_id": "CS-TAKEOVER-06",
+    "workspace": "gBVzxOgnqwlNMGOa",
+    "folder": "9E05BDRVQ2mlZOPbiZ2zb3LvJ63zgkYA",
+    "files": {
+      "video": {
+        "node_id": "R4GpnMqJzGrR6xP2hbaQp2G78Ke0xjE3",
+        "name": "CS-TAKEOVER-06-V6-2-CS-HANDDRAWN-20261125-video-794a4d22f2f2.mp4",
+        "sha256": "794a4d22f2f2829c53a63a8a5a8bd8bcbf2b095ccdb146269ff2faaac0a154ba",
+        "url": "https://alidocs.dingtalk.com/i/nodes/R4GpnMqJzGrR6xP2hbaQp2G78Ke0xjE3",
+        "byte_verified": true
+      },
+      "source": {
+        "node_id": "X6GRezwJlA5gBpx3ujr7rEav8dqbropQ",
+        "name": "CS-TAKEOVER-06-V6-2-CS-HANDDRAWN-20261125-source-f12f169be40f.gz",
+        "sha256": "f12f169be40f76ca95fe4c3cd212d77c92a16732ab4a01184efd847f2ef76bac",
+        "url": "https://alidocs.dingtalk.com/i/nodes/X6GRezwJlA5gBpx3ujr7rEav8dqbropQ",
+        "byte_verified": true
+      }
+    },
+    "ready": true
+  },
+  "CS-GUARD-KPI-04": {
+    "status": "uploaded_verified",
+    "node_id": "CS-GUARD-KPI-04",
+    "workspace": "gBVzxOgnqwlNMGOa",
+    "folder": "9E05BDRVQ2mlZOPbiZ2zb3LvJ63zgkYA",
+    "files": {
+      "video": {
+        "node_id": "1zknDm0WRanqQP0YUdxq113q8BQEx5rG",
+        "name": "CS-GUARD-KPI-04-V6-2-CS-HANDDRAWN-20261125-video-e5ec4f2c4506.mp4",
+        "sha256": "e5ec4f2c4506997f9e92975fc41fe589b4d6e3194e664ab5aa6f2f22a9a22669",
+        "url": "https://alidocs.dingtalk.com/i/nodes/1zknDm0WRanqQP0YUdxq113q8BQEx5rG",
+        "byte_verified": true
+      },
+      "source": {
+        "node_id": "1R7q3QmWeeaQBDjmTKZM69GNWxkXOEP2",
+        "name": "CS-GUARD-KPI-04-V6-2-CS-HANDDRAWN-20261125-source-14563528f608.gz",
+        "sha256": "14563528f608e38d907b52304e0fe78742ce365d61d977c1b771ece685ff5bab",
+        "url": "https://alidocs.dingtalk.com/i/nodes/1R7q3QmWeeaQBDjmTKZM69GNWxkXOEP2",
+        "byte_verified": true
+      }
+    },
+    "ready": true
+  }
+}
